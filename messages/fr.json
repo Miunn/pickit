@@ -1,0 +1,50 @@
+{
+  "DashboardPage": {
+    "newFolder": "New folder",
+    "uploadImages": "Upload",
+    "manageLinks": "Manage links"
+  },
+
+  "auth": {
+    "signInTab": "Login",
+    "signUpTab": "Sign up",
+    "signIn": {
+      "title": "Login",
+      "description": "Login to your Pickit account",
+      "form": {
+        "email": "Email",
+        "password": "Password",
+        "submit": "Login",
+        "error": "Invalid email or password"
+      }
+    },
+    "signUp": {
+      "title": "Sign up",
+      "description": "Create your Pickit account",
+      "form": {
+        "name": "Name",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm password",
+        "submit": "Sign up"
+      }
+    }
+  },
+
+  "folders": {
+    "page": {
+      "title": "Folders",
+      "subtitle": "Your created folders"
+    },
+    "actions": {
+      "create": "New folder",
+      "upload": "Upload",
+      "manage": "Manage links"
+    },
+    "empty": "No folders created"
+  },
+
+  "NotFoundPage": {
+    "description": "This page could not be found"
+  }
+}

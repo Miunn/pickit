@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="c2dee7ec-e3e7-48eb-a748-b5062fc71295" name="remicaulier.fr">
+        <fileTransfer rootFolder="/home/miunn/pickit" accessType="SFTP" host="remicaulier.fr" port="22" sshConfigId="03735623-147a-4b6c-85b8-45eb04b9d75a" sshConfig="miunn@remicaulier.fr:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
