@@ -4,7 +4,6 @@
     "uploadImages": "Upload",
     "manageLinks": "Manage links"
   },
-
   "auth": {
     "signInTab": "Login",
     "signUpTab": "Sign up",
@@ -30,7 +29,6 @@
       }
     }
   },
-
   "folders": {
     "page": {
       "title": "Folders",
@@ -43,7 +41,32 @@
     },
     "empty": "No folders created"
   },
-
+  "images": {
+    "page": {
+      "title": "{folder} images",
+      "subtitle": "{folder} uploaded images"
+    },
+    "actions": {
+      "upload": "Upload",
+      "delete": "Delete",
+      "share": "Share"
+    },
+    "dialog": {
+      "upload": {
+        "trigger": "Upload",
+        "title": "Upload images",
+        "description": "Select images to upload",
+        "fields": {
+          "images": {
+            "label": "Images",
+            "description": "Each image should be less than 5MB"
+          }
+        },
+        "submit": "Upload",
+        "submitting": "Uploading..."
+      }
+    }
+  },
   "NotFoundPage": {
     "description": "This page could not be found"
   }
