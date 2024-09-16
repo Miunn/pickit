@@ -1,12 +1,16 @@
 import CreateFolderDialog from "@/components/folders/CreateFolderDialog";
 import {Button} from "@/components/ui/button";
 import {FolderX, ImageOff, ImageUp, Settings2} from "lucide-react";
-import FolderPreview from "@/components/generic/FolderPreview";
+import FolderPreview from "@/components/folders/FolderPreview";
 import {prisma} from "@/lib/prisma";
 
 export default async function Home({ params }: { params: { locale: string } }) {
 
-    const folders = await prisma.folder.findMany();
+    const folders = await prisma.folder.findMany({
+        include: {
+            cover: true,
+        }
+    });
 
     return (
         <div className="flex flex-col flex-grow p-6">
@@ -43,7 +47,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
                         <p>No images uploaded</p>
                     </div>
                     : [].map(folder => (
-                        <FolderPreview key={folder.id} folder={folder} locale={params.locale}/>
+                        <></>
                     ))
                 }
             </div>

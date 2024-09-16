@@ -18,6 +18,8 @@ model Folder {
   id          String   @id @default(cuid())
   name        String
   images      Image[]  @relation("FolderImages")
+  cover       Image?   @relation(fields: [coverId], references: [id])
+  coverId     String?  @unique
   createdBy   User     @relation("UserFolders", fields: [createdById], references: [id])
   createdById String
   createdAt   DateTime @default(now())
@@ -30,6 +32,7 @@ model Image {
   path        String
   folder      Folder   @relation("FolderImages", fields: [folderId], references: [id])
   folderId    String
+  folderCover Folder?
   createdBy   User     @relation("UserImages", fields: [createdById], references: [id])
   createdById String
   createdAt   DateTime @default(now())

@@ -2,16 +2,24 @@ import {Separator} from "@/components/ui/separator";
 import Link from "next/link";
 import {Images} from "lucide-react";
 import {useFormatter} from "next-intl";
+import fs from "fs";
 
 export default function FolderPreview({folder, locale}: { folder: any, locale: string }) {
 
     const format = useFormatter();
+    const file = folder.cover ? fs.readFileSync(process.cwd() + "/" + folder.cover.path) : "";
+    const base = `data:image/png;base64,${file.toString('base64')}`;
 
     return (
         <Link href={`/${locale}/dashboard/folders/${folder.id}`} locale={locale} className={"inline-block w-64"}>
-            <div className={"border rounded-2xl bg-gray-100 h-32 mb-4 flex justify-center items-center"}>
-                <Images className={"opacity-50"} />
-            </div>
+            {folder.cover
+                ? <div className={"border rounded-2xl h-32 mb-4 flex justify-center items-center"}>
+                    <img src={base} className={"h-28 object-cover rounded-md"} alt={folder.name}/>
+                </div>
+                : <div className={"border rounded-2xl bg-gray-100 h-32 mb-4 flex justify-center items-center"}>
+                    <Images className={"opacity-50"}/>
+                </div>
+            }
             <p>{folder.name}</p>
             <div className={"text-sm grid h-4 items-center"} style={{
                 gridTemplateColumns: "1fr auto 2fr",

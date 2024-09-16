@@ -932,7 +932,7 @@ Pickit|schema||pickitConnector||UPDATE|G</Grants>
     </schema>
     <schema id="290" parent="1" name="Pickit">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-09-15.20:44:05</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-09-16.18:55:16</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <user id="291" parent="1" name="pickitConnector"/>
@@ -1137,260 +1137,279 @@ providerAccountId</ColNames>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <foreign-key id="335" parent="294" name="Folder_createdById_fkey">
+    <column id="335" parent="294" name="coverId">
+      <DasType>varchar(191)|0s</DasType>
+      <Position>6</Position>
+    </column>
+    <foreign-key id="336" parent="294" name="Folder_createdById_fkey">
       <ColNames>createdById</ColNames>
       <OnUpdate>cascade</OnUpdate>
       <RefColNames>id</RefColNames>
       <RefTableName>User</RefTableName>
     </foreign-key>
-    <index id="336" parent="294" name="PRIMARY">
+    <foreign-key id="337" parent="294" name="Folder_coverId_fkey">
+      <ColNames>coverId</ColNames>
+      <OnDelete>set-null</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>Image</RefTableName>
+    </foreign-key>
+    <index id="338" parent="294" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="337" parent="294" name="Folder_createdById_fkey">
+    <index id="339" parent="294" name="Folder_coverId_key">
+      <ColNames>coverId</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="340" parent="294" name="Folder_createdById_fkey">
       <ColNames>createdById</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="338" parent="294" name="PRIMARY">
+    <key id="341" parent="294" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="339" parent="295" name="id">
+    <key id="342" parent="294" name="Folder_coverId_key">
+      <UnderlyingIndexName>Folder_coverId_key</UnderlyingIndexName>
+    </key>
+    <column id="343" parent="295" name="id">
       <DasType>varchar(191)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="340" parent="295" name="path">
+    <column id="344" parent="295" name="path">
       <DasType>varchar(191)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="341" parent="295" name="folderId">
+    <column id="345" parent="295" name="folderId">
       <DasType>varchar(191)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="342" parent="295" name="createdById">
+    <column id="346" parent="295" name="createdById">
       <DasType>varchar(191)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="343" parent="295" name="createdAt">
+    <column id="347" parent="295" name="createdAt">
       <DasType>datetime(3)|0s</DasType>
       <DefaultExpression>CURRENT_TIMESTAMP(3)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <column id="344" parent="295" name="updatedAt">
+    <column id="348" parent="295" name="updatedAt">
       <DasType>datetime(3)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
-    <column id="345" parent="295" name="name">
+    <column id="349" parent="295" name="name">
       <DasType>varchar(191)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>7</Position>
     </column>
-    <foreign-key id="346" parent="295" name="Image_folderId_fkey">
+    <foreign-key id="350" parent="295" name="Image_folderId_fkey">
       <ColNames>folderId</ColNames>
       <OnUpdate>cascade</OnUpdate>
       <RefColNames>id</RefColNames>
       <RefTableName>Folder</RefTableName>
     </foreign-key>
-    <foreign-key id="347" parent="295" name="Image_createdById_fkey">
+    <foreign-key id="351" parent="295" name="Image_createdById_fkey">
       <ColNames>createdById</ColNames>
       <OnUpdate>cascade</OnUpdate>
       <RefColNames>id</RefColNames>
       <RefTableName>User</RefTableName>
     </foreign-key>
-    <index id="348" parent="295" name="PRIMARY">
+    <index id="352" parent="295" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="349" parent="295" name="Image_folderId_fkey">
+    <index id="353" parent="295" name="Image_folderId_fkey">
       <ColNames>folderId</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="350" parent="295" name="Image_createdById_fkey">
+    <index id="354" parent="295" name="Image_createdById_fkey">
       <ColNames>createdById</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="351" parent="295" name="PRIMARY">
+    <key id="355" parent="295" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="352" parent="296" name="sessionToken">
+    <column id="356" parent="296" name="sessionToken">
       <DasType>varchar(191)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="353" parent="296" name="userId">
+    <column id="357" parent="296" name="userId">
       <DasType>varchar(191)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="354" parent="296" name="expires">
+    <column id="358" parent="296" name="expires">
       <DasType>datetime(3)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <foreign-key id="355" parent="296" name="Session_userId_fkey">
+    <foreign-key id="359" parent="296" name="Session_userId_fkey">
       <ColNames>userId</ColNames>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
       <RefColNames>id</RefColNames>
       <RefTableName>User</RefTableName>
     </foreign-key>
-    <index id="356" parent="296" name="Session_sessionToken_key">
+    <index id="360" parent="296" name="Session_sessionToken_key">
       <ColNames>sessionToken</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="357" parent="296" name="Session_userId_idx">
+    <index id="361" parent="296" name="Session_userId_idx">
       <ColNames>userId</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="358" parent="296" name="Session_sessionToken_key">
+    <key id="362" parent="296" name="Session_sessionToken_key">
       <UnderlyingIndexName>Session_sessionToken_key</UnderlyingIndexName>
     </key>
-    <column id="359" parent="297" name="id">
+    <column id="363" parent="297" name="id">
       <DasType>varchar(191)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="360" parent="297" name="name">
+    <column id="364" parent="297" name="name">
       <DasType>varchar(191)|0s</DasType>
       <Position>2</Position>
     </column>
-    <column id="361" parent="297" name="email">
+    <column id="365" parent="297" name="email">
       <DasType>varchar(191)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="362" parent="297" name="emailVerified">
+    <column id="366" parent="297" name="emailVerified">
       <DasType>datetime(3)|0s</DasType>
       <Position>4</Position>
     </column>
-    <column id="363" parent="297" name="image">
+    <column id="367" parent="297" name="image">
       <DasType>varchar(191)|0s</DasType>
       <Position>5</Position>
     </column>
-    <column id="364" parent="297" name="createdAt">
+    <column id="368" parent="297" name="createdAt">
       <DasType>datetime(3)|0s</DasType>
       <DefaultExpression>CURRENT_TIMESTAMP(3)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
-    <column id="365" parent="297" name="updatedAt">
+    <column id="369" parent="297" name="updatedAt">
       <DasType>datetime(3)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>7</Position>
     </column>
-    <column id="366" parent="297" name="password">
+    <column id="370" parent="297" name="password">
       <DasType>varchar(191)|0s</DasType>
       <Position>8</Position>
     </column>
-    <index id="367" parent="297" name="PRIMARY">
+    <index id="371" parent="297" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="368" parent="297" name="User_email_key">
+    <index id="372" parent="297" name="User_email_key">
       <ColNames>email</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="369" parent="297" name="PRIMARY">
+    <key id="373" parent="297" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="370" parent="297" name="User_email_key">
+    <key id="374" parent="297" name="User_email_key">
       <UnderlyingIndexName>User_email_key</UnderlyingIndexName>
     </key>
-    <column id="371" parent="298" name="identifier">
+    <column id="375" parent="298" name="identifier">
       <DasType>varchar(191)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="372" parent="298" name="token">
+    <column id="376" parent="298" name="token">
       <DasType>varchar(191)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="373" parent="298" name="expires">
+    <column id="377" parent="298" name="expires">
       <DasType>datetime(3)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <index id="374" parent="298" name="PRIMARY">
+    <index id="378" parent="298" name="PRIMARY">
       <ColNames>identifier
 token</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="375" parent="298" name="VerificationToken_token_key">
+    <index id="379" parent="298" name="VerificationToken_token_key">
       <ColNames>token</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="376" parent="298" name="PRIMARY">
+    <key id="380" parent="298" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="377" parent="298" name="VerificationToken_token_key">
+    <key id="381" parent="298" name="VerificationToken_token_key">
       <UnderlyingIndexName>VerificationToken_token_key</UnderlyingIndexName>
     </key>
-    <column id="378" parent="299" name="id">
+    <column id="382" parent="299" name="id">
       <DasType>varchar(36)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="379" parent="299" name="checksum">
+    <column id="383" parent="299" name="checksum">
       <DasType>varchar(64)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="380" parent="299" name="finished_at">
+    <column id="384" parent="299" name="finished_at">
       <DasType>datetime(3)|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="381" parent="299" name="migration_name">
+    <column id="385" parent="299" name="migration_name">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="382" parent="299" name="logs">
+    <column id="386" parent="299" name="logs">
       <DasType>text|0s</DasType>
       <Position>5</Position>
     </column>
-    <column id="383" parent="299" name="rolled_back_at">
+    <column id="387" parent="299" name="rolled_back_at">
       <DasType>datetime(3)|0s</DasType>
       <Position>6</Position>
     </column>
-    <column id="384" parent="299" name="started_at">
+    <column id="388" parent="299" name="started_at">
       <DasType>datetime(3)|0s</DasType>
       <DefaultExpression>CURRENT_TIMESTAMP(3)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>7</Position>
     </column>
-    <column id="385" parent="299" name="applied_steps_count">
+    <column id="389" parent="299" name="applied_steps_count">
       <DasType>int unsigned|0s</DasType>
       <DefaultExpression>&apos;0&apos;</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>8</Position>
     </column>
-    <index id="386" parent="299" name="PRIMARY">
+    <index id="390" parent="299" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="387" parent="299" name="PRIMARY">
+    <key id="391" parent="299" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>

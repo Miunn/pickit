@@ -3,7 +3,11 @@ import FoldersContent from "@/components/folders/FoldersContent";
 
 export default async function FoldersPage({ params }: { params: { locale: string } }) {
 
-    const folders = await prisma.folder.findMany();
+    const folders = await prisma.folder.findMany({
+        include: {
+            cover: true,
+        }
+    });
 
     return (
         <FoldersContent folders={folders} locale={params.locale} />

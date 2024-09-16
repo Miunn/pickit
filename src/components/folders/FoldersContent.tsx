@@ -1,7 +1,7 @@
 import CreateFolderDialog from "@/components/folders/CreateFolderDialog";
 import {Button} from "@/components/ui/button";
 import {FolderX, ImageUp, Settings2} from "lucide-react";
-import FolderPreview from "@/components/generic/FolderPreview";
+import FolderPreview from "@/components/folders/FolderPreview";
 import {useTranslations} from "next-intl";
 
 export default function FoldersContent({ folders, locale }) {
