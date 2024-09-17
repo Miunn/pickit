@@ -7,7 +7,7 @@ import * as fs from "fs";
 import {revalidatePath} from "next/cache";
 
 
-export async function   createFolder(name: string): Promise<{ folder: Prisma.Prisma__FolderClient<any> | null, error: string | null, }> {
+export async function createFolder(name: string): Promise<{ folder: Prisma.Prisma__FolderClient<any> | null, error: string | null, }> {
     const session = await auth();
 
     if (!session?.user) {
@@ -30,6 +30,50 @@ export async function   createFolder(name: string): Promise<{ folder: Prisma.Pri
     revalidatePath("dashboard/folders");
     revalidatePath("dashboard");
     return {folder: folder, error: null};
+}
+
+export async function renameFolder(folderId: string, name: string): Promise<{ folder: Prisma.Prisma__FolderClient<any> | null, error: string | null, }> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return {folder: null, error: "You must be logged in to rename a folder"};
+    }
+
+    console.log("Renaming folder", name);
+
+    const folder = await prisma.folder.update({
+        where: {
+            id: folderId
+        },
+        data: {
+            name: name,
+            updatedAt: Date.now().toString()
+        }
+    });
+
+    revalidatePath("dashboard/folders");
+    revalidatePath("dashboard");
+    return {folder: folder, error: null};
+}
+
+export async function deleteFolder(folderId: string): Promise<any> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return {error: "You must be logged in to delete a folder"};
+    }
+
+    console.log("Deleting folder", folderId);
+
+    await prisma.folder.delete({
+        where: {
+            id: folderId
+        }
+    });
+
+    revalidatePath("dashboard/folders");
+    revalidatePath("dashboard");
+    return {error: null};
 }
 
 export async function uploadImages(parentFolderId: string, amount: number, formData: FormData): Promise<{ error: string | null }> {

@@ -41,6 +41,12 @@ export const CreateFolderFormSchema = z.object({
     }).max(255),
 });
 
+export const RenameFolderFormSchema = z.object({
+    name: z.string().min(2, {
+        message: "The folder name must be at least 2 characters",
+    }).max(255),
+});
+
 export const UploadImagesFormSchema = z.object({
     images: typeof window === 'undefined' ? z.any().refine((file) => {
         return file.length > 0;
