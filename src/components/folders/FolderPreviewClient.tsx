@@ -42,7 +42,7 @@ export default function FolderPreviewClient({folder, coverB64, locale}: {
                         <div className={"text-sm grid h-4 items-center"} style={{
                             gridTemplateColumns: "1fr auto 2fr",
                         }}>
-                            <p className={"opacity-60"}>26 images</p>
+                            <p className={"opacity-60"}>{folder._count?.images ?? 0} images</p>
                             <Separator className="mx-2" orientation="vertical"/>
                             <TooltipProvider>
                                 <Tooltip>
@@ -78,7 +78,7 @@ export default function FolderPreviewClient({folder, coverB64, locale}: {
                     <ContextMenuItem>Change cover</ContextMenuItem>
                     <ContextMenuItem>Share</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenRename(true)}>{t('rename.trigger')}</ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenDelete(true)}>Delete</ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenDelete(true)}>{t('delete.trigger')}</ContextMenuItem>
                 </ContextMenuContent>
             </ContextMenu>
             <RenameFolderDialog folderId={folder.id} folderName={folder.name} openState={openRename}

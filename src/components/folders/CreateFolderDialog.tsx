@@ -92,7 +92,7 @@ export default function CreateFolderDialog() {
 
                         <DialogFooter>
                             {loading
-                                ? <Button disabled={true}><Loader2 className={"mr-2"}/> Creating</Button>
+                                ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"}/> Creating</Button>
                                 : <Button type={"submit"}>Create</Button>
                             }
                         </DialogFooter>

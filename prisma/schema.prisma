@@ -30,7 +30,7 @@ model Image {
   id          String   @id @default(cuid())
   name        String
   path        String
-  folder      Folder   @relation("FolderImages", fields: [folderId], references: [id])
+  folder      Folder   @relation("FolderImages", fields: [folderId], references: [id], onDelete: Cascade)
   folderId    String
   folderCover Folder?
   createdBy   User     @relation("UserImages", fields: [createdById], references: [id])

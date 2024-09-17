@@ -65,6 +65,20 @@ export async function deleteFolder(folderId: string): Promise<any> {
 
     console.log("Deleting folder", folderId);
 
+    const images = await prisma.image.findMany({
+        where: {
+            folderId: folderId
+        }
+    });
+
+    for (const image of images) {
+        await fs.unlink(process.cwd() + "/" + image.path, (err) => {
+            if (err) {
+                console.error("Error deleting file", err);
+            }
+        });
+    }
+
     await prisma.folder.delete({
         where: {
             id: folderId

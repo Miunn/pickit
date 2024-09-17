@@ -52,7 +52,7 @@ export default function DeleteFolderDialog({openState, setOpenState, folderId, f
                 <DialogFooter>
                     <Button onClick={() => setOpenState(false)} variant="outline">{t('cancel')}</Button>
                     {loading
-                        ? <Button disabled={true} variant="destructive"><Loader2 className={"mr-2"}/> {t('submitting')}</Button>
+                        ? <Button disabled={true} variant="destructive"><Loader2 className={"mr-2 animate-spin"}/> {t('submitting')}</Button>
                         : <Button onClick={submit} variant="destructive">{t('submit')}</Button>
                     }
                 </DialogFooter>

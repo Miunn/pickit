@@ -85,7 +85,7 @@ export default function RenameFolderDialog({openState, setOpenState, folderId, f
                         <DialogFooter>
                             <Button type={"button"} onClick={() => setOpenState(false)} variant="outline">{t('cancel')}</Button>
                             {loading
-                                ? <Button disabled={true}><Loader2 className={"mr-2"}/> {t('submitting')}</Button>
+                                ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"}/> {t('submitting')}</Button>
                                 : <Button type={"submit"}>{t('submit')}</Button>
                             }
                         </DialogFooter>
