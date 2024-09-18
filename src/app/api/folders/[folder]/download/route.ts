@@ -11,10 +11,8 @@ export async function GET(req: NextRequest, { params }: { params: {folder: strin
     const session = await auth();
 
     if (!session?.user) {
-        return {error: "You must be logged in to download a folders"};
+        return Response.json({ error: "You need to be authenticated or have a magic link to access this resource" }, { status: 400 })
     }
-
-    console.log("Downloading folders", params.folder);
 
     const images = await prisma.image.findMany({
         where: {
