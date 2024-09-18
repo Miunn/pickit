@@ -5,16 +5,17 @@ import {prisma} from "@/lib/prisma";
 import {auth} from "@/actions/auth";
 import * as fs from "fs";
 import {revalidatePath} from "next/cache";
+import JSZip from "jszip";
 
 
 export async function createFolder(name: string): Promise<{ folder: Prisma.Prisma__FolderClient<any> | null, error: string | null, }> {
     const session = await auth();
 
     if (!session?.user) {
-        return {folder: null, error: "You must be logged in to create a folder"};
+        return {folder: null, error: "You must be logged in to create a folders"};
     }
 
-    console.log("Creating folder", name);
+    console.log("Creating folders", name);
 
     const folder = await prisma.folder.create({
         data: {
@@ -36,14 +37,17 @@ export async function renameFolder(folderId: string, name: string): Promise<{ fo
     const session = await auth();
 
     if (!session?.user) {
-        return {folder: null, error: "You must be logged in to rename a folder"};
+        return {folder: null, error: "You must be logged in to rename a folders"};
     }
 
-    console.log("Renaming folder", name);
+    console.log("Renaming folders", name);
 
     const folder = await prisma.folder.update({
         where: {
-            id: folderId
+            id: folderId,
+            createdBy: {
+                id: session.user.id as string
+            }
         },
         data: {
             name: name,
@@ -60,14 +64,17 @@ export async function deleteFolder(folderId: string): Promise<any> {
     const session = await auth();
 
     if (!session?.user) {
-        return {error: "You must be logged in to delete a folder"};
+        return {error: "You must be logged in to delete a folders"};
     }
 
-    console.log("Deleting folder", folderId);
+    console.log("Deleting folders", folderId);
 
     const images = await prisma.image.findMany({
         where: {
-            folderId: folderId
+            folderId: folderId,
+            createdBy: {
+                id: session.user.id as string
+            }
         }
     });
 
@@ -81,7 +88,10 @@ export async function deleteFolder(folderId: string): Promise<any> {
 
     await prisma.folder.delete({
         where: {
-            id: folderId
+            id: folderId,
+            createdBy: {
+                id: session.user.id as string
+            }
         }
     });
 
@@ -97,7 +107,7 @@ export async function uploadImages(parentFolderId: string, amount: number, formD
         return {error: "You must be logged in to upload images"};
     }
 
-    // Create folder if it doesn't exist
+    // Create folders if it doesn't exist
     if (!fs.existsSync(`drive/${parentFolderId}`)) {
         fs.mkdirSync(`drive/${parentFolderId}`);
     }

@@ -4,12 +4,12 @@ import {Separator} from "@/components/ui/separator";
 import Link from "next/link";
 import {Images} from "lucide-react";
 import {useFormatter, useTranslations} from "next-intl";
-import fs from "fs";
 import {ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger} from "@/components/ui/context-menu";
 import {useState} from "react";
 import RenameFolderDialog from "@/components/folders/RenameFolderDialog";
 import DeleteFolderDialog from "@/components/folders/DeleteFolderDialog";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
+import {saveAs} from "file-saver";
 
 export default function FolderPreviewClient({folder, coverB64, locale}: {
     folder: any,
@@ -22,6 +22,14 @@ export default function FolderPreviewClient({folder, coverB64, locale}: {
 
     const [openRename, setOpenRename] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
+
+    const downloadFolder = () => {
+        fetch(`/api/folders/${folder.id}/download`)
+            .then(response => response.blob())
+            .then(blob => {
+                saveAs(blob, `${folder.name}.zip`);
+            });
+    }
 
     return (
         <>
@@ -75,9 +83,10 @@ export default function FolderPreviewClient({folder, coverB64, locale}: {
                             Open
                         </Link>
                     </ContextMenuItem>
-                    <ContextMenuItem>Change cover</ContextMenuItem>
+                    <ContextMenuItem >Change cover</ContextMenuItem>
                     <ContextMenuItem>Share</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenRename(true)}>{t('rename.trigger')}</ContextMenuItem>
+                    <ContextMenuItem onClick={downloadFolder}>Download</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenDelete(true)}>{t('delete.trigger')}</ContextMenuItem>
                 </ContextMenuContent>
             </ContextMenu>

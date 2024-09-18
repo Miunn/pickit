@@ -37,13 +37,13 @@ export const SignInFormSchema = z.object({
 
 export const CreateFolderFormSchema = z.object({
     name: z.string().min(2, {
-        message: "The folder name must be at least 2 characters",
+        message: "The folders name must be at least 2 characters",
     }).max(255),
 });
 
 export const RenameFolderFormSchema = z.object({
     name: z.string().min(2, {
-        message: "The folder name must be at least 2 characters",
+        message: "The folders name must be at least 2 characters",
     }).max(255),
 });
 

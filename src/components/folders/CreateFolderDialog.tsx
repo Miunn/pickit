@@ -52,7 +52,7 @@ export default function CreateFolderDialog() {
             form.reset();
             toast({
                 title: "Folder created",
-                description: "The folder was created successfully.",
+                description: "The folders was created successfully.",
             });
 
             setOpen(false);

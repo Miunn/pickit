@@ -51,7 +51,7 @@ export default function RenameFolderDialog({openState, setOpenState, folderId, f
             form.reset();
             toast({
                 title: "Folder created",
-                description: "The folder was renamed successfully.",
+                description: "The folders was renamed successfully.",
             });
 
             setOpen(false);

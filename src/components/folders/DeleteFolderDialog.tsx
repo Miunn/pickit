@@ -34,7 +34,7 @@ export default function DeleteFolderDialog({openState, setOpenState, folderId, f
         if (r.ok) {
             toast({
                 title: "Folder deleted",
-                description: "The folder was deleted successfully.",
+                description: "The folders was deleted successfully.",
             });
             setOpenState(false);
         }
