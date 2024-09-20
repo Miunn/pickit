@@ -15,15 +15,16 @@ datasource db {
 }
 
 model Folder {
-  id          String   @id @default(cuid())
+  id          String        @id @default(cuid())
   name        String
-  images      Image[]  @relation("FolderImages")
-  cover       Image?   @relation(fields: [coverId], references: [id])
-  coverId     String?  @unique
-  createdBy   User     @relation("UserFolders", fields: [createdById], references: [id])
+  images      Image[]       @relation("FolderImages")
+  cover       Image?        @relation(fields: [coverId], references: [id])
+  coverId     String?       @unique
+  createdBy   User          @relation("UserFolders", fields: [createdById], references: [id])
   createdById String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  AccessToken AccessToken[]
 }
 
 model Image {
@@ -37,6 +38,16 @@ model Image {
   createdById String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model AccessToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  folder    Folder   @relation(fields: [folderId], references: [id])
+  folderId  String
+  expires   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model User {

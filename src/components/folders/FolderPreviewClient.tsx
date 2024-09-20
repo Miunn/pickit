@@ -17,7 +17,7 @@ export default function FolderPreviewClient({folder, coverB64, locale}: {
     locale: string
 }) {
 
-    const t = useTranslations("folders.dialog");
+    const t = useTranslations("folders");
     const format = useFormatter();
 
     const [openRename, setOpenRename] = useState(false);
@@ -80,14 +80,14 @@ export default function FolderPreviewClient({folder, coverB64, locale}: {
                 <ContextMenuContent className="w-48">
                     <ContextMenuItem asChild>
                         <Link href={`/${locale}/dashboard/folders/${folder.id}`} locale={locale}>
-                            Open
+                            {t('actions.open')}
                         </Link>
                     </ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenRename(true)}>{t('dialog.rename.trigger')}</ContextMenuItem>
                     <ContextMenuItem >Change cover</ContextMenuItem>
                     <ContextMenuItem>Share</ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenRename(true)}>{t('rename.trigger')}</ContextMenuItem>
-                    <ContextMenuItem onClick={downloadFolder}>Download</ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenDelete(true)}>{t('delete.trigger')}</ContextMenuItem>
+                    <ContextMenuItem onClick={downloadFolder}>{t('actions.download')}</ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenDelete(true)}>{t('dialog.delete.trigger')}</ContextMenuItem>
                 </ContextMenuContent>
             </ContextMenu>
             <RenameFolderDialog folderId={folder.id} folderName={folder.name} openState={openRename}

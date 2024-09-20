@@ -5,8 +5,6 @@ import {prisma} from "@/lib/prisma";
 import {auth} from "@/actions/auth";
 import * as fs from "fs";
 import {revalidatePath} from "next/cache";
-import JSZip from "jszip";
-
 
 export async function createFolder(name: string): Promise<{ folder: Prisma.Prisma__FolderClient<any> | null, error: string | null, }> {
     const session = await auth();
@@ -51,7 +49,7 @@ export async function renameFolder(folderId: string, name: string): Promise<{ fo
         },
         data: {
             name: name,
-            updatedAt: Date.now().toString()
+            updatedAt: ""
         }
     });
 

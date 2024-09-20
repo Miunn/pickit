@@ -37,7 +37,9 @@
     "actions": {
       "create": "New folder",
       "upload": "Upload",
-      "manage": "Manage links"
+      "open": "Open",
+      "manage": "Manage links",
+      "download": "Download as ZIP"
     },
     "dialog": {
       "create": {
