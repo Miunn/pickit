@@ -29,6 +29,16 @@
       }
     }
   },
+  "dashboard": {
+    "folders": {
+      "lastUpdatedFolders": "Last updated folders",
+      "empty": "No folders created"
+    },
+    "images": {
+      "lastUploadedImages": "Last uploaded images",
+      "empty": "No images uploaded"
+    }
+  },
   "folders": {
     "page": {
       "title": "Folders",
@@ -96,10 +106,10 @@
         "title": "Upload images",
         "description": "Select images to upload",
         "fields": {
-            "images": {
-                "label": "Images",
-                "description": "Each image should be less than 5MB"
-            }
+          "images": {
+            "label": "Images",
+            "description": "Each image should be less than 5MB"
+          }
         },
         "submit": "Upload",
         "submitting": "Uploading..."

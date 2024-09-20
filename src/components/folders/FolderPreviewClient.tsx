@@ -56,16 +56,15 @@ export default function FolderPreviewClient({folder, coverB64, locale}: {
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                     <p className={"opacity-60 capitalize truncate"}>{format.dateTime(folder.createdAt, {
-                                        weekday: "long",
+                                        day: "numeric",
                                         month: "short",
                                         year: "numeric",
-                                        hour: "numeric",
-                                        minute: "numeric",
                                     })}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
                                         <p className={"opacity-60 capitalize"}>{format.dateTime(folder.createdAt, {
                                             weekday: "long",
+                                            day: "numeric",
                                             month: "short",
                                             year: "numeric",
                                             hour: "numeric",

@@ -2,8 +2,9 @@ import {Images} from "lucide-react";
 import {Separator} from "@/components/ui/separator";
 import fs from "fs";
 import {useFormatter} from "next-intl";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 
-export const ImagePreview = ({image}) => {
+export const ImagePreview = ({image, withFolder}) => {
 
     const format = useFormatter();
     const file = fs.readFileSync(process.cwd() + "/" + image.path);
@@ -15,18 +16,35 @@ export const ImagePreview = ({image}) => {
                 <img src={base} className={"h-28 object-cover rounded-md"} alt={image.name}/>
             </div>
             <p>{image.name}</p>
-            <div className={"text-sm grid h-4 items-center"} style={{
-                gridTemplateColumns: "1fr auto 2fr",
-            }}>
-                <p className={"opacity-60"}>26 images</p>
-                <Separator className="mx-2" orientation="vertical"/>
-                <p className={"opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
-                    weekday: "long",
-                    month: "short",
-                    year: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                })}</p>
+            <div className={"text-sm h-4 flex items-center"}>
+                {(withFolder ?? false)
+                    ? <>
+                        <p className={"opacity-60"}>{image.folder.name}</p>
+                        <Separator className="mx-2" orientation="vertical"/>
+                    </>
+                    : null
+                }
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric"
+                            })}</p>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
+                                weekday: "long",
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                                hour: "numeric",
+                                minute: "numeric"
+                            })}</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </div>
         </div>
     )
