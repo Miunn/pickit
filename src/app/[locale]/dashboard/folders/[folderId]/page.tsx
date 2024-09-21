@@ -1,6 +1,7 @@
 import {Prisma} from "@prisma/client";
 import {prisma} from "@/lib/prisma";
 import {FolderContent} from "@/components/folders/FolderContent";
+import fs from "fs";
 
 export default async function FolderPage({ params }: { params: { folderId: string, locale: string } }) {
 
@@ -9,8 +10,8 @@ export default async function FolderPage({ params }: { params: { folderId: strin
             id: params.folderId
         },
         include: {
-            images: true
-        }
+            images: true,
+        },
     });
 
     return (

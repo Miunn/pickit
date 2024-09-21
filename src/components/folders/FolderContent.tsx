@@ -1,13 +1,12 @@
 import {Button} from "@/components/ui/button";
 import {Settings2} from "lucide-react";
-import {useFormatter, useTranslations} from "next-intl";
+import {useTranslations} from "next-intl";
 import {UploadImagesDialog} from "@/components/images/UploadImagesDialog";
-import {ImagePreview} from "@/components/images/ImagePreview";
+import {ImagesGrid} from "@/components/images/ImagesGrid";
 
 export const FolderContent = ({folder, locale}: { folder: any, locale: string }) => {
 
     const t = useTranslations("folders");
-    const format = useFormatter();
 
     return (
         <main className="flex flex-col p-6">
@@ -20,11 +19,7 @@ export const FolderContent = ({folder, locale}: { folder: any, locale: string })
 
             <h2 className={"font-semibold mb-5"}>{folder.name}</h2>
 
-            <div className={"flex flex-wrap gap-6"}>
-                {folder.images.map((image: any) => (
-                    <ImagePreview key={image.id} image={image} />
-                ))}
-            </div>
+            <ImagesGrid folder={folder} />
         </main>
     )
 }

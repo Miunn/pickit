@@ -1,0 +1,92 @@
+"use client";
+
+import {ImagePreview} from "@/components/images/ImagePreview";
+import React, {useEffect, useState} from "react";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from "@/components/ui/dialog";
+import {
+    Carousel,
+    CarouselApi,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious
+} from "@/components/ui/carousel";
+
+export const ImagesGrid = ({folder}) => {
+
+    const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+    const [carouselOpen, setCarouselOpen] = useState(false);
+    const [count, setCount] = useState(folder.images.length);
+    const [current, setCurrent] = useState(0);
+    const [startIndex, setStartIndex] = useState(0);
+
+    useEffect(() => {
+        if (!carouselApi) return;
+
+        setCount(carouselApi.scrollSnapList().length);
+        setCurrent(carouselApi.selectedScrollSnap() + 1);
+
+        carouselApi.on("select", () => {
+            setCurrent(carouselApi.selectedScrollSnap() + 1);
+        })
+    }, [carouselApi]);
+
+    return (
+        <div>
+            <div className={"flex flex-wrap gap-6"}>
+                {folder.images.map((image: any, index) => (
+                    <button onClick={() => {
+                        setStartIndex(index);
+                        setCarouselOpen(!carouselOpen)
+                    }} style={{all: "unset", cursor: "pointer"}}>
+                        <ImagePreview image={image} folder={folder}/>
+                    </button>
+                ))}
+            </div>
+            <Dialog open={carouselOpen} onOpenChange={setCarouselOpen}>
+                <DialogContent className={"w-full max-w-3xl"}>
+                    <DialogHeader>
+                        <DialogTitle>{folder.name}</DialogTitle>
+                        <DialogDescription>Images</DialogDescription>
+                    </DialogHeader>
+
+                    <div className={"p-4 mx-auto"}>
+                        <Carousel className="w-full max-w-xl" opts={{
+                            align: "center",
+                            loop: true,
+                            startIndex: startIndex
+                        }} setApi={setCarouselApi}>
+                            <CarouselContent>
+                                {folder.images.map((image) => (
+                                    <CarouselItem key={image.id}>
+                                        <div className={"w-full h-full flex justify-center items-center p-2"}>
+                                            <img src={`/api/folders/${folder.id}/images/${image.id}`}
+                                                 alt={image.name} className={"object-contain rounded-md"}/>
+                                        </div>
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                            <CarouselPrevious/>
+                            <CarouselNext/>
+                        </Carousel>
+                        <div className="py-2 text-sm flex justify-between items-center">
+                        <span>{
+                            current == 0
+                                ? folder.images[current].name
+                                : folder.images[current - 1].name
+                        }</span>
+                            <span className="text-muted-foreground">Slide {current} of {count}</span>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </div>
+    )
+}

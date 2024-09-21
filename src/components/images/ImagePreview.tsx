@@ -1,21 +1,19 @@
-import {Images} from "lucide-react";
 import {Separator} from "@/components/ui/separator";
-import fs from "fs";
 import {useFormatter} from "next-intl";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
+import React from "react";
+import Image from "next/image";
 
-export const ImagePreview = ({image, withFolder}) => {
+export const ImagePreview = ({image, folder, withFolder}) => {
 
     const format = useFormatter();
-    const file = fs.readFileSync(process.cwd() + "/" + image.path);
-    const base = `data:image/png;base64,${file.toString('base64')}`;
 
     return (
         <div className={"inline-block w-64"}>
             <div className={"border rounded-2xl h-32 mb-4 flex justify-center items-center"}>
-                <img src={base} className={"h-28 object-cover rounded-md"} alt={image.name}/>
+                <Image src={`/api/folders/${folder.id}/images/${image.id}`} alt={image.name} className={"h-28 object-contain rounded-md"} width={256} height={112} />
             </div>
-            <p>{image.name}</p>
+            <p className={"text-start"}>{image.name}</p>
             <div className={"text-sm h-4 flex items-center"}>
                 {(withFolder ?? false)
                     ? <>
