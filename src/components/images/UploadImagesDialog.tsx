@@ -20,6 +20,7 @@ import {UploadImagesFormSchema} from "@/lib/definitions";
 import {useState} from "react";
 import {uploadImages} from "@/actions/actions";
 import {toast} from "@/hooks/use-toast";
+import {FileUploader} from "@/components/generic/FileUploader";
 
 export const UploadImagesDialog = ({folderId}: {folderId: string}) => {
 
@@ -84,7 +85,7 @@ export const UploadImagesDialog = ({folderId}: {folderId: string}) => {
                     <DialogTitle>{t('title')}</DialogTitle>
                     <DialogDescription>{t('description')}</DialogDescription>
                 </DialogHeader>
-                <Form {...form}>
+                {/*<Form {...form}>
                     <form onSubmit={form.handleSubmit(submitImages)} className="space-y-8">
                         <FormField
                             control={form.control}
@@ -114,7 +115,8 @@ export const UploadImagesDialog = ({folderId}: {folderId: string}) => {
                             }
                         </DialogFooter>
                     </form>
-                </Form>
+                </Form>*/}
+                <FileUploader multiple={true} maxFileCount={999} />
             </DialogContent>
         </Dialog>
     )

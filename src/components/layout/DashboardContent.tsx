@@ -44,7 +44,7 @@ export default function DashboardContent({lastFolders, lastImages, locale}) {
                         <p>{t('images.empty')}</p>
                     </div>
                     : lastImages.map(image => (
-                        <ImagePreview key={image.id} image={image} locale={locale} withFolder={true} />
+                        <ImagePreview key={image.id} image={image} folder={image.folder} locale={locale} withFolder={true} />
                     ))
                 }
             </div>
