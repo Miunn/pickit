@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import {saveAs} from "file-saver";
 
 export function formatBytes(
     bytes: number,
@@ -17,6 +18,14 @@ export function formatBytes(
   return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${
       sizeType === "accurate" ? accurateSizes[i] ?? "Bytest" : sizes[i] ?? "Bytes"
   }`
+}
+
+export const downloadFolder = (folder) => {
+    fetch(`/api/folders/${folder.id}/download`)
+        .then(response => response.blob())
+        .then(blob => {
+            saveAs(blob, `${folder.name}.zip`);
+        });
 }
 
 export function cn(...inputs: ClassValue[]) {

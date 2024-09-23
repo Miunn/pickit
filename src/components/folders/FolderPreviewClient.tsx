@@ -10,6 +10,8 @@ import RenameFolderDialog from "@/components/folders/RenameFolderDialog";
 import DeleteFolderDialog from "@/components/folders/DeleteFolderDialog";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 import {saveAs} from "file-saver";
+import {downloadFolder} from "@/lib/utils";
+import {toast} from "@/hooks/use-toast";
 
 export default function FolderPreviewClient({folder, coverB64, locale}: {
     folder: any,
@@ -22,14 +24,6 @@ export default function FolderPreviewClient({folder, coverB64, locale}: {
 
     const [openRename, setOpenRename] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
-
-    const downloadFolder = () => {
-        fetch(`/api/folders/${folder.id}/download`)
-            .then(response => response.blob())
-            .then(blob => {
-                saveAs(blob, `${folder.name}.zip`);
-            });
-    }
 
     return (
         <>
@@ -85,7 +79,13 @@ export default function FolderPreviewClient({folder, coverB64, locale}: {
                     <ContextMenuItem onClick={() => setOpenRename(true)}>{t('dialog.rename.trigger')}</ContextMenuItem>
                     <ContextMenuItem >Change cover</ContextMenuItem>
                     <ContextMenuItem>Share</ContextMenuItem>
-                    <ContextMenuItem onClick={downloadFolder}>{t('actions.download')}</ContextMenuItem>
+                    <ContextMenuItem onClick={() => {
+                        toast({
+                            title: "Download started",
+                            description: "Your download will start shortly",
+                        });
+                        downloadFolder(folder)
+                    }}>{t('actions.download')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenDelete(true)}>{t('dialog.delete.trigger')}</ContextMenuItem>
                 </ContextMenuContent>
             </ContextMenu>

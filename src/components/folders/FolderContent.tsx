@@ -1,8 +1,12 @@
+"use client";
+
 import {Button} from "@/components/ui/button";
-import {Settings2} from "lucide-react";
+import {Download, Settings2} from "lucide-react";
 import {useTranslations} from "next-intl";
 import {UploadImagesDialog} from "@/components/images/UploadImagesDialog";
 import {ImagesGrid} from "@/components/images/ImagesGrid";
+import {downloadFolder} from "@/lib/utils";
+import {toast} from "@/hooks/use-toast";
 
 export const FolderContent = ({folder, locale}: { folder: any, locale: string }) => {
 
@@ -14,6 +18,15 @@ export const FolderContent = ({folder, locale}: { folder: any, locale: string })
                 <UploadImagesDialog folderId={folder.id}/>
                 <Button variant="outline">
                     <Settings2 className={"mr-2"}/> {t('actions.manage')}
+                </Button>
+                <Button variant="outline" onClick={() => {
+                    toast({
+                        title: "Download started",
+                        description: "Your download will start shortly",
+                    });
+                    downloadFolder(folder)
+                }}>
+                    <Download className={"mr-2"}/> {t('actions.download')}
                 </Button>
             </div>
 
