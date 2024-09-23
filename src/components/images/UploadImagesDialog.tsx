@@ -89,7 +89,16 @@ export const UploadImagesDialog = ({folderId}: { folderId: string }) => {
                 })
         }
              */
-        });
+        })
+            .catch(e => {
+                setLoading(false);
+
+                toast({
+                    title: "Error",
+                    description: "An error occurred while uploading the images",
+                    variant: "destructive"
+                })
+            });
     }
 
     return (
@@ -109,7 +118,7 @@ export const UploadImagesDialog = ({folderId}: { folderId: string }) => {
                         <FormField
                             control={form.control}
                             name="images"
-                            render={({field: { value, onChange, ...fieldProps }}) => (
+                            render={({field: {value, onChange, ...fieldProps}}) => (
                                 <FormItem>
                                     <FormLabel>{t('fields.images.label')}</FormLabel>
                                     <FormControl>
@@ -135,7 +144,8 @@ export const UploadImagesDialog = ({folderId}: { folderId: string }) => {
 
                         <DialogFooter>
                             {loading
-                                ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"} /> {t('submitting')}</Button>
+                                ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"}/> {t('submitting')}
+                                </Button>
                                 : <Button type={"submit"}>{t('submit')}</Button>
                             }
                         </DialogFooter>
