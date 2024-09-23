@@ -151,27 +151,9 @@ export const FileUploader = (props: FileUploaderProps) => {
                     })
                 });*/
             }
-
-            if (
-                onUpload &&
-                updatedFiles.length > 0 &&
-                updatedFiles.length <= maxFileCount
-            ) {
-                const target =
-                    updatedFiles.length > 0 ? `${updatedFiles.length} files` : `file`
-
-                /*toast.promise(onUpload(updatedFiles), {
-                    loading: `Uploading ${target}...`,
-                    success: () => {
-                        setFiles([])
-                        return `${target} uploaded`
-                    },
-                    error: `Failed to upload ${target}`,
-                })*/
-            }
         },
 
-        [files, maxFileCount, multiple, onUpload, setFiles]
+        [files, maxFileCount, multiple, setFiles]
     )
 
     function onRemove(index: number) {

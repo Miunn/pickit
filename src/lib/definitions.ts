@@ -48,22 +48,22 @@ export const RenameFolderFormSchema = z.object({
 });
 
 export const UploadImagesFormSchema = z.object({
-    images: typeof window === 'undefined' ? z.any().refine((file) => {
-        return file.length > 0;
-    })
-        .refine((file) => {
-            return Array.from(file).every((f) => f.type.startsWith('image/'));
-        }, {
-            message: 'File must be an image',
-        }) : z.instanceof(FileList)
-        .refine((file) => {
+    images: typeof window === 'undefined'
+        ? z.any().refine((file) => {
             return file.length > 0;
         })
-        .refine((file) => {
-            return Array.from(file).every((f) => f.type.startsWith('image/'));
-        }, {
-            message: 'File must be an image',
-        })
+            .refine((file) => {
+                return Array.from(file).every((f) => f.type.startsWith('image/'));
+            }, {
+                message: 'File must be an image',
+            })
+        : z.array(z.instanceof(File))
+            .nonempty({message: 'Please select at least one file'})
+            .refine((file) => {
+                return Array.from(file).every((f) => f.type.startsWith('image/'));
+            }, {
+                message: 'File must be an image',
+            })
 });
 
 

@@ -22,7 +22,7 @@ import {uploadImages} from "@/actions/actions";
 import {toast} from "@/hooks/use-toast";
 import {FileUploader} from "@/components/generic/FileUploader";
 
-export const UploadImagesDialog = ({folderId}: {folderId: string}) => {
+export const UploadImagesDialog = ({folderId}: { folderId: string }) => {
 
     const t = useTranslations("images.dialog.upload");
     const [open, setOpen] = useState(false);
@@ -70,6 +70,25 @@ export const UploadImagesDialog = ({folderId}: {folderId: string}) => {
             });
 
             setOpen(false);
+            /*
+            if (
+                onUpload &&
+                updatedFiles.length > 0 &&
+                updatedFiles.length <= maxFileCount
+            ) {
+                const target =
+                    updatedFiles.length > 0 ? `${updatedFiles.length} files` : `file`
+
+                toast.promise(onUpload(updatedFiles), {
+                    loading: `Uploading ${target}...`,
+                    success: () => {
+                        setFiles([])
+                        return `${target} uploaded`
+                    },
+                    error: `Failed to upload ${target}`,
+                })
+        }
+             */
         });
     }
 
@@ -85,7 +104,7 @@ export const UploadImagesDialog = ({folderId}: {folderId: string}) => {
                     <DialogTitle>{t('title')}</DialogTitle>
                     <DialogDescription>{t('description')}</DialogDescription>
                 </DialogHeader>
-                {/*<Form {...form}>
+                <Form {...form}>
                     <form onSubmit={form.handleSubmit(submitImages)} className="space-y-8">
                         <FormField
                             control={form.control}
@@ -94,12 +113,18 @@ export const UploadImagesDialog = ({folderId}: {folderId: string}) => {
                                 <FormItem>
                                     <FormLabel>{t('fields.images.label')}</FormLabel>
                                     <FormControl>
-                                        <Input {...fieldProps}
-                                               placeholder={"Images"}
-                                               type={"file"}
-                                               multiple={true}
-                                               accept="image/*"
-                                               onChange={(e) => onChange(e.target.files)}
+                                        <FileUploader
+                                            multiple={true}
+                                            maxSize={1024 * 1024 * 5}
+                                            maxFileCount={999}
+                                            accept={{
+                                                'image/png': ['.png'],
+                                                'image/jpeg': ['.jpg', '.jpeg'],
+                                                'image/gif': ['.gif'],
+                                                'image/webp': ['.webp'],
+                                            }}
+                                            onValueChange={(files) => onChange(files)}
+                                            {...fieldProps}
                                         />
                                     </FormControl>
                                     <FormDescription>{t('fields.images.description')}</FormDescription>
@@ -115,8 +140,7 @@ export const UploadImagesDialog = ({folderId}: {folderId: string}) => {
                             }
                         </DialogFooter>
                     </form>
-                </Form>*/}
-                <FileUploader multiple={true} maxFileCount={999} />
+                </Form>
             </DialogContent>
         </Dialog>
     )
