@@ -6,7 +6,10 @@ import {auth} from "@/actions/auth";
 import * as fs from "fs";
 import {revalidatePath} from "next/cache";
 
-export async function createFolder(name: string): Promise<{ folder: Prisma.Prisma__FolderClient<any> | null, error: string | null, }> {
+export async function createFolder(name: string): Promise<{
+    folder: Prisma.Prisma__FolderClient<any> | null,
+    error: string | null,
+}> {
     const session = await auth();
 
     if (!session?.user) {
@@ -31,7 +34,10 @@ export async function createFolder(name: string): Promise<{ folder: Prisma.Prism
     return {folder: folder, error: null};
 }
 
-export async function renameFolder(folderId: string, name: string): Promise<{ folder: Prisma.Prisma__FolderClient<any> | null, error: string | null, }> {
+export async function renameFolder(folderId: string, name: string): Promise<{
+    folder: Prisma.Prisma__FolderClient<any> | null,
+    error: string | null,
+}> {
     const session = await auth();
 
     if (!session?.user) {
@@ -98,7 +104,9 @@ export async function deleteFolder(folderId: string): Promise<any> {
     return {error: null};
 }
 
-export async function uploadImages(parentFolderId: string, amount: number, formData: FormData): Promise<{ error: string | null }> {
+export async function uploadImages(parentFolderId: string, amount: number, formData: FormData): Promise<{
+    error: string | null
+}> {
     const session = await auth();
 
     if (!session?.user) {
@@ -154,6 +162,55 @@ export async function uploadImages(parentFolderId: string, amount: number, formD
     });
 
     revalidatePath("dashboard/folders/" + parentFolderId);
+    revalidatePath("dashboard");
+    return {error: null};
+}
+
+export async function deleteImage(imageId: string) {
+    const session = await auth();
+
+    if (!session?.user) {
+        return {error: "You must be logged in to delete images"};
+    }
+
+    // Check if user is authorized to delete this image
+    // (User was the creator of the folder containing the image)
+
+    const image = await prisma.image.findUnique({
+        where: {
+            id: imageId
+        },
+        include: {
+            folder: {
+                select: {
+                    id: true,
+                    createdBy: true
+                }
+            }
+        }
+    });
+    
+    if (!image) {
+        return {error: "Image not found"};
+    }
+
+    if (image.folder.createdBy.id !== session.user.id) {
+        return {error: "You are not authorized to delete this image"};
+    }
+
+    await fs.unlink(process.cwd() + "/" + image.path, (err) => {
+        if (err) {
+            console.error("Error deleting file", err);
+        }
+    });
+
+    await prisma.image.delete({
+        where: {
+            id: imageId
+        }
+    });
+
+    revalidatePath("dashboard/folders/" + image.folder.id);
     revalidatePath("dashboard");
     return {error: null};
 }

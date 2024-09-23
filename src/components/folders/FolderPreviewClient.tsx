@@ -77,7 +77,7 @@ export default function FolderPreviewClient({folder, coverB64, locale}: {
                         </Link>
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenRename(true)}>{t('dialog.rename.trigger')}</ContextMenuItem>
-                    <ContextMenuItem >Change cover</ContextMenuItem>
+                    <ContextMenuItem>Change cover</ContextMenuItem>
                     <ContextMenuItem>Share</ContextMenuItem>
                     <ContextMenuItem onClick={() => {
                         toast({

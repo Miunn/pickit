@@ -18,14 +18,22 @@ import {
     CarouselNext,
     CarouselPrevious
 } from "@/components/ui/carousel";
+import {ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger} from "@/components/ui/context-menu";
+import {deleteImage} from "@/actions/actions";
+import {useTranslations} from "next-intl";
+import {toast} from "@/hooks/use-toast";
+import {DeleteImageDialog} from "@/components/images/DeleteImageDialog";
 
 export const ImagesGrid = ({folder}) => {
 
+    const t = useTranslations("images");
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
     const [carouselOpen, setCarouselOpen] = useState(false);
     const [count, setCount] = useState(folder.images.length);
     const [current, setCurrent] = useState(0);
     const [startIndex, setStartIndex] = useState(0);
+    const [openDelete, setOpenDelete] = useState(false);
+    const [selectImageToDelete, setSelectImageToDelete] = useState(null);
 
     useEffect(() => {
         if (!carouselApi) return;
@@ -42,12 +50,30 @@ export const ImagesGrid = ({folder}) => {
         <div>
             <div className={"flex flex-wrap gap-3"}>
                 {folder.images.map((image: any, index) => (
+                    <ContextMenu key={image.id}>
+                        <ContextMenuTrigger>
                     <button onClick={() => {
                         setStartIndex(index);
                         setCarouselOpen(!carouselOpen)
                     }} style={{all: "unset", cursor: "pointer"}}>
                         <ImagePreview image={image} folder={folder}/>
                     </button>
+                        </ContextMenuTrigger>
+                        <ContextMenuContent>
+                            <ContextMenuItem onClick={() => {
+                                setStartIndex(index);
+                                setCarouselOpen(!carouselOpen);
+                            }}>
+                                {t('actions.view')}
+                            </ContextMenuItem>
+                            <ContextMenuItem onClick={() => {
+                                setSelectImageToDelete(image);
+                                setOpenDelete(true);
+                            }}>
+                                {t('actions.delete')}
+                            </ContextMenuItem>
+                        </ContextMenuContent>
+                    </ContextMenu>
                 ))}
             </div>
             <Dialog open={carouselOpen} onOpenChange={setCarouselOpen}>
@@ -87,6 +113,7 @@ export const ImagesGrid = ({folder}) => {
                     </div>
                 </DialogContent>
             </Dialog>
+            <DeleteImageDialog image={selectImageToDelete} open={openDelete} setOpen={setOpenDelete} />
         </div>
     )
 }

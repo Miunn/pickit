@@ -29,6 +29,16 @@
       }
     }
   },
+  "dashboard": {
+    "folders": {
+      "lastUpdatedFolders": "Last updated folders",
+      "empty": "No folders created"
+    },
+    "images": {
+      "lastUploadedImages": "Last uploaded images",
+      "empty": "No images uploaded"
+    }
+  },
   "folders": {
     "page": {
       "title": "Folders",
@@ -37,8 +47,46 @@
     "actions": {
       "create": "New folder",
       "upload": "Upload",
+      "open": "Open",
       "manage": "Manage links",
       "download": "Download as ZIP"
+    },
+    "dialog": {
+      "create": {
+        "trigger": "New folder",
+        "title": "Create new folder",
+        "description": "Create a new folder to organize your images.",
+        "fields": {
+          "name": {
+            "label": "Folder's name",
+            "description": "This will be your album name"
+          }
+        },
+        "submit": "Create",
+        "submitting": "Creating..."
+      },
+      "rename": {
+        "trigger": "Rename",
+        "title": "Rename folder",
+        "description": "Rename the folder",
+        "fields": {
+          "name": {
+            "label": "Folder's name",
+            "description": "The new name for {folder}"
+          }
+        },
+        "submit": "Rename",
+        "submitting": "Renaming...",
+        "cancel": "Cancel"
+      },
+      "delete": {
+        "trigger": "Delete",
+        "title": "Delete folder",
+        "description": "Are you sure you want to delete {folder} ? Every related images will be deleted. This action cannot be undone.",
+        "submit": "Delete",
+        "submitting": "Deleting...",
+        "cancel": "Cancel"
+      }
     },
     "empty": "No folders created"
   },
@@ -48,6 +96,7 @@
       "subtitle": "{folder} uploaded images"
     },
     "actions": {
+      "view": "View",
       "upload": "Upload",
       "delete": "Delete",
       "share": "Share"
@@ -65,6 +114,14 @@
         },
         "submit": "Upload",
         "submitting": "Uploading..."
+      },
+      "delete": {
+        "trigger": "Delete",
+        "title": "Delete image",
+        "description": "Are you sure you want to delete {image} ? This action cannot be undone.",
+        "submit": "Delete",
+        "submitting": "Deleting...",
+        "cancel": "Cancel"
       }
     }
   },

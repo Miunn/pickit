@@ -96,6 +96,7 @@
       "subtitle": "{folder} uploaded images"
     },
     "actions": {
+      "view": "View",
       "upload": "Upload",
       "delete": "Delete",
       "share": "Share"
@@ -113,6 +114,14 @@
         },
         "submit": "Upload",
         "submitting": "Uploading..."
+      },
+      "delete": {
+        "trigger": "Delete",
+        "title": "Delete image",
+        "description": "Are you sure you want to delete {image} ? This action cannot be undone.",
+        "submit": "Delete",
+        "submitting": "Deleting...",
+        "cancel": "Cancel"
       }
     }
   },
