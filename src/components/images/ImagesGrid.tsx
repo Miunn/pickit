@@ -58,17 +58,17 @@ export const ImagesGrid = ({folder}) => {
                     </DialogHeader>
 
                     <div className={"p-4 mx-auto"}>
-                        <Carousel className="w-full max-w-xl" opts={{
+                        <Carousel className="w-full max-w-xl h-96" opts={{
                             align: "center",
                             loop: true,
                             startIndex: startIndex
                         }} setApi={setCarouselApi}>
                             <CarouselContent>
                                 {folder.images.map((image) => (
-                                    <CarouselItem key={image.id}>
-                                        <div className={"w-full h-full flex justify-center items-center p-2"}>
+                                    <CarouselItem key={image.id} className={"max-h-96"}>
+                                        <div className={"w-full h-full max-h-96 flex justify-center items-center p-2"}>
                                             <img src={`/api/folders/${folder.id}/images/${image.id}`}
-                                                 alt={image.name} className={"object-contain rounded-md"}/>
+                                                 alt={image.name} className={"max-h-96 object-cover rounded-md"}/>
                                         </div>
                                     </CarouselItem>
                                 ))}
