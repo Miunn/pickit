@@ -40,7 +40,7 @@ export const ImagesGrid = ({folder}) => {
 
     return (
         <div>
-            <div className={"flex flex-wrap gap-6"}>
+            <div className={"flex flex-wrap gap-3"}>
                 {folder.images.map((image: any, index) => (
                     <button onClick={() => {
                         setStartIndex(index);
