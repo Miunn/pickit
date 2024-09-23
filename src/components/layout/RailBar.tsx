@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function RailBar({locale}: { locale: string }) {
     return (
-        <aside className="flex flex-col h-screen w-64 bg-gray-200 p-4 space-y-10 sticky top-0 left-0">
+        <aside className="flex flex-col h-screen w-64 bg-gray-200 p-4 space-y-10 fixed top-0 left-0">
             <Button variant="ghost" className={"flex gap-2 p-2 w-full text-start justify-start h-fit"}>
                 <CircleUserRound/>
 

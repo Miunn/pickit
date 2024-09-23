@@ -26,10 +26,7 @@ export default async function LocaleLayout({
 
     return (
         <html lang={locale}>
-        <body className={inter.className} style={{
-            display: "grid",
-            gridTemplateColumns: "256px 1fr",
-        }}>
+        <body className={inter.className}>
         <NextIntlClientProvider messages={messages}>
             <RailBar locale={locale} />
             <div className={"flex flex-col ml-64"}>

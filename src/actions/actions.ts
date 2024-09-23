@@ -143,6 +143,16 @@ export async function uploadImages(parentFolderId: string, amount: number, formD
         });
     }
 
+    // Update folder updatedAt
+    await prisma.folder.update({
+        where: {
+            id: parentFolderId
+        },
+        data: {
+            updatedAt: new Date().toISOString()
+        }
+    });
+
     revalidatePath("dashboard/folders/" + parentFolderId);
     revalidatePath("dashboard");
     return {error: null};

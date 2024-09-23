@@ -23,7 +23,7 @@ export default function DashboardContent({lastFolders, lastImages, locale}) {
 
             <h2 className={"font-semibold mb-5"}>{t('folders.lastUpdatedFolders')}</h2>
 
-            <div className={`flex flex-wrap gap-6 ${lastFolders.length == 0 && "justify-center"} mb-10`}>
+            <div className={`flex flex-wrap gap-3 ${lastFolders.length == 0 && "justify-center"} mb-10`}>
                 {lastFolders.length == 0
                     ? <div className={"flex flex-col justify-center items-center"}>
                         <FolderX className={"w-32 h-32 opacity-20"}/>
@@ -37,7 +37,7 @@ export default function DashboardContent({lastFolders, lastImages, locale}) {
 
             <h2 className={"font-semibold mb-5"}>{t('images.lastUploadedImages')}</h2>
 
-            <div className={`flex flex-wrap gap-6 ${lastImages.length == 0 && "justify-center"}`}>
+            <div className={`flex flex-wrap gap-3 ${lastImages.length == 0 && "justify-center"}`}>
                 {lastImages.length == 0
                     ? <div className={"flex flex-col justify-center items-center"}>
                         <ImageOff className={"w-32 h-32 opacity-20"}/>
