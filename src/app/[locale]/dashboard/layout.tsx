@@ -32,7 +32,7 @@ export default async function LocaleLayout({
         }}>
         <NextIntlClientProvider messages={messages}>
             <RailBar locale={locale} />
-            <div className={"flex flex-col"}>
+            <div className={"flex flex-col ml-64"}>
                 <Header/>
                 {children}
             </div>
