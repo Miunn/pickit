@@ -19,10 +19,13 @@ import {
     CarouselPrevious
 } from "@/components/ui/carousel";
 import {ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger} from "@/components/ui/context-menu";
-import {deleteImage} from "@/actions/actions";
+import {deleteImage, deleteImages} from "@/actions/actions";
 import {useTranslations} from "next-intl";
 import {toast} from "@/hooks/use-toast";
 import {DeleteImageDialog} from "@/components/images/DeleteImageDialog";
+import {Button} from "@/components/ui/button";
+import {Trash, Trash2, X} from "lucide-react";
+import {DeleteMultipleImagesDialog} from "@/components/images/DeleteMultipleImagesDialog";
 
 export const ImagesGrid = ({folder}) => {
 
@@ -33,7 +36,25 @@ export const ImagesGrid = ({folder}) => {
     const [current, setCurrent] = useState(0);
     const [startIndex, setStartIndex] = useState(0);
     const [openDelete, setOpenDelete] = useState(false);
+    const [openDeleteMultiple, setOpenDeleteMultiple] = useState(false);
     const [selectImageToDelete, setSelectImageToDelete] = useState(null);
+
+    const [selecting, setSelecting] = useState(false);
+    const [selected, setSelected] = useState([]);
+
+    const addSelected = (image) => {
+        setSelected([...selected, image.id]);
+    }
+
+    const removeSelected = (image) => {
+        setSelected(selected.filter((id) => id !== image.id));
+    }
+
+    useEffect(() => {
+        if (selected.length === 0) {
+            setSelecting(false);
+        }
+    }, [selected]);
 
     useEffect(() => {
         if (!carouselApi) return;
@@ -48,16 +69,42 @@ export const ImagesGrid = ({folder}) => {
 
     return (
         <div>
+            {selecting
+                ? <div className={"flex justify-between items-center mb-5 bg-gray-50 rounded-2xl w-full p-2"}>
+                    <div className={"flex gap-2 items-center"}>
+                    <Button variant="ghost" onClick={() => {
+                        setSelected([]);
+                        setSelecting(false);
+                    }} size="icon"><X className={"w-4 h-4"}/></Button>
+                    <h2 className={"font-semibold"}>{selected.length} {t('selected')}</h2>
+                    </div>
+
+                    <Button variant="outline" onClick={() => {
+                        setOpenDeleteMultiple(true);
+                    }}>
+                        <Trash2 className={"mr-2"}/> {t('actions.delete')}
+                    </Button>
+                </div>
+                : null
+            }
             <div className={"flex flex-wrap gap-3"}>
                 {folder.images.map((image: any, index) => (
                     <ContextMenu key={image.id}>
                         <ContextMenuTrigger>
-                    <button onClick={() => {
-                        setStartIndex(index);
-                        setCarouselOpen(!carouselOpen)
-                    }} style={{all: "unset", cursor: "pointer"}}>
-                        <ImagePreview image={image} folder={folder}/>
-                    </button>
+                            <button onClick={() => {
+                                if (selecting) {
+                                    if (selected.includes(image.id)) {
+                                        removeSelected(image);
+                                    } else {
+                                        addSelected(image);
+                                    }
+                                } else {
+                                    setStartIndex(index);
+                                    setCarouselOpen(!carouselOpen)
+                                }
+                            }} style={{all: "unset", cursor: "pointer"}}>
+                                <ImagePreview image={image} folder={folder} selected={selected.includes(image.id)}/>
+                            </button>
                         </ContextMenuTrigger>
                         <ContextMenuContent>
                             <ContextMenuItem onClick={() => {
@@ -65,6 +112,12 @@ export const ImagesGrid = ({folder}) => {
                                 setCarouselOpen(!carouselOpen);
                             }}>
                                 {t('actions.view')}
+                            </ContextMenuItem>
+                            <ContextMenuItem onClick={() => {
+                                setSelecting(true);
+                                addSelected(image);
+                            }}>
+                                {t('actions.select')}
                             </ContextMenuItem>
                             <ContextMenuItem onClick={() => {
                                 setSelectImageToDelete(image);
@@ -113,7 +166,8 @@ export const ImagesGrid = ({folder}) => {
                     </div>
                 </DialogContent>
             </Dialog>
-            <DeleteImageDialog image={selectImageToDelete} open={openDelete} setOpen={setOpenDelete} />
+            <DeleteImageDialog image={selectImageToDelete} open={openDelete} setOpen={setOpenDelete}/>
+            <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} setSelected={setSelected} setSelecting={setSelecting} />
         </div>
     )
 }

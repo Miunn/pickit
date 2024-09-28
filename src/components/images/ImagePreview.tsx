@@ -4,14 +4,15 @@ import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/compon
 import React from "react";
 import Image from "next/image";
 
-export const ImagePreview = ({image, folder, withFolder}) => {
+export const ImagePreview = ({image, folder, withFolder, selected}) => {
 
     const format = useFormatter();
 
     return (
-        <div className={"inline-block w-64"}>
-            <div className={"border rounded-2xl h-32 mb-4 flex justify-center items-center"}>
-                <Image src={`/api/folders/${folder.id}/images/${image.id}`} alt={image.name} className={"h-28 object-contain rounded-md"} width={256} height={112} />
+        <div className={`inline-block w-64 p-2 rounded-2xl ${selected ? "bg-blue-100" : ""}`}>
+            <div className={`border rounded-xl h-32 mb-4 flex justify-center items-center`}>
+                <Image src={`/api/folders/${folder.id}/images/${image.id}`} alt={image.name}
+                       className={"h-28 object-contain rounded-lg"} width={256} height={112}/>
             </div>
             <p className={"text-start"}>{image.name}</p>
             <div className={"text-sm h-4 flex items-center"}>

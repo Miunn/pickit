@@ -5,9 +5,6 @@ import JSZip from "jszip";
 import fs from "fs";
 
 export async function GET(req: NextRequest, { params }: { params: {image: string} }) {
-    console.log("CALL GET IMAGE");
-    console.log("Request", req);
-
     const accessKey = req.nextUrl.searchParams.get("accessKey");
     if (!accessKey) {
         const session = await auth();

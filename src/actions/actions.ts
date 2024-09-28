@@ -189,7 +189,7 @@ export async function deleteImage(imageId: string) {
             }
         }
     });
-    
+
     if (!image) {
         return {error: "Image not found"};
     }
@@ -212,5 +212,12 @@ export async function deleteImage(imageId: string) {
 
     revalidatePath("dashboard/folders/" + image.folder.id);
     revalidatePath("dashboard");
+    return {error: null};
+}
+
+export async function deleteImages(imageIds: string[]) {
+    for (const imageId of imageIds) {
+        await deleteImage(imageId);
+    }
     return {error: null};
 }

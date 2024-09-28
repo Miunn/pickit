@@ -91,12 +91,14 @@
     "empty": "No folders created"
   },
   "images": {
+    "selected": "Selected",
     "page": {
       "title": "{folder} images",
       "subtitle": "{folder} uploaded images"
     },
     "actions": {
       "view": "View",
+      "select": "Select",
       "upload": "Upload",
       "delete": "Delete",
       "share": "Share"

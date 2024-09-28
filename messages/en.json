@@ -91,12 +91,14 @@
     "empty": "No folders created"
   },
   "images": {
+    "selected": "Selected",
     "page": {
       "title": "{folder} images",
       "subtitle": "{folder} uploaded images"
     },
     "actions": {
       "view": "View",
+      "select": "Select",
       "upload": "Upload",
       "delete": "Delete",
       "share": "Share"
@@ -119,6 +121,14 @@
         "trigger": "Delete",
         "title": "Delete image",
         "description": "Are you sure you want to delete {image} ? This action cannot be undone.",
+        "submit": "Delete",
+        "submitting": "Deleting...",
+        "cancel": "Cancel"
+      },
+      "deleteMultiple": {
+        "trigger": "Delete",
+        "title": "Delete images",
+        "description": "Are you sure you want to delete {n} images ? This action cannot be undone.",
         "submit": "Delete",
         "submitting": "Deleting...",
         "cancel": "Cancel"
