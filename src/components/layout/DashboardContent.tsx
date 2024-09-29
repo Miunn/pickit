@@ -4,6 +4,12 @@ import {FolderX, ImageOff, ImageUp, Settings2} from "lucide-react";
 import FolderPreview from "@/components/folders/FolderPreview";
 import {useTranslations} from "next-intl";
 import {ImagePreview} from "@/components/images/ImagePreview";
+import {CarouselDialog} from "@/components/images/CarouselDialog";
+import React, {useEffect, useState} from "react";
+import {ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger} from "@/components/ui/context-menu";
+import {DeleteImageDialog} from "@/components/images/DeleteImageDialog";
+import {DeleteMultipleImagesDialog} from "@/components/images/DeleteMultipleImagesDialog";
+import {LastUploadedImages} from "@/components/images/LastUploadedImages";
 
 export default function DashboardContent({lastFolders, lastImages, locale}) {
 
@@ -35,19 +41,7 @@ export default function DashboardContent({lastFolders, lastImages, locale}) {
                 }
             </div>
 
-            <h2 className={"font-semibold mb-5"}>{t('images.lastUploadedImages')}</h2>
-
-            <div className={`flex flex-wrap gap-3 ${lastImages.length == 0 && "justify-center"}`}>
-                {lastImages.length == 0
-                    ? <div className={"flex flex-col justify-center items-center"}>
-                        <ImageOff className={"w-32 h-32 opacity-20"}/>
-                        <p>{t('images.empty')}</p>
-                    </div>
-                    : lastImages.map(image => (
-                        <ImagePreview key={image.id} image={image} folder={image.folder} locale={locale} withFolder={true} />
-                    ))
-                }
-            </div>
+            <LastUploadedImages images={lastImages} locale={locale} />
         </div>
     )
 }

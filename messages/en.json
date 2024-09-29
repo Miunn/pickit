@@ -91,6 +91,7 @@
     "empty": "No folders created"
   },
   "images": {
+    "lastUploadedImages": "Last uploaded images",
     "selected": "Selected",
     "page": {
       "title": "{folder} images",

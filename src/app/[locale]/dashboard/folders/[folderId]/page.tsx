@@ -10,7 +10,15 @@ export default async function FolderPage({ params }: { params: { folderId: strin
             id: params.folderId
         },
         include: {
-            images: true,
+            images: {
+                include: {
+                    folder: {
+                        select: {
+                            id: true
+                        }
+                    }
+                }
+            },
         },
     });
 

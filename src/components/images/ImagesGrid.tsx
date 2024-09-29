@@ -26,18 +26,16 @@ import {DeleteImageDialog} from "@/components/images/DeleteImageDialog";
 import {Button} from "@/components/ui/button";
 import {Trash, Trash2, X} from "lucide-react";
 import {DeleteMultipleImagesDialog} from "@/components/images/DeleteMultipleImagesDialog";
+import {CarouselDialog} from "@/components/images/CarouselDialog";
 
 export const ImagesGrid = ({folder}) => {
 
     const t = useTranslations("images");
-    const [carouselApi, setCarouselApi] = useState<CarouselApi>();
     const [carouselOpen, setCarouselOpen] = useState(false);
-    const [count, setCount] = useState(folder.images.length);
-    const [current, setCurrent] = useState(0);
-    const [startIndex, setStartIndex] = useState(0);
     const [openDelete, setOpenDelete] = useState(false);
     const [openDeleteMultiple, setOpenDeleteMultiple] = useState(false);
     const [selectImageToDelete, setSelectImageToDelete] = useState(null);
+    const [startIndex, setStartIndex] = useState(0);
 
     const [selecting, setSelecting] = useState(false);
     const [selected, setSelected] = useState([]);
@@ -56,16 +54,7 @@ export const ImagesGrid = ({folder}) => {
         }
     }, [selected]);
 
-    useEffect(() => {
-        if (!carouselApi) return;
 
-        setCount(carouselApi.scrollSnapList().length);
-        setCurrent(carouselApi.selectedScrollSnap() + 1);
-
-        carouselApi.on("select", () => {
-            setCurrent(carouselApi.selectedScrollSnap() + 1);
-        })
-    }, [carouselApi]);
 
     return (
         <div>
@@ -129,43 +118,8 @@ export const ImagesGrid = ({folder}) => {
                     </ContextMenu>
                 ))}
             </div>
-            <Dialog open={carouselOpen} onOpenChange={setCarouselOpen}>
-                <DialogContent className={"w-full max-w-3xl"}>
-                    <DialogHeader>
-                        <DialogTitle>{folder.name}</DialogTitle>
-                        <DialogDescription>Images</DialogDescription>
-                    </DialogHeader>
 
-                    <div className={"p-4 mx-auto"}>
-                        <Carousel className="w-full max-w-xl h-96" opts={{
-                            align: "center",
-                            loop: true,
-                            startIndex: startIndex
-                        }} setApi={setCarouselApi}>
-                            <CarouselContent>
-                                {folder.images.map((image) => (
-                                    <CarouselItem key={image.id} className={"max-h-96"}>
-                                        <div className={"w-full h-full max-h-96 flex justify-center items-center p-2"}>
-                                            <img src={`/api/folders/${folder.id}/images/${image.id}`}
-                                                 alt={image.name} className={"max-h-96 object-cover rounded-md"}/>
-                                        </div>
-                                    </CarouselItem>
-                                ))}
-                            </CarouselContent>
-                            <CarouselPrevious/>
-                            <CarouselNext/>
-                        </Carousel>
-                        <div className="py-2 text-sm flex justify-between items-center">
-                        <span>{
-                            current == 0
-                                ? folder.images[current].name
-                                : folder.images[current - 1].name
-                        }</span>
-                            <span className="text-muted-foreground">Slide {current} of {count}</span>
-                        </div>
-                    </div>
-                </DialogContent>
-            </Dialog>
+            <CarouselDialog images={folder.images} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex}/>
             <DeleteImageDialog image={selectImageToDelete} open={openDelete} setOpen={setOpenDelete}/>
             <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} setSelected={setSelected} setSelecting={setSelecting} />
         </div>
