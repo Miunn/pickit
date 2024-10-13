@@ -61,7 +61,7 @@ export const LastUploadedImages = ({images, locale}: { images: any[], locale: st
                 {images.length == 0
                     ? <div className={"flex flex-col justify-center items-center"}>
                         <ImageOff className={"w-32 h-32 opacity-20"}/>
-                        <p>{t('images.empty')}</p>
+                        <p>{t('empty')}</p>
                     </div>
                     : images.map((image, index) => (
                         <ContextMenu key={image.id}>

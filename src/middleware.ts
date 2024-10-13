@@ -2,7 +2,6 @@ import createMiddleware from 'next-intl/middleware';
 import {NextRequest, NextResponse} from 'next/server';
 import {routing} from './i18n/routing';
 import {auth} from "@/actions/auth";
-import {getLocalePrefix} from "next-intl/dist/types/src/shared/utils";
 
 const publicPages = ['/', '/(fr|en)/signin', '/api/auth/signin', '/api/auth/signout'];
 const locales = ['en', 'fr'];

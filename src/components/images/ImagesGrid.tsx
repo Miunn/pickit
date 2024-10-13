@@ -24,7 +24,7 @@ import {useTranslations} from "next-intl";
 import {toast} from "@/hooks/use-toast";
 import {DeleteImageDialog} from "@/components/images/DeleteImageDialog";
 import {Button} from "@/components/ui/button";
-import {Trash, Trash2, X} from "lucide-react";
+import {ImageOff, Trash, Trash2, X} from "lucide-react";
 import {DeleteMultipleImagesDialog} from "@/components/images/DeleteMultipleImagesDialog";
 import {CarouselDialog} from "@/components/images/CarouselDialog";
 
@@ -77,7 +77,12 @@ export const ImagesGrid = ({folder}) => {
                 : null
             }
             <div className={"flex flex-wrap gap-3"}>
-                {folder.images.map((image: any, index) => (
+                {folder.images.length == 0
+                    ? <div className={"mx-auto flex flex-col justify-center items-center"}>
+                        <ImageOff className={"w-32 h-32 opacity-20"}/>
+                        <p>{t('empty')}</p>
+                    </div>
+                    : folder.images.map((image: any, index) => (
                     <ContextMenu key={image.id}>
                         <ContextMenuTrigger>
                             <button onClick={() => {

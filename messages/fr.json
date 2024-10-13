@@ -79,6 +79,40 @@
         "submitting": "Renaming...",
         "cancel": "Cancel"
       },
+      "share": {
+        "trigger": "Share",
+        "title": "Share folder",
+        "description": "Share the folder with others",
+        "fields": {
+          "link": {
+            "label": "Link",
+            "description": "Share this link with others",
+            "placeholder": "Link"
+          },
+          "email": {
+            "label": "Email",
+            "description": "Send this link to an email",
+            "placeholder": "Email address",
+            "error": "Invalid email"
+          }
+        },
+        "button": {
+          "copy": "Copy link",
+          "emailAdd": "Add email"
+        },
+        "toast": {
+          "copy": {
+            "success": {
+              "title": "Link copied",
+              "description": "The link has been copied to your clipboard"
+            },
+            "error": {
+              "title": "Error",
+              "description": "An error occurred while copying the link"
+            }
+          }
+        }
+      },
       "delete": {
         "trigger": "Delete",
         "title": "Delete folder",
@@ -91,7 +125,9 @@
     "empty": "No folders created"
   },
   "images": {
+    "lastUploadedImages": "Last uploaded images",
     "selected": "Selected",
+    "empty": "No images uploaded",
     "page": {
       "title": "{folder} images",
       "subtitle": "{folder} uploaded images"
@@ -121,6 +157,14 @@
         "trigger": "Delete",
         "title": "Delete image",
         "description": "Are you sure you want to delete {image} ? This action cannot be undone.",
+        "submit": "Delete",
+        "submitting": "Deleting...",
+        "cancel": "Cancel"
+      },
+      "deleteMultiple": {
+        "trigger": "Delete",
+        "title": "Delete images",
+        "description": "Are you sure you want to delete {n} images ? This action cannot be undone.",
         "submit": "Delete",
         "submitting": "Deleting...",
         "cancel": "Cancel"

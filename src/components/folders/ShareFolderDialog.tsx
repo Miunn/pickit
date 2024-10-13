@@ -1,0 +1,109 @@
+import {
+    Dialog, DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle, DialogTrigger
+} from "@/components/ui/dialog";
+import {Button} from "@/components/ui/button";
+import {useTranslations} from "next-intl";
+import {Share, X} from "lucide-react";
+import {Input} from "@/components/ui/input";
+import {toast} from "@/hooks/use-toast";
+import {Separator} from "@/components/ui/separator";
+import {Label} from "@/components/ui/label";
+import React, {useEffect, useRef, useState} from "react";
+import {ScrollArea} from "@/components/ui/scroll-area";
+
+export const ShareFolderDialog = ({folder}: { folder: any }) => {
+
+    const [emailList, setEmailList] = useState<string[]>([]);
+    const [email, setEmail] = useState<string>("");
+    const emailScroll = useRef<HTMLDivElement>();
+    const t = useTranslations("folders.dialog.share");
+
+    const shareLink = `${window.location.origin}/folders/${folder.id}?share=${crypto.randomUUID()}`;
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(shareLink).then(() => {
+            toast({
+                title: t('toast.copy.success.title'),
+                description: t('toast.copy.success.description'),
+            })
+        }).catch(() => {
+            toast({
+                title: t('toast.copy.error.title'),
+                description: t('toast.copy.error.description'),
+                variant: "destructive"
+            })
+        });
+    }
+
+    const addEmail = (email: string) => {
+        if (!email || email.length === 0 || emailList.includes(email)) {
+            return;
+        }
+        setEmailList([...emailList, email]);
+        setEmail("");
+    }
+
+    useEffect(() => {
+        if (!emailScroll.current) {
+            return;
+        }
+        emailScroll.current!.scrollIntoView(false);
+    }, [emailList]);
+
+    return (
+        <Dialog>
+            <DialogTrigger>
+                <Button variant="outline">
+                    <Share/> {t('trigger')}
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{t('title')}</DialogTitle>
+                    <DialogDescription>{t('description')}</DialogDescription>
+                </DialogHeader>
+
+                <Label>{t('fields.link.label')}</Label>
+                <div className={"flex gap-3 w-full"}>
+                    <Input placeholder={t('fields.link.placeholder')} disabled={true}
+                           value={shareLink}/>
+                    <Button onClick={copyToClipboard}>
+                        {t('button.copy')}
+                    </Button>
+                </div>
+                <Separator orientation={"horizontal"} className={"my-4"}/>
+
+                <Label htmlFor={"share-email"}>{t('fields.email.label')}</Label>
+                <div className={"flex gap-3 w-full"}>
+                    <Input id={"share-email"} placeholder={t('fields.email.placeholder')} value={email}
+                           onChange={(v) => setEmail(v.currentTarget.value)}/>
+                    <Button onClick={() => addEmail(email)}>
+                        {t('button.emailAdd')}
+                    </Button>
+                </div>
+                <ScrollArea className={"max-h-40"}>
+                    <div ref={emailScroll}>
+                    {emailList.map((email: string) => (
+                        <div key={email} className={"flex gap-1 w-full my-1"}>
+                            <Button onClick={() => setEmailList(emailList.filter((e) => e !== email))} variant="ghost" size="icon">
+                                <X className={"w-4 h-4 text-red-500"} />
+                            </Button>
+                            <Input value={email} disabled={true}/>
+                        </div>
+                    ))}
+                    </div>
+                </ScrollArea>
+                <DialogFooter>
+                    <DialogClose>
+                        <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button>Share</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}

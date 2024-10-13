@@ -62,8 +62,8 @@ export const CarouselDialog = ({images, title, carouselOpen, setCarouselOpen, st
                     <div className="py-2 text-sm flex justify-between items-center">
                         <span>{
                             current == 0
-                                ? images[current].name
-                                : images[current - 1].name
+                                ? images[current]?.name
+                                : images[current - 1]?.name
                         }</span>
                         <span className="text-muted-foreground">Slide {current} of {count}</span>
                     </div>

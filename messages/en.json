@@ -79,6 +79,41 @@
         "submitting": "Renaming...",
         "cancel": "Cancel"
       },
+      "share": {
+        "trigger": "Share",
+        "title": "Share folder",
+        "description": "Share the folder with others",
+        "fields": {
+          "link": {
+            "label": "Link",
+            "description": "Share this link with others",
+            "placeholder": "Link"
+          },
+          "email": {
+            "label": "Email",
+            "description": "Send this link to an email",
+            "placeholder": "Email address",
+            "error": "Invalid email"
+          }
+        },
+        "button": {
+          "copy": "Copy link",
+          "emailAdd": "Add email",
+          "emailRemove": "Remove email"
+        },
+        "toast": {
+          "copy": {
+            "success": {
+              "title": "Link copied",
+                "description": "The link has been copied to your clipboard"
+            },
+            "error": {
+              "title": "Error",
+              "description": "An error occurred while copying the link"
+            }
+          }
+        }
+      },
       "delete": {
         "trigger": "Delete",
         "title": "Delete folder",
@@ -93,6 +128,7 @@
   "images": {
     "lastUploadedImages": "Last uploaded images",
     "selected": "Selected",
+    "empty": "No images uploaded",
     "page": {
       "title": "{folder} images",
       "subtitle": "{folder} uploaded images"
