@@ -10,19 +10,19 @@ import {
 } from "@/components/ui/dialog";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
-import {FolderPlus, Loader2} from "lucide-react";
+import {Loader2} from "lucide-react";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 
 import {zodResolver} from "@hookform/resolvers/zod"
 import {useForm} from "react-hook-form"
 import {z} from "zod"
-import {createFolder, renameFolder} from "@/actions/actions";
+import {renameFolder} from "@/actions/actions";
 import {useState} from "react";
 import {toast} from "@/hooks/use-toast";
 import {useTranslations} from "next-intl";
 import {CreateFolderFormSchema} from "@/lib/definitions";
 
-export default function RenameFolderDialog({openState, setOpenState, folderId, folderName}: { folderId: string }) {
+export default function RenameFolderDialog({openState, setOpenState, folderId, folderName}: { openState: boolean, setOpenState: any, folderId: string, folderName: string }) {
 
     const t = useTranslations("folders.dialog.rename");
 
@@ -54,7 +54,7 @@ export default function RenameFolderDialog({openState, setOpenState, folderId, f
                 description: "The folders was renamed successfully.",
             });
 
-            setOpen(false);
+            setOpenState(false);
         });
     }
 

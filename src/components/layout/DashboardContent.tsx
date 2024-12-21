@@ -1,17 +1,13 @@
 import CreateFolderDialog from "@/components/folders/CreateFolderDialog";
 import {Button} from "@/components/ui/button";
-import {FolderX, ImageOff, ImageUp, Settings2} from "lucide-react";
+import {FolderX, ImageUp, Settings2} from "lucide-react";
 import FolderPreview from "@/components/folders/FolderPreview";
 import {useTranslations} from "next-intl";
-import {ImagePreview} from "@/components/images/ImagePreview";
-import {CarouselDialog} from "@/components/images/CarouselDialog";
-import React, {useEffect, useState} from "react";
-import {ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger} from "@/components/ui/context-menu";
-import {DeleteImageDialog} from "@/components/images/DeleteImageDialog";
-import {DeleteMultipleImagesDialog} from "@/components/images/DeleteMultipleImagesDialog";
+import React from "react";
 import {LastUploadedImages} from "@/components/images/LastUploadedImages";
+import { Folder, Image } from "@prisma/client";
 
-export default function DashboardContent({lastFolders, lastImages, locale}) {
+export default function DashboardContent({lastFolders, lastImages, locale}: { lastFolders: Folder[], lastImages: Image[], locale: string }) {
 
     const t = useTranslations("dashboard");
 

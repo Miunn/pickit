@@ -9,7 +9,6 @@ import {useState} from "react";
 import RenameFolderDialog from "@/components/folders/RenameFolderDialog";
 import DeleteFolderDialog from "@/components/folders/DeleteFolderDialog";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
-import {saveAs} from "file-saver";
 import {downloadFolder} from "@/lib/utils";
 import {toast} from "@/hooks/use-toast";
 
@@ -29,7 +28,7 @@ export default function FolderPreviewClient({folder, coverB64, locale}: {
         <>
             <ContextMenu>
                 <ContextMenuTrigger>
-                    <Link href={`/${locale}/dashboard/folders/${folder.id}`} locale={locale}
+                    <Link href={`/${locale}/folders/${folder.id}`} locale={locale}
                           className={"inline-block w-64"}>
                         {folder.cover
                             ? <div className={"border rounded-2xl h-32 mb-4 flex justify-center items-center"}>
