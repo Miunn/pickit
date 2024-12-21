@@ -23,7 +23,7 @@ export const ShareFolderDialog = ({folder}: { folder: any }) => {
     const emailScroll = useRef<HTMLDivElement>(null);
     const t = useTranslations("folders.dialog.share");
 
-    const shareLink = `${window.location.origin}/folders/${folder.id}?share=${crypto.randomUUID()}`;
+    const shareLink = `${window.location.origin}/dashboard/folders/${folder.id}?share=${crypto.randomUUID()}`;
     const copyToClipboard = () => {
         navigator.clipboard.writeText(shareLink).then(() => {
             toast({
