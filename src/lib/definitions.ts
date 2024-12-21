@@ -6,6 +6,11 @@ export type SessionPayload = {
     expiresAt: Date;
 }
 
+export type ActionResult = {
+    status: string;
+    message?: string;
+}
+
 export const SignupFormSchema = z.object({
     name: z.string().min(3, {message: 'Be at least 3 characters long'}).trim(),
     email: z.string().email({message: 'Please enter a valid email.'}).trim(),
@@ -18,7 +23,6 @@ export const SignupFormSchema = z.object({
         .trim(),
     passwordConfirmation: z.string(),
 }).superRefine(({password, passwordConfirmation}, ctx) => {
-    console.log(password, passwordConfirmation);
     if (password !== passwordConfirmation) {
         ctx.addIssue({
             code: "custom",
@@ -53,7 +57,7 @@ export const UploadImagesFormSchema = z.object({
             return file.length > 0;
         })
             .refine((file) => {
-                return Array.from(file).every((f) => f.type.startsWith('image/'));
+                return Array.from(file).every((f: any) => f.type.startsWith('image/'));
             }, {
                 message: 'File must be an image',
             })

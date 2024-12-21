@@ -7,7 +7,7 @@ import * as fs from "fs";
 import {revalidatePath} from "next/cache";
 
 export async function createFolder(name: string): Promise<{
-    folder: Prisma.Prisma__FolderClient<any> | null,
+    folder: { id: string; name: string; coverId: string | null; createdById: string; createdAt: Date; updatedAt: Date; } | null,
     error: string | null,
 }> {
     const session = await auth();
@@ -15,8 +15,6 @@ export async function createFolder(name: string): Promise<{
     if (!session?.user) {
         return {folder: null, error: "You must be logged in to create a folders"};
     }
-
-    console.log("Creating folders", name);
 
     const folder = await prisma.folder.create({
         data: {
@@ -35,7 +33,7 @@ export async function createFolder(name: string): Promise<{
 }
 
 export async function renameFolder(folderId: string, name: string): Promise<{
-    folder: Prisma.Prisma__FolderClient<any> | null,
+    folder: { id: string; name: string; coverId: string | null; createdById: string; createdAt: Date; updatedAt: Date; } | null,
     error: string | null,
 }> {
     const session = await auth();
@@ -43,8 +41,6 @@ export async function renameFolder(folderId: string, name: string): Promise<{
     if (!session?.user) {
         return {folder: null, error: "You must be logged in to rename a folders"};
     }
-
-    console.log("Renaming folders", name);
 
     const folder = await prisma.folder.update({
         where: {
@@ -70,8 +66,6 @@ export async function deleteFolder(folderId: string): Promise<any> {
     if (!session?.user) {
         return {error: "You must be logged in to delete a folders"};
     }
-
-    console.log("Deleting folders", folderId);
 
     const images = await prisma.image.findMany({
         where: {

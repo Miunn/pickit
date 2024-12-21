@@ -1,20 +1,23 @@
 "use client";
 
-import {zodResolver} from "@hookform/resolvers/zod"
-import {useForm} from "react-hook-form"
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
-import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
-import {SignInFormSchema} from "@/lib/definitions";
-import {SignIn} from "@/actions/authActions";
-import {useSearchParams} from "next/navigation";
-import {useTranslations} from "next-intl";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { SignInFormSchema } from "@/lib/definitions";
+import { SignIn } from "@/actions/authActions";
+import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
 
-export default function SignInForm({locale}) {
+export default function SignInForm({ locale }: { locale: string }) {
 
     const t = useTranslations("auth.signIn");
     const searchParams = useSearchParams();
+    const [loading, setLoading] = useState<boolean>(false);
     const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
 
     const form = useForm({
@@ -26,7 +29,9 @@ export default function SignInForm({locale}) {
     });
 
     const onSubmit = async (data: { email: string, password: string }) => {
-        SignIn({email: data.email, password: data.password, redirect: callbackUrl }).then(void 0);
+        setLoading(true);
+        await SignIn({ email: data.email, password: data.password, redirect: callbackUrl });
+        setLoading(false);
     };
 
     return (
@@ -41,13 +46,13 @@ export default function SignInForm({locale}) {
                         <FormField
                             control={form.control}
                             name="email"
-                            render={({field}) => (
+                            render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>{t('form.email')}</FormLabel>
                                     <FormControl>
                                         <Input placeholder="exemple@mail.com" {...field} />
                                     </FormControl>
-                                    <FormMessage/>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -55,18 +60,21 @@ export default function SignInForm({locale}) {
                         <FormField
                             control={form.control}
                             name="password"
-                            render={({field}) => (
+                            render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>{t('form.password')}</FormLabel>
                                     <FormControl>
                                         <Input placeholder={"••••••••••"} type={"password"} {...field} />
                                     </FormControl>
-                                    <FormMessage/>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
 
-                        <Button className={"block ml-auto mr-0"} type="submit">{t('form.submit')}</Button>
+                        {loading
+                            ? <Button className={"ml-auto mr-0 flex"} type="submit" disabled><Loader2 className="animate-spin mr-2" /> {t('form.submit')}</Button>
+                            : <Button className={"block ml-auto mr-0"} type="submit"> {t('form.submit')}</Button>
+                        }
                     </form>
                 </Form>
             </CardContent>

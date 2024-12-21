@@ -1,7 +1,8 @@
 import NextAuth from "next-auth";
 import {prisma} from "@/lib/prisma";
 import Credentials from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
+import * as bcrypt from "bcryptjs";
+
 export const { auth, handlers, signIn, signOut } = NextAuth({
     session: {
         strategy: "jwt",
@@ -15,16 +16,15 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                 email: { label: "Email", type: "email", placeholder: "email@mail.com" },
                 password: { label: "Password", type: "password" },
             },
-            async authorize(credentials) {
+            async authorize(credentials: Partial<Record<"email" | "password", unknown>>) {
 
                 if (!credentials.email || !credentials.password) {
-                    console.log("Missing credentials");
                     return null;
                 }
 
                 const user = await prisma.user.findUnique({
                     where: {
-                        email: credentials.email
+                        email: credentials.email as string
                     }
                 });
 
@@ -33,7 +33,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                     return null;
                 }
 
-                const match = await bcrypt.compare(credentials.password, user.password);
+                const match = bcrypt.compareSync(credentials.password as string, user.password as string);
 
                 if (!match) {
                     console.log("Password doesn't match");
@@ -60,7 +60,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             }
             return token;
         },
-        session: ({session, token}) => {
+        session: ({session, token}: any) => {
             return {
                 ...session,
                 user: {

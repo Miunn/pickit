@@ -5,8 +5,6 @@ export default async function Header() {
 
     const session = await auth();
 
-    console.log(session);
-
     return (
         <header className="flex items-center justify-between px-6 py-4 border-b">
             <div className={"flex gap-24 items-center"}>

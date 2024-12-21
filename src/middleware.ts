@@ -18,38 +18,12 @@ const authMiddleware = auth(
     }
 );
 
-/*export default function middleware(req: NextRequest) {
-    const publicPathnameRegex = RegExp(
-        `^(/(${locales.join('|')}))?(${publicPages
-            .flatMap((p) => (p === '/' ? ['', '/'] : p))
-            .join('|')})/?$`,
-        'i'
-    );
-    const isPublicPage = publicPathnameRegex.test(req.nextUrl.pathname);
-
-    console.log('Middleware request', req.nextUrl.pathname);
-    //
-    if (isPublicPage) {
-        console.log('Public page request');
-        return handleI18nRouting(req);
-    } else {
-        console.log('Private page request');
-        return (authMiddleware as any)(req);
-    }
-}*/
-
 export async function middleware(req: NextRequest) {
     const pathname = req.nextUrl.pathname;
-
     const session = await auth();
-
     const locale = getLocaleFromUrl(req.nextUrl);
 
-    console.log("Pathname:", pathname);
-    console.log("Locale:", locale);
-
     if (!locales.some((loc) => pathname.startsWith(`/${loc}`))) {
-        console.log("Redirecting to locale");
         const redirectUrl = new URL(`/${locale}${pathname}`, req.url);
         return NextResponse.redirect(redirectUrl);
     }
@@ -62,17 +36,14 @@ export async function middleware(req: NextRequest) {
     );
 
     if (publicPathnameRegex.test(pathname)) {
-        console.log("Public page request");
         return handleI18nRouting(req);
     }
 
     if (!session?.user) {
-        console.log("Redirecting to sign in");
         const signInUrl = new URL(`/${locale}/signin?callbackUrl=${process.env.NEXTAUTH_URL}${pathname}`, req.url);
         return NextResponse.redirect(signInUrl);
     }
 
-    console.log("Private page request");
     return handleI18nRouting(req);
 }
 

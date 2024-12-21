@@ -9,11 +9,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
 import {CircleUserRound} from "lucide-react";
-import {signOut} from "@/actions/auth";
-import {log} from "node:util";
 import {SignOut} from "@/actions/authActions";
+import { useLocale } from "next-intl";
 
-export const ProfileDropdown = ({name}) => {
+export const ProfileDropdown = ({ name }: { name?: string | null }) => {
+
+    const locale = useLocale();
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -28,7 +30,7 @@ export const ProfileDropdown = ({name}) => {
                     <DropdownMenuItem>
                         Profile
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => SignOut()}>
+                    <DropdownMenuItem onSelect={() => SignOut(locale)}>
                         Logout
                     </DropdownMenuItem>
                 </DropdownMenuGroup>

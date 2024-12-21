@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
-    "@prisma/client": "^5.20.0",
+    "@mapbox/node-pre-gyp": "^1.0.11",
+    "@prisma/client": "^6.1.0",
     "@radix-ui/react-context-menu": "^2.2.2",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-dropdown-menu": "^2.1.2",
@@ -32,6 +33,7 @@
     "next": "14.2.15",
     "next-auth": "^5.0.0-beta.22",
     "next-intl": "^3.21.1",
+    "npm": "^11.0.0",
     "react": "^18",
     "react-dom": "^18",
     "react-dropzone": "^14.2.9",
@@ -41,13 +43,15 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
     "postcss": "^8",
-    "prisma": "^5.20.0",
+    "prisma": "^6.1.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
