@@ -15,6 +15,7 @@ import {Separator} from "@/components/ui/separator";
 import {Label} from "@/components/ui/label";
 import React, {useEffect, useRef, useState} from "react";
 import {ScrollArea} from "@/components/ui/scroll-area";
+import { AccessToken } from "@prisma/client";
 
 export const ShareFolderDialog = ({folder}: { folder: any }) => {
 
@@ -23,9 +24,10 @@ export const ShareFolderDialog = ({folder}: { folder: any }) => {
     const emailScroll = useRef<HTMLDivElement>(null);
     const t = useTranslations("folders.dialog.share");
 
-    const shareLink = `${window.location.origin}/dashboard/folders/${folder.id}?share=${crypto.randomUUID()}`;
-    const copyToClipboard = () => {
-        navigator.clipboard.writeText(shareLink).then(() => {
+    const readShareLink = `${window.location.origin}/dashboard/folders/${folder.id}?share=${folder.AccessToken.filter((token: AccessToken) => token.permission === "READ")[0].token}`;
+    const writeShareLink = `${window.location.origin}/dashboard/folders/${folder.id}?share=${folder.AccessToken.filter((token: AccessToken) => token.permission === "WRITE")[0].token}`;
+    const copyToClipboard = (link: string) => {
+        navigator.clipboard.writeText(link).then(() => {
             toast({
                 title: t('toast.copy.success.title'),
                 description: t('toast.copy.success.description'),
@@ -70,8 +72,15 @@ export const ShareFolderDialog = ({folder}: { folder: any }) => {
                 <Label>{t('fields.link.label')}</Label>
                 <div className={"flex gap-3 w-full"}>
                     <Input placeholder={t('fields.link.placeholder')} disabled={true}
-                           value={shareLink}/>
-                    <Button onClick={copyToClipboard}>
+                           value={readShareLink}/>
+                    <Button onClick={() => copyToClipboard(readShareLink)}>
+                        {t('button.copy')}
+                    </Button>
+                </div>
+                <div className={"flex gap-3 w-full"}>
+                    <Input placeholder={t('fields.link.placeholder')} disabled={true}
+                           value={writeShareLink}/>
+                    <Button onClick={() => copyToClipboard(writeShareLink)}>
                         {t('button.copy')}
                     </Button>
                 </div>

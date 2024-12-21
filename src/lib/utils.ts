@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import {saveAs} from "file-saver";
+import { Folder } from "@prisma/client";
 
 export function formatBytes(
     bytes: number,
@@ -20,7 +21,7 @@ export function formatBytes(
   }`
 }
 
-export const downloadFolder = (folder) => {
+export const downloadFolder = (folder: Folder) => {
     fetch(`/api/folders/${folder.id}/download`)
         .then(response => response.blob())
         .then(blob => {

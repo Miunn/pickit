@@ -1,6 +1,6 @@
 "use server";
 
-import {Prisma} from "@prisma/client";
+import {AccessToken, Prisma} from "@prisma/client";
 import {prisma} from "@/lib/prisma";
 import {auth} from "@/actions/auth";
 import * as fs from "fs";
@@ -16,6 +16,8 @@ export async function createFolder(name: string): Promise<{
         return {folder: null, error: "You must be logged in to create a folders"};
     }
 
+    const readToken = crypto.randomUUID();
+    const writeToken = crypto.randomUUID();
     const folder = await prisma.folder.create({
         data: {
             name: name,
@@ -23,6 +25,20 @@ export async function createFolder(name: string): Promise<{
                 connect: {
                     id: session.user.id as string
                 }
+            },
+            AccessToken: {
+                create: [
+                    {
+                        token: readToken,
+                        permission: "READ",
+                        expires: new Date(new Date().setMonth((new Date()).getMonth() + 8)),
+                    },
+                    {
+                        token: writeToken,
+                        permission: "WRITE",
+                        expires: new Date(new Date().setMonth((new Date()).getMonth() + 8)),
+                    }
+                ]
             }
         }
     });

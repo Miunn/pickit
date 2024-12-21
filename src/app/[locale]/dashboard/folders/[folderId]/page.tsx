@@ -1,11 +1,17 @@
-import {Prisma} from "@prisma/client";
+import {AccessToken, Folder, Image, Prisma} from "@prisma/client";
 import {prisma} from "@/lib/prisma";
 import {FolderContent} from "@/components/folders/FolderContent";
-import fs from "fs";
+
+type FolderWithImagesAndTokens = Prisma.FolderGetPayload<{
+    include: {
+        images: true;
+        AccessToken: true;
+    }
+}>
 
 export default async function FolderPage({ params }: { params: { folderId: string, locale: string } }) {
 
-    const folder: Prisma.PromiseReturnType<Prisma.FolderCreateInput> = await prisma.folder.findUnique({
+    const folder: FolderWithImagesAndTokens = await prisma.folder.findUnique({
         where: {
             id: params.folderId
         },
@@ -19,8 +25,9 @@ export default async function FolderPage({ params }: { params: { folderId: strin
                     }
                 }
             },
+            AccessToken: true
         },
-    });
+    }) as FolderWithImagesAndTokens;
 
     return (
         <FolderContent folder={folder} locale={params.locale} />

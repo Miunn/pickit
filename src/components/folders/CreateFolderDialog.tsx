@@ -47,6 +47,7 @@ export default function CreateFolderDialog() {
                     description: `An error occurred while creating the folder. ${d.error}`,
                     variant: "destructive"
                 });
+                return;
             }
 
             form.reset();
