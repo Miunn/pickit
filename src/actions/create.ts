@@ -33,6 +33,7 @@ export async function createUserHandler({name, email, password, passwordConfirma
             data: { name: name, email: email, password: hashedPassword },
         });
         
+        console.log("Create OK");
         return {
             status: 'ok'
         };

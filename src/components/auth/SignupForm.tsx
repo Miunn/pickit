@@ -13,6 +13,8 @@ import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { ToastAction } from "../ui/toast";
+import Link from "next/link";
 
 export default function SignupForm({ locale }: { locale: string }) {
 
@@ -47,6 +49,7 @@ export default function SignupForm({ locale }: { locale: string }) {
         toast({
             title: "Success",
             description: "Account created",
+            action: <ToastAction altText="Login"><Link href={"/signin"}>Login</Link></ToastAction>
         });
     }
 
@@ -116,7 +119,7 @@ export default function SignupForm({ locale }: { locale: string }) {
                         />
 
                         {loading
-                            ? <Button className={"block ml-auto mr-0"} type="submit" disabled><Loader2 className="animate-spin" /> {t('form.submit')}</Button>
+                            ? <Button className={"ml-auto mr-0 flex"} type="button" disabled><Loader2 className="animate-spin mr-2" /> {t('form.submit')}</Button>
                             : <Button className={"block ml-auto mr-0"} type="submit">{t('form.submit')}</Button>
                         }
                     </form>

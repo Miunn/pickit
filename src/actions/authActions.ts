@@ -10,13 +10,7 @@ export async function SignIn({email, password, redirect}: { email: string, passw
         return null;
     }
 
-    try {
-        const s =  await signIn("credentials", { redirect: true, redirectTo: redirect, email, password });
-        console.log("Sign result:", s);
-        return s;
-    } catch (e) {
-        return null;
-    }
+    return await signIn("credentials", { redirect: true, redirectTo: redirect, email, password });
 }
 
 export async function SignOut(locale?: string) {

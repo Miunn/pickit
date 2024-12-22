@@ -33,13 +33,17 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                     return null;
                 }
 
+                console.log(credentials);
+                console.log(user);
                 const match = bcrypt.compareSync(credentials.password as string, user.password as string);
+                console.log("Math:", match);
 
                 if (!match) {
                     console.log("Password doesn't match");
                     return null;
                 }
 
+                console.log("Return array");
                 return { id: user.id, email: user.email, name: user.name };
             },
         })
