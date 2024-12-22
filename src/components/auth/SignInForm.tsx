@@ -12,6 +12,7 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 export default function SignInForm({ locale }: { locale: string }) {
 
@@ -30,7 +31,15 @@ export default function SignInForm({ locale }: { locale: string }) {
 
     const onSubmit = async (data: { email: string, password: string }) => {
         setLoading(true);
-        await SignIn({ email: data.email, password: data.password, redirect: callbackUrl });
+        const r = await SignIn({ email: data.email, password: data.password, redirect: callbackUrl });
+        
+        if (r === null) {
+            toast({
+                title: t("form.error.title"),
+                description: t("form.error.message")
+            });
+        }
+
         setLoading(false);
     };
 
