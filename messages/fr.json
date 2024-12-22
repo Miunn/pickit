@@ -96,7 +96,10 @@
             "label": "Email",
             "description": "Send this link to an email",
             "placeholder": "Email address",
-            "error": "Invalid email"
+            "error": {
+              "title": "Invalid email",
+              "description": "Provided email is invalid or already exists in the list"
+           }
           }
         },
         "button": {
