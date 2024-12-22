@@ -6,6 +6,26 @@ import {auth} from "@/actions/auth";
 import * as fs from "fs";
 import {revalidatePath} from "next/cache";
 
+export async function getLightFolders(): Promise<{
+    lightFolders: { id: string; name: string; }[],
+    error?: string | null
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { lightFolders: [], error: "You must be logged in to create a folders" };
+    }
+
+    const folders = await prisma.folder.findMany({
+        select: {
+            id: true,
+            name: true
+        }
+    });
+
+    return { lightFolders: folders, error: null }
+}
+
 export async function createFolder(name: string): Promise<{
     folder: { id: string; name: string; coverId: string | null; createdById: string; createdAt: Date; updatedAt: Date; } | null,
     error: string | null,

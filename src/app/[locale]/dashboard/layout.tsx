@@ -1,13 +1,17 @@
-import type {Metadata} from "next";
-import {Inter} from "next/font/google";
-import Header from "@/components/layout/Header";
-import RailBar from "@/components/layout/RailBar";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "../../globals.css";
-import {Toaster} from "@/components/ui/toaster";
-import {NextIntlClientProvider} from "next-intl";
-import {getMessages} from "next-intl/server";
+import { Toaster } from "@/components/ui/toaster";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
+import { AppSidebar } from "@/components/app-sidebar";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
+import { getLightFolders } from "@/actions/actions";
+import { Folder, Image, Link } from "lucide-react";
 
-const inter = Inter({subsets: ["latin"]});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
     title: "Pickit",
@@ -15,28 +19,81 @@ export const metadata: Metadata = {
 };
 
 export default async function LocaleLayout({
-                                               children,
-                                               params: {locale},
-                                           }: Readonly<{
+    children,
+    params: { locale },
+}: Readonly<{
     children: React.ReactNode;
     params: { locale: string };
 }>) {
 
     const messages = await getMessages();
 
+    const folders = (await getLightFolders()).lightFolders;
+
     return (
         <html lang={locale}>
-        <body className={inter.className}>
-        <NextIntlClientProvider messages={messages}>
-            <RailBar locale={locale} />
-            <div className={"flex flex-col ml-64"}>
-                <Header/>
-                {children}
-            </div>
-
-            <Toaster/>
-        </NextIntlClientProvider>
-        </body>
+            <body className={inter.className}>
+                <NextIntlClientProvider messages={messages}>
+                    <SidebarProvider>
+                        <AppSidebar items={{
+                            navMainItems: [
+                                {
+                                    title: "Folders",
+                                    icon: Folder,
+                                    url: "#",
+                                    items: folders.map((folder) => ({
+                                        title: folder.name,
+                                        url: `/dashboard/folders/${folder.id}`
+                                    }))
+                                },
+                                {
+                                    title: "Images",
+                                    icon: Image,
+                                    url: "#",
+                                    items: []
+                                },
+                                {
+                                    title: "Links",
+                                    icon: Link,
+                                    url: "#",
+                                    items: []
+                                }
+                            ],
+                            navSecondayrItems: [],
+                            navUserItems: {
+                                name: "Dummy",
+                                email: "exemple@user.fr",
+                                avatar: "DC"
+                            },
+                        }} />
+                        <SidebarInset>
+                            <header className="flex h-16 shrink-0 items-center gap-2">
+                                <div className="flex items-center gap-2 px-4">
+                                    <SidebarTrigger className="-ml-1" />
+                                    <Separator orientation="vertical" className="mr-2 h-4" />
+                                    <Breadcrumb>
+                                        <BreadcrumbList>
+                                            <BreadcrumbItem className="hidden md:block">
+                                                <BreadcrumbLink href="#">
+                                                    Building Your Application
+                                                </BreadcrumbLink>
+                                            </BreadcrumbItem>
+                                            <BreadcrumbSeparator className="hidden md:block" />
+                                            <BreadcrumbItem>
+                                                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                                            </BreadcrumbItem>
+                                        </BreadcrumbList>
+                                    </Breadcrumb>
+                                </div>
+                            </header>
+                            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+                                { children }
+                            </div>
+                        </SidebarInset>
+                    </SidebarProvider>
+                    <Toaster />
+                </NextIntlClientProvider>
+            </body>
         </html>
     );
 }
