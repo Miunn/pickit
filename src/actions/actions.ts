@@ -4,6 +4,7 @@ import {prisma} from "@/lib/prisma";
 import {auth} from "@/actions/auth";
 import * as fs from "fs";
 import {revalidatePath} from "next/cache";
+import { ImageWithFolder } from "@/lib/definitions";
 
 export async function getLightFolders(): Promise<{
     lightFolders: { id: string; name: string; }[],
@@ -117,6 +118,33 @@ export async function renameFolder(folderId: string, name: string): Promise<{
     return {folder: folder, error: null};
 }
 
+export async function changeFolderCover(folderId: string, coverId: string): Promise<{
+    error: string | null
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return {error: "You must be logged in to change a folder's cover"};
+    }
+
+    await prisma.folder.update({
+        where: {
+            id: folderId
+        },
+        data: {
+            cover: {
+                connect: {
+                    id: coverId
+                }
+            }
+        }
+    });
+
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/folders");
+    return { error: null }
+}
+
 export async function deleteFolder(folderId: string): Promise<any> {
     const session = await auth();
 
@@ -215,6 +243,30 @@ export async function uploadImages(parentFolderId: string, amount: number, formD
     revalidatePath("dashboard/folders/" + parentFolderId);
     revalidatePath("dashboard");
     return {error: null};
+}
+
+export async function getImagesWithFolderFromFolder(folderId: string): Promise<{
+    images: ImageWithFolder[],
+    error: string | null
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to load images from folder", images: [] }
+    }
+
+    const images = await prisma.image.findMany({
+        where: {
+            folder: {
+                id: folderId
+            }
+        },
+        include: {
+            folder: true
+        }
+    });
+
+    return { error: null, images: images };
 }
 
 export async function deleteImage(imageId: string) {

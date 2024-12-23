@@ -82,6 +82,13 @@
         "submitting": "Renaming...",
         "cancel": "Cancel"
       },
+      "cover": {
+        "trigger": "Change cover",
+        "title": "Change folder's cover",
+        "description": "Choose an image to set as folder's cover",
+        "submit": "Change cover",
+        "submitting": "Changing cover..."
+      },
       "share": {
         "trigger": "Share",
         "title": "Share folder",

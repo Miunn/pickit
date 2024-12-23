@@ -5,14 +5,16 @@ import Link from "next/link";
 import { Images } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RenameFolderDialog from "@/components/folders/RenameFolderDialog";
 import DeleteFolderDialog from "@/components/folders/DeleteFolderDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { downloadFolder } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { ShareFolderDialog } from "./ShareFolderDialog";
-import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, ImageWithFolder } from "@/lib/definitions";
+import ChangeCoverFolderDialog from "./ChangeCoverFolderDialog";
+import { getImagesWithFolderFromFolder } from "@/actions/actions";
 
 export default function FolderPreviewClient({ folder, coverB64, locale }: {
     folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover,
@@ -24,8 +26,19 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
     const format = useFormatter();
 
     const [openRename, setOpenRename] = useState<boolean>(false);
+    const [openChangeCover, setOpenChangeCover] = useState<boolean>(false);
     const [openShare, setOpenShare] = useState<boolean>(false);
     const [openDelete, setOpenDelete] = useState<boolean>(false);
+
+    const [folderImages, setFolderImages] = useState<ImageWithFolder[]>([]);
+
+    async function loadImages() {
+        setFolderImages((await getImagesWithFolderFromFolder(folder.id)).images);
+    }
+
+    useEffect(() => {
+        loadImages();
+    }, [folder.id]);
 
     return (
         <>
@@ -79,7 +92,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                         </Link>
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenRename(true)}>{t('dialog.rename.trigger')}</ContextMenuItem>
-                    <ContextMenuItem>Change cover</ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenChangeCover(true)}>Change cover</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenShare(true)}>Share</ContextMenuItem>
                     <ContextMenuItem onClick={() => {
                         toast({
@@ -93,6 +106,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
             </ContextMenu>
             <RenameFolderDialog folderId={folder.id} folderName={folder.name} openState={openRename}
                 setOpenState={setOpenRename} />
+            <ChangeCoverFolderDialog images={folderImages} open={openChangeCover} setOpen={setOpenChangeCover} />
             <ShareFolderDialog folder={folder} open={openShare} setOpen={setOpenShare} />
             <DeleteFolderDialog folderId={folder.id} folderName={folder.name} openState={openDelete}
                 setOpenState={setOpenDelete} />
