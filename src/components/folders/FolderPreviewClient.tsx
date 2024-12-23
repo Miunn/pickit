@@ -55,7 +55,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                                 <Images className={"opacity-50"} />
                             </div>
                         }
-                        <p>{folder.name}</p>
+                        <p className="truncate">{folder.name}</p>
                         <div className={"text-sm grid h-4 items-center"} style={{
                             gridTemplateColumns: "1fr auto 2fr",
                         }}>
