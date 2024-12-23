@@ -12,7 +12,7 @@ export default function DashboardContent({lastFolders, lastImages, locale}: { la
     const t = useTranslations("dashboard");
 
     return (
-        <div className="flex flex-col flex-grow p-6">
+        <div className="flex flex-col flex-grow">
             <div className={"flex gap-4 mb-10"}>
                 <CreateFolderDialog/>
                 <Button variant="outline">

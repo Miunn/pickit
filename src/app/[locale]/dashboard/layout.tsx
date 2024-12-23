@@ -10,6 +10,7 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/s
 import { Separator } from "@/components/ui/separator";
 import { getLightFolders } from "@/actions/actions";
 import { Folder, Image, Link } from "lucide-react";
+import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,15 +21,18 @@ export const metadata: Metadata = {
 
 export default async function LocaleLayout({
     children,
-    params: { locale },
+    params: { locale, folderId },
 }: Readonly<{
     children: React.ReactNode;
-    params: { locale: string };
+    params: { locale: string, folderId?: string; };
 }>) {
 
     const messages = await getMessages();
 
     const folders = (await getLightFolders()).lightFolders;
+
+    console.log("Locale in layout:", locale);
+    console.log("Folder Id in layout:", folderId);
 
     return (
         <html lang={locale}>
@@ -40,7 +44,7 @@ export default async function LocaleLayout({
                                 {
                                     title: "Folders",
                                     icon: Folder,
-                                    url: "#",
+                                    url: "/dashboard/folders",
                                     items: folders.map((folder) => ({
                                         title: folder.name,
                                         url: `/dashboard/folders/${folder.id}`
@@ -63,7 +67,7 @@ export default async function LocaleLayout({
                             navUserItems: {
                                 name: "Dummy",
                                 email: "exemple@user.fr",
-                                avatar: "DC"
+                                avatar: ""
                             },
                         }} />
                         <SidebarInset>
@@ -71,23 +75,11 @@ export default async function LocaleLayout({
                                 <div className="flex items-center gap-2 px-4">
                                     <SidebarTrigger className="-ml-1" />
                                     <Separator orientation="vertical" className="mr-2 h-4" />
-                                    <Breadcrumb>
-                                        <BreadcrumbList>
-                                            <BreadcrumbItem className="hidden md:block">
-                                                <BreadcrumbLink href="#">
-                                                    Building Your Application
-                                                </BreadcrumbLink>
-                                            </BreadcrumbItem>
-                                            <BreadcrumbSeparator className="hidden md:block" />
-                                            <BreadcrumbItem>
-                                                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                                            </BreadcrumbItem>
-                                        </BreadcrumbList>
-                                    </Breadcrumb>
+                                    <HeaderBreadcumb />
                                 </div>
                             </header>
                             <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-                                { children }
+                                {children}
                             </div>
                         </SidebarInset>
                     </SidebarProvider>

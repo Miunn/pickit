@@ -28,6 +28,14 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { CaretSortIcon, ComponentPlaceholderIcon } from "@radix-ui/react-icons"
+import { SignOut } from "@/actions/authActions"
+import { useLocale } from "next-intl"
+
+export type NavUserItems = {
+  name: string
+  email: string
+  avatar: string
+}
 
 export function NavUser({
   user,
@@ -38,7 +46,8 @@ export function NavUser({
     avatar: string
   }
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
+  const locale = useLocale();
 
   return (
     <SidebarMenu>
@@ -80,29 +89,29 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
+              <DropdownMenuItem className="flex gap-2">
+                <Sparkles className="w-4 h-4" />
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
+              <DropdownMenuItem className="flex gap-2">
+                <BadgeCheck className="w-4 h-4" />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <ComponentPlaceholderIcon />
+              <DropdownMenuItem className="flex gap-2">
+                <ComponentPlaceholderIcon className="w-4 h-4" />
                 Billing
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
+              <DropdownMenuItem className="flex gap-2">
+                <Bell className="w-4 h-4" />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
+            <DropdownMenuItem className="flex gap-2" onClick={() => SignOut(locale)}>
+              <LogOut className="w-4 h-4" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

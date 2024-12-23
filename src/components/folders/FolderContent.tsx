@@ -15,7 +15,7 @@ export const FolderContent = ({folder, locale}: { folder: any, locale: string })
     console.log("FolderContent", folder);
 
     return (
-        <main className="flex flex-col p-6">
+        <div className="flex flex-col">
             <div className={"flex gap-4 mb-10"}>
                 <UploadImagesDialog folderId={folder.id}/>
                 <ShareFolderDialog folder={folder} />
@@ -33,6 +33,6 @@ export const FolderContent = ({folder, locale}: { folder: any, locale: string })
             <h2 className={"font-semibold mb-5"}>{folder.name}</h2>
 
             <ImagesGrid folder={folder} />
-        </main>
+        </div>
     )
 }

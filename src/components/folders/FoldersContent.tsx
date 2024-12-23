@@ -3,13 +3,14 @@ import {Button} from "@/components/ui/button";
 import {FolderX, ImageUp, Settings2} from "lucide-react";
 import FolderPreview from "@/components/folders/FolderPreview";
 import {useTranslations} from "next-intl";
+import { Folder } from "@prisma/client";
 
-export default function FoldersContent({ folders, locale }) {
+export default function FoldersContent({ folders, locale }: { folders: Folder[], locale: string }) {
 
     const t = useTranslations("folders");
 
     return (
-        <main className="flex flex-col flex-grow p-6">
+        <main className="flex flex-col flex-grow">
             <div className={"flex gap-4 mb-10"}>
                 <CreateFolderDialog/>
                 <Button variant="outline">

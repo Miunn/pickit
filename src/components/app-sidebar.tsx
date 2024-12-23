@@ -15,7 +15,7 @@ import {
 import { NavMain, NavMainItems } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary, NavSecondaryItems } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavUser, NavUserItems } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -25,7 +25,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { NavUserItems } from "./ui/nav-user"
 
 const data = {
   user: {

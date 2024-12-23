@@ -30,7 +30,7 @@ export type NavMainItems = {
 export function NavMain({ items }: { items: NavMainItems }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      <SidebarGroupLabel>Your saves</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible

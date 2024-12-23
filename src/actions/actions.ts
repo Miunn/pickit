@@ -1,6 +1,5 @@
 "use server";
 
-import {AccessToken, Prisma} from "@prisma/client";
 import {prisma} from "@/lib/prisma";
 import {auth} from "@/actions/auth";
 import * as fs from "fs";
@@ -24,6 +23,29 @@ export async function getLightFolders(): Promise<{
     });
 
     return { lightFolders: folders, error: null }
+}
+
+export async function getFolderName(id: string): Promise<{
+    folder?: { id: string; name: string; } | null,
+    error?: string | null
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { folder: null, error: "You must be logged in to get folder name" };
+    }
+
+    const folder = await prisma.folder.findUnique({
+        where: {
+            id: id
+        },
+        select: {
+            id: true,
+            name: true
+        }
+    });
+
+    return { folder: folder, error: null }
 }
 
 export async function createFolder(name: string): Promise<{

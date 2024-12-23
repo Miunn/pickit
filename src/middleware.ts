@@ -1,7 +1,7 @@
 import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse, URLPattern } from 'next/server';
 import { routing } from './i18n/routing';
-import { auth, signIn } from "@/actions/auth";
+import { auth } from "@/actions/auth";
 import { isValidShareLink } from './lib/checkLinks';
 
 const publicPages = ['/', '/(fr|en)/signin', '/api/auth/signin', '/api/auth/signout'];
@@ -23,7 +23,6 @@ const PATTERNS = [
     [
         new URLPattern({ pathname: '/:locale/dashboard/folders/:folderId' }),
         ({ pathname }: { pathname: any }) => {
-            console.log(pathname);
             return pathname.groups
         }
     ]

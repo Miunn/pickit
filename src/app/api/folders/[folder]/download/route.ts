@@ -5,9 +5,6 @@ import JSZip from "jszip";
 import fs from "fs";
 
 export async function GET(req: NextRequest, { params }: { params: {folder: string} }) {
-    console.log("CALL DOWNLOAD FOLDER");
-    console.log("Request", req);
-
     const session = await auth();
 
     if (!session?.user) {
