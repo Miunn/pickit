@@ -148,7 +148,7 @@ export const ImagesGrid = ({ folder }: { folder: FolderWithImages }) => {
                                         setCarouselOpen(!carouselOpen)
                                     }
                                 }} style={{ all: "unset", cursor: "pointer" }}>
-                                    <ImagePreview image={image} folder={folder} withFolder={true} selected={selected.includes(image.id)} />
+                                    <ImagePreview image={image} folder={folder} withFolder={false} selected={selected.includes(image.id)} />
                                 </button>
                             </ContextMenuTrigger>
                             <ContextMenuContent>
