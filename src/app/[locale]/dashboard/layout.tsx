@@ -20,10 +20,10 @@ export const metadata: Metadata = {
 
 export default async function LocaleLayout({
     children,
-    params: { locale, folderId },
+    params: { locale },
 }: Readonly<{
     children: React.ReactNode;
-    params: { locale: string, folderId?: string; };
+    params: { locale: string };
 }>) {
 
     const messages = await getMessages();
