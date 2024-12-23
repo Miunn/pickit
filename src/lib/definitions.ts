@@ -1,4 +1,5 @@
-import {z} from 'zod'
+import { Prisma } from '@prisma/client';
+import { z } from 'zod'
 
 export type SessionPayload = {
     id: string;
@@ -12,17 +13,17 @@ export type ActionResult = {
 }
 
 export const SignupFormSchema = z.object({
-    name: z.string().min(3, {message: 'Be at least 3 characters long'}).trim(),
-    email: z.string().email({message: 'Please enter a valid email.'}).trim(),
+    name: z.string().min(3, { message: 'Be at least 3 characters long' }).trim(),
+    email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
     password: z
         .string()
-        .min(8, {message: 'Be at least 8 characters long'})
-        .regex(/[a-zA-Z]/, {message: 'Contain at least one letter.'})
-        .regex(/[0-9]/, {message: 'Contain at least one number.'})
-        .regex(/[^a-zA-Z0-9]/, {message: 'Contain at least one special character.'})
+        .min(8, { message: 'Be at least 8 characters long' })
+        .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
+        .regex(/[0-9]/, { message: 'Contain at least one number.' })
+        .regex(/[^a-zA-Z0-9]/, { message: 'Contain at least one special character.' })
         .trim(),
     passwordConfirmation: z.string(),
-}).superRefine(({password, passwordConfirmation}, ctx) => {
+}).superRefine(({ password, passwordConfirmation }, ctx) => {
     if (password !== passwordConfirmation) {
         ctx.addIssue({
             code: "custom",
@@ -33,7 +34,7 @@ export const SignupFormSchema = z.object({
 });
 
 export const SignInFormSchema = z.object({
-    email: z.string().email({message: 'Please enter a valid email.'}).trim(),
+    email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
     password: z
         .string()
         .trim(),
@@ -62,7 +63,7 @@ export const UploadImagesFormSchema = z.object({
                 message: 'File must be an image',
             })
         : z.array(z.instanceof(File))
-            .nonempty({message: 'Please select at least one file'})
+            .nonempty({ message: 'Please select at least one file' })
             .refine((file) => {
                 return Array.from(file).every((f) => f.type.startsWith('image/'));
             }, {
@@ -73,10 +74,23 @@ export const UploadImagesFormSchema = z.object({
 
 export type SignInFormState =
     | {
-    errors?: {
-        email?: string[]
-        password?: string[]
+        errors?: {
+            email?: string[]
+            password?: string[]
+        }
+        message?: string
     }
-    message?: string
-}
     | undefined
+
+
+const folderWithImages = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { images: true },
+})
+
+export type FolderWithImages = Prisma.FolderGetPayload<typeof folderWithImages>
+
+const imageWithFolder = Prisma.validator<Prisma.ImageDefaultArgs>()({
+    include: { folder: true},
+})
+
+export type ImageWithFolder = Prisma.ImageGetPayload<typeof imageWithFolder>

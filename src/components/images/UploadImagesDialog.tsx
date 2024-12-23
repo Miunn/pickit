@@ -10,17 +10,15 @@ import {
     DialogTrigger
 } from "@/components/ui/dialog";
 import {Button} from "@/components/ui/button";
-import {FolderPlus, ImageUp, Loader2} from "lucide-react";
+import {ImageUp, Loader2} from "lucide-react";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
-import {Input} from "@/components/ui/input";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {UploadImagesFormSchema} from "@/lib/definitions";
 import {useState} from "react";
-import {uploadImages} from "@/actions/actions";
-import {toast} from "@/hooks/use-toast";
 import {FileUploader} from "@/components/generic/FileUploader";
+import { handleImagesSubmission } from "@/lib/utils";
 
 export const UploadImagesDialog = ({folderId}: { folderId: string }) => {
 
@@ -35,70 +33,12 @@ export const UploadImagesDialog = ({folderId}: { folderId: string }) => {
         }
     });
 
-    function submitImages(data: z.infer<typeof UploadImagesFormSchema>) {
-        setLoading(true);
+    async function submitImages(data: z.infer<typeof UploadImagesFormSchema>) {
+        const r = await handleImagesSubmission(setLoading, data, folderId, form);
 
-        if (!data.images || data.images!.length === 0) {
-            return;
-        }
-
-        console.log("Folder ID", folderId);
-        console.log("Data", data);
-        const formData = new FormData();
-
-        for (let i = 0; i < data.images!.length; i++) {
-            formData.append(`image-${i}`, data.images![i]);
-        }
-
-        console.log("Client form data", formData);
-        uploadImages(folderId, data.images!.length, formData).then(r => {
-            setLoading(false);
-
-            if (r.error) {
-                toast({
-                    title: "Error",
-                    description: r.error,
-                    variant: "destructive"
-                })
-                return;
-            }
-
-            form.reset();
-            toast({
-                title: "Images uploaded",
-                description: "The images were uploaded successfully."
-            });
-
+        if (r) {
             setOpen(false);
-            /*
-            if (
-                onUpload &&
-                updatedFiles.length > 0 &&
-                updatedFiles.length <= maxFileCount
-            ) {
-                const target =
-                    updatedFiles.length > 0 ? `${updatedFiles.length} files` : `file`
-
-                toast.promise(onUpload(updatedFiles), {
-                    loading: `Uploading ${target}...`,
-                    success: () => {
-                        setFiles([])
-                        return `${target} uploaded`
-                    },
-                    error: `Failed to upload ${target}`,
-                })
         }
-             */
-        })
-            .catch(e => {
-                setLoading(false);
-
-                toast({
-                    title: "Error",
-                    description: "An error occurred while uploading the images",
-                    variant: "destructive"
-                })
-            });
     }
 
     return (

@@ -3,8 +3,17 @@ import {useFormatter} from "next-intl";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 import React from "react";
 import Image from "next/image";
+import { Folder } from "@prisma/client";
+import { ImageWithFolder } from "@/lib/definitions";
 
-export const ImagePreview = ({image, folder, withFolder, selected}) => {
+export interface ImagePreviewProps {
+    image: ImageWithFolder;
+    folder: Folder;
+    withFolder: boolean;
+    selected: boolean;
+}
+
+export const ImagePreview = ({image, folder, withFolder, selected}: ImagePreviewProps) => {
 
     const format = useFormatter();
 

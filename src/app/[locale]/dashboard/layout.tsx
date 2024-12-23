@@ -31,9 +31,6 @@ export default async function LocaleLayout({
 
     const folders = (await getLightFolders()).lightFolders;
 
-    console.log("Locale in layout:", locale);
-    console.log("Folder Id in layout:", folderId);
-
     return (
         <html lang={locale}>
             <body className={inter.className}>

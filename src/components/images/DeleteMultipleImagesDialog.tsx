@@ -15,7 +15,7 @@ import {Loader2} from "lucide-react";
 import {deleteImage, deleteImages} from "@/actions/actions";
 import {toast} from "@/hooks/use-toast";
 
-export const DeleteMultipleImagesDialog = ({images, open, setOpen, setSelected, setSelecting}: { images: any[], open: boolean, setOpen: any, setSelected: React.Dispatch<React.SetStateAction<[]>>, setSelecting: React.Dispatch<React.SetStateAction<boolean>> }) => {
+export const DeleteMultipleImagesDialog = ({images, open, setOpen, setSelected, setSelecting}: { images: any[], open: boolean, setOpen: any, setSelected: React.Dispatch<React.SetStateAction<string[]>>, setSelecting: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
     const t = useTranslations("images.dialog.deleteMultiple");
     const [deleting, setDeleting] = useState(false);

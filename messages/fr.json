@@ -136,7 +136,8 @@
     "empty": "No images uploaded",
     "page": {
       "title": "{folder} images",
-      "subtitle": "{folder} uploaded images"
+      "subtitle": "{folder} uploaded images",
+      "startUpload": "Upload your first images"
     },
     "actions": {
       "view": "View",
