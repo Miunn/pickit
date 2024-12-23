@@ -13,7 +13,6 @@ import {
 } from "lucide-react"
 
 import { NavMain, NavMainItems } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary, NavSecondaryItems } from "@/components/nav-secondary"
 import { NavUser, NavUserItems } from "@/components/nav-user"
 import {
