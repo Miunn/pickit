@@ -7,7 +7,7 @@ import { getMessages } from "next-intl/server";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { getLightFolders, getLightImages } from "@/actions/actions";
+import { getLightFolders, getLightImages, getLinks } from "@/actions/actions";
 import { Folder, Image, Link } from "lucide-react";
 import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
 import { auth } from "@/actions/auth";
@@ -32,6 +32,7 @@ export default async function LocaleLayout({
 
     const folders = (await getLightFolders()).lightFolders;
     const images = (await getLightImages()).lightImages;
+    const links = (await getLinks()).links;
 
     return (
         <html lang={locale}>
@@ -43,10 +44,10 @@ export default async function LocaleLayout({
                                 {
                                     title: "Folders",
                                     icon: Folder,
-                                    url: "/dashboard/folders",
+                                    url: "#",
                                     items: folders.map((folder) => ({
                                         title: folder.name,
-                                        url: `/dashboard/folders/${folder.id}`
+                                        url: `/${locale}/dashboard/folders/${folder.id}`
                                     }))
                                 },
                                 {
@@ -55,14 +56,17 @@ export default async function LocaleLayout({
                                     url: "#",
                                     items: images.map((image) => ({
                                         title: `${image.folder.name} - ${image.name}`,
-                                        url: `/dashboard/folders/${image.folder.id}`
+                                        url: `/${locale}/dashboard/folders/${image.folder.id}`
                                     }))
                                 },
                                 {
                                     title: "Links",
                                     icon: Link,
                                     url: "#",
-                                    items: []
+                                    items: links.map((link) => ({
+                                        title: `${link.permission.toString()} - ${link.folder.name}`,
+                                        url: `/${locale}/dashboard/folders/${link.folder.id}`
+                                    }))
                                 }
                             ],
                             navSecondayrItems: [],

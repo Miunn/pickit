@@ -118,3 +118,9 @@ const imageWithFolder = Prisma.validator<Prisma.ImageDefaultArgs>()({
 })
 
 export type ImageWithFolder = Prisma.ImageGetPayload<typeof imageWithFolder>
+
+const accessTokenWithFolder = Prisma.validator<Prisma.AccessTokenDefaultArgs>()({
+    include: { folder: true },
+})
+
+export type AccessTokenWithFolder = Prisma.AccessTokenGetPayload<typeof accessTokenWithFolder>

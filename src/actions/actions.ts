@@ -4,7 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/actions/auth";
 import * as fs from "fs";
 import { revalidatePath } from "next/cache";
-import { ImageLightWithFolderName, ImageWithFolder } from "@/lib/definitions";
+import { AccessTokenWithFolder, ImageLightWithFolderName, ImageWithFolder } from "@/lib/definitions";
+import { AccessToken } from "@prisma/client";
 
 export async function getLightFolders(): Promise<{
     lightFolders: { id: string; name: string; }[],
@@ -359,4 +360,30 @@ export async function deleteImages(imageIds: string[]) {
         await deleteImage(imageId);
     }
     return { error: null };
+}
+
+export async function getLinks(): Promise<{
+    error: string | null,
+    links: AccessTokenWithFolder[]
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to get links", links: [] }
+    }
+
+    const links = await prisma.accessToken.findMany({
+        include: {
+            folder: true
+        },
+        orderBy: [
+            {
+                folder: {
+                    name: "asc"
+                }
+            }
+        ]
+    });
+
+    return { error: null, links: links }
 }
