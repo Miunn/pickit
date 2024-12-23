@@ -45,6 +45,7 @@ export default async function LocaleLayout({
                                     title: "Folders",
                                     icon: Folder,
                                     url: "#",
+                                    isActive: true,
                                     items: folders.map((folder) => ({
                                         title: folder.name,
                                         url: `/${locale}/dashboard/folders/${folder.id}`
