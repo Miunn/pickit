@@ -55,6 +55,13 @@ export default function RenameFolderDialog({openState, setOpenState, folderId, f
             });
 
             setOpenState(false);
+        }).catch((r) => {
+            setLoading(false);
+            toast({
+                title: "Error",
+                description: `An error occurred while renaming the folder.`,
+                variant: "destructive"
+            });
         });
     }
 

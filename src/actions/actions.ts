@@ -109,7 +109,6 @@ export async function renameFolder(folderId: string, name: string): Promise<{
         },
         data: {
             name: name,
-            updatedAt: ""
         }
     });
 
