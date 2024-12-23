@@ -18,22 +18,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "./button"
 import { Input } from "./input"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  defaultSelected?: { [index: number]: boolean }
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  defaultSelected,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
-  const [filtering, setFiltering] = useState<string>();
-  const [rowSelection, setRowSelection] = useState({})
+  const [rowSelection, setRowSelection] = useState(defaultSelected || {})
 
   const table = useReactTable({
     data,
@@ -48,7 +49,6 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   })
-
   
   return (
     <div className="w-full">

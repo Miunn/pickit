@@ -65,7 +65,7 @@ export default async function LocaleLayout({
                                     url: "#",
                                     items: links.map((link) => ({
                                         title: `${link.permission.toString()} - ${link.folder.name}`,
-                                        url: `/${locale}/dashboard/folders/${link.folder.id}`
+                                        url: `/${locale}/dashboard/links?l=${link.id}`
                                     }))
                                 }
                             ],

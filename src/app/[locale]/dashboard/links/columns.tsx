@@ -10,7 +10,6 @@ import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, BadgeCheck, MoreHorizontal } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
-import { redirect, usePathname } from "next/navigation";
 
 export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
     {
