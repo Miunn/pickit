@@ -18,6 +18,8 @@ export default function HeaderBreadcumb() {
     const [pathListImages, setPathListImages] = useState<boolean>(false);
     const [pathFolder, setPathFolder] = useState<{ id: string; name: string; } | null>(null);
 
+    const [pathLinks, setPathLinks] = useState<boolean>(false);
+
     const getPathFolderName = async (folderId: string) => {
         const folder = await getFolderName(folderId);
 
@@ -37,6 +39,7 @@ export default function HeaderBreadcumb() {
             setPathListFolders(false);
             setPathListImages(false);
             setPathFolder(null);
+            setPathLinks(false);
         }
 
         if (tokens[0] === "dashboard" && tokens[1] === "folders" && tokens.length === 2) {
@@ -45,6 +48,7 @@ export default function HeaderBreadcumb() {
             setPathDashboard(false);
             setPathListImages(false);
             setPathFolder(null);
+            setPathLinks(false);
         }
 
         if (tokens[0] === "dashboard" && tokens[1] === "images" && tokens.length === 2) {
@@ -53,6 +57,7 @@ export default function HeaderBreadcumb() {
             setPathDashboard(false);
             setPathListFolders(false);
             setPathFolder(null);
+            setPathLinks(false);
         }
 
         if (tokens[0] === "dashboard" && tokens[1] === "folders" && tokens[2]) {
@@ -61,6 +66,16 @@ export default function HeaderBreadcumb() {
             setPathDashboard(false);
             setPathListFolders(false);
             setPathListImages(false);
+            setPathLinks(false);
+        }
+
+        if (tokens[0] === "dashboard" && tokens[1] === "links" && tokens.length === 2) {
+            setPathLinks(true);
+
+            setPathDashboard(false);
+            setPathListFolders(false);
+            setPathListImages(false);
+            setPathFolder(null);
         }
     }, [pathname]);
 
@@ -108,17 +123,13 @@ export default function HeaderBreadcumb() {
                         </BreadcrumbItem>
                     </>
                 ) : null}
-                {pathTokens[1] && pathTokens[1] == "images" ? (
+                {pathLinks ? (
                     <>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard/images">Images</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className="hidden md:block" />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage></BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbPage>Links</BreadcrumbPage>
+                    </BreadcrumbItem>
+                </>
                 ) : null}
             </BreadcrumbList>
         </Breadcrumb>
