@@ -1,5 +1,6 @@
 import { getAccessTokens } from "@/actions/actions";
-import LinksDataTable from "@/components/links/LinksDataTable";
+import { DataTable } from "@/components/ui/data-table";
+import { linksColumns } from "./columns";
 
 export default async function LinksPage() {
 
@@ -9,7 +10,7 @@ export default async function LinksPage() {
         <div>
             <h3 className="font-semibold">Manage links</h3>
 
-            <LinksDataTable accessTokens={accessTokens} />
+            <DataTable columns={linksColumns} data={accessTokens} />
         </div>
     )
 }
