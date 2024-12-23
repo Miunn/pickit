@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { AccessTokenWithFolder } from "@/lib/definitions"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, BadgeCheck, MoreHorizontal } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
@@ -74,6 +74,13 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         }
     },
     {
+        id: "active",
+        header: "Active",
+        cell: ({ row }) => {
+            return <Badge className="bg-green-600 hover:bg-green-700 flex gap-2 w-fit"><BadgeCheck /> Active</Badge>
+        }
+    },
+    {
         id: "actions",
         cell: ({ row }) => {
             const accessToken = row.original
@@ -88,7 +95,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                             <MoreHorizontal />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
+                    <DropdownMenuContent align="end" className="min-w-40">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
                             onClick={() => navigator.clipboard.writeText(link)}
@@ -101,6 +108,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                             View folder
                             </Link>
                         </DropdownMenuItem>
+                        <DropdownMenuItem>Set as inactive</DropdownMenuItem>
                         <DropdownMenuItem>Delete</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
