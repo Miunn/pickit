@@ -19,8 +19,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AccessToken } from "@prisma/client";
 import { z } from "zod";
+import { FolderWithAccessToken } from "@/lib/definitions";
 
-export const ShareFolderDialog = ({ folder }: { folder: any }) => {
+export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWithAccessToken, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
     const [emailList, setEmailList] = useState<string[]>([]);
     const [email, setEmail] = useState<string>("");
@@ -63,7 +64,7 @@ export const ShareFolderDialog = ({ folder }: { folder: any }) => {
         if (!emailScroll.current) {
             return;
         }
-        
+
         emailScroll.current!.scrollIntoView(false);
     }, [emailList]);
 
@@ -73,12 +74,12 @@ export const ShareFolderDialog = ({ folder }: { folder: any }) => {
     });
 
     return (
-        <Dialog>
-            <DialogTrigger asChild>
+        <Dialog open={open} onOpenChange={setOpen}>
+            {open && setOpen ? <DialogTrigger asChild>
                 <Button variant="outline">
                     <Share /> {t('trigger')}
                 </Button>
-            </DialogTrigger>
+            </DialogTrigger> : null}
             <DialogContent className="max-w-xl">
                 <DialogHeader>
                     <DialogTitle>{t('title')}</DialogTitle>

@@ -6,6 +6,7 @@ export default async function FoldersPage({ params }: { params: { locale: string
     const folders = await prisma.folder.findMany({
         include: {
             cover: true,
+            AccessToken: true,
             _count: {
                 select: { images: true }
             }

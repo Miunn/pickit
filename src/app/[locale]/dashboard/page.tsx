@@ -11,6 +11,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
         ] as any,
         include: {
             cover: true,
+            AccessToken: true,
             _count: {
                 select: { images: true }
             },

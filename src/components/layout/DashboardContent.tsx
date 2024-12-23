@@ -6,8 +6,9 @@ import {useTranslations} from "next-intl";
 import React from "react";
 import {LastUploadedImages} from "@/components/images/LastUploadedImages";
 import { Folder, Image } from "@prisma/client";
+import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount } from "@/lib/definitions";
 
-export default function DashboardContent({lastFolders, lastImages, locale}: { lastFolders: Folder[], lastImages: Image[], locale: string }) {
+export default function DashboardContent({lastFolders, lastImages, locale}: { lastFolders: (FolderWithAccessToken & FolderWithImagesCount & FolderWithCover)[], lastImages: Image[], locale: string }) {
 
     const t = useTranslations("dashboard");
 

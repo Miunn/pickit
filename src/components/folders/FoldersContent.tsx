@@ -3,9 +3,9 @@ import {Button} from "@/components/ui/button";
 import {FolderX, ImageUp, Settings2} from "lucide-react";
 import FolderPreview from "@/components/folders/FolderPreview";
 import {useTranslations} from "next-intl";
-import { Folder } from "@prisma/client";
+import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount } from "@/lib/definitions";
 
-export default function FoldersContent({ folders, locale }: { folders: Folder[], locale: string }) {
+export default function FoldersContent({ folders, locale }: { folders: (FolderWithAccessToken & FolderWithImagesCount & FolderWithCover)[], locale: string }) {
 
     const t = useTranslations("folders");
 

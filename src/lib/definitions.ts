@@ -89,6 +89,24 @@ const folderWithImages = Prisma.validator<Prisma.FolderDefaultArgs>()({
 
 export type FolderWithImages = Prisma.FolderGetPayload<typeof folderWithImages>
 
+const folderWithAccessToken = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { AccessToken: true }
+})
+
+export type FolderWithAccessToken = Prisma.FolderGetPayload<typeof folderWithAccessToken>
+
+const folderWithImagesCount = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { _count: { select: { images: true } } }
+})
+
+export type FolderWithImagesCount = Prisma.FolderGetPayload<typeof folderWithImagesCount>
+
+const folderWithCover = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { cover: true }
+})
+
+export type FolderWithCover = Prisma.FolderGetPayload<typeof folderWithCover>
+
 const imageWithFolder = Prisma.validator<Prisma.ImageDefaultArgs>()({
     include: { folder: true},
 })
