@@ -7,7 +7,7 @@ import { getMessages } from "next-intl/server";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { getLightFolders, getLightImages, getLinks } from "@/actions/actions";
+import { getLightFolders, getLightImages, getAccessTokens } from "@/actions/actions";
 import { Folder, Image, Link } from "lucide-react";
 import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
 import { auth } from "@/actions/auth";
@@ -32,7 +32,7 @@ export default async function LocaleLayout({
 
     const folders = (await getLightFolders()).lightFolders;
     const images = (await getLightImages()).lightImages;
-    const links = (await getLinks()).links;
+    const links = (await getAccessTokens()).accessTokens;
 
     return (
         <html lang={locale}>

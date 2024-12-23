@@ -362,14 +362,14 @@ export async function deleteImages(imageIds: string[]) {
     return { error: null };
 }
 
-export async function getLinks(): Promise<{
+export async function getAccessTokens(): Promise<{
     error: string | null,
-    links: AccessTokenWithFolder[]
+    accessTokens: AccessTokenWithFolder[]
 }> {
     const session = await auth();
 
     if (!session?.user) {
-        return { error: "You must be logged in to get links", links: [] }
+        return { error: "You must be logged in to get links", accessTokens: [] }
     }
 
     const links = await prisma.accessToken.findMany({
@@ -385,5 +385,5 @@ export async function getLinks(): Promise<{
         ]
     });
 
-    return { error: null, links: links }
+    return { error: null, accessTokens: links }
 }

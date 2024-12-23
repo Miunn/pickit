@@ -185,6 +185,11 @@
       }
     }
   },
+  "links": {
+    "page": {
+      "title": "Manage your access links"
+    }
+  },
   "NotFoundPage": {
     "description": "This page could not be found"
   }
