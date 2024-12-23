@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { toast } from "@/hooks/use-toast";
 import { AccessTokenWithFolder } from "@/lib/definitions"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, BadgeCheck, MoreHorizontal } from "lucide-react";
@@ -97,19 +98,23 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="min-w-40">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(link)}
-                        >
+                        <DropdownMenuItem onClick={() => {
+                            navigator.clipboard.writeText(link);
+                            toast({
+                                title: "Copied !",
+                                description: "Link copied to your clipboard"
+                            })
+                        }}>
                             Copy link
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem asChild>
                             <Link href={`http://localhost:3000/${locale}/dashboard/folders/${accessToken.folder.id}`} className="cursor-default">
                             View folder
                             </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>Set as inactive</DropdownMenuItem>
-                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                        <DropdownMenuItem className="text-red-600 focus:text-red-600 font-semibold">Delete</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             )
