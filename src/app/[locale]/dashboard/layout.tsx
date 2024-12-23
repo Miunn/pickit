@@ -7,9 +7,10 @@ import { getMessages } from "next-intl/server";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { getLightFolders } from "@/actions/actions";
+import { getLightFolders, getLightImages } from "@/actions/actions";
 import { Folder, Image, Link } from "lucide-react";
 import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
+import { auth } from "@/actions/auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,9 +27,11 @@ export default async function LocaleLayout({
     params: { locale: string };
 }>) {
 
+    const session = await auth();
     const messages = await getMessages();
 
     const folders = (await getLightFolders()).lightFolders;
+    const images = (await getLightImages()).lightImages;
 
     return (
         <html lang={locale}>
@@ -50,7 +53,10 @@ export default async function LocaleLayout({
                                     title: "Images",
                                     icon: Image,
                                     url: "#",
-                                    items: []
+                                    items: images.map((image) => ({
+                                        title: `${image.folder.name} - ${image.name}`,
+                                        url: `/dashboard/folders/${image.folder.id}`
+                                    }))
                                 },
                                 {
                                     title: "Links",
@@ -61,9 +67,9 @@ export default async function LocaleLayout({
                             ],
                             navSecondayrItems: [],
                             navUserItems: {
-                                name: "Dummy",
-                                email: "exemple@user.fr",
-                                avatar: ""
+                                name: session?.user?.name || "",
+                                email: session?.user?.email || "",
+                                avatar: session?.user?.name || ""
                             },
                         }} />
                         <SidebarInset>

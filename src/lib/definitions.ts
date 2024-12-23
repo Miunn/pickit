@@ -107,6 +107,12 @@ const folderWithCover = Prisma.validator<Prisma.FolderDefaultArgs>()({
 
 export type FolderWithCover = Prisma.FolderGetPayload<typeof folderWithCover>
 
+const imageLight = Prisma.validator<Prisma.ImageDefaultArgs>()({
+    select: { id: true, name: true, folder: { select: { id: true, name: true } } }
+})
+
+export type ImageLightWithFolderName = Prisma.ImageGetPayload<typeof imageLight>
+
 const imageWithFolder = Prisma.validator<Prisma.ImageDefaultArgs>()({
     include: { folder: true},
 })

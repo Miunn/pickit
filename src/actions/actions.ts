@@ -1,10 +1,10 @@
 "use server";
 
-import {prisma} from "@/lib/prisma";
-import {auth} from "@/actions/auth";
+import { prisma } from "@/lib/prisma";
+import { auth } from "@/actions/auth";
 import * as fs from "fs";
-import {revalidatePath} from "next/cache";
-import { ImageWithFolder } from "@/lib/definitions";
+import { revalidatePath } from "next/cache";
+import { ImageLightWithFolderName, ImageWithFolder } from "@/lib/definitions";
 
 export async function getLightFolders(): Promise<{
     lightFolders: { id: string; name: string; }[],
@@ -56,7 +56,7 @@ export async function createFolder(name: string): Promise<{
     const session = await auth();
 
     if (!session?.user) {
-        return {folder: null, error: "You must be logged in to create a folders"};
+        return { folder: null, error: "You must be logged in to create a folders" };
     }
 
     const readToken = crypto.randomUUID();
@@ -88,7 +88,7 @@ export async function createFolder(name: string): Promise<{
 
     revalidatePath("dashboard/folders");
     revalidatePath("dashboard");
-    return {folder: folder, error: null};
+    return { folder: folder, error: null };
 }
 
 export async function renameFolder(folderId: string, name: string): Promise<{
@@ -98,7 +98,7 @@ export async function renameFolder(folderId: string, name: string): Promise<{
     const session = await auth();
 
     if (!session?.user) {
-        return {folder: null, error: "You must be logged in to rename a folders"};
+        return { folder: null, error: "You must be logged in to rename a folders" };
     }
 
     const folder = await prisma.folder.update({
@@ -115,7 +115,7 @@ export async function renameFolder(folderId: string, name: string): Promise<{
 
     revalidatePath("dashboard/folders");
     revalidatePath("dashboard");
-    return {folder: folder, error: null};
+    return { folder: folder, error: null };
 }
 
 export async function changeFolderCover(folderId: string, coverId: string): Promise<{
@@ -124,7 +124,7 @@ export async function changeFolderCover(folderId: string, coverId: string): Prom
     const session = await auth();
 
     if (!session?.user) {
-        return {error: "You must be logged in to change a folder's cover"};
+        return { error: "You must be logged in to change a folder's cover" };
     }
 
     await prisma.folder.update({
@@ -149,7 +149,7 @@ export async function deleteFolder(folderId: string): Promise<any> {
     const session = await auth();
 
     if (!session?.user) {
-        return {error: "You must be logged in to delete a folders"};
+        return { error: "You must be logged in to delete a folders" };
     }
 
     const images = await prisma.image.findMany({
@@ -180,7 +180,43 @@ export async function deleteFolder(folderId: string): Promise<any> {
 
     revalidatePath("dashboard/folders");
     revalidatePath("dashboard");
-    return {error: null};
+    return { error: null };
+}
+
+export async function getLightImages(): Promise<{
+    error: string | null;
+    lightImages: ImageLightWithFolderName[];
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to get images", lightImages: [] }
+    }
+
+    const images = await prisma.image.findMany({
+        select: {
+            id: true,
+            name: true,
+            folder: {
+                select: {
+                    id: true,
+                    name: true
+                }
+            }
+        },
+        orderBy: [
+            {
+                folder: {
+                    name: "asc"
+                },
+            },
+            {
+                name: "asc"
+            }
+        ],
+    });
+
+    return { error: null, lightImages: images }
 }
 
 export async function uploadImages(parentFolderId: string, amount: number, formData: FormData): Promise<{
@@ -189,7 +225,7 @@ export async function uploadImages(parentFolderId: string, amount: number, formD
     const session = await auth();
 
     if (!session?.user) {
-        return {error: "You must be logged in to upload images"};
+        return { error: "You must be logged in to upload images" };
     }
 
     // Create folders if it doesn't exist
@@ -242,7 +278,7 @@ export async function uploadImages(parentFolderId: string, amount: number, formD
 
     revalidatePath("dashboard/folders/" + parentFolderId);
     revalidatePath("dashboard");
-    return {error: null};
+    return { error: null };
 }
 
 export async function getImagesWithFolderFromFolder(folderId: string): Promise<{
@@ -273,7 +309,7 @@ export async function deleteImage(imageId: string) {
     const session = await auth();
 
     if (!session?.user) {
-        return {error: "You must be logged in to delete images"};
+        return { error: "You must be logged in to delete images" };
     }
 
     // Check if user is authorized to delete this image
@@ -294,11 +330,11 @@ export async function deleteImage(imageId: string) {
     });
 
     if (!image) {
-        return {error: "Image not found"};
+        return { error: "Image not found" };
     }
 
     if (image.folder.createdBy.id !== session.user.id) {
-        return {error: "You are not authorized to delete this image"};
+        return { error: "You are not authorized to delete this image" };
     }
 
     await fs.unlink(process.cwd() + "/" + image.path, (err) => {
@@ -315,12 +351,12 @@ export async function deleteImage(imageId: string) {
 
     revalidatePath("dashboard/folders/" + image.folder.id);
     revalidatePath("dashboard");
-    return {error: null};
+    return { error: null };
 }
 
 export async function deleteImages(imageIds: string[]) {
     for (const imageId of imageIds) {
         await deleteImage(imageId);
     }
-    return {error: null};
+    return { error: null };
 }
