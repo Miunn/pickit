@@ -163,7 +163,7 @@ export async function deleteFolder(folderId: string): Promise<any> {
     });
 
     for (const image of images) {
-        await fs.unlink(process.cwd() + "/" + image.path, (err) => {
+        fs.unlink(process.cwd() + "/" + image.path, (err) => {
             if (err) {
                 console.error("Error deleting file", err);
             }

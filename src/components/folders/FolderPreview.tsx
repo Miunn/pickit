@@ -4,7 +4,15 @@ import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount } from "@
 
 export default function FolderPreview({folder, locale}: { folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover, locale: string }) {
 
-    const file = folder.cover ? fs.readFileSync(process.cwd() + "/" + folder.cover.path) : "";
+    function getFile() {
+        try {
+            return folder.cover ? fs.readFileSync(process.cwd() + "/" + folder.cover.path) : "";
+        } catch (e) {
+            return "";
+        }
+    }
+
+    const file = getFile();
     const base = `data:image/png;base64,${file.toString('base64')}`;
 
     return (

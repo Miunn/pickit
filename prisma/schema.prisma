@@ -47,7 +47,7 @@ model Image {
 model AccessToken {
   id         String                @id @default(cuid())
   token      String                @unique @default(cuid())
-  folder     Folder                @relation(fields: [folderId], references: [id])
+  folder     Folder                @relation(fields: [folderId], references: [id], onDelete: Cascade)
   folderId   String
   permission FolderTokenPermission @default(READ)
   expires    DateTime
