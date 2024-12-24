@@ -52,3 +52,20 @@ export async function changeAccessTokenActiveState(token: string, isActive: bool
     revalidatePath("/dashboard/links");
     return { error: null }
 }
+
+export async function deleteAccessToken(token: string): Promise<{ error: string | null}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to delete an access token" }
+    }
+
+    await prisma.accessToken.delete({
+        where: {
+            token: token
+        }
+    })
+
+    revalidatePath("/dashboard/links");
+    return { error: null }
+}
