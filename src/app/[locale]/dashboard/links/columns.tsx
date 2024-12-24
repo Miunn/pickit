@@ -1,5 +1,6 @@
 "use client"
 
+import { changeAccessTokenActiveState } from "@/actions/accessTokens";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -7,7 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { toast } from "@/hooks/use-toast";
 import { AccessTokenWithFolder } from "@/lib/definitions"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, BadgeCheck, Eye, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, BadgeCheck, BadgeMinus, Eye, MoreHorizontal } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 
@@ -66,10 +67,16 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         }
     },
     {
-        id: "active",
-        header: "Active",
+        accessorKey: "isActive",
+        header: "Is active",
         cell: ({ row }) => {
-            return <Badge className="bg-green-600 hover:bg-green-700 flex gap-2 w-fit"><BadgeCheck /> Active</Badge>
+            const isActive: boolean = row.getValue("isActive")
+            return <>
+                {isActive
+                    ? <Badge className="bg-green-600 hover:bg-green-700 flex gap-2 w-fit">< BadgeCheck /> Active</Badge >
+                    : <Badge className="bg-red-600 hover:bg-red-700 flex gap-2 w-fit"><BadgeMinus /> Inactive</Badge>
+                }
+            </>
         }
     },
     {
@@ -78,7 +85,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         cell: ({ row }) => {
             const uses: string = row.getValue("uses") ?? 0;
             return <p className="flex items-center text-muted-foreground">
-                <Eye className="mr-2" /> { uses } views
+                <Eye className="mr-2" /> {uses} views
             </p>
         }
     },
@@ -119,10 +126,13 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                             <Link href={`http://localhost:3000/${locale}/dashboard/folders/${accessToken.folder.id}`} className="cursor-default">
-                            View folder
+                                View folder
                             </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>Set as inactive</DropdownMenuItem>
+                        {accessToken.isActive
+                            ? <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, false)}>Set as inactive</DropdownMenuItem>
+                            : <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, true)}>Set as active</DropdownMenuItem>
+                        }
                         <DropdownMenuItem className="text-red-600 focus:text-red-600 font-semibold">Delete</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

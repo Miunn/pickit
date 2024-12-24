@@ -1,32 +1,25 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 
-export async function GET(req: NextRequest, { params }: { params: {folder: string} }) {
+export async function GET(req: NextRequest) {
     const shareToken = req.nextUrl.searchParams.get("share");
 
     if (!shareToken) {
         return Response.json({ error: "Missing share token param" }, { status: 400 })
     }
 
-    const folder = await prisma.folder.findUnique({
+    const accessToken = await prisma.accessToken.findUnique({
         where: {
-            id: params.folder
+            token: shareToken
         },
-        include: {
-            AccessToken: true
-        }
     });
 
-    console.log(`Folder ${folder?.name} tokens:`, folder?.AccessToken);
-
-    if (!folder?.AccessToken) {
+    if (!accessToken) {
         return Response.json({ result: "invalid-token" })
     }
 
-    for (const token of folder.AccessToken) {
-        if (token.token === shareToken) {
-            return Response.json({ result: "valid-token", permission: token.permission })
-        }
+    if (accessToken.isActive) {
+        return Response.json({ result: "valid-token", permission: accessToken.permission })
     }
 
     return Response.json({ result: "invalid-token" });

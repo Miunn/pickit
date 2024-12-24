@@ -30,3 +30,25 @@ export async function getAccessTokens(): Promise<{
 
     return { error: null, accessTokens: links }
 }
+
+export async function changeAccessTokenActiveState(token: string, isActive: boolean): Promise<{
+    error: string | null,
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to change token state" }
+    }
+
+    await prisma.accessToken.update({
+        where: {
+            token: token
+        },
+        data: {
+            isActive: isActive
+        }
+    });
+
+    revalidatePath("/dashboard/links");
+    return { error: null }
+}
