@@ -67,7 +67,13 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(defaultSignInUrl);
     }
 
-    if (publicPathnameRegex.test(pathname) || (await isValidShareLink(params(req.url).folderId, req.nextUrl.searchParams.get("share")))) {
+    if (publicPathnameRegex.test(pathname)) {
+        return handleI18nRouting(req);
+    }
+
+    if (req.nextUrl.searchParams.get("share") && await isValidShareLink(params(req.url).folderId, req.nextUrl.searchParams.get("share"))) {
+        await fetch(`${process.env.NEXTAUTH_URL}/api/tokens/increment?token=${req.nextUrl.searchParams.get("share")}`);
+
         return handleI18nRouting(req);
     }
 

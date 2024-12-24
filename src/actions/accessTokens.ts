@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/actions/auth";
 import { AccessTokenWithFolder, ImageLightWithFolderName, ImageWithFolder } from "@/lib/definitions";
+import { revalidatePath } from "next/cache";
 
 export async function getAccessTokens(): Promise<{
     error: string | null,

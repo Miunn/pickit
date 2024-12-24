@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
-import { permission } from "process";
 
 export async function GET(req: NextRequest, { params }: { params: {folder: string} }) {
     const shareToken = req.nextUrl.searchParams.get("share");
