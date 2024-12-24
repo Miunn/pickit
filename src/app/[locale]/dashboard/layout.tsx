@@ -44,7 +44,7 @@ export default async function LocaleLayout({
                                 {
                                     title: "Folders",
                                     icon: Folder,
-                                    url: "#",
+                                    url: `/${locale}/dashboard/folders`,
                                     isActive: true,
                                     items: folders.map((folder) => ({
                                         title: folder.name,
@@ -54,7 +54,7 @@ export default async function LocaleLayout({
                                 {
                                     title: "Images",
                                     icon: Image,
-                                    url: "#",
+                                    url: `/${locale}/dashboard/images`,
                                     items: images.map((image) => ({
                                         title: `${image.folder.name} - ${image.name}`,
                                         url: `/${locale}/dashboard/folders/${image.folder.id}`
@@ -63,7 +63,7 @@ export default async function LocaleLayout({
                                 {
                                     title: "Links",
                                     icon: Link,
-                                    url: "#",
+                                    url: `/${locale}/dashboard/links`,
                                     items: links.map((link) => ({
                                         title: `${link.permission.toString()} - ${link.folder.name}`,
                                         url: `/${locale}/dashboard/links?l=${link.id}`
