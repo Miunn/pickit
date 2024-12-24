@@ -12,7 +12,7 @@ import {useTranslations} from "next-intl";
 import {Button} from "@/components/ui/button";
 import {useState} from "react";
 import {Loader2} from "lucide-react";
-import {deleteImage} from "@/actions/actions";
+import {deleteImage} from "@/actions/images";
 import {toast} from "@/hooks/use-toast";
 
 export const DeleteImageDialog = ({image, open, setOpen}: { image: any, open: boolean, setOpen: any }) => {

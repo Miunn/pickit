@@ -14,7 +14,7 @@ import { toast } from "@/hooks/use-toast";
 import { ShareFolderDialog } from "./ShareFolderDialog";
 import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, ImageWithFolder } from "@/lib/definitions";
 import ChangeCoverFolderDialog from "./ChangeCoverFolderDialog";
-import { getImagesWithFolderFromFolder } from "@/actions/actions";
+import { getImagesWithFolderFromFolder } from "@/actions/images";
 
 export default function FolderPreviewClient({ folder, coverB64, locale }: {
     folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover,
@@ -92,7 +92,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                         </Link>
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenRename(true)}>{t('dialog.rename.trigger')}</ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenChangeCover(true)}>Change cover</ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenChangeCover(true)} disabled={folderImages.length === 0}>Change cover</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenShare(true)}>Share</ContextMenuItem>
                     <ContextMenuItem onClick={() => {
                         toast({
@@ -100,8 +100,8 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                             description: "Your download will start shortly",
                         });
                         downloadFolder(folder)
-                    }}>{t('actions.download')}</ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenDelete(true)}>{t('dialog.delete.trigger')}</ContextMenuItem>
+                    }} disabled={folderImages.length === 0}>{t('actions.download')}</ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenDelete(true)} className="text-red-600 focus:text-red-600 font-semibold">{t('dialog.delete.trigger')}</ContextMenuItem>
                 </ContextMenuContent>
             </ContextMenu>
             <RenameFolderDialog folderId={folder.id} folderName={folder.name} openState={openRename}

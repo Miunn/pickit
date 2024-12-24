@@ -5,7 +5,7 @@ import ImagesCarousel from "../images/ImagesCarousel";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
-import { changeFolderCover } from "@/actions/actions";
+import { changeFolderCover } from "@/actions/folders";
 import { toast } from "@/hooks/use-toast";
 
 export default function ChangeCoverFolderDialog({ images, open, setOpen }: { images: ImageWithFolder[], open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {

@@ -16,7 +16,7 @@ import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, Form
 import {zodResolver} from "@hookform/resolvers/zod"
 import {useForm} from "react-hook-form"
 import {z} from "zod"
-import {renameFolder} from "@/actions/actions";
+import {renameFolder} from "@/actions/folders";
 import {useState} from "react";
 import {toast} from "@/hooks/use-toast";
 import {useTranslations} from "next-intl";

@@ -2,29 +2,11 @@
 
 import { ImagePreview } from "@/components/images/ImagePreview";
 import React, { useEffect, useState } from "react";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
-} from "@/components/ui/dialog";
-import {
-    Carousel,
-    CarouselApi,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious
-} from "@/components/ui/carousel";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
-import { deleteImage, deleteImages, uploadImages } from "@/actions/actions";
 import { useTranslations } from "next-intl";
-import { toast } from "@/hooks/use-toast";
 import { DeleteImageDialog } from "@/components/images/DeleteImageDialog";
 import { Button } from "@/components/ui/button";
-import { ImageOff, Loader2, Trash, Trash2, X } from "lucide-react";
+import { Loader2, Trash2, X } from "lucide-react";
 import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
 import { CarouselDialog } from "@/components/images/CarouselDialog";
 import { Image } from "@prisma/client";

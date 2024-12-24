@@ -4,8 +4,7 @@ import { usePathname } from "next/navigation";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
-import { getFolderName } from "@/actions/actions";
-import { Folder } from "@prisma/client";
+import { getFolderName } from "@/actions/folders";
 
 export default function HeaderBreadcumb() {
 

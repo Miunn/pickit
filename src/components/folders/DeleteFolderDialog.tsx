@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";
-import {deleteFolder, renameFolder} from "@/actions/actions";
+import {deleteFolder} from "@/actions/folders";
 import {useState} from "react";
 import {toast} from "@/hooks/use-toast";
 import {useTranslations} from "next-intl";

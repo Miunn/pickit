@@ -1,4 +1,4 @@
-import { getAccessTokens } from "@/actions/actions";
+import { getAccessTokens } from "@/actions/accessTokens";
 import { DataTable } from "@/components/ui/data-table";
 import { linksColumns } from "./columns";
 

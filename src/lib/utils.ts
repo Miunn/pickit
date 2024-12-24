@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import { Folder } from "@prisma/client";
 import { UploadImagesFormSchema } from "./definitions";
 import { z } from "zod";
-import { uploadImages } from "@/actions/actions";
+import { uploadImages } from "@/actions/images";
 import { toast } from "@/hooks/use-toast";
 import { UseFormReturn } from "react-hook-form";
 

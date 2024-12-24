@@ -7,10 +7,12 @@ import { getMessages } from "next-intl/server";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { getLightFolders, getLightImages, getAccessTokens } from "@/actions/actions";
 import { Folder, Image, Link } from "lucide-react";
 import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
 import { auth } from "@/actions/auth";
+import { getLightFolders } from "@/actions/folders";
+import { getLightImages } from "@/actions/images";
+import { getAccessTokens } from "@/actions/accessTokens";
 
 const inter = Inter({ subsets: ["latin"] });
 

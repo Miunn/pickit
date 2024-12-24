@@ -12,7 +12,7 @@ import {useTranslations} from "next-intl";
 import {Button} from "@/components/ui/button";
 import React, {useState} from "react";
 import {Loader2} from "lucide-react";
-import {deleteImage, deleteImages} from "@/actions/actions";
+import {deleteImages} from "@/actions/images";
 import {toast} from "@/hooks/use-toast";
 
 export const DeleteMultipleImagesDialog = ({images, open, setOpen, setSelected, setSelecting}: { images: any[], open: boolean, setOpen: any, setSelected: React.Dispatch<React.SetStateAction<string[]>>, setSelecting: React.Dispatch<React.SetStateAction<boolean>> }) => {
