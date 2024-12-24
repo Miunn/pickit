@@ -1,6 +1,4 @@
-import CreateFolderDialog from "@/components/folders/CreateFolderDialog";
-import {Button} from "@/components/ui/button";
-import {FolderX, ImageUp, Settings2} from "lucide-react";
+import {FolderX} from "lucide-react";
 import FolderPreview from "@/components/folders/FolderPreview";
 import {useTranslations} from "next-intl";
 import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount } from "@/lib/definitions";
