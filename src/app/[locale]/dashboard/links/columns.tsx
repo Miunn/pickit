@@ -66,18 +66,18 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         }
     },
     {
+        id: "active",
+        header: "Active",
+        cell: ({ row }) => {
+            return <Badge className="bg-green-600 hover:bg-green-700 flex gap-2 w-fit"><BadgeCheck /> Active</Badge>
+        }
+    },
+    {
         accessorKey: "createdAt",
         header: "Created at",
         cell: ({ row }) => {
             const date: Date = row.getValue("createdAt");
             return <p className="capitalize">{date.toLocaleDateString(undefined, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
-        }
-    },
-    {
-        id: "active",
-        header: "Active",
-        cell: ({ row }) => {
-            return <Badge className="bg-green-600 hover:bg-green-700 flex gap-2 w-fit"><BadgeCheck /> Active</Badge>
         }
     },
     {
