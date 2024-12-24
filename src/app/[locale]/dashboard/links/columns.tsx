@@ -7,7 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { toast } from "@/hooks/use-toast";
 import { AccessTokenWithFolder } from "@/lib/definitions"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, BadgeCheck, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, BadgeCheck, Eye, MoreHorizontal } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 
@@ -70,6 +70,16 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         header: "Active",
         cell: ({ row }) => {
             return <Badge className="bg-green-600 hover:bg-green-700 flex gap-2 w-fit"><BadgeCheck /> Active</Badge>
+        }
+    },
+    {
+        accessorKey: "uses",
+        header: "Views",
+        cell: ({ row }) => {
+            const uses: string = row.getValue("uses") ?? 0;
+            return <p className="flex items-center text-muted-foreground">
+                <Eye className="mr-2" /> { uses } views
+            </p>
         }
     },
     {

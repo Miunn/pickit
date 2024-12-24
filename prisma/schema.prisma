@@ -49,6 +49,7 @@ model AccessToken {
   token      String                @unique @default(cuid())
   folder     Folder                @relation(fields: [folderId], references: [id], onDelete: Cascade)
   folderId   String
+  uses       Int                   @default(0)
   permission FolderTokenPermission @default(READ)
   expires    DateTime
   createdAt  DateTime              @default(now())
