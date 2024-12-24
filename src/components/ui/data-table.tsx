@@ -26,12 +26,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   defaultSelected?: { [index: number]: boolean }
+  rightHeadingNodes?: React.ReactNode
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   defaultSelected,
+  rightHeadingNodes
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [rowSelection, setRowSelection] = useState(defaultSelected || {})
@@ -52,7 +54,7 @@ export function DataTable<TData, TValue>({
   
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
+      <div className="flex items-center justify-between py-4">
         <Input
           placeholder="Filter..."
           value={(table.getColumn("folder_name")?.getFilterValue() as string) ?? ""}
@@ -61,6 +63,10 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+
+        <div>
+          {rightHeadingNodes}
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>

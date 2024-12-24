@@ -2,8 +2,10 @@
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/actions/auth";
-import { AccessTokenWithFolder, ImageLightWithFolderName, ImageWithFolder } from "@/lib/definitions";
+import { AccessTokenWithFolder, CreateAccessTokenFormSchema, ImageLightWithFolderName, ImageWithFolder } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
+import { FolderTokenPermission } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export async function getAccessTokens(): Promise<{
     error: string | null,
@@ -31,6 +33,51 @@ export async function getAccessTokens(): Promise<{
     return { error: null, accessTokens: links }
 }
 
+export async function createNewAccessToken(folderId: string, permission: FolderTokenPermission, expiryDate: Date): Promise<{
+    error: string | null
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to create a new access token" }
+    }
+
+    try {
+        CreateAccessTokenFormSchema.safeParse({
+            folderId,
+            permission,
+            expiryDate
+        });
+    } catch (e: any) {
+        return { error: e.message };
+    }
+
+    const token = crypto.randomUUID();
+    try {
+        await prisma.accessToken.create({
+            data: {
+                folder: {
+                    connect: {
+                        id: folderId
+                    }
+                },
+                token: token,
+                permission: permission,
+                expires: expiryDate
+            }
+        });
+        revalidatePath("/dashboard/links");
+        return { error: null }
+    } catch (e) {
+        if (e instanceof PrismaClientKnownRequestError) {
+            if (e.code === "P2025") {
+                return { error: "Provided folder can't be found in database" }
+            }
+        }
+        return { error: "Unknow error happened when trying to create accesss token" }
+    }
+}
+
 export async function changeAccessTokenActiveState(token: string, isActive: boolean): Promise<{
     error: string | null,
 }> {
@@ -53,7 +100,7 @@ export async function changeAccessTokenActiveState(token: string, isActive: bool
     return { error: null }
 }
 
-export async function deleteAccessToken(token: string): Promise<{ error: string | null}> {
+export async function deleteAccessToken(token: string): Promise<{ error: string | null }> {
     const session = await auth();
 
     if (!session?.user) {

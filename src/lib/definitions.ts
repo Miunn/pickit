@@ -1,4 +1,5 @@
-import { Prisma } from '@prisma/client';
+import { FolderTokenPermission, Prisma } from '@prisma/client';
+import { permission } from 'process';
 import { z } from 'zod'
 
 export type SessionPayload = {
@@ -71,6 +72,18 @@ export const UploadImagesFormSchema = z.object({
             })
 });
 
+export const CreateAccessTokenFormSchema = z.object({
+    folder: z.string().max(255, {
+        message: "Choosen folder is invalid"
+    }),
+    permission: z.nativeEnum(FolderTokenPermission),
+    expiresAt: z.date({
+        required_error: "Please select an expiry date",
+        invalid_type_error: "Selected date is invalid",
+    }).min(new Date(), {
+        message: "Expiry date should be in the future"
+    })
+})
 
 export type SignInFormState =
     | {
@@ -82,6 +95,12 @@ export type SignInFormState =
     }
     | undefined
 
+
+const lightFolders = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    select: { id: true, name: true }
+})
+
+export type LightFolder = Prisma.FolderGetPayload<typeof lightFolders>
 
 const folderWithImages = Prisma.validator<Prisma.FolderDefaultArgs>()({
     include: { images: true },
@@ -114,7 +133,7 @@ const imageLight = Prisma.validator<Prisma.ImageDefaultArgs>()({
 export type ImageLightWithFolderName = Prisma.ImageGetPayload<typeof imageLight>
 
 const imageWithFolder = Prisma.validator<Prisma.ImageDefaultArgs>()({
-    include: { folder: true},
+    include: { folder: true },
 })
 
 export type ImageWithFolder = Prisma.ImageGetPayload<typeof imageWithFolder>

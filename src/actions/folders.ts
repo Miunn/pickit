@@ -4,9 +4,10 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/actions/auth";
 import * as fs from "fs";
 import { revalidatePath } from "next/cache";
+import { LightFolder } from "@/lib/definitions";
 
 export async function getLightFolders(): Promise<{
-    lightFolders: { id: string; name: string; }[],
+    lightFolders: LightFolder[],
     error?: string | null
 }> {
     const session = await auth();
@@ -26,7 +27,7 @@ export async function getLightFolders(): Promise<{
 }
 
 export async function getFolderName(id: string): Promise<{
-    folder?: { id: string; name: string; } | null,
+    folder?: LightFolder | null,
     error?: string | null
 }> {
     const session = await auth();

@@ -1,0 +1,181 @@
+"use client"
+
+import { Button } from "../ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import { useState } from "react";
+import { CalendarIcon, Loader2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CreateAccessTokenFormSchema, LightFolder } from "@/lib/definitions";
+import { z } from "zod";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { cn } from "@/lib/utils";
+import { Calendar } from "../ui/calendar";
+import { addYears, format } from "date-fns";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { createNewAccessToken } from "@/actions/accessTokens";
+import { toast } from "@/hooks/use-toast";
+
+export default function CreateAccessTokenDialog({ children, folders }: { children?: React.ReactNode, folders: LightFolder[] }) {
+
+    const [loading, setLoading] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
+
+    const newTokenForm = useForm<z.infer<typeof CreateAccessTokenFormSchema>>({
+        resolver: zodResolver(CreateAccessTokenFormSchema),
+        defaultValues: {
+            folder: folders[0].id,
+            permission: "READ",
+            expiresAt: addYears(new Date(), 1)
+        }
+    })
+
+    async function submit(data: z.infer<typeof CreateAccessTokenFormSchema>) {
+        setLoading(true);
+
+        const r = await createNewAccessToken(data.folder, data.permission, data.expiresAt);
+
+        setLoading(false);
+
+        if (r.error) {
+            toast({
+                title: "Error",
+                description: "An error happened when trying to create sharing link",
+                variant: "destructive"
+            });
+            return;
+        }
+
+        toast({
+            title: "Sharing link created",
+            description: "New sharing link successfully created"
+        });
+
+        setOpen(false);
+    }
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            {children}
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Create a new sharing link</DialogTitle>
+                    <DialogDescription>Select a folder and permissions to create a new access token</DialogDescription>
+                </DialogHeader>
+                <Form {...newTokenForm}>
+                    <form onSubmit={newTokenForm.handleSubmit(submit)} className="space-y-6">
+                        <FormField
+                            control={newTokenForm.control}
+                            name="folder"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Folder</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select a folder" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {folders.map((folder) => (
+                                                <SelectItem key={folder.id} value={folder.id}>{folder.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={newTokenForm.control}
+                            name="permission"
+                            render={({ field }) => (
+                                <FormItem className="space-y-1">
+                                    <FormLabel>People should be able to...</FormLabel>
+                                    <FormControl>
+                                        <RadioGroup
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                            className="flex flex-col space-y-px"
+                                        >
+                                            <FormItem className="flex items-center space-x-3 space-y-0">
+                                                <FormControl>
+                                                    <RadioGroupItem value="READ" />
+                                                </FormControl>
+                                                <FormLabel className="font-normal">
+                                                    Read
+                                                </FormLabel>
+                                            </FormItem>
+                                            <FormItem className="flex items-center space-x-3 space-y-0">
+                                                <FormControl>
+                                                    <RadioGroupItem value="WRITE" />
+                                                </FormControl>
+                                                <FormLabel className="font-normal">
+                                                    Write
+                                                </FormLabel>
+                                            </FormItem>
+                                        </RadioGroup>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={newTokenForm.control}
+                            name="expiresAt"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                    <FormLabel>Expiry date</FormLabel>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant={"outline"}
+                                                    className={cn(
+                                                        "text-left font-normal",
+                                                        !field.value && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    {field.value ? (
+                                                        format(field.value, "PPP")
+                                                    ) : (
+                                                        <span>Pick a date</span>
+                                                    )}
+                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                disabled={(date) => date < new Date()}
+                                                initialFocus
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+                                    <FormDescription>
+                                        Link will be invalid after this date
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <DialogFooter className="mt-4">
+                            <DialogClose asChild>
+                                <Button variant="outline">Cancel</Button>
+                            </DialogClose>
+                            {loading
+                                ? <Button type="button" disabled={true}><Loader2 className={"mr-2 animate-spin"} /> Creating</Button>
+                                : <Button type="submit">Create</Button>
+                            }
+                        </DialogFooter>
+                    </form>
+                </Form>
+            </DialogContent>
+        </Dialog>
+    )
+}
