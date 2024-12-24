@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
-import { Share, X } from "lucide-react";
+import { Share, Share2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -75,9 +75,9 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            {open && setOpen ? <DialogTrigger asChild>
+            {!open && !setOpen ? <DialogTrigger asChild>
                 <Button variant="outline">
-                    <Share /> {t('trigger')}
+                    <Share2 className="mr-2" /> {t('trigger')}
                 </Button>
             </DialogTrigger> : null}
             <DialogContent className="max-w-xl">
