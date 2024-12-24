@@ -1,16 +1,15 @@
 import {NextRequest, NextResponse} from "next/server";
 import {auth} from "@/actions/auth";
 import {prisma} from "@/lib/prisma";
-import JSZip from "jszip";
 import fs from "fs";
 
-export async function GET(req: NextRequest, { params }: { params: {image: string} }) {
+export async function GET(req: NextRequest, { params }: { params: {image: string} }): Promise<NextResponse> {
     const accessKey = req.nextUrl.searchParams.get("accessKey");
     if (!accessKey) {
         const session = await auth();
 
         if (!session?.user) {
-            return {error: "You must be logged in to load image"};
+            return NextResponse.json({error: "You must be logged in to load image"});
         }
 
         const image = await prisma.image.findUnique({
@@ -23,7 +22,7 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
         });
 
         if (!image) {
-            return {error: "Image not found"};
+            return NextResponse.json({error: "Image not found"});
         }
 
         const buffer = await fs.promises.readFile(image.path);
@@ -35,11 +34,18 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
         const access = await prisma.accessToken.findUnique({
             where: {
                 token: accessKey
+            },
+            include: {
+                folder: {
+                    select: {
+                        id: true
+                    }
+                }
             }
         });
 
         if (!access) {
-            return {error: "Invalid access key"};
+            return NextResponse.json({error: "Invalid access key"});
         }
 
         const image = await prisma.image.findUnique({
@@ -52,7 +58,7 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
         });
 
         if (!image) {
-            return {error: "Image not found"};
+            return NextResponse.json({error: "Image not found"});
         }
 
         const buffer = await fs.promises.readFile(image.path);
