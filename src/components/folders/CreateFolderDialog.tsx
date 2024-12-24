@@ -8,7 +8,7 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog";
-import {Button} from "@/components/ui/button";
+import {Button, buttonVariants} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {FolderPlus, Loader2} from "lucide-react";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
@@ -22,7 +22,7 @@ import {toast} from "@/hooks/use-toast";
 import {useTranslations} from "next-intl";
 import {CreateFolderFormSchema} from "@/lib/definitions";
 
-export default function CreateFolderDialog() {
+export default function CreateFolderDialog({ children }: { children: React.ReactNode }) {
 
     const t = useTranslations("folders.actions");
 
@@ -62,11 +62,7 @@ export default function CreateFolderDialog() {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant="outline" className={"w-fit flex items-center"}>
-                    <FolderPlus className={"mr-2"}/> {t('create')}
-                </Button>
-            </DialogTrigger>
+            { children }
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>New Folder</DialogTitle>

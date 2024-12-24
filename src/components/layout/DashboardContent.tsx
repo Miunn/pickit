@@ -15,7 +15,6 @@ export default function DashboardContent({lastFolders, lastImages, locale}: { la
     return (
         <div className="flex flex-col flex-grow">
             <div className={"flex gap-4 mb-10"}>
-                <CreateFolderDialog/>
                 <Button variant="outline">
                     <ImageUp className={"mr-2"}/> {'uploadImages'}
                 </Button>

@@ -24,6 +24,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { Button } from "./ui/button"
+import CreateFolderDialog from "./folders/CreateFolderDialog"
+import { DialogTrigger } from "./ui/dialog"
 
 export interface AppSidebarProps {
   navMainItems: NavMainItems;
@@ -33,7 +36,7 @@ export interface AppSidebarProps {
 
 export function AppSidebar({ items, ...props }: {
   items: AppSidebarProps & React.ComponentProps<typeof Sidebar>
-} ) {
+}) {
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -50,6 +53,15 @@ export function AppSidebar({ items, ...props }: {
                 </div>
               </a>
             </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <CreateFolderDialog>
+              <DialogTrigger asChild>
+                <Button variant={"outline"} className="w-full">New folder</Button>
+              </DialogTrigger>
+            </CreateFolderDialog>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
