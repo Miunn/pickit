@@ -11,17 +11,7 @@ export default function FoldersContent({ folders, locale }: { folders: (FolderWi
 
     return (
         <main className="flex flex-col flex-grow">
-            <div className={"flex gap-4 mb-10"}>
-                <CreateFolderDialog/>
-                <Button variant="outline">
-                    <ImageUp className={"mr-2"}/> {t('actions.upload')}
-                </Button>
-                <Button variant="outline">
-                    <Settings2 className={"mr-2"}/> {t('actions.manage')}
-                </Button>
-            </div>
-
-            <h2 className={"font-semibold mb-5"}>{t('page.subtitle')}</h2>
+            <h3 className={"font-semibold mb-5"}>{t('page.subtitle')}</h3>
 
             <div className={`flex flex-wrap gap-6 ${folders.length == 0 && "justify-center"} mb-10`}>
                 {folders.length == 0
