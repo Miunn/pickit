@@ -15,6 +15,7 @@
 
 # production
 /build
+/drive/*
 
 # misc
 .DS_Store
