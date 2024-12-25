@@ -101,6 +101,14 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         }
     },
     {
+        accessorKey: "expires",
+        header: "Expire at",
+        cell: ({ row }) => {
+            const date: Date = row.getValue("expires");
+            return <p className="capitalize">{date.toLocaleDateString(undefined, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
+        }
+    },
+    {
         id: "actions",
         cell: ({ row }) => {
             const accessToken = row.original
@@ -141,7 +149,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                             <DropdownMenuItem onClick={() => setDeleteOpen(true)} className="text-red-600 focus:text-red-600 font-semibold">Delete</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <DeleteAccessTokenDialog token={accessToken.token} openState={deleteOpen} setOpenState={setDeleteOpen} />
+                    <DeleteAccessTokenDialog tokens={[accessToken.token]} openState={deleteOpen} setOpenState={setDeleteOpen} />
                 </>
             )
         },
