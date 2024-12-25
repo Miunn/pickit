@@ -26,7 +26,7 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
     const newTokenForm = useForm<z.infer<typeof CreateAccessTokenFormSchema>>({
         resolver: zodResolver(CreateAccessTokenFormSchema),
         defaultValues: {
-            folder: folders[0].id,
+            folder: folders[0] ? folders[0].id : undefined,
             permission: "READ",
             expiresAt: addYears(new Date(), 1)
         }
