@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
-import { Share, Share2, X } from "lucide-react";
+import { Share2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -20,6 +20,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { AccessToken } from "@prisma/client";
 import { z } from "zod";
 import { FolderWithAccessToken } from "@/lib/definitions";
+import { read } from "node:fs";
+import { createNewAccessToken } from "@/actions/accessTokens";
+import { addYears } from "date-fns";
 
 export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWithAccessToken, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
@@ -69,8 +72,16 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
     }, [emailList]);
 
     useEffect(() => {
-        setReadShareLink(`${window.location.origin}/dashboard/folders/${folder.id}?share=${folder.AccessToken.filter((token: AccessToken) => token.permission === "READ")[0].token}`);
-        setWriteShareLink(`${window.location.origin}/dashboard/folders/${folder.id}?share=${folder.AccessToken.filter((token: AccessToken) => token.permission === "WRITE")[0].token}`);
+        const readToken = folder.AccessToken.filter((token: AccessToken) => token.permission === "READ")[0]?.token;
+        const writeToken = folder.AccessToken.filter((token: AccessToken) => token.permission === "WRITE")[0]?.token;
+
+        if (readToken) {
+            setReadShareLink(`${window.location.origin}/dashboard/folders/${folder.id}?share=${readToken}`);
+        }
+
+        if (writeToken) {
+            setWriteShareLink(`${window.location.origin}/dashboard/folders/${folder.id}?share=${writeToken}`);
+        }
     });
 
     return (
@@ -92,16 +103,26 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                 }}>
                     <p className="text-sm text-nowrap">Read-only link</p>
                     <Input placeholder={t('fields.link.placeholder')} disabled={true}
-                        value={readShareLink} />
-                    <Button onClick={() => copyToClipboard(readShareLink)}>
-                        {t('button.copy')}
-                    </Button>
+                        value={readShareLink ? readShareLink : "No reading link"} />
+                    {readShareLink
+                        ? <Button onClick={() => copyToClipboard(readShareLink)} className="text-start">
+                            {t('button.copy')}
+                        </Button>
+                        : <Button className="text-start" onClick={() => createNewAccessToken(folder.id, "READ", addYears(new Date(), 1))}>
+                            Create link
+                        </Button>
+                    }
                     <p className="text-sm text-nowrap">Read and write link</p>
                     <Input placeholder={t('fields.link.placeholder')} disabled={true}
-                        value={writeShareLink} />
-                    <Button onClick={() => copyToClipboard(writeShareLink)}>
-                        {t('button.copy')}
-                    </Button>
+                        value={writeShareLink ? writeShareLink : "No writing link"} />
+                    {writeShareLink
+                        ? <Button onClick={() => copyToClipboard(writeShareLink)} className="text-start">
+                            {t('button.copy')}
+                        </Button>
+                        : <Button className="text-start" onClick={() => createNewAccessToken(folder.id, "WRITE", addYears(new Date(), 1))}>
+                            Create link
+                        </Button>
+                    }
                 </div>
                 <Separator orientation={"horizontal"} className={"my-4"} />
 

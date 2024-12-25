@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/actions/auth";
 import { AccessTokenWithFolder, CreateAccessTokenFormSchema, ImageLightWithFolderName, ImageWithFolder } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
-import { FolderTokenPermission } from "@prisma/client";
+import { AccessToken, FolderTokenPermission } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export async function getAccessTokens(): Promise<{
@@ -34,7 +34,8 @@ export async function getAccessTokens(): Promise<{
 }
 
 export async function createNewAccessToken(folderId: string, permission: FolderTokenPermission, expiryDate: Date): Promise<{
-    error: string | null
+    error: string | null,
+    accessToken?: AccessToken
 }> {
     const session = await auth();
 
@@ -54,7 +55,7 @@ export async function createNewAccessToken(folderId: string, permission: FolderT
 
     const token = crypto.randomUUID();
     try {
-        await prisma.accessToken.create({
+        const accessToken = await prisma.accessToken.create({
             data: {
                 folder: {
                     connect: {
@@ -67,7 +68,8 @@ export async function createNewAccessToken(folderId: string, permission: FolderT
             }
         });
         revalidatePath("/dashboard/links");
-        return { error: null }
+        revalidatePath("/dhasboard/folders/[folderId]");
+        return { error: null, accessToken: accessToken }
     } catch (e) {
         if (e instanceof PrismaClientKnownRequestError) {
             if (e.code === "P2025") {
