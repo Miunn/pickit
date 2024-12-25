@@ -100,18 +100,26 @@ export async function changeAccessTokenActiveState(token: string, isActive: bool
     return { error: null }
 }
 
-export async function deleteAccessToken(token: string): Promise<{ error: string | null }> {
+export async function deleteAccessToken(tokens: string[]): Promise<{ error: string | null }> {
     const session = await auth();
 
     if (!session?.user) {
         return { error: "You must be logged in to delete an access token" }
     }
 
-    await prisma.accessToken.delete({
-        where: {
-            token: token
-        }
-    })
+    console.log("Deleting tokens", tokens);
+    try {
+        await prisma.accessToken.deleteMany({
+            where: {
+                token: {
+                    in: tokens
+                }
+            }
+        })
+    } catch (e) {
+        console.log("Error while deleting access token", e);
+        return { error: "An unknown error happened when trying to delete this access token" }
+    }
 
     revalidatePath("/dashboard/links");
     return { error: null }

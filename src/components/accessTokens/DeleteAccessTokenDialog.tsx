@@ -5,14 +5,15 @@ import { deleteAccessToken } from "@/actions/accessTokens";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
-export default function DeleteAccessTokenDialog({ token, children, openState, setOpenState }: { token: string, children?: React.ReactNode, openState?: boolean, setOpenState?: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function DeleteAccessTokenDialog({ tokens, children, openState, setOpenState, submitNext }: { tokens: string[], children?: React.ReactNode, openState?: boolean, setOpenState?: React.Dispatch<React.SetStateAction<boolean>>, submitNext?: () => void }) {
 
     const [loading, setLoading] = useState<boolean>(false);
 
     const submit = async () => {
         setLoading(true);
 
-        const r = await deleteAccessToken(token);
+        const r = await deleteAccessToken(tokens);
+        console.log(r);
 
         setLoading(false);
 
@@ -27,6 +28,10 @@ export default function DeleteAccessTokenDialog({ token, children, openState, se
 
         if (setOpenState) {
             setOpenState(false);
+        }
+
+        if (submitNext) {
+            submitNext();
         }
     }
 

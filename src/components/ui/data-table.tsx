@@ -25,18 +25,19 @@ import { Input } from "./input"
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-  defaultSelected?: { [index: number]: boolean }
+  selection?: { [index: number]: boolean }
+  setSelection?: React.Dispatch<React.SetStateAction<{ [index: number]: boolean; }>>
   rightHeadingNodes?: React.ReactNode
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  defaultSelected,
+  selection,
+  setSelection,
   rightHeadingNodes
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
-  const [rowSelection, setRowSelection] = useState(defaultSelected || {})
 
   const table = useReactTable({
     data,
@@ -45,10 +46,10 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: setSelection,
     state: {
       sorting,
-      rowSelection,
+      rowSelection: selection,
     },
   })
   
