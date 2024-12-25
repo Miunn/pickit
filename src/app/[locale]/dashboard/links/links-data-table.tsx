@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Link, Trash2 } from "lucide-react";
 import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessTokenDialog";
 import { AccessTokenWithFolder, LightFolder } from "@/lib/definitions";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function LinksDataTable({ accessTokens, defaultTokenIndex, lightFolders }: { accessTokens: AccessTokenWithFolder[], defaultTokenIndex: number, lightFolders: LightFolder[] }) {
 
@@ -30,7 +30,7 @@ export default function LinksDataTable({ accessTokens, defaultTokenIndex, lightF
                 <div className="flex gap-2">
                     <DeleteAccessTokenDialog tokens={selectedTokens} openState={deleteOpen} setOpenState={setDeleteOpen} submitNext={() => setSelectedTokensIndexes({})}>
                         <DialogTrigger asChild>
-                            <Button variant="outline" disabled={selectedTokens.length === 0}><Trash2 className="w-4 h-4 mr-2" /> Delete selected</Button>
+                            <Button variant="outline" disabled={selectedTokens.length === 0} className={(selectedTokens.length === 0) ? "!opacity-0" : "opacity-100"}><Trash2 className="w-4 h-4 mr-2" /> Delete selection</Button>
                         </DialogTrigger>
                     </DeleteAccessTokenDialog>
                     <CreateAccessTokenDialog folders={lightFolders}>
