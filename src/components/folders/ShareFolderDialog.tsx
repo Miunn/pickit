@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { z } from "zod";
 import { FolderWithAccessToken } from "@/lib/definitions";
@@ -29,7 +29,6 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
     const emailScroll = useRef<HTMLDivElement>(null);
     const t = useTranslations("folders.dialog.share");
     const validTokens = folder.AccessToken.filter((token) => token.expires > new Date() && token.isActive);
-    console.log("Valid tokens for folder", folder, validTokens);
 
     const copyToClipboard = (link: string) => {
         navigator.clipboard.writeText(link).then(() => {
@@ -93,7 +92,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     gridTemplateColumns: "0.5fr 1fr auto"
                 }}>
                     {validTokens.length > 0
-                        ? validTokens.sort((a, b) => a.permission.localeCompare(b.permission)).map((token) => <>
+                        ? validTokens.sort((a, b) => a.permission.localeCompare(b.permission)).map((token) => <Fragment key={token.token}>
                             <p className="text-sm text-nowrap">{token.permission === "READ" ? "Read-only link" : "Read and write link"}</p>
                             <Input placeholder={t('fields.link.placeholder')} disabled={true}
                                 value={`${window.location.origin}/dashboard/folders/${folder.id}?share=${token.token}`} />
@@ -101,7 +100,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                             <Button onClick={() => copyToClipboard(token.token)} className="text-start">
                                 {t('button.copy')}
                             </Button>
-                        </>)
+                        </Fragment>)
                         : null}
                 </div>
                 <Separator orientation={"horizontal"} className={"my-4"} />

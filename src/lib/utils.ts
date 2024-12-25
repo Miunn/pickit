@@ -25,12 +25,18 @@ export function formatBytes(
     }`
 }
 
-export const downloadFolder = (folder: Folder) => {
-  fetch(`/api/folders/${folder.id}/download`)
-    .then(response => response.blob())
-    .then(blob => {
-      saveAs(blob, `${folder.name}.zip`);
-    });
+export const downloadFolder = async (folder: Folder): Promise<number> => {
+  const res = await fetch(`/api/folders/${folder.id}/download`);
+
+  if (!res || !res.ok) {
+    console.log(res);
+    console.log("Return status:", res.status);
+    return res.status;
+  }
+
+  const blob = await res.blob();
+  saveAs(blob, `${folder.name}.zip`);
+  return 200;
 }
 
 export const handleImagesSubmission = async (

@@ -94,12 +94,31 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                     <ContextMenuItem onClick={() => setOpenRename(true)}>{t('dialog.rename.trigger')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenChangeCover(true)} disabled={folderImages.length === 0}>Change cover</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenShare(true)}>Share</ContextMenuItem>
-                    <ContextMenuItem onClick={() => {
+                    <ContextMenuItem onClick={async () => {
+                        const r = await downloadFolder(folder);
+
+                        if (r === 404) {
+                            toast({
+                                title: "No images found",
+                                description: "There are no images in this folder to download"
+                            });
+                            return;
+                        }
+
+                        if (r !== 200) {
+                            toast({
+                                title: "Error",
+                                description: "An error occurred while trying to download this folder",
+                                variant: "destructive"
+                            });
+                            return;
+                        }
+
                         toast({
                             title: "Download started",
                             description: "Your download will start shortly",
                         });
-                        downloadFolder(folder)
+
                     }} disabled={folderImages.length === 0}>{t('actions.download')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenDelete(true)} className="text-red-600 focus:text-red-600 font-semibold">{t('dialog.delete.trigger')}</ContextMenuItem>
                 </ContextMenuContent>

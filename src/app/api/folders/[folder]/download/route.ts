@@ -20,6 +20,10 @@ export async function GET(req: NextRequest, { params }: { params: {folder: strin
         }
     });
 
+    if (images.length === 0) {
+        return Response.json({ error: "No images found in this folder" }, { status: 404 });
+    }
+
     const zip = new JSZip();
 
     for (const image of images) {

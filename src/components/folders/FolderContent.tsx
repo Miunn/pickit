@@ -22,12 +22,30 @@ export const FolderContent = ({ folder, locale }: { folder: FolderWithImages & F
                 <div className={"flex gap-4 mb-10"}>
                     <UploadImagesDialog folderId={folder.id} />
                     <ShareFolderDialog folder={folder} />
-                    <Button variant="outline" onClick={() => {
+                    <Button variant="outline" onClick={async () => {
+                        const r = await downloadFolder(folder);
+
+                        if (r === 404) {
+                            toast({
+                                title: "No images found",
+                                description: "There are no images in this folder to download"
+                            });
+                            return;
+                        }
+
+                        if (r !== 200) {
+                            toast({
+                                title: "Error",
+                                description: "An error occurred while trying to download this folder",
+                                variant: "destructive"
+                            });
+                            return;
+                        }
+
                         toast({
                             title: "Download started",
                             description: "Your download will start shortly",
                         });
-                        downloadFolder(folder)
                     }}>
                         <Download className={"mr-2"} /> {t('actions.download')}
                     </Button>
