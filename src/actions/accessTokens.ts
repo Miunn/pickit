@@ -68,7 +68,7 @@ export async function createNewAccessToken(folderId: string, permission: FolderT
             }
         });
         revalidatePath("/dashboard/links");
-        revalidatePath("/dhasboard/folders/[folderId]");
+        revalidatePath("/dashboard/folders/[folderId]");
         return { error: null, accessToken: accessToken }
     } catch (e) {
         if (e instanceof PrismaClientKnownRequestError) {
