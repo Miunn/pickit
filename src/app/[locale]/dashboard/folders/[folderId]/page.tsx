@@ -1,11 +1,16 @@
 import { prisma } from "@/lib/prisma";
 import { FolderContent } from "@/components/folders/FolderContent";
+import { auth } from "@/actions/auth";
 
 export default async function FolderPage({ params }: { params: { folderId: string, locale: string } }) {
 
+    const session = await auth();
     const folder = await prisma.folder.findUnique({
         where: {
-            id: params.folderId
+            id: params.folderId,
+            createdBy: {
+                id: session?.user?.id
+            }
         },
         include: {
             images: true,

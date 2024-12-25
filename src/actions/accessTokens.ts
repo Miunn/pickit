@@ -18,6 +18,13 @@ export async function getAccessTokens(): Promise<{
     }
 
     const links = await prisma.accessToken.findMany({
+        where: {
+            folder: {
+                createdBy: {
+                    id: session.user.id
+                }
+            }
+        },
         include: {
             folder: true
         },
@@ -51,6 +58,19 @@ export async function createNewAccessToken(folderId: string, permission: FolderT
         });
     } catch (e: any) {
         return { error: e.message };
+    }
+
+    const folder = await prisma.folder.findUnique({
+        where: {
+            id: folderId,
+            createdBy: {
+                id: session.user.id
+            }
+        }
+    });
+
+    if (!folder) {
+        return { error: "Folder doesn't exist or you don't have the rights to create an access token for this folder" }
     }
 
     const token = crypto.randomUUID();
@@ -91,7 +111,12 @@ export async function changeAccessTokenActiveState(token: string, isActive: bool
 
     await prisma.accessToken.update({
         where: {
-            token: token
+            token: token,
+            folder: {
+                createdBy: {
+                    id: session.user.id
+                }
+            }
         },
         data: {
             isActive: isActive
@@ -109,12 +134,16 @@ export async function deleteAccessToken(tokens: string[]): Promise<{ error: stri
         return { error: "You must be logged in to delete an access token" }
     }
 
-    console.log("Deleting tokens", tokens);
     try {
         await prisma.accessToken.deleteMany({
             where: {
                 token: {
                     in: tokens
+                },
+                folder: {
+                    createdBy: {
+                        id: session.user.id
+                    }
                 }
             }
         })

@@ -17,6 +17,11 @@ export async function getLightImages(): Promise<{
     }
 
     const images = await prisma.image.findMany({
+        where: {
+            createdBy: {
+                id: session.user.id
+            }
+        },
         select: {
             id: true,
             name: true,
@@ -25,7 +30,7 @@ export async function getLightImages(): Promise<{
                     id: true,
                     name: true
                 }
-            }
+            },
         },
         orderBy: [
             {
@@ -49,6 +54,19 @@ export async function uploadImages(parentFolderId: string, amount: number, formD
 
     if (!session?.user) {
         return { error: "You must be logged in to upload images" };
+    }
+
+    const folder = await prisma.folder.findUnique({
+        where: {
+            id: parentFolderId,
+            createdBy: {
+                id: session.user.id
+            }
+        }
+    });
+
+    if (!folder) {
+        return { error: "You are not authorized to upload images to this folder" };
     }
 
     // Create folders if it doesn't exist
@@ -92,7 +110,10 @@ export async function uploadImages(parentFolderId: string, amount: number, formD
     // Update folder updatedAt
     await prisma.folder.update({
         where: {
-            id: parentFolderId
+            id: parentFolderId,
+            createdBy: {
+                id: session.user.id
+            }
         },
         data: {
             updatedAt: new Date().toISOString()
@@ -118,6 +139,9 @@ export async function getImagesWithFolderFromFolder(folderId: string): Promise<{
         where: {
             folder: {
                 id: folderId
+            },
+            createdBy: {
+                id: session.user.id
             }
         },
         include: {
@@ -140,7 +164,10 @@ export async function deleteImage(imageId: string) {
 
     const image = await prisma.image.findUnique({
         where: {
-            id: imageId
+            id: imageId,
+            createdBy: {
+                id: session.user.id
+            }
         },
         include: {
             folder: {

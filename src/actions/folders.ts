@@ -17,6 +17,11 @@ export async function getLightFolders(): Promise<{
     }
 
     const folders = await prisma.folder.findMany({
+        where: {
+            createdBy: {
+                id: session.user.id as string
+            }
+        },
         select: {
             id: true,
             name: true
@@ -38,7 +43,10 @@ export async function getFolderName(id: string): Promise<{
 
     const folder = await prisma.folder.findUnique({
         where: {
-            id: id
+            id: id,
+            createdBy: {
+                id: session.user.id as string
+            }
         },
         select: {
             id: true,
@@ -129,7 +137,10 @@ export async function changeFolderCover(folderId: string, coverId: string): Prom
 
     await prisma.folder.update({
         where: {
-            id: folderId
+            id: folderId,
+            createdBy: {
+                id: session.user.id as string
+            }
         },
         data: {
             cover: {

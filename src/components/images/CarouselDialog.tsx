@@ -2,7 +2,8 @@ import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} fro
 import React, { useState } from "react";
 import ImagesCarousel from "./ImagesCarousel";
 
-export const CarouselDialog = ({images, title, carouselOpen, setCarouselOpen, startIndex}: {
+export const CarouselDialog = ({folderId, images, title, carouselOpen, setCarouselOpen, startIndex}: {
+    folderId: string,
     images: any[],
     title: string,
     carouselOpen: any,
@@ -20,7 +21,7 @@ export const CarouselDialog = ({images, title, carouselOpen, setCarouselOpen, st
                     <DialogDescription>Images</DialogDescription>
                 </DialogHeader>
 
-                <ImagesCarousel images={images} startIndex={startIndex} currentIndex={current} setCurrentIndex={setCurrent} />
+                <ImagesCarousel folderId={folderId} images={images} startIndex={startIndex} currentIndex={current} setCurrentIndex={setCurrent} />
             </DialogContent>
         </Dialog>
     )
