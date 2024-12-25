@@ -9,7 +9,7 @@ import {
     DialogTitle, DialogTrigger
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Share2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
@@ -17,22 +17,19 @@ import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { AccessToken } from "@prisma/client";
 import { z } from "zod";
 import { FolderWithAccessToken } from "@/lib/definitions";
-import { read } from "node:fs";
-import { createNewAccessToken } from "@/actions/accessTokens";
-import { addYears } from "date-fns";
+import Link from "next/link";
 
 export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWithAccessToken, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
+    const locale = useLocale();
     const [emailList, setEmailList] = useState<string[]>([]);
     const [email, setEmail] = useState<string>("");
     const emailScroll = useRef<HTMLDivElement>(null);
     const t = useTranslations("folders.dialog.share");
-
-    const [readShareLink, setReadShareLink] = useState("");
-    const [writeShareLink, setWriteShareLink] = useState("");
+    const validTokens = folder.AccessToken.filter((token) => token.expires > new Date() && token.isActive);
+    console.log("Valid tokens for folder", folder, validTokens);
 
     const copyToClipboard = (link: string) => {
         navigator.clipboard.writeText(link).then(() => {
@@ -71,19 +68,6 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
         emailScroll.current!.scrollIntoView(false);
     }, [emailList]);
 
-    useEffect(() => {
-        const readToken = folder.AccessToken.filter((token: AccessToken) => token.permission === "READ")[0]?.token;
-        const writeToken = folder.AccessToken.filter((token: AccessToken) => token.permission === "WRITE")[0]?.token;
-
-        if (readToken) {
-            setReadShareLink(`${window.location.origin}/dashboard/folders/${folder.id}?share=${readToken}`);
-        }
-
-        if (writeToken) {
-            setWriteShareLink(`${window.location.origin}/dashboard/folders/${folder.id}?share=${writeToken}`);
-        }
-    });
-
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             {!open && !setOpen ? <DialogTrigger asChild>
@@ -97,32 +81,28 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     <DialogDescription>{t('description')}</DialogDescription>
                 </DialogHeader>
 
-                <Label>{t('fields.link.label')}</Label>
+                <div className="flex justify-between items-center">
+                    <Label>{t('fields.link.label')}</Label>
+                    <Button variant={"link"}>
+                        <Link href={`/${locale}/dashboard/links`}>
+                            Manage accesses
+                        </Link>
+                    </Button>
+                </div>
                 <div className={"grid gap-3 w-full items-center"} style={{
                     gridTemplateColumns: "0.5fr 1fr auto"
                 }}>
-                    <p className="text-sm text-nowrap">Read-only link</p>
-                    <Input placeholder={t('fields.link.placeholder')} disabled={true}
-                        value={readShareLink ? readShareLink : "No reading link"} />
-                    {readShareLink
-                        ? <Button onClick={() => copyToClipboard(readShareLink)} className="text-start">
-                            {t('button.copy')}
-                        </Button>
-                        : <Button className="text-start" onClick={() => createNewAccessToken(folder.id, "READ", addYears(new Date(), 1))}>
-                            Create link
-                        </Button>
-                    }
-                    <p className="text-sm text-nowrap">Read and write link</p>
-                    <Input placeholder={t('fields.link.placeholder')} disabled={true}
-                        value={writeShareLink ? writeShareLink : "No writing link"} />
-                    {writeShareLink
-                        ? <Button onClick={() => copyToClipboard(writeShareLink)} className="text-start">
-                            {t('button.copy')}
-                        </Button>
-                        : <Button className="text-start" onClick={() => createNewAccessToken(folder.id, "WRITE", addYears(new Date(), 1))}>
-                            Create link
-                        </Button>
-                    }
+                    {validTokens.length > 0
+                        ? validTokens.sort((a, b) => a.permission.localeCompare(b.permission)).map((token) => <>
+                            <p className="text-sm text-nowrap">{token.permission === "READ" ? "Read-only link" : "Read and write link"}</p>
+                            <Input placeholder={t('fields.link.placeholder')} disabled={true}
+                                value={`${window.location.origin}/dashboard/folders/${folder.id}?share=${token.token}`} />
+
+                            <Button onClick={() => copyToClipboard(token.token)} className="text-start">
+                                {t('button.copy')}
+                            </Button>
+                        </>)
+                        : null}
                 </div>
                 <Separator orientation={"horizontal"} className={"my-4"} />
 
@@ -147,7 +127,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     </div>
                 </ScrollArea>
                 <DialogFooter>
-                    <DialogClose>
+                    <DialogClose asChild>
                         <Button variant="outline">Cancel</Button>
                     </DialogClose>
                     <Button>Share</Button>
