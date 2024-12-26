@@ -16,8 +16,9 @@ export default function HeaderBreadcumb() {
     const [pathListFolders, setPathListFolders] = useState<boolean>(false);
     const [pathListImages, setPathListImages] = useState<boolean>(false);
     const [pathFolder, setPathFolder] = useState<{ id: string; name: string; } | null>(null);
-
     const [pathLinks, setPathLinks] = useState<boolean>(false);
+
+    const [pathAccount, setPathAccount] = useState<boolean>(false);
 
     const getPathFolderName = async (folderId: string) => {
         const folder = await getFolderName(folderId);
@@ -39,6 +40,7 @@ export default function HeaderBreadcumb() {
             setPathListImages(false);
             setPathFolder(null);
             setPathLinks(false);
+            setPathAccount(false);
         }
 
         if (tokens[0] === "dashboard" && tokens[1] === "folders" && tokens.length === 2) {
@@ -48,6 +50,7 @@ export default function HeaderBreadcumb() {
             setPathListImages(false);
             setPathFolder(null);
             setPathLinks(false);
+            setPathAccount(false);
         }
 
         if (tokens[0] === "dashboard" && tokens[1] === "images" && tokens.length === 2) {
@@ -57,6 +60,7 @@ export default function HeaderBreadcumb() {
             setPathListFolders(false);
             setPathFolder(null);
             setPathLinks(false);
+            setPathAccount(false);
         }
 
         if (tokens[0] === "dashboard" && tokens[1] === "folders" && tokens[2]) {
@@ -66,6 +70,7 @@ export default function HeaderBreadcumb() {
             setPathListFolders(false);
             setPathListImages(false);
             setPathLinks(false);
+            setPathAccount(false);
         }
 
         if (tokens[0] === "dashboard" && tokens[1] === "links" && tokens.length === 2) {
@@ -75,6 +80,17 @@ export default function HeaderBreadcumb() {
             setPathListFolders(false);
             setPathListImages(false);
             setPathFolder(null);
+            setPathAccount(false);
+        }
+
+        if (tokens[0] === "dashboard" && tokens[1] === "account" && tokens.length === 2) {
+            setPathAccount(true);
+
+            setPathDashboard(false);
+            setPathListFolders(false);
+            setPathListImages(false);
+            setPathFolder(null);
+            setPathLinks(false);
         }
     }, [pathname]);
 
@@ -129,6 +145,14 @@ export default function HeaderBreadcumb() {
                         <BreadcrumbPage>Links</BreadcrumbPage>
                     </BreadcrumbItem>
                 </>
+                ) : null}
+                {pathAccount ? (
+                    <>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>Account</BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </>
                 ) : null}
             </BreadcrumbList>
         </Breadcrumb>
