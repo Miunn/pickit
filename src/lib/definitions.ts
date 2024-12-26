@@ -1,5 +1,4 @@
 import { FolderTokenPermission, Prisma } from '@prisma/client';
-import { permission } from 'process';
 import { z } from 'zod'
 
 export type SessionPayload = {
@@ -63,6 +62,9 @@ export const UploadImagesFormSchema = z.object({
             }, {
                 message: 'File must be an image',
             })
+            .refine((file) => Array.from(file).every((f: any) => file.size < 5000000), {
+                message: "Max size is 5MB."
+            })
         : z.array(z.instanceof(File))
             .nonempty({ message: 'Please select at least one file' })
             .refine((file) => {
@@ -86,15 +88,34 @@ export const CreateAccessTokenFormSchema = z.object({
 })
 
 export const AccountFormSchema = z.object({
-    name: z.string().min(3, { message: 'Be at least 3 characters long' }).trim(),
-    email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
-    password: z
+    profilePicture: z.any()
+        .refine((file) => file.size < 5000000, { message: "Max size is 5MB." })
+        .refine((file) => file.type.startsWith('image/'), { message: "File must be an image" })
+        .optional(),
+    name: z.string().min(3, { message: 'Be at least 3 characters long' }).trim().optional().or(z.literal('')),
+    email: z.string().email({ message: 'Please enter a valid email.' }).trim().optional().or(z.literal('')),
+})
+
+export const ChangePasswordSchema = z.object({
+    oldPassword: z.string().optional().or(z.literal('')),
+    newPassword: z
         .string()
         .min(8, { message: 'Be at least 8 characters long' })
         .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
         .regex(/[0-9]/, { message: 'Contain at least one number.' })
         .regex(/[^a-zA-Z0-9]/, { message: 'Contain at least one special character.' })
-        .trim(),
+        .trim()
+        .optional()
+        .or(z.literal('')),
+    passwordConfirmation: z.string().optional().or(z.literal('')),
+}).superRefine(({ newPassword, passwordConfirmation }, ctx) => {
+    if (newPassword !== passwordConfirmation) {
+        ctx.addIssue({
+            code: "custom",
+            message: "The passwords did not match",
+            path: ['passwordConfirmation']
+        });
+    }
 })
 
 export type SignInFormState =
@@ -107,6 +128,12 @@ export type SignInFormState =
     }
     | undefined
 
+
+const userLight = Prisma.validator<Prisma.UserDefaultArgs>()({
+    select: { id: true, name: true, email: true, emailVerified: true, image: true, createdAt: true, updatedAt: true }
+})
+
+export type UserLight = Prisma.UserGetPayload<typeof userLight>
 
 const lightFolders = Prisma.validator<Prisma.FolderDefaultArgs>()({
     select: { id: true, name: true }
@@ -121,7 +148,7 @@ const folderWithImages = Prisma.validator<Prisma.FolderDefaultArgs>()({
 export type FolderWithImages = Prisma.FolderGetPayload<typeof folderWithImages>
 
 const folderWithImagesWithFolder = Prisma.validator<Prisma.FolderDefaultArgs>()({
-    include: { images: { include: { folder: true }} },
+    include: { images: { include: { folder: true } } },
 })
 
 export type FolderWithImagesWithFolder = Prisma.FolderGetPayload<typeof folderWithImagesWithFolder>

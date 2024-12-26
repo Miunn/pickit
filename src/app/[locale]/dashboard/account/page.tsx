@@ -1,10 +1,10 @@
-import { auth } from "@/actions/auth";
 import { Separator } from "@/components/ui/separator";
 import AccountForm from "./accountForm";
+import getMe from "@/actions/user";
 
 export default async function AccountPage() {
 
-    const session = await auth();
+    const user = (await getMe()).user;
 
     return (
         <div>
@@ -13,7 +13,7 @@ export default async function AccountPage() {
 
             <Separator orientation="horizontal" className="my-6" />
 
-            <AccountForm />
+            <AccountForm user={user || undefined} />
         </div>
     )
 }
