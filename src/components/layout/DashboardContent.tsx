@@ -1,14 +1,11 @@
-import CreateFolderDialog from "@/components/folders/CreateFolderDialog";
-import {Button} from "@/components/ui/button";
-import {FolderX, ImageUp, Settings2} from "lucide-react";
+import {FolderX} from "lucide-react";
 import FolderPreview from "@/components/folders/FolderPreview";
 import {useTranslations} from "next-intl";
 import React from "react";
 import {LastUploadedImages} from "@/components/images/LastUploadedImages";
-import { Folder, Image } from "@prisma/client";
-import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, ImageWithFolder } from "@/lib/definitions";
 
-export default function DashboardContent({lastFolders, lastImages, locale}: { lastFolders: (FolderWithAccessToken & FolderWithImagesCount & FolderWithCover)[], lastImages: Image[], locale: string }) {
+export default function DashboardContent({lastFolders, lastImages, locale}: { lastFolders: (FolderWithAccessToken & FolderWithImagesCount & FolderWithCover)[], lastImages: ImageWithFolder[], locale: string }) {
 
     const t = useTranslations("dashboard");
 

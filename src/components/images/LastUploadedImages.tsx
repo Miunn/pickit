@@ -5,7 +5,7 @@ import { ImagePreview } from "@/components/images/ImagePreview";
 import { CarouselDialog } from "@/components/images/CarouselDialog";
 import { DeleteImageDialog } from "@/components/images/DeleteImageDialog";
 import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { ImageWithFolder } from "@/lib/definitions";
@@ -56,6 +56,7 @@ export const LastUploadedImages = ({ images, locale }: { images: ImageWithFolder
                         <p>{t('empty')}</p>
                     </div>
                     : images.map((image, index) => (
+                        <Fragment key={image.id}>
                         <ImagePreview
                             image={image}
                             withFolder={false}
@@ -72,6 +73,7 @@ export const LastUploadedImages = ({ images, locale }: { images: ImageWithFolder
                                 setOpenDelete(true);
                             }}
                         />
+                        </Fragment>
                     ))
                 }
             </div>

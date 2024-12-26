@@ -30,6 +30,7 @@ import {
 import { CaretSortIcon, ComponentPlaceholderIcon } from "@radix-ui/react-icons"
 import { SignOut } from "@/actions/authActions"
 import { useLocale } from "next-intl"
+import Link from "next/link"
 
 export type NavUserItems = {
   name: string
@@ -96,10 +97,12 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="flex gap-2">
-                <BadgeCheck className="w-4 h-4" />
-                Account
-              </DropdownMenuItem>
+              <Link href={`/${locale}/dashboard/account`}>
+                <DropdownMenuItem className="flex gap-2 items-center">
+                  <BadgeCheck className="w-4 h-4" />
+                  Account
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuItem className="flex gap-2">
                 <ComponentPlaceholderIcon className="w-4 h-4" />
                 Billing
