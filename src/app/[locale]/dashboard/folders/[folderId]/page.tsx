@@ -13,7 +13,11 @@ export default async function FolderPage({ params }: { params: { folderId: strin
             }
         },
         include: {
-            images: true,
+            images: {
+                include: {
+                    folder: true
+                }
+            },
             AccessToken: true
         },
     });

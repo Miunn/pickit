@@ -1,7 +1,7 @@
 "use client";
 
 import { ImagePreview } from "@/components/images/ImagePreview";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { useTranslations } from "next-intl";
 import { DeleteImageDialog } from "@/components/images/DeleteImageDialog";
@@ -10,21 +10,21 @@ import { Loader2, Trash2, X } from "lucide-react";
 import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
 import { CarouselDialog } from "@/components/images/CarouselDialog";
 import { Image } from "@prisma/client";
-import { FolderWithImages, UploadImagesFormSchema } from "@/lib/definitions";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { FolderWithImagesWithFolder, ImageWithFolder, UploadImagesFormSchema } from "@/lib/definitions";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { FileUploader } from "../generic/FileUploader";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { handleImagesSubmission } from "@/lib/utils";
 
-export const ImagesGrid = ({ folder }: { folder: FolderWithImages }) => {
+export const ImagesGrid = ({ folder }: { folder: FolderWithImagesWithFolder }) => {
 
     const t = useTranslations("images");
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
     const [openDelete, setOpenDelete] = useState<boolean>(false);
     const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
-    const [selectImageToDelete, setSelectImageToDelete] = useState(null);
+    const [selectImageToDelete, setSelectImageToDelete] = useState<ImageWithFolder | null>(null);
     const [startIndex, setStartIndex] = useState(0);
 
     const [uploading, setUploading] = useState<boolean>(false);
@@ -115,49 +115,28 @@ export const ImagesGrid = ({ folder }: { folder: FolderWithImages }) => {
                             </form>
                         </Form>
                     </div>
-                    : folder.images.map((image: any, index) => (
-                        <ContextMenu key={image.id}>
-                            <ContextMenuTrigger>
-                                <button onClick={() => {
-                                    if (selecting) {
-                                        if (selected.includes(image.id)) {
-                                            removeSelected(image);
-                                        } else {
-                                            addSelected(image);
-                                        }
-                                    } else {
-                                        setStartIndex(index);
-                                        setCarouselOpen(!carouselOpen)
-                                    }
-                                }} style={{ all: "unset", cursor: "pointer" }}>
-                                    <ImagePreview image={image} folder={folder} withFolder={false} selected={selected.includes(image.id)} />
-                                </button>
-                            </ContextMenuTrigger>
-                            <ContextMenuContent>
-                                <ContextMenuItem onClick={() => {
-                                    setStartIndex(index);
-                                    setCarouselOpen(!carouselOpen);
-                                }}>
-                                    {t('actions.view')}
-                                </ContextMenuItem>
-                                <ContextMenuItem onClick={() => {
-                                    setSelecting(true);
-                                    addSelected(image);
-                                }}>
-                                    {t('actions.select')}
-                                </ContextMenuItem>
-                                <ContextMenuItem onClick={() => {
+                    : folder.images.map((image: ImageWithFolder) => (
+                        <Fragment key={image.id}>
+                            <ImagePreview
+                                image={image}
+                                withFolder={false}
+                                selecting={false}
+                                setSelecting={setSelecting}
+                                selected={selected}
+                                setSelected={setSelected}
+                                onClick={() => {
+                                    setStartIndex(folder.images.indexOf(image));
+                                    setCarouselOpen(true);
+                                }}
+                                onDelete={() => {
                                     setSelectImageToDelete(image);
                                     setOpenDelete(true);
-                                }}>
-                                    {t('actions.delete')}
-                                </ContextMenuItem>
-                            </ContextMenuContent>
-                        </ContextMenu>
+                                }} />
+                        </Fragment>
                     ))}
             </div>
 
-            <CarouselDialog folderId={folder.id} images={folder.images} title={folder.name!} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
+            <CarouselDialog images={folder.images} title={folder.name!} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteImageDialog image={selectImageToDelete} open={openDelete} setOpen={setOpenDelete} />
             <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} setSelected={setSelected} setSelecting={setSelecting} />
         </div>

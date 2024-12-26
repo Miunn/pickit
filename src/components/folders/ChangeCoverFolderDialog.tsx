@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
 import { changeFolderCover } from "@/actions/folders";
 import { toast } from "@/hooks/use-toast";
 
-export default function ChangeCoverFolderDialog({ images, open, setOpen }: { images: ImageWithFolder[], open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ChangeCoverFolderDialog({ images, folderId, open, setOpen }: { images: ImageWithFolder[], folderId: string, open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const t = useTranslations("folders.dialog.cover");
 
@@ -21,11 +21,11 @@ export default function ChangeCoverFolderDialog({ images, open, setOpen }: { ima
 
         const image = images.at(current-1);
 
-        if (!image || !image.folder) {
+        if (!image) {
             return;
         }
 
-        const r = await changeFolderCover(image.folder.id, image.id);
+        const r = await changeFolderCover(folderId, image.id);
 
         setLoading(false);
 

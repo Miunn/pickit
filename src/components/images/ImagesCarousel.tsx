@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 import { ImageWithFolder } from "@/lib/definitions";
 
-export default function ImagesCarousel({ folderId, images, startIndex, currentIndex, setCurrentIndex }: { folderId: string, images: ImageWithFolder[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>> }) {
+export default function ImagesCarousel({ images, startIndex, currentIndex, setCurrentIndex }: { images: ImageWithFolder[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>> }) {
 
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
     const [count, setCount] = useState(images.length);
@@ -29,7 +29,7 @@ export default function ImagesCarousel({ folderId, images, startIndex, currentIn
                     {images.map((image) => (
                         <CarouselItem key={image.id} className={"max-h-96"}>
                             <div className={"w-full h-full max-h-96 flex justify-center items-center p-2"}>
-                                <img src={`/api/folders/${folderId}/images/${image.id}`}
+                                <img src={`/api/folders/${image.folder.id}/images/${image.id}`}
                                     alt={image.name} className={"max-h-96 object-cover rounded-md"} />
                             </div>
                         </CarouselItem>

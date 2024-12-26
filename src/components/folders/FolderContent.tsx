@@ -8,9 +8,9 @@ import { ImagesGrid } from "@/components/images/ImagesGrid";
 import { downloadFolder } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
-import { FolderWithAccessToken, FolderWithImages } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithImagesWithFolder } from "@/lib/definitions";
 
-export const FolderContent = ({ folder, locale }: { folder: FolderWithImages & FolderWithAccessToken, locale: string }) => {
+export const FolderContent = ({ folder, locale }: { folder: FolderWithImagesWithFolder & FolderWithAccessToken, locale: string }) => {
 
     const t = useTranslations("folders");
 

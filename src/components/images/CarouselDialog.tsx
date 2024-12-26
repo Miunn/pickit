@@ -1,10 +1,10 @@
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/components/ui/dialog";
 import React, { useState } from "react";
 import ImagesCarousel from "./ImagesCarousel";
+import { ImageWithFolder } from "@/lib/definitions";
 
-export const CarouselDialog = ({folderId, images, title, carouselOpen, setCarouselOpen, startIndex}: {
-    folderId: string,
-    images: any[],
+export const CarouselDialog = ({images, title, carouselOpen, setCarouselOpen, startIndex}: {
+    images: ImageWithFolder[],
     title: string,
     carouselOpen: any,
     setCarouselOpen: React.Dispatch<React.SetStateAction<boolean>>,
@@ -21,7 +21,7 @@ export const CarouselDialog = ({folderId, images, title, carouselOpen, setCarous
                     <DialogDescription>Images</DialogDescription>
                 </DialogHeader>
 
-                <ImagesCarousel folderId={folderId} images={images} startIndex={startIndex} currentIndex={current} setCurrentIndex={setCurrent} />
+                <ImagesCarousel images={images} startIndex={startIndex} currentIndex={current} setCurrentIndex={setCurrent} />
             </DialogContent>
         </Dialog>
     )

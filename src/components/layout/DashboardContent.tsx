@@ -14,15 +14,6 @@ export default function DashboardContent({lastFolders, lastImages, locale}: { la
 
     return (
         <div className="flex flex-col flex-grow">
-            <div className={"flex gap-4 mb-10"}>
-                <Button variant="outline">
-                    <ImageUp className={"mr-2"}/> {'uploadImages'}
-                </Button>
-                <Button variant="outline">
-                    <Settings2 className={"mr-2"}/> {'manageLinks'}
-                </Button>
-            </div>
-
             <h2 className={"font-semibold mb-5"}>{t('folders.lastUpdatedFolders')}</h2>
 
             <div className={`flex flex-wrap gap-3 ${lastFolders.length == 0 && "justify-center"} mb-10`}>
