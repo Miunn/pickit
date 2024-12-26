@@ -19,7 +19,7 @@ export const FolderContent = ({ folder, locale }: { folder: FolderWithImagesWith
             <h3 className={"font-semibold mb-5 flex justify-between"}>
                 {folder.name}
 
-                <div className={"flex gap-4 mb-10"}>
+                <div className={"flex gap-4"}>
                     <UploadImagesDialog folderId={folder.id} />
                     <ShareFolderDialog folder={folder} />
                     <Button variant="outline" onClick={async () => {

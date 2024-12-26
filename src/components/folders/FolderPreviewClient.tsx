@@ -125,7 +125,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
             </ContextMenu>
             <RenameFolderDialog folderId={folder.id} folderName={folder.name} openState={openRename}
                 setOpenState={setOpenRename} />
-            <ChangeCoverFolderDialog images={folderImages} open={openChangeCover} setOpen={setOpenChangeCover} />
+            <ChangeCoverFolderDialog images={folderImages} folderId={folder.id} open={openChangeCover} setOpen={setOpenChangeCover} />
             <ShareFolderDialog folder={folder} open={openShare} setOpen={setOpenShare} />
             <DeleteFolderDialog folderId={folder.id} folderName={folder.name} openState={openDelete}
                 setOpenState={setOpenDelete} />
