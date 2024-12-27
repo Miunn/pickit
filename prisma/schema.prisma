@@ -22,6 +22,7 @@ model Folder {
   id          String        @id @default(cuid())
   name        String
   images      Image[]       @relation("FolderImages")
+  size        Int           @default(0)
   cover       Image?        @relation(fields: [coverId], references: [id])
   coverId     String?       @unique
   createdBy   User          @relation("UserFolders", fields: [createdById], references: [id])
@@ -60,12 +61,12 @@ model AccessToken {
 
 model User {
   id            String          @id @default(cuid())
-  name          String?
+  name          String
   email         String          @unique
-  emailVerified DateTime?
+  emailVerified Boolean         @default(false)
   image         String?
   usedStorage   Int             @default(0)
-  password      String?
+  password      String
   accounts      Account[]
   sessions      Session[]
   Authenticator Authenticator[]

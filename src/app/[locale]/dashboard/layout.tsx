@@ -13,6 +13,7 @@ import { auth } from "@/actions/auth";
 import { getLightFolders } from "@/actions/folders";
 import { getLightImages } from "@/actions/images";
 import { getAccessTokens } from "@/actions/accessTokens";
+import getMe from "@/actions/user";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ export default async function LocaleLayout({
 }>) {
 
     const session = await auth();
+    const me = (await getMe()).user!;
     const messages = await getMessages();
 
     const folders = (await getLightFolders()).lightFolders;
@@ -41,7 +43,7 @@ export default async function LocaleLayout({
             <body className={inter.className}>
                 <NextIntlClientProvider messages={messages}>
                     <SidebarProvider>
-                        <AppSidebar locale={locale} items={{
+                        <AppSidebar locale={locale} user={me} items={{
                             navMainItems: [
                                 {
                                     title: "Folders",
@@ -75,11 +77,6 @@ export default async function LocaleLayout({
                             navSecondayrItems: [
                                 
                             ],
-                            navUserItems: {
-                                name: session?.user?.name || "",
-                                email: session?.user?.email || "",
-                                avatar: session?.user?.name || ""
-                            },
                         }} />
                         <SidebarInset>
                             <header className="flex h-16 shrink-0 items-center gap-2">

@@ -1,9 +1,11 @@
 "use client"
 
+import { changePassword, updateUser } from "@/actions/user"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { toast } from "@/hooks/use-toast"
 import { AccountFormSchema, ChangePasswordSchema, UserLight } from "@/lib/definitions"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CircleAlert, CircleCheck, Loader2 } from "lucide-react"
@@ -13,7 +15,8 @@ import { z } from "zod"
 
 export default function AccountForm({ user }: { user?: UserLight }) {
 
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loadingInfos, setLoadingInfos] = useState<boolean>(false);
+    const [loadingPassword, setLoadingPassword] = useState<boolean>(false);
 
     const accountFormSchema = useForm<z.infer<typeof AccountFormSchema>>({
         resolver: zodResolver(AccountFormSchema),
@@ -32,12 +35,73 @@ export default function AccountForm({ user }: { user?: UserLight }) {
         }
     })
 
-    function submitAccount(data: z.infer<typeof AccountFormSchema>) {
-        console.log(data);
+    async function submitAccount(data: z.infer<typeof AccountFormSchema>) {
+        setLoadingInfos(true);
+
+        const r = await updateUser(user!.id, data.name, data.email);
+
+        setLoadingInfos(false);
+        if (!r) {
+            toast({
+                title: "Error",
+                description: "An error occured while updating your account",
+                variant: "destructive"
+            });
+        }
+
+        toast({
+            title: "Account updated",
+            description: "Your account has been updated successfully",
+        });
     }
 
-    function submitPassword(data: z.infer<typeof ChangePasswordSchema>) {
-        console.log(data);
+    async function submitPassword(data: z.infer<typeof ChangePasswordSchema>) {
+        setLoadingPassword(true);
+
+        const r = await changePassword(user!.id, data.oldPassword, data.newPassword);
+
+        setLoadingPassword(false);
+
+        if (!r) {
+            toast({
+                title: "Error",
+                description: "An error occured while updating your password",
+                variant: "destructive"
+            });
+            return;
+        }
+
+        if (r.error === "invalid-old") {
+            toast({
+                title: "Error",
+                description: "Your old password is invalid",
+                variant: "destructive"
+            });
+            return;
+        }
+
+        if (r.error === "user-not-found") {
+            toast({
+                title: "Error",
+                description: "User not found",
+                variant: "destructive"
+            });
+            return;
+        }
+
+        if (r.error) {
+            toast({
+                title: "Error",
+                description: "An error occured while updating your password",
+                variant: "destructive"
+            });
+            return;
+        }
+
+        toast({
+            title: "Password updated",
+            description: "Your password has been updated successfully",
+        });
     }
 
     return (
@@ -101,7 +165,7 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                         )}
                     />
 
-                    {loading
+                    {loadingInfos
                         ? <Button type="button" disabled={true}><Loader2 className={"mr-2 animate-spin"} /> Submiting</Button>
                         : <Button type="submit">Submit</Button>
                     }
@@ -157,7 +221,7 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                         )}
                     />
 
-                    {loading
+                    {loadingPassword
                         ? <Button type="button" disabled={true}><Loader2 className={"mr-2 animate-spin"} /> Submiting</Button>
                         : <Button type="submit">Submit</Button>
                     }

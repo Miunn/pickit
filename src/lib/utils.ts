@@ -56,7 +56,7 @@ export const handleImagesSubmission = async (
     formData.append(`image-${i}`, data.images![i]);
   }
 
-  const r = await uploadImages(folderId, data.images!.length, formData)
+  const r = await uploadImages(folderId, formData)
 
   setUploading(false);
 

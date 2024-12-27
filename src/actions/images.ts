@@ -47,7 +47,7 @@ export async function getLightImages(): Promise<{
     return { error: null, lightImages: images }
 }
 
-export async function uploadImages(parentFolderId: string, amount: number, formData: FormData): Promise<{
+export async function uploadImages(parentFolderId: string, formData: FormData): Promise<{
     error: string | null
 }> {
     const session = await auth();
@@ -108,7 +108,7 @@ export async function uploadImages(parentFolderId: string, amount: number, formD
         });
     }
 
-    // Update folder updatedAt
+    // Update folder updatedAt and size
     await prisma.folder.update({
         where: {
             id: parentFolderId,
@@ -117,7 +117,21 @@ export async function uploadImages(parentFolderId: string, amount: number, formD
             }
         },
         data: {
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
+            size: {
+                increment: (formData.values() as unknown as File[]).reduce((acc, file) => acc + file.size, 0)
+            }
+        }
+    });
+
+    await prisma.user.update({
+        where: {
+            id: session.user.id
+        },
+        data: {
+            usedStorage: {
+                increment: (formData.values() as unknown as File[]).reduce((acc, file) => acc + file.size, 0)
+            }
         }
     });
 

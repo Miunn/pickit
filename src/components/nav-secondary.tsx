@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Progress } from "./ui/progress";
 import Link from "next/link";
+import { formatBytes } from "@/lib/utils";
 
 export type NavSecondaryItems = {
   title: string
@@ -20,9 +21,10 @@ export type NavSecondaryItems = {
 
 export function NavSecondary({
   locale,
+  userUsedStorage,
   items,
   ...props
-}: { locale: string, items: NavSecondaryItems & React.ComponentPropsWithoutRef<typeof SidebarGroup> }) {
+}: { locale: string, userUsedStorage: number, items: NavSecondaryItems & React.ComponentPropsWithoutRef<typeof SidebarGroup> }) {
   return (
     <SidebarGroup className="mt-auto" {...props}>
       <SidebarGroupContent>
@@ -39,11 +41,11 @@ export function NavSecondary({
           ))}
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="sm" className="items-start">
-              <Link href={`dashboard/account`} className="h-auto flex flex-col items-start gap-1">
+              <Link href={`/dashboard/account`} className="h-auto flex flex-col items-start gap-1">
                 <p className="text-start">Used storage</p>
                 <div className="w-full flex items-center gap-2">
-                  <Progress value={30} className="w-full" />
-                  <span className="text-nowrap">3.0 / 10 GB</span>
+                  <Progress value={userUsedStorage / 10000000} className="w-full" />
+                  <span className="text-nowrap">{formatBytes(userUsedStorage)} / 10 GB</span>
                 </div>
               </Link>
             </SidebarMenuButton>

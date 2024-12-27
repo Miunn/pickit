@@ -97,17 +97,15 @@ export const AccountFormSchema = z.object({
 })
 
 export const ChangePasswordSchema = z.object({
-    oldPassword: z.string().optional().or(z.literal('')),
+    oldPassword: z.string(),
     newPassword: z
         .string()
-        .min(8, { message: 'Be at least 8 characters long' })
+        .min(8, { message: 'Must be at least 8 characters long' })
         .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
         .regex(/[0-9]/, { message: 'Contain at least one number.' })
         .regex(/[^a-zA-Z0-9]/, { message: 'Contain at least one special character.' })
-        .trim()
-        .optional()
-        .or(z.literal('')),
-    passwordConfirmation: z.string().optional().or(z.literal('')),
+        .trim(),
+    passwordConfirmation: z.string(),
 }).superRefine(({ newPassword, passwordConfirmation }, ctx) => {
     if (newPassword !== passwordConfirmation) {
         ctx.addIssue({
@@ -130,7 +128,7 @@ export type SignInFormState =
 
 
 const userLight = Prisma.validator<Prisma.UserDefaultArgs>()({
-    select: { id: true, name: true, email: true, emailVerified: true, image: true, createdAt: true, updatedAt: true }
+    select: { id: true, name: true, email: true, emailVerified: true, image: true, usedStorage: true, createdAt: true, updatedAt: true }
 })
 
 export type UserLight = Prisma.UserGetPayload<typeof userLight>

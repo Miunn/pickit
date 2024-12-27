@@ -14,7 +14,7 @@ import {
 
 import { NavMain, NavMainItems } from "@/components/nav-main"
 import { NavSecondary, NavSecondaryItems } from "@/components/nav-secondary"
-import { NavUser, NavUserItems } from "@/components/nav-user"
+import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -27,15 +27,16 @@ import {
 import { Button } from "./ui/button"
 import CreateFolderDialog from "./folders/CreateFolderDialog"
 import { DialogTrigger } from "./ui/dialog"
+import { User } from "@prisma/client"
+import { UserLight } from "@/lib/definitions"
 
 export interface AppSidebarProps {
   navMainItems: NavMainItems;
   navSecondayrItems: NavSecondaryItems;
-  navUserItems: NavUserItems;
 }
 
-export function AppSidebar({ locale, items, ...props }: {
-  locale: string, items: AppSidebarProps & React.ComponentProps<typeof Sidebar>
+export function AppSidebar({ locale, user, items, ...props }: {
+  locale: string, user: UserLight, items: AppSidebarProps & React.ComponentProps<typeof Sidebar>
 }) {
   return (
     <Sidebar variant="inset" {...props}>
@@ -68,10 +69,10 @@ export function AppSidebar({ locale, items, ...props }: {
       <SidebarContent>
         <NavMain items={items.navMainItems} />
         {/*<NavProjects projects={items.nav} />*/}
-        <NavSecondary locale={locale} items={items.navSecondayrItems} />
+        <NavSecondary locale={locale} userUsedStorage={user.usedStorage} items={items.navSecondayrItems} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={items.navUserItems} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   )
