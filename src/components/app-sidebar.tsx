@@ -34,8 +34,8 @@ export interface AppSidebarProps {
   navUserItems: NavUserItems;
 }
 
-export function AppSidebar({ items, ...props }: {
-  items: AppSidebarProps & React.ComponentProps<typeof Sidebar>
+export function AppSidebar({ locale, items, ...props }: {
+  locale: string, items: AppSidebarProps & React.ComponentProps<typeof Sidebar>
 }) {
   return (
     <Sidebar variant="inset" {...props}>
@@ -68,7 +68,7 @@ export function AppSidebar({ items, ...props }: {
       <SidebarContent>
         <NavMain items={items.navMainItems} />
         {/*<NavProjects projects={items.nav} />*/}
-        <NavSecondary items={items.navSecondayrItems} />
+        <NavSecondary locale={locale} items={items.navSecondayrItems} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={items.navUserItems} />

@@ -82,7 +82,7 @@ export async function uploadImages(parentFolderId: string, amount: number, formD
         const extension = file.name.split('.').pop();
         const slug = file.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() + "-" + Date.now();
 
-        await fs.writeFile(`drive/${parentFolderId}/${slug}.${extension}`, buffer, async (err) => {
+        fs.writeFile(`drive/${parentFolderId}/${slug}.${extension}`, buffer, async (err) => {
             if (err) {
                 console.error("Error uploading file", err);
                 return;
@@ -92,6 +92,7 @@ export async function uploadImages(parentFolderId: string, amount: number, formD
                 data: {
                     name: nameWithoutExtension,
                     path: `drive/${parentFolderId}/${slug}.${extension}`,
+                    size: file.size,
                     createdBy: {
                         connect: {
                             id: session.user!.id as string

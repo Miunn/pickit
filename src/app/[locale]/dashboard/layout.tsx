@@ -41,7 +41,7 @@ export default async function LocaleLayout({
             <body className={inter.className}>
                 <NextIntlClientProvider messages={messages}>
                     <SidebarProvider>
-                        <AppSidebar items={{
+                        <AppSidebar locale={locale} items={{
                             navMainItems: [
                                 {
                                     title: "Folders",
@@ -72,7 +72,9 @@ export default async function LocaleLayout({
                                     }))
                                 }
                             ],
-                            navSecondayrItems: [],
+                            navSecondayrItems: [
+                                
+                            ],
                             navUserItems: {
                                 name: session?.user?.name || "",
                                 email: session?.user?.email || "",

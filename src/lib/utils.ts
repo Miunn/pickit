@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { saveAs } from "file-saver";
 import { Folder } from "@prisma/client";
-import { UploadImagesFormSchema } from "./definitions";
+import { FolderWithImages, UploadImagesFormSchema } from "./definitions";
 import { z } from "zod";
 import { uploadImages } from "@/actions/images";
 import { toast } from "@/hooks/use-toast";
@@ -80,4 +80,8 @@ export const handleImagesSubmission = async (
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export function computeUsedStorage(folders: FolderWithImages[]): number {
+  return folders.reduce((acc, folder) => acc + folder.images.reduce((acc, image) => acc + image.size, 0), 0)
 }

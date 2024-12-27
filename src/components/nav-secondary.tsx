@@ -8,8 +8,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { Progress } from "./ui/progress";
+import Link from "next/link";
 
-export type NavSecondaryItems =  {
+export type NavSecondaryItems = {
   title: string
   url: string
   icon: LucideIcon
@@ -17,9 +19,10 @@ export type NavSecondaryItems =  {
 
 
 export function NavSecondary({
+  locale,
   items,
   ...props
-}: { items: NavSecondaryItems & React.ComponentPropsWithoutRef<typeof SidebarGroup> }) {
+}: { locale: string, items: NavSecondaryItems & React.ComponentPropsWithoutRef<typeof SidebarGroup> }) {
   return (
     <SidebarGroup className="mt-auto" {...props}>
       <SidebarGroupContent>
@@ -34,6 +37,17 @@ export function NavSecondary({
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild size="sm" className="items-start">
+              <Link href={`dashboard/account`} className="h-auto flex flex-col items-start gap-1">
+                <p className="text-start">Used storage</p>
+                <div className="w-full flex items-center gap-2">
+                  <Progress value={30} className="w-full" />
+                  <span className="text-nowrap">3.0 / 10 GB</span>
+                </div>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
