@@ -5,6 +5,7 @@ import React from "react";
 import Image from "next/image";
 import { ImageWithFolder } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
+import { AspectRatio } from "../ui/aspect-ratio";
 
 export interface ImagePreviewProps {
     image: ImageWithFolder;
@@ -36,10 +37,12 @@ export const ImagePreview = ({ image, withFolder, selecting, setSelecting, selec
                         onClick(image.id);
                     }
                 }} style={{ all: "unset", cursor: "pointer" }}>
-                    <div className={`inline-block w-64 p-2 rounded-2xl ${selected.includes(image.id) ? "bg-blue-100" : ""}`}>
-                        <div className={`border rounded-xl h-32 mb-4 flex justify-center items-center`}>
+                    <div className={`inline-block w-64 rounded-2xl ${selected.includes(image.id) ? "bg-blue-100" : ""}`}>
+                        <div className={`mb-4 flex justify-center items-center`}>
+                            <AspectRatio ratio={16 / 9} className="border stroke-orange-600 rounded-xl">
                             <Image src={`/api/folders/${image.folderId}/images/${image.id}`} alt={image.name}
-                                className={"h-28 object-contain rounded-lg"} width={256} height={112} />
+                                className={"relative border border-black rounded-xl"} fill />
+                                </AspectRatio>
                         </div>
                         <p className={"text-start"}>{image.name}</p>
                         <div className={"text-sm h-4 flex items-center"}>
