@@ -3,6 +3,7 @@
 import { changePassword, updateUser } from "@/actions/user"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/hooks/use-toast"
@@ -17,6 +18,8 @@ export default function AccountForm({ user }: { user?: UserLight }) {
 
     const [loadingInfos, setLoadingInfos] = useState<boolean>(false);
     const [loadingPassword, setLoadingPassword] = useState<boolean>(false);
+
+    const [openEmailDialog, setOpenEmailDialog] = useState<boolean>(false);
 
     const accountFormSchema = useForm<z.infer<typeof AccountFormSchema>>({
         resolver: zodResolver(AccountFormSchema),
@@ -167,7 +170,14 @@ export default function AccountForm({ user }: { user?: UserLight }) {
 
                     {loadingInfos
                         ? <Button type="button" disabled={true}><Loader2 className={"mr-2 animate-spin"} /> Submiting</Button>
-                        : <Button type="submit">Submit</Button>
+                        : <Button type="button" onClick={() => {
+                            // If email has changed from default value, trigger the dialog
+                            if (accountFormSchema.getValues().email !== user?.email) {
+                                setOpenEmailDialog(true);
+                            } else {
+                                accountFormSchema.handleSubmit(submitAccount)();
+                            }
+                        }}>Submit</Button>
                     }
                 </form>
             </Form>
@@ -227,6 +237,27 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                     }
                 </form>
             </Form>
+
+            <Dialog open={openEmailDialog} onOpenChange={setOpenEmailDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Change your email ?</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to change your email ? You will need to verify your new email address.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <DialogClose><Button variant={"outline"} onClick={() => {
+                            setOpenEmailDialog(false);
+                            accountFormSchema.setValue("email", user?.email);
+                        }}>Cancel</Button></DialogClose>
+                        <Button variant="destructive" onClick={() => {
+                            setOpenEmailDialog(false);
+                            accountFormSchema.handleSubmit(submitAccount)();
+                        }}>Change email</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </>
     )
 }
