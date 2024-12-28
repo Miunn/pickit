@@ -1,10 +1,29 @@
 import { Separator } from "@/components/ui/separator";
 import AccountForm from "./accountForm";
 import getMe from "@/actions/user";
+import ReviewFolders from "./reviewFolders";
+import { getLightFolders } from "@/actions/folders";
+import { prisma } from "@/lib/prisma";
 
-export default async function AccountPage() {
+export default async function AccountPage({ params }: { params: { locale: string } }) {
 
     const user = (await getMe()).user;
+    const folders = await prisma.folder.findMany({
+        where: {
+            createdBy: {
+                id: user?.id
+            }
+        },
+        select: {
+            id: true,
+            name: true,
+            size: true,
+            createdAt: true,
+            _count: {
+                select: { images: true }
+            }
+        },
+    });
 
     return (
         <div>
@@ -13,7 +32,10 @@ export default async function AccountPage() {
 
             <Separator orientation="horizontal" className="my-6" />
 
-            <AccountForm user={user || undefined} />
+             <div className="grid gap-24" style={{ gridTemplateColumns: "0.7fr 1fr" }}>
+                <AccountForm user={user || undefined} />
+                <ReviewFolders locale={params.locale} folders={folders || []} />
+            </div>
         </div>
     )
 }

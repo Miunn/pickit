@@ -108,9 +108,9 @@ export default function AccountForm({ user }: { user?: UserLight }) {
     }
 
     return (
-        <>
-            <Form {...accountFormSchema}>
-                <form onSubmit={accountFormSchema.handleSubmit(submitAccount)} className="space-y-6 max-w-xl">
+        <div>
+            <Form  {...accountFormSchema}>
+                <form onSubmit={accountFormSchema.handleSubmit(submitAccount)} className="space-y-6">
                     <FormField
                         control={accountFormSchema.control}
                         name="profilePicture"
@@ -182,9 +182,9 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                 </form>
             </Form>
 
-            <h4 className="font-semibold mt-10 mb-2">Change your password</h4>
+            <h4 className="w-fit font-semibold mt-10 mb-2">Change your password</h4>
             <Form {...passwordFormSchema}>
-                <form onSubmit={passwordFormSchema.handleSubmit(submitPassword)} className="space-y-6 max-w-xl">
+                <form onSubmit={passwordFormSchema.handleSubmit(submitPassword)} className="space-y-6">
                     <FormField
                         control={passwordFormSchema.control}
                         name="oldPassword"
@@ -258,6 +258,6 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </>
+        </div>
     )
 }

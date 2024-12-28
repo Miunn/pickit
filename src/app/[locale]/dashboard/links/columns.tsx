@@ -146,6 +146,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                                 ? <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, false)}>Set as inactive</DropdownMenuItem>
                                 : <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, true)}>Set as active</DropdownMenuItem>
                             }
+                            <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => setDeleteOpen(true)} className="text-red-600 focus:text-red-600 font-semibold">Delete</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
