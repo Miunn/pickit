@@ -93,6 +93,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                 }}>
                     {validTokens.length > 0
                         ? validTokens.sort((a, b) => a.permission.localeCompare(b.permission)).map((token) => <Fragment key={token.token}>
+                            <Label>{token.permission}</Label>
                             <Input placeholder={t('fields.link.placeholder')} disabled={true}
                                 value={`${typeof window !== 'undefined' ? window.location.origin : ''}/dashboard/folders/${folder.id}?share=${token.token}`} />
 
