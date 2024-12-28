@@ -14,7 +14,7 @@ export default function ReviewFolders({ locale, folders }: { locale: string, fol
                     <div key={folder.id} className="flex items-center justify-between py-2 border-b border-gray-200">
                         <div>
                             <h4 className="font-semibold">{folder.name}</h4>
-                            <p className="text-sm text-muted-foreground">{folder.createdAt.toLocaleDateString(undefined, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
+                            <p className="text-sm text-muted-foreground capitalize">{folder.createdAt.toLocaleDateString(locale, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
                         </div>
                         <div className="flex items-center gap-3">
                             <p className="text-sm text-muted-foreground">{folder._count.images} images</p>
