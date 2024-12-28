@@ -29,6 +29,7 @@ import CreateFolderDialog from "./folders/CreateFolderDialog"
 import { DialogTrigger } from "./ui/dialog"
 import { User } from "@prisma/client"
 import { UserLight } from "@/lib/definitions"
+import Link from "next/link"
 
 export interface AppSidebarProps {
   navMainItems: NavMainItems;
@@ -44,15 +45,15 @@ export function AppSidebar({ locale, user, items, ...props }: {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <Link href={`/${locale}/dashboard`}>
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Command className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">Pickit</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  <span className="truncate text-xs">Save moments of life</span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
