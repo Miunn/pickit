@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ImageWithFolder } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
 import { AspectRatio } from "../ui/aspect-ratio";
+import { formatBytes } from "@/lib/utils";
 
 export interface ImagePreviewProps {
     image: ImageWithFolder;
@@ -40,12 +41,13 @@ export const ImagePreview = ({ image, withFolder, selecting, setSelecting, selec
                     <div className={`inline-block w-64 rounded-2xl ${selected.includes(image.id) ? "bg-blue-100" : ""}`}>
                         <div className={`mb-4 flex justify-center items-center`}>
                             <AspectRatio ratio={16 / 9} className="border stroke-orange-600 rounded-xl">
-                            <Image src={`/api/folders/${image.folderId}/images/${image.id}`} alt={image.name}
-                                className={"relative border border-black rounded-xl"} fill />
-                                </AspectRatio>
+                                <Image src={`/api/folders/${image.folderId}/images/${image.id}`} alt={image.name}
+                                    className={"relative border border-black rounded-xl"} fill />
+                            </AspectRatio>
                         </div>
                         <p className={"text-start"}>{image.name}</p>
-                        <div className={"text-sm h-4 flex items-center"}>
+                        <div className={"text-sm h-4 flex items-center justify-between"}>
+                            <div className="flex items-center">
                             {(withFolder ?? false)
                                 ? <>
                                     <p className={"opacity-60"}>{image.folder.name}</p>
@@ -74,6 +76,8 @@ export const ImagePreview = ({ image, withFolder, selecting, setSelecting, selec
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
+                            </div>
+                            <p className="text-muted-foreground">{formatBytes(image.size)}</p>
                         </div>
                     </div>
                 </button>

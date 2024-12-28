@@ -44,8 +44,8 @@ export function NavSecondary({
               <Link href={`/dashboard/account`} className="h-auto flex flex-col items-start gap-1">
                 <p className="text-start">Used storage</p>
                 <div className="w-full flex items-center gap-2">
-                  <Progress value={userUsedStorage / 10000000} className="w-full" />
-                  <span className="text-nowrap">{formatBytes(userUsedStorage)} / 10 GB</span>
+                  <Progress value={userUsedStorage / 10000000 * 100} className="w-full" />
+                  <span className="text-nowrap">{formatBytes(userUsedStorage)} / {formatBytes(10000000)}</span>
                 </div>
               </Link>
             </SidebarMenuButton>

@@ -2,6 +2,7 @@
 
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import Image from "next/image";
 import { Images } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
@@ -15,6 +16,7 @@ import { ShareFolderDialog } from "./ShareFolderDialog";
 import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, ImageWithFolder } from "@/lib/definitions";
 import ChangeCoverFolderDialog from "./ChangeCoverFolderDialog";
 import { getImagesWithFolderFromFolder } from "@/actions/images";
+import { AspectRatio } from "../ui/aspect-ratio";
 
 export default function FolderPreviewClient({ folder, coverB64, locale }: {
     folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover,
@@ -47,8 +49,10 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                     <Link href={`/${locale}/dashboard/folders/${folder.id}`} locale={locale}
                         className={"inline-block w-64"}>
                         {folder.cover
-                            ? <div className={"border rounded-2xl h-32 mb-4 flex justify-center items-center"}>
-                                <img src={coverB64} className={"h-28 object-cover rounded-md"} alt={folder.name} />
+                            ? <div className={`mb-4 flex justify-center items-center`}>
+                                <AspectRatio ratio={16 / 9}>
+                                    <Image src={`/api/folders/${folder.id}/images/${folder.cover.id}`} alt={folder.name} className={"relative border border-black rounded-xl"} fill />
+                                </AspectRatio>
                             </div>
                             : <div
                                 className={"border rounded-2xl bg-gray-100 h-32 mb-4 flex justify-center items-center"}>
