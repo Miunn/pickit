@@ -97,7 +97,9 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         header: "Created at",
         cell: ({ row }) => {
             const date: Date = row.getValue("createdAt");
-            return <p className="capitalize">{date.toLocaleDateString(undefined, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
+
+            const locale = useLocale();
+            return <p className="capitalize">{date.toLocaleDateString(locale, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
         }
     },
     {
@@ -105,7 +107,9 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         header: "Expire at",
         cell: ({ row }) => {
             const date: Date = row.getValue("expires");
-            return <p className="capitalize">{date.toLocaleDateString(undefined, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
+
+            const locale = useLocale();
+            return <p className="capitalize">{date.toLocaleDateString(locale, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
         }
     },
     {
