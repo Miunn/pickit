@@ -4,7 +4,13 @@ import { routing } from './i18n/routing';
 import { auth } from "@/actions/auth";
 import { isValidShareLink } from './lib/checkLinks';
 
-const publicPages = ['/', '/(fr|en)/signin', '/api/auth/signin', '/api/auth/signout'];
+const publicPages = [
+    '/',
+    '/(fr|en)/signin',
+    '/api/auth/signin',
+    '/api/auth/signout',
+    '/(fr|en)/emails'
+];
 const locales = ['en', 'fr'];
 const defaultLocale = 'en';
 
