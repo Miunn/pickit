@@ -172,7 +172,7 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                         ? <Button type="button" disabled={true}><Loader2 className={"mr-2 animate-spin"} /> Submiting</Button>
                         : <Button type="button" onClick={() => {
                             // If email has changed from default value, trigger the dialog
-                            if (accountFormSchema.getValues().email !== user?.email) {
+                            if (accountFormSchema.getValues().email !== user?.email && user?.emailVerified === true) {
                                 setOpenEmailDialog(true);
                             } else {
                                 accountFormSchema.handleSubmit(submitAccount)();
@@ -247,7 +247,7 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <DialogClose><Button variant={"outline"} onClick={() => {
+                        <DialogClose asChild><Button variant={"outline"} onClick={() => {
                             setOpenEmailDialog(false);
                             accountFormSchema.setValue("email", user?.email);
                         }}>Cancel</Button></DialogClose>

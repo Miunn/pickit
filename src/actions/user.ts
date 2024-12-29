@@ -5,6 +5,7 @@ import { auth } from "./auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import * as bcrypt from "bcryptjs";
+import { sendVerificationEmail } from "@/lib/mailing";
 
 export default async function getMe(): Promise<{
     error: string | null,
@@ -77,6 +78,10 @@ export async function updateUser(id: string, name?: string, email?: string) {
             emailVerified: (email && email != user?.email) ? false : user.emailVerified
         }
     });
+
+    if (!((email && email != user?.email) ? false : user.emailVerified)) {
+        sendVerificationEmail(["remcaulier@gmail.com"]);
+    }    
 
     revalidatePath("/dashboard/account");
     return true;
