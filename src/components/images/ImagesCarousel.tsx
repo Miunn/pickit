@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 import { ImageWithFolder } from "@/lib/definitions";
+import Image from "next/image";
+import { AspectRatio } from "../ui/aspect-ratio";
 
 export default function ImagesCarousel({ images, startIndex, currentIndex, setCurrentIndex }: { images: ImageWithFolder[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>> }) {
 
@@ -27,10 +29,10 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
             }} setApi={setCarouselApi}>
                 <CarouselContent>
                     {images.map((image) => (
-                        <CarouselItem key={image.id} className={"max-h-96"}>
-                            <div className={"w-full h-full max-h-96 flex justify-center items-center p-2"}>
-                                <img src={`/api/folders/${image.folder.id}/images/${image.id}`}
-                                    alt={image.name} className={"max-h-96 object-cover rounded-md"} />
+                        <CarouselItem key={image.id}>
+                            <div className={"w-full max-h-96 flex justify-center items-center p-2"}>
+                                <Image src={`/api/folders/${image.folder.id}/images/${image.id}`}
+                                    alt={image.name} className={"h-full max-h-96 object-contain rounded-md"} width={900} height={600}/>
                             </div>
                         </CarouselItem>
                     ))}

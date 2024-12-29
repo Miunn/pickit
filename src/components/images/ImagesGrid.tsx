@@ -120,7 +120,7 @@ export const ImagesGrid = ({ folder }: { folder: FolderWithImagesWithFolder }) =
                             <ImagePreview
                                 image={image}
                                 withFolder={false}
-                                selecting={false}
+                                selecting={selecting}
                                 setSelecting={setSelecting}
                                 selected={selected}
                                 setSelected={setSelected}

@@ -172,6 +172,7 @@ export async function deleteFolder(folderId: string): Promise<any> {
         }
     });
 
+    const freeSpace = images.reduce((acc, image) => acc + image.size, 0);
     for (const image of images) {
         fs.unlink(process.cwd() + "/" + image.path, (err: any) => {
             if (err) {
@@ -180,14 +181,33 @@ export async function deleteFolder(folderId: string): Promise<any> {
         });
     }
 
-    await prisma.folder.delete({
-        where: {
-            id: folderId,
-            createdBy: {
-                id: session.user.id as string
+    try {
+        await prisma.folder.delete({
+            where: {
+                id: folderId,
+                createdBy: {
+                    id: session.user.id as string
+                }
             }
-        }
-    });
+        });
+    } catch (e) {
+        return { error: "Error deleting folder" };
+    }
+
+    try {
+        await prisma.user.update({
+            where: {
+                id: session.user.id as string
+            },
+            data: {
+                usedStorage: {
+                    decrement: freeSpace
+                }
+            }
+        });
+    } catch (e) {
+        return { error: "Error updating user storage" };
+    }
 
     revalidatePath("dashboard/folders");
     revalidatePath("dashboard");

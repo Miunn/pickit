@@ -28,6 +28,7 @@ export const ImagePreview = ({ image, withFolder, selecting, setSelecting, selec
         <ContextMenu key={image.id}>
             <ContextMenuTrigger asChild>
                 <button onClick={() => {
+                    console.log("Selecting", selecting);
                     if (selecting) {
                         if (selected.includes(image.id)) {
                             setSelected(selected.filter((id) => id !== image.id));
@@ -38,44 +39,42 @@ export const ImagePreview = ({ image, withFolder, selecting, setSelecting, selec
                         onClick(image.id);
                     }
                 }} style={{ all: "unset", cursor: "pointer" }}>
-                    <div className={`inline-block w-64 rounded-2xl ${selected.includes(image.id) ? "bg-blue-100" : ""}`}>
-                        <div className={`mb-4 flex justify-center items-center`}>
-                            <AspectRatio ratio={16 / 9} className="border stroke-orange-600 rounded-xl">
-                                <Image src={`/api/folders/${image.folderId}/images/${image.id}`} alt={image.name}
-                                    className={"relative border border-black rounded-xl"} fill />
-                            </AspectRatio>
+                    <div className={`inline-block w-64 p-2 rounded-2xl ${selected.includes(image.id) ? "bg-blue-100" : ""}`}>
+                        <div className={`relative h-36 mb-4 flex justify-center items-center`}>
+                            <Image src={`/api/folders/${image.folderId}/images/${image.id}`} alt={image.name}
+                                className={"relative border border-black rounded-xl object-cover"} sizes="33vw" fill />
                         </div>
                         <p className={"text-start"}>{image.name}</p>
                         <div className={"text-sm h-4 flex items-center justify-between"}>
                             <div className="flex items-center">
-                            {(withFolder ?? false)
-                                ? <>
-                                    <p className={"opacity-60"}>{image.folder.name}</p>
-                                    <Separator className="mx-2" orientation="vertical" />
-                                </>
-                                : null
-                            }
-                            <TooltipProvider>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
-                                            day: "numeric",
-                                            month: "short",
-                                            year: "numeric"
-                                        })}</p>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
-                                            weekday: "long",
-                                            day: "numeric",
-                                            month: "short",
-                                            year: "numeric",
-                                            hour: "numeric",
-                                            minute: "numeric"
-                                        })}</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
+                                {(withFolder ?? false)
+                                    ? <>
+                                        <p className={"opacity-60"}>{image.folder.name}</p>
+                                        <Separator className="mx-2" orientation="vertical" />
+                                    </>
+                                    : null
+                                }
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
+                                                day: "numeric",
+                                                month: "short",
+                                                year: "numeric"
+                                            })}</p>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
+                                                weekday: "long",
+                                                day: "numeric",
+                                                month: "short",
+                                                year: "numeric",
+                                                hour: "numeric",
+                                                minute: "numeric"
+                                            })}</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
                             </div>
                             <p className="text-muted-foreground">{formatBytes(image.size)}</p>
                         </div>

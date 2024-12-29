@@ -45,9 +45,9 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
     return (
         <>
             <ContextMenu>
-                <ContextMenuTrigger>
+                <ContextMenuTrigger asChild>
                     <Link href={`/${locale}/dashboard/folders/${folder.id}`} locale={locale}
-                        className={"inline-block w-64"}>
+                        className={"inline-block w-64 p-2"}>
                         {folder.cover
                             ? <div className={`mb-4 flex justify-center items-center`}>
                                 <AspectRatio ratio={16 / 9}>

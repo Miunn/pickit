@@ -202,18 +202,52 @@ export async function deleteImage(imageId: string) {
         return { error: "You are not authorized to delete this image" };
     }
 
-    await fs.unlink(process.cwd() + "/" + image.path, (err) => {
+    fs.unlink(process.cwd() + "/" + image.path, (err) => {
         if (err) {
             console.error("Error deleting file", err);
         }
     });
 
-    await prisma.image.delete({
-        where: {
-            id: imageId
-        }
-    });
+    try {
+        await prisma.image.delete({
+            where: {
+                id: imageId
+            }
+        });
+    } catch (e) {
+        return { error: "Error deleting image from database" };
+    }
 
+    try {
+        await prisma.folder.update({
+            where: {
+                id: image.folder.id
+            },
+            data: {
+                size: {
+                    decrement: image.size
+                }
+            }
+        });
+    } catch (e) {
+        return { error: "Error updating folder size" };
+    }
+
+    try {
+        await prisma.user.update({
+            where: {
+                id: session.user.id
+            },
+            data: {
+                usedStorage: {
+                    decrement: image.size
+                }
+            }
+        });
+    } catch (e) {
+        return { error: "Error updating user storage" };
+    }
+    
     revalidatePath("dashboard/folders/" + image.folder.id);
     revalidatePath("dashboard");
     return { error: null };
