@@ -1,19 +1,28 @@
 "use server";
 
 import {signIn, signOut} from "@/actions/auth";
+import { CredentialsSignin } from "next-auth";
+import { redirect } from "next/navigation";
 
-export async function SignIn({email, password, redirect}: { email: string, password: string, redirect: string }) {
+export async function SignIn({email, password, redirectUrl}: { email: string, password: string, redirectUrl: string }): Promise<{
+    error: string
+} | null> {
 
     console.log("Base URL:", process.env.NEXTAUTH_URL);
-    if (!redirect.startsWith(process.env.NEXTAUTH_URL!)) {
-        console.log("Redirect not allowed:", redirect);
+    if (!redirectUrl.startsWith(process.env.NEXTAUTH_URL!)) {
+        console.log("Redirect not allowed:", redirectUrl);
         return null;
     }
 
     try {
-        return await signIn("credentials", { redirect: true, redirectTo: redirect, email, password });
+        return await signIn("credentials", { redirect: true, redirectTo: redirectUrl, email, password });
     } catch (e) {
-        return null;
+        if (e instanceof CredentialsSignin) {
+            return { error: "invalid-credentials" };
+        }
+
+        // Follow when its a NEXT_REDIRECT error
+        redirect(redirectUrl);
     }
 }
 

@@ -31,8 +31,9 @@ export default function SignInForm({ locale }: { locale: string }) {
 
     const onSubmit = async (data: { email: string, password: string }) => {
         setLoading(true);
-        const r = await SignIn({ email: data.email, password: data.password, redirect: callbackUrl });
-        if (r === null) {
+        const r = await SignIn({ email: data.email, password: data.password, redirectUrl: callbackUrl });
+        console.log("Sign in result:", r);
+        if (r && r.error) {
             toast({
                 title: t("form.error.title"),
                 description: t("form.error.message"),
