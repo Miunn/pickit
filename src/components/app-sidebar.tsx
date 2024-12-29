@@ -70,9 +70,9 @@ export function AppSidebar({ locale, user, items, ...props }: {
       <SidebarContent>
         <NavMain items={items.navMainItems} />
         {/*<NavProjects projects={items.nav} />*/}
-        <NavSecondary locale={locale} userUsedStorage={user.usedStorage} items={items.navSecondayrItems} />
       </SidebarContent>
       <SidebarFooter>
+        <NavSecondary locale={locale} userUsedStorage={user.usedStorage} items={items.navSecondayrItems} />
         <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>

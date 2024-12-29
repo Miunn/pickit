@@ -1,15 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatBytes } from "@/lib/utils";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
 export default function ReviewFolders({ locale, folders }: { locale: string, folders: { id: string, name: string, size: number, createdAt: Date, _count: { images: number } }[] }) {
     return (
-        <div>
+        <div className="h-full overflow-y-hidden">
             <h3 className="font-semibold">Review your folders</h3>
 
-            <div className="mt-6">
+            <ScrollArea className="mt-6 h-full overflow-y-auto">
                 {folders.map((folder) => (
                     <div key={folder.id} className="flex items-center justify-between py-2 border-b border-gray-200">
                         <div>
@@ -45,7 +46,7 @@ export default function ReviewFolders({ locale, folders }: { locale: string, fol
                         </div>
                     </div>
                 ))}
-            </div>
+            </ScrollArea>
         </div>
     )
 }

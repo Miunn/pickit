@@ -75,7 +75,7 @@ export default async function LocaleLayout({
                                 }
                             ],
                             navSecondayrItems: [
-                                
+
                             ],
                         }} />
                         <SidebarInset>
