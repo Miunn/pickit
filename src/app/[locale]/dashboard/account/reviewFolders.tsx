@@ -1,11 +1,20 @@
+"use client"
+
+import DeleteFolderDialog from "@/components/folders/DeleteFolderDialog";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatBytes } from "@/lib/utils";
+import { set } from "date-fns";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function ReviewFolders({ locale, folders }: { locale: string, folders: { id: string, name: string, size: number, createdAt: Date, _count: { images: number } }[] }) {
+
+    const [openDeleteFolderDialog, setOpenDeleteFolderDialog] = useState<boolean>(false);
+    const [selectedFolder, setSelectedFolder] = useState<{ id: string, name: string } | null>(null);
+
     return (
         <div className="h-full overflow-y-hidden">
             <h3 className="font-semibold">Review your folders</h3>
@@ -40,13 +49,22 @@ export default function ReviewFolders({ locale, folders }: { locale: string, fol
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem className="text-red-600 focus:text-red-600 font-semibold">Delete</DropdownMenuItem>
+                                    <DropdownMenuItem className="text-red-600 focus:text-red-600 font-semibold" onClick={() => {
+                                        setSelectedFolder(folder);
+                                        setOpenDeleteFolderDialog(true);
+                                    }}>Delete</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>
                     </div>
                 ))}
             </ScrollArea>
+            <DeleteFolderDialog
+                openState={openDeleteFolderDialog}
+                setOpenState={setOpenDeleteFolderDialog}
+                folderId={selectedFolder?.id || ""}
+                folderName={selectedFolder?.name || ""}
+            />
         </div>
     )
 }

@@ -23,7 +23,9 @@ export default function DeleteFolderDialog({openState, setOpenState, folderId, f
         setLoading(true);
         const r = await deleteFolder(folderId);
 
-        if (r.ok) {
+        console.log("Delete folder response", r);
+        if (!r.error) {
+            console.log("Folder deleted");
             toast({
                 title: "Folder deleted",
                 description: "The folders was deleted successfully.",
