@@ -120,7 +120,7 @@ export async function changePassword(id: string, oldPassword: string, newPasswor
     }
 
     const salt = bcrypt.genSaltSync(10)
-    const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+    const hashedNewPassword = bcrypt.hashSync(newPassword, salt);
     await prisma.user.update({
         where: {
             id

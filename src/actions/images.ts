@@ -5,6 +5,7 @@ import { auth } from "@/actions/auth";
 import * as fs from "fs";
 import { revalidatePath } from "next/cache";
 import { ImageLightWithFolderName, ImageWithFolder } from "@/lib/definitions";
+import { imageCreateManyAndUpdateSizes, imageDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 
 export async function getLightImages(): Promise<{
     error: string | null;
@@ -74,6 +75,7 @@ export async function uploadImages(parentFolderId: string, formData: FormData): 
         fs.mkdirSync(`drive/${parentFolderId}`);
     }
 
+    let imagesDb: { name: string, slug: string, extension: string, size: number }[] = [];
     for (const file of formData.values() as IterableIterator<File>) {
         const arrayBuffer = await file.arrayBuffer();
         const buffer = new Uint8Array(arrayBuffer);
@@ -87,53 +89,17 @@ export async function uploadImages(parentFolderId: string, formData: FormData): 
                 console.error("Error uploading file", err);
                 return;
             }
+        });
 
-            await prisma.image.create({
-                data: {
-                    name: nameWithoutExtension,
-                    path: `drive/${parentFolderId}/${slug}.${extension}`,
-                    size: file.size,
-                    createdBy: {
-                        connect: {
-                            id: session.user!.id as string
-                        }
-                    },
-                    folder: {
-                        connect: {
-                            id: parentFolderId
-                        }
-                    }
-                }
-            });
+        imagesDb.push({
+            name: nameWithoutExtension,
+            slug: slug,
+            extension: extension || "png",
+            size: file.size
         });
     }
 
-    // Update folder updatedAt and size
-    await prisma.folder.update({
-        where: {
-            id: parentFolderId,
-            createdBy: {
-                id: session.user.id
-            }
-        },
-        data: {
-            updatedAt: new Date().toISOString(),
-            size: {
-                increment: (formData.values() as unknown as File[]).reduce((acc, file) => acc + file.size, 0)
-            }
-        }
-    });
-
-    await prisma.user.update({
-        where: {
-            id: session.user.id
-        },
-        data: {
-            usedStorage: {
-                increment: (formData.values() as unknown as File[]).reduce((acc, file) => acc + file.size, 0)
-            }
-        }
-    });
+    await imageCreateManyAndUpdateSizes(imagesDb, parentFolderId, session.user.id!);
 
     revalidatePath("dashboard/folders/" + parentFolderId);
     revalidatePath("dashboard");
@@ -208,45 +174,7 @@ export async function deleteImage(imageId: string) {
         }
     });
 
-    try {
-        await prisma.image.delete({
-            where: {
-                id: imageId
-            }
-        });
-    } catch (e) {
-        return { error: "Error deleting image from database" };
-    }
-
-    try {
-        await prisma.folder.update({
-            where: {
-                id: image.folder.id
-            },
-            data: {
-                size: {
-                    decrement: image.size
-                }
-            }
-        });
-    } catch (e) {
-        return { error: "Error updating folder size" };
-    }
-
-    try {
-        await prisma.user.update({
-            where: {
-                id: session.user.id
-            },
-            data: {
-                usedStorage: {
-                    decrement: image.size
-                }
-            }
-        });
-    } catch (e) {
-        return { error: "Error updating user storage" };
-    }
+    await imageDeleteAndUpdateSizes(imageId, session.user.id);
     
     revalidatePath("dashboard/folders/" + image.folder.id);
     revalidatePath("dashboard");

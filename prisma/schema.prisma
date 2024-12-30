@@ -78,6 +78,13 @@ model User {
   images  Image[]  @relation("UserImages")
 }
 
+model VerifyEmailRequest {
+  id         String   @id @default(cuid())
+  identifier String
+  token      String
+  expires    DateTime
+}
+
 model Account {
   userId            String
   type              String

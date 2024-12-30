@@ -3,6 +3,7 @@ import { NextRequest, NextResponse, URLPattern } from 'next/server';
 import { routing } from './i18n/routing';
 import { auth } from "@/actions/auth";
 import { isValidShareLink } from './lib/checkLinks';
+import NextAuth from 'next-auth';
 
 const publicPages = [
     '/',
@@ -16,16 +17,16 @@ const defaultLocale = 'en';
 
 const handleI18nRouting = createMiddleware(routing);
 
-const authMiddleware = auth(
+/*const authMiddleware = auth(
     // Note that this callback is only invoked if
     // the `authorized` callback has returned `true`
     // and not for pages listed in `pages`.
     (req) => {
         return handleI18nRouting(req);
     }
-);
+);*/
 
-const PATTERNS = [
+const PATTERNS: [URLPattern, ({ pathname }: { pathname: any }) => any][] = [
     [
         new URLPattern({ pathname: '/:locale/dashboard/folders/:folderId' }),
         ({ pathname }: { pathname: any }) => {
@@ -94,13 +95,6 @@ export async function middleware(req: NextRequest) {
 export const config = {
     matcher: ['/((?!api|_next|.*\\..*).*)']
 };
-
-// Helper function to get locale from the request
-function getLocaleFromRequest(req: NextRequest) {
-    const acceptLanguage = req.headers.get('accept-language') || '';
-    const preferredLocale = acceptLanguage.split(',')[0];
-    return locales.includes(preferredLocale) ? preferredLocale : null;
-}
 
 function getLocaleFromUrl(url: URL) {
     const locale = url.pathname.split('/')[1];
