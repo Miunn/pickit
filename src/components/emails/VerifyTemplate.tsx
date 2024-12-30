@@ -15,13 +15,20 @@ export default function VerifyTemplate({ name, token }: { name: string, token: s
                         height: "100%"
                     }} />
                     <td style={{
-                        width: "33.33%",
+                        width: "400px",
                         height: "100%"
                     }}>
-                        <table>
-                            <tbody>
-                                <tr>
+                        <table style={{
+                            width: "400px",
+                        }}>
+                            <tbody style={{
+                                width: "400px",
+                            }}>
+                                <tr style={{
+                                    width: "400px",
+                                }}>
                                     <td style={{
+                                        width: "400px",
                                         height: "300px",
                                         marginTop: "100px",
                                         backgroundColor: "#fff",
