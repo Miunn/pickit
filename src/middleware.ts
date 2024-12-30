@@ -3,11 +3,11 @@ import { NextRequest, NextResponse, URLPattern } from 'next/server';
 import { routing } from './i18n/routing';
 import { auth } from "@/actions/auth";
 import { isValidShareLink } from './lib/checkLinks';
-import NextAuth from 'next-auth';
 
 const publicPages = [
     '/',
     '/(fr|en)/signin',
+    '/(fr|en)/verify-account/.*',
     '/api/auth/signin',
     '/api/auth/signout',
     '/(fr|en)/emails'
@@ -68,6 +68,13 @@ export async function middleware(req: NextRequest) {
             .join('|')})/?$`,
         'i'
     );
+
+    if (RegExp(`^(/${locales.join('|')})/signin$`).test(pathname) && session?.user) {
+        if (req.nextUrl.searchParams.get("callbackUrl") === null) {
+            return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/${locale}/dashboard`);
+        }
+        return NextResponse.redirect(req.nextUrl.searchParams.get("callbackUrl")!);
+    }
 
     if (RegExp(`^(/${locales.join('|')})/signin$`).test(pathname) && req.nextUrl.searchParams.get("callbackUrl") === null) {
         const defaultSignInUrl = new URL(`/${locale}/signin?callbackUrl=${process.env.NEXTAUTH_URL}/${locale}/dashboard${req.nextUrl.search.replace("?", "&")}`, req.url);
