@@ -128,7 +128,7 @@ export type SignInFormState =
 
 
 const userLight = Prisma.validator<Prisma.UserDefaultArgs>()({
-    select: { id: true, name: true, email: true, emailVerified: true, image: true, usedStorage: true, createdAt: true, updatedAt: true }
+    select: { id: true, name: true, email: true, emailVerified: true, emailVerificationDeadline: true, image: true, usedStorage: true, createdAt: true, updatedAt: true }
 })
 
 export type UserLight = Prisma.UserGetPayload<typeof userLight>

@@ -6,6 +6,8 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import * as bcrypt from "bcryptjs";
 import { sendVerificationEmail } from "@/lib/mailing";
+import { VerifyEmailRequest } from "@prisma/client";
+import { addDays } from "date-fns";
 
 export default async function getMe(): Promise<{
     error: string | null,
@@ -27,6 +29,7 @@ export default async function getMe(): Promise<{
             name: true,
             email: true,
             emailVerified: true,
+            emailVerificationDeadline: true,
             image: true,
             usedStorage: true,
             createdAt: true,
@@ -60,7 +63,8 @@ export async function updateUser(id: string, name?: string, email?: string) {
             id: true,
             name: true,
             email: true,
-            emailVerified: true
+            emailVerified: true,
+            emailVerificationDeadline: true
         }
     });
 
@@ -75,13 +79,15 @@ export async function updateUser(id: string, name?: string, email?: string) {
         data: {
             name,
             email,
-            emailVerified: (email && email != user?.email) ? false : user.emailVerified
+            emailVerified: (email && email != user?.email) ? false : user.emailVerified,
+            emailVerificationDeadline: (email && email != user?.email) ? addDays(new Date(), 7) : user.emailVerificationDeadline
         }
     });
 
-    if (!((email && email != user?.email) ? false : user.emailVerified)) {
-        sendVerificationEmail(["remcaulier@gmail.com"]);
-    }    
+    if ((email && email != user?.email)) {
+        console.log("Send verification email");
+        await sendVerificationEmail(email);
+    }
 
     revalidatePath("/dashboard/account");
     return true;
@@ -132,4 +138,67 @@ export async function changePassword(id: string, oldPassword: string, newPasswor
 
     revalidatePath("/dashboard/account");
     return { error: null };
+}
+
+export async function getUserVerificationRequest(id: string): Promise<{
+    error: string | null,
+    token: VerifyEmailRequest | null,
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to fetch user info", token: null };
+    }
+
+    if (session.user.id !== id) {
+        return { error: "You can't retreive another user's info", token: null };
+    }
+
+    const tokenData = await prisma.verifyEmailRequest.findFirst({
+        where: {
+            userId: id
+        }
+    });
+
+    return { error: null, token: tokenData };
+}
+
+export async function verifyAccount(token: string): Promise<{
+    error: string | null,
+    user: { name: string } | null
+}> {
+    const tokenData = await prisma.verifyEmailRequest.findUnique({
+        where: {
+            token: token,
+        },
+        include: {
+            user: {
+                select: { id: true }
+            }
+        }
+    });
+
+    if (!tokenData) {
+        return { error: "invalid-token", user: null };
+    }
+
+    const user = await prisma.user.update({
+        where: {
+            id: tokenData.user.id
+        },
+        data: {
+            emailVerified: true
+        },
+        select: {
+            name: true,
+        }
+    });
+
+    await prisma.verifyEmailRequest.delete({
+        where: {
+            token: token
+        }
+    })
+
+    return { error: null, user };
 }

@@ -13,7 +13,9 @@ import { auth } from "@/actions/auth";
 import { getLightFolders } from "@/actions/folders";
 import { getLightImages } from "@/actions/images";
 import { getAccessTokens } from "@/actions/accessTokens";
-import getMe from "@/actions/user";
+import getMe, { getUserVerificationRequest } from "@/actions/user";
+import UnverifiedEmail from "@/components/layout/UnverifiedEmail";
+import { addDays } from "date-fns";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,8 +31,6 @@ export default async function LocaleLayout({
     children: React.ReactNode;
     params: { locale: string };
 }>) {
-
-    const session = await auth();
     const me = (await getMe()).user!;
     const messages = await getMessages();
 
@@ -86,6 +86,9 @@ export default async function LocaleLayout({
                                     <HeaderBreadcumb />
                                 </div>
                             </header>
+                            {me.emailVerified === false ? (
+                                <UnverifiedEmail locale={locale} userDeletionDate={me.emailVerificationDeadline || addDays(me.createdAt, 7)} />
+                            ) : null}
                             <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
                                 {children}
                             </div>

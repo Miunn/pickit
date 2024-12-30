@@ -5,6 +5,7 @@ import {ActionResult, SignupFormSchema} from "@/lib/definitions";
 import * as bcrypt from 'bcryptjs';
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
+import { addDays } from "date-fns";
 
 export async function createUserHandler({name, email, password, passwordConfirmation}: z.infer<typeof SignupFormSchema>): Promise<ActionResult> {
     let errors = [];
@@ -29,8 +30,20 @@ export async function createUserHandler({name, email, password, passwordConfirma
     try {
         const salt = bcrypt.genSaltSync(10)
         const hashedPassword = bcrypt.hashSync(password, salt);
+        const verificationToken = crypto.randomUUID();
         const user = await prisma.user.create({
-            data: { name: name, email: email, password: hashedPassword },
+            data: {
+                name: name,
+                email: email,
+                emailVerificationDeadline: addDays(new Date(), 7),
+                password: hashedPassword,
+                verifiedEmailRequest: {
+                    create: {
+                        token: verificationToken,
+                        expires: addDays(new Date(), 7)
+                    }
+                }
+            },
         });
         
         console.log("Create OK");
