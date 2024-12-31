@@ -10,8 +10,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "../ui/button"
 import { useState } from "react"
 import { Loader2, MessageCircleQuestion } from "lucide-react"
+import { resetPassword } from "@/actions/user"
+import { toast } from "@/hooks/use-toast"
+import { ToastAction } from "../ui/toast"
+import Link from "next/link"
 
-export default function ResetPasswordForm({ token }: { token: string | null }) {
+export default function ResetPasswordForm({ locale, token }: { locale: string, token: string | null }) {
 
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -25,7 +29,24 @@ export default function ResetPasswordForm({ token }: { token: string | null }) {
 
     const submit = async (data: z.infer<typeof ResetPasswordFormSchema>) => {
         setLoading(true);
-        console.log(data);
+        
+        const r = await resetPassword(token!, data.password);
+
+        if (r.error) {
+            toast({
+                title: "Error",
+                description: "An error occurred while resetting your password. Please try again.",
+                variant: "destructive"
+            });
+            return;
+        }
+
+        toast({
+            title: "Success",
+            description: "Your password has been reset successfully.",
+            action: <ToastAction altText="Login"><Link href={`/${locale}/signin`}>Login</Link></ToastAction>
+        });
+
         setLoading(false);
     }
 

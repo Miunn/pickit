@@ -229,3 +229,37 @@ export async function requestPasswordReset(email: string): Promise<{
 
     return { error: null };
 }
+
+export async function resetPassword(token: string, newPassword: string): Promise<{
+    error: string | null,
+}> {
+    const resetRequest = await prisma.passwordResetRequest.findUnique({
+        where: {
+            token
+        }
+    });
+
+    if (!resetRequest) {
+        return { error: "invalid-token" };
+    }
+
+    const salt = bcrypt.genSaltSync(10)
+    const hashedNewPassword = bcrypt.hashSync(newPassword, salt);
+
+    await prisma.user.update({
+        where: {
+            id: resetRequest.userId
+        },
+        data: {
+            password: hashedNewPassword
+        }
+    });
+
+    await prisma.passwordResetRequest.delete({
+        where: {
+            token
+        }
+    });
+
+    return { error: null };
+}
