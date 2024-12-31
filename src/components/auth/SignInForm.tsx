@@ -13,6 +13,7 @@ import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 export default function SignInForm({ locale }: { locale: string }) {
 
@@ -72,7 +73,12 @@ export default function SignInForm({ locale }: { locale: string }) {
                             name="password"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{t('form.password')}</FormLabel>
+                                    <div className="flex justify-between">
+                                        <FormLabel>{t('form.password')}</FormLabel>
+                                        <Button variant={"link"} className="ml-auto p-0 h-fit">
+                                            <Link href={"/en/signin"}>Forgot password</Link>
+                                        </Button>
+                                    </div>
                                     <FormControl>
                                         <Input placeholder={"••••••••••"} type={"password"} {...field} />
                                     </FormControl>
