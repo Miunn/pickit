@@ -116,6 +116,25 @@ export const ChangePasswordSchema = z.object({
     }
 })
 
+export const ResetPasswordFormSchema = z.object({
+    password: z
+        .string()
+        .min(8, { message: 'Must be at least 8 characters long' })
+        .regex(/[a-zA-Z]/, { message: 'Must contain at least one letter.' })
+        .regex(/[0-9]/, { message: 'Must contain at least one number.' })
+        .regex(/[^a-zA-Z0-9]/, { message: 'Must contain at least one special character.' })
+        .trim(),
+    passwordConfirmation: z.string(),
+}).superRefine(({ password, passwordConfirmation }, ctx) => {
+    if (password !== passwordConfirmation) {
+        ctx.addIssue({
+            code: "custom",
+            message: "The passwords did not match",
+            path: ['passwordConfirmation']
+        });
+    }
+})
+
 export type SignInFormState =
     | {
         errors?: {

@@ -76,12 +76,22 @@ model User {
   updatedAt DateTime @updatedAt
 
   verifiedEmailRequest VerifyEmailRequest?
+  passwordResetRequest PasswordResetRequest?
 
   folders Folder[] @relation("UserFolders")
   images  Image[]  @relation("UserImages")
 }
 
 model VerifyEmailRequest {
+  id      String   @id @default(cuid())
+  token   String   @unique @default(uuid(4))
+  expires DateTime
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+}
+
+model PasswordResetRequest {
   id      String   @id @default(cuid())
   token   String   @unique @default(uuid(4))
   expires DateTime

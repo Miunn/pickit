@@ -7,7 +7,7 @@ import { isValidShareLink } from './lib/checkLinks';
 const publicPages = [
     '/',
     '/(fr|en)/signin',
-    '/(fr|en)/verify-account/.*',
+    '/(fr|en)/account/.*',
     '/api/auth/signin',
     '/api/auth/signout',
     '/(fr|en)/emails'
