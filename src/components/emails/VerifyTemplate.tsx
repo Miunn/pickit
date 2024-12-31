@@ -58,7 +58,7 @@ export default function VerifyTemplate({ name, token }: { name: string, token: s
                                             <br />
                                             If you didn't sign up for an account or change your email address, you can safely ignore this email.
                                         </p>
-                                        <a href={`http://localhost:3000/en/verify-account/${token}`} style={{
+                                        <a href={`${process.env.NEXTAUTH_URL}/en/account/verify-account/${token}`} style={{
                                             boxSizing: "border-box",
                                             width: "100%",
                                             backgroundColor: "#007bff",
