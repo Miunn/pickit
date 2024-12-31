@@ -204,12 +204,38 @@ export async function verifyAccount(token: string): Promise<{
     return { error: null, user };
 }
 
-export async function requestVerificationEmail(id: string): Promise<{
+export async function requestVerificationEmail(): Promise<{
     error: string | null,
+    user: {
+        id: string,
+        name: string,
+        email: string,
+        emailVerified: boolean
+      } | null
 }> {
-    // TODO
+    const session = await auth();
 
-    return { error: null };
+    if (!session?.user) {
+        return { error: "unauthorized", user: null };
+    }
+
+    const user = await prisma.user.findUnique({
+        where: {
+            id: session.user.id
+        }
+    })
+
+    if (!user) {
+        return { error: "user-not-found", user: null };
+    }
+
+    await prisma.verifyEmailRequest.delete({
+        where: {
+            userId: user?.id
+        }
+    });
+
+    return await sendVerificationEmail(user.email);
 }
 
 export async function requestPasswordReset(email: string): Promise<{

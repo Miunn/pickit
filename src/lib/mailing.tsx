@@ -17,7 +17,15 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendVerificationEmail(email: string) {
+export async function sendVerificationEmail(email: string): Promise<{
+  error: string | null,
+  user: {
+    id: string,
+    name: string,
+    email: string,
+    emailVerified: boolean
+  } | null
+}> {
   const session = await auth();
 
   if (!session?.user) {
@@ -37,11 +45,11 @@ export async function sendVerificationEmail(email: string) {
   });
 
   if (!user) {
-    return { error: "User not found", user: null };
+    return { error: "user-not-found", user: null };
   }
 
   if (user.emailVerified) {
-    return { error: "Email already verified", user };
+    return { error: "already-verified", user };
   }
 
   const token = crypto.randomUUID();
@@ -69,6 +77,7 @@ export async function sendVerificationEmail(email: string) {
   })
 
   console.log("Message sent: %s", mail.messageId);
+  return { error: null, user };
 }
 
 export async function sendPasswordResetRequest(userId: string) {

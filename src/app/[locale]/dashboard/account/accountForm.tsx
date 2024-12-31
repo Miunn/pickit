@@ -1,6 +1,6 @@
 "use client"
 
-import { changePassword, updateUser } from "@/actions/user"
+import { changePassword, requestVerificationEmail, updateUser } from "@/actions/user"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -17,6 +17,7 @@ import { z } from "zod"
 export default function AccountForm({ user }: { user?: UserLight }) {
 
     const [loadingInfos, setLoadingInfos] = useState<boolean>(false);
+    const [newVerficiationLoading, setNewVerificationLoading] = useState<boolean>(false);
     const [loadingPassword, setLoadingPassword] = useState<boolean>(false);
 
     const [openEmailDialog, setOpenEmailDialog] = useState<boolean>(false);
@@ -55,6 +56,26 @@ export default function AccountForm({ user }: { user?: UserLight }) {
         toast({
             title: "Account updated",
             description: "Your account has been updated successfully",
+        });
+    }
+
+    async function requestNewVerificationEmail() {
+        setNewVerificationLoading(true);
+        const r = await requestVerificationEmail();
+        setNewVerificationLoading(false);
+
+        if (!r) {
+            toast({
+                title: "Error",
+                description: "An error occured while requesting a new verification email",
+                variant: "destructive"
+            });
+            return;
+        }
+
+        toast({
+            title: "Email sent",
+            description: "A new verification email has been sent to your email address",
         });
     }
 
@@ -162,7 +183,20 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                                 <FormControl>
                                     <Input placeholder="exemple@mail.com" {...field} />
                                 </FormControl>
-                                <FormDescription>Changing your email will require an updated verification</FormDescription>
+                                <FormDescription className="flex justify-between gap-2">
+                                    <span>Changing your email will require an updated verification</span>
+                                    {!user?.emailVerified
+                                        ? <>
+                                            {newVerficiationLoading
+                                                ? <Button type="button" variant="link" className="text-muted-foreground p-0 h-fit text-[0.8rem] font-normal" disabled>
+                                                    <Loader2 className={"w-4 h-4 mr-2 animate-spin"} />
+                                                    Request a new email
+                                                </Button>
+                                                : <Button type="button" variant="link" className="text-muted-foreground p-0 h-fit text-[0.8rem] font-normal" onClick={requestNewVerificationEmail}>Request a new email</Button>
+                                            }
+                                        </>
+                                        : null}
+                                </FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -258,6 +292,6 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </div >
     )
 }
