@@ -87,6 +87,17 @@ export const CreateAccessTokenFormSchema = z.object({
     })
 })
 
+export const CreatePersonAccessTokenFormSchema = z.object({
+    email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
+    permission: z.nativeEnum(FolderTokenPermission),
+    expiresAt: z.date({
+        required_error: "Please select an expiry date",
+        invalid_type_error: "Selected date is invalid",
+    }).min(new Date(), {
+        message: "Expiry date should be in the future"
+    })
+})
+
 export const AccountFormSchema = z.object({
     profilePicture: z.any()
         .refine((file) => file.size < 5000000, { message: "Max size is 5MB." })

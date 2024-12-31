@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "./auth";
 import { FolderTokenPermission, PersonAccessToken } from "@prisma/client";
+import { error } from "console";
 
 export async function getPersonAccessTokens(): Promise<{
     error: string | null,
@@ -74,4 +75,45 @@ export async function createNewPersonAccessToken(folderId: string, target: strin
     });
 
     return { error: null, personAccessToken }
+}
+
+export async function createMultiplePersonAccessTokens(folderId: string, data: { email: string, permission: FolderTokenPermission, expires: Date }[]): Promise<{
+    error: string | null
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "unauthorized" }
+    }
+
+    const folder = await prisma.folder.findUnique({
+        where: {
+            id: folderId,
+            createdBy: {
+                id: session.user.id
+            }
+        }
+    });
+
+    if (!folder) {
+        return { error: "folder-not-found" };
+    }
+
+    const tokens = data.map(() => crypto.randomUUID());
+    await prisma.personAccessToken.createMany({
+        data: data.map((d, i) => ({
+            token: tokens[i],
+            email: d.email,
+            folder: {
+                connect: {
+                    id: folderId
+                }
+            },
+            folderId: folderId,
+            permission: d.permission,
+            expires: d.expires
+        }))
+    });
+
+    return { error: null }
 }
