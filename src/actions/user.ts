@@ -187,7 +187,8 @@ export async function verifyAccount(token: string): Promise<{
             id: tokenData.user.id
         },
         data: {
-            emailVerified: true
+            emailVerified: true,
+            emailVerificationDeadline: null
         },
         select: {
             name: true,
