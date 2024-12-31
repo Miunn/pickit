@@ -72,6 +72,9 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
             })
             return;
         }
+
+        // Reset email field
+        sharePersonAccessTokenForm.setValue("email", "");
         setTokenList([...tokenList, { email, permission, expiryDate: expiresAt }]);
     }
 
@@ -126,6 +129,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                 </div>
                 <Separator orientation={"horizontal"} className={"my-4"} />
 
+                <Label>Share to people</Label>
                 <Form {...sharePersonAccessTokenForm}>
                     <form onSubmit={sharePersonAccessTokenForm.handleSubmit(addEmail)} className="flex gap-3 w-full items-end">
                         <FormField
