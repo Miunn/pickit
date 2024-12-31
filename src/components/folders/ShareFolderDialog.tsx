@@ -93,7 +93,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                 }}>
                     {validTokens.length > 0
                         ? validTokens.sort((a, b) => a.permission.localeCompare(b.permission)).map((token) => <Fragment key={token.token}>
-                            <Label>{token.permission}</Label>
+                            <Label className="capitalize">{token.permission}</Label>
                             <Input placeholder={t('fields.link.placeholder')} disabled={true}
                                 value={`${typeof window !== 'undefined' ? window.location.origin : ''}/dashboard/folders/${folder.id}?share=${token.token}`} />
 
@@ -101,7 +101,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                 {t('button.copy')}
                             </Button>
                         </Fragment>)
-                        : null}
+                        : <Label className="col-span-3">No links exists for this folder</Label>}
                 </div>
                 <Separator orientation={"horizontal"} className={"my-4"} />
 
