@@ -5,7 +5,7 @@ import { auth } from "./auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import * as bcrypt from "bcryptjs";
-import { sendVerificationEmail } from "@/lib/mailing";
+import { sendPasswordResetRequest, sendVerificationEmail } from "@/lib/mailing";
 import { VerifyEmailRequest } from "@prisma/client";
 import { addDays } from "date-fns";
 
@@ -201,4 +201,31 @@ export async function verifyAccount(token: string): Promise<{
     })
 
     return { error: null, user };
+}
+
+export async function requestVerificationEmail(id: string): Promise<{
+    error: string | null,
+}> {
+    // TODO
+
+    return { error: null };
+}
+
+export async function requestPasswordReset(email: string): Promise<{
+    error: string | null,
+}> {
+    const user = await prisma.user.findUnique({
+        where: {
+            email
+        }
+    });
+
+    console.log(user);
+    if (!user) {
+        return { error: null }; // Don't leak if the email is registered or not
+    }
+
+    await sendPasswordResetRequest(user.id);
+
+    return { error: null };
 }

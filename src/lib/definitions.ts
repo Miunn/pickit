@@ -116,6 +116,10 @@ export const ChangePasswordSchema = z.object({
     }
 })
 
+export const RequestPasswordResetFormSchema = z.object({
+    email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
+})
+
 export const ResetPasswordFormSchema = z.object({
     password: z
         .string()
