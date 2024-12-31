@@ -5,6 +5,7 @@ import { auth } from "@/actions/auth";
 import * as fs from "fs";
 import { revalidatePath } from "next/cache";
 import { LightFolder } from "@/lib/definitions";
+import { folderDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 
 export async function getLightFolders(): Promise<{
     lightFolders: LightFolder[],
@@ -163,51 +164,29 @@ export async function deleteFolder(folderId: string): Promise<any> {
         return { error: "You must be logged in to delete a folders" };
     }
 
-    const images = await prisma.image.findMany({
+    const folder = await prisma.folder.findUnique({
         where: {
-            folderId: folderId,
+            id: folderId,
+            createdBy: { id: session.user.id as string }
+        },
+        select: {
             createdBy: {
-                id: session.user.id as string
+                select: { id: true }
             }
+        }
+    })
+
+    if (!folder) {
+        return { error: "folder-not-found" };
+    }
+
+    fs.rm(process.cwd() + "/drive/" + folderId, { recursive: true, force: true}, (err: any) => {
+        if (err) {
+            console.error("Error deleting folder", err);
         }
     });
 
-    const freeSpace = images.reduce((acc, image) => acc + image.size, 0);
-    for (const image of images) {
-        fs.unlink(process.cwd() + "/" + image.path, (err: any) => {
-            if (err) {
-                console.error("Error deleting file", err);
-            }
-        });
-    }
-
-    try {
-        await prisma.folder.delete({
-            where: {
-                id: folderId,
-                createdBy: {
-                    id: session.user.id as string
-                }
-            }
-        });
-    } catch (e) {
-        return { error: "Error deleting folder" };
-    }
-
-    try {
-        await prisma.user.update({
-            where: {
-                id: session.user.id as string
-            },
-            data: {
-                usedStorage: {
-                    decrement: freeSpace
-                }
-            }
-        });
-    } catch (e) {
-        return { error: "Error updating user storage" };
-    }
+    await folderDeleteAndUpdateSizes(folderId, session.user.id as string);
 
     revalidatePath("dashboard/folders");
     revalidatePath("dashboard");
