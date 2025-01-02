@@ -11,17 +11,18 @@ export default async function LinksPage({ searchParams }: { searchParams: { l?: 
 
     const lightFolders = (await getLightFolders()).lightFolders
 
-    const defaultSelectedIndex = accessTokens.map((act) => act.id).indexOf(searchParams.l || "");
+    const defaultSelectedAccessTokenIndex = accessTokens.map((act) => act.id).indexOf(searchParams.l || "");
+    const defaultSelectedPersonAccessTokenIndex = personsAccessTokens.map((act) => act.id).indexOf(searchParams.l || "");
 
     return (
         <div>
             <h3 className="font-semibold">Manage persons</h3>
 
-            <PersonDataTable personsAccessTokens={personsAccessTokens} defaultTokenIndex={defaultSelectedIndex} lightFolders={lightFolders}/>
+            <PersonDataTable personsAccessTokens={personsAccessTokens} defaultTokenIndex={defaultSelectedPersonAccessTokenIndex} lightFolders={lightFolders}/>
             
             <h3 className="font-semibold">Manage links</h3>
 
-            <LinksDataTable accessTokens={accessTokens} defaultTokenIndex={defaultSelectedIndex} lightFolders={lightFolders}/>
+            <LinksDataTable accessTokens={accessTokens} defaultTokenIndex={defaultSelectedAccessTokenIndex} lightFolders={lightFolders}/>
         </div>
     )
 }

@@ -16,6 +16,7 @@ import { getAccessTokens } from "@/actions/accessTokens";
 import getMe, { getUserVerificationRequest } from "@/actions/user";
 import UnverifiedEmail from "@/components/layout/UnverifiedEmail";
 import { addDays } from "date-fns";
+import { getPersonsAccessTokens } from "@/actions/accessTokensPerson";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,7 +37,8 @@ export default async function LocaleLayout({
 
     const folders = (await getLightFolders()).lightFolders;
     const images = (await getLightImages()).lightImages;
-    const links = (await getAccessTokens()).accessTokens;
+    const accessTokens = (await getAccessTokens()).accessTokens;
+    const personsAccessTokens = (await getPersonsAccessTokens()).personAccessTokens;
 
     return (
         <html lang={locale}>
@@ -68,10 +70,13 @@ export default async function LocaleLayout({
                                     title: "Links",
                                     icon: Link,
                                     url: `/${locale}/dashboard/links`,
-                                    items: links.map((link) => ({
-                                        title: `${link.permission.toString()} - ${link.folder.name}`,
-                                        url: `/${locale}/dashboard/links?l=${link.id}`
-                                    }))
+                                    items: accessTokens.map((accessToken) => ({
+                                        title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
+                                        url: `/${locale}/dashboard/links?l=${accessToken.id}`
+                                    })).concat(personsAccessTokens.map((accessToken) => ({
+                                        title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
+                                        url: `/${locale}/dashboard/links?l=${accessToken.id}`
+                                    })))
                                 }
                             ],
                             navSecondayrItems: [
