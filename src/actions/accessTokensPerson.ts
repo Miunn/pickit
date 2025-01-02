@@ -1,7 +1,8 @@
+"use server"
+
 import { prisma } from "@/lib/prisma";
 import { auth } from "./auth";
 import { FolderTokenPermission, PersonAccessToken } from "@prisma/client";
-import { error } from "console";
 
 export async function getPersonAccessTokens(): Promise<{
     error: string | null,
@@ -77,7 +78,7 @@ export async function createNewPersonAccessToken(folderId: string, target: strin
     return { error: null, personAccessToken }
 }
 
-export async function createMultiplePersonAccessTokens(folderId: string, data: { email: string, permission: FolderTokenPermission, expires: Date }[]): Promise<{
+export async function createMultiplePersonAccessTokens(folderId: string, data: { email: string, permission: FolderTokenPermission, expiryDate: Date }[]): Promise<{
     error: string | null
 }> {
     const session = await auth();
@@ -104,14 +105,9 @@ export async function createMultiplePersonAccessTokens(folderId: string, data: {
         data: data.map((d, i) => ({
             token: tokens[i],
             email: d.email,
-            folder: {
-                connect: {
-                    id: folderId
-                }
-            },
-            folderId: folderId,
+            folderId,
             permission: d.permission,
-            expires: d.expires
+            expires: d.expiryDate
         }))
     });
 

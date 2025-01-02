@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useLocale, useTranslations } from "next-intl";
-import { CalendarIcon, Share2, X } from "lucide-react";
+import { CalendarIcon, Loader2, Share2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -29,10 +29,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
+import { createMultiplePersonAccessTokens } from "@/actions/accessTokensPerson";
 
 export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWithAccessToken, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
     const locale = useLocale();
+    const [loadingShare, setLoadingShare] = useState(false);
     const [tokenList, setTokenList] = useState<{ email: string, permission: FolderTokenPermission, expiryDate: Date }[]>([]);
     const emailScroll = useRef<HTMLDivElement>(null);
     const t = useTranslations("folders.dialog.share");
@@ -76,6 +78,32 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
         // Reset email field
         sharePersonAccessTokenForm.setValue("email", "");
         setTokenList([...tokenList, { email, permission, expiryDate: expiresAt }]);
+    }
+
+    const submitSharePersonTokens = async () => {
+        setLoadingShare(true);
+        const r = await createMultiplePersonAccessTokens(folder.id, tokenList);
+        setLoadingShare(false);
+
+        if (r.error) {
+            toast({
+                title: t('toast.error.title'),
+                description: t('toast.error.description'),
+                variant: "destructive"
+            })
+            return;
+        }
+
+        setTokenList([]);
+
+        toast({
+            title: t('toast.success.title'),
+            description: t('toast.success.description'),
+        });
+
+        if (setOpen) {
+            setOpen(false);
+        }
     }
 
     useEffect(() => {
@@ -235,7 +263,10 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     <DialogClose asChild>
                         <Button variant="outline">Cancel</Button>
                     </DialogClose>
-                    <Button>Share</Button>
+                    {loadingShare
+                        ? <Button disabled><Loader2 className={"w-4 h-4 mr-2 animate-spin"} /> Sending emails</Button>
+                        : <Button onClick={submitSharePersonTokens}>Share</Button>}
+
                 </DialogFooter>
             </DialogContent>
         </Dialog>
