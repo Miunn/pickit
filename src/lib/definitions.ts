@@ -220,3 +220,9 @@ const accessTokenWithFolder = Prisma.validator<Prisma.AccessTokenDefaultArgs>()(
 })
 
 export type AccessTokenWithFolder = Prisma.AccessTokenGetPayload<typeof accessTokenWithFolder>
+
+const personAccessTokenWithFolder = Prisma.validator<Prisma.PersonAccessTokenDefaultArgs>()({
+    include: { folder: true },
+})
+
+export type PersonAccessTokenWithFolder = Prisma.PersonAccessTokenGetPayload<typeof personAccessTokenWithFolder>

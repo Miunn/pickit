@@ -5,17 +5,16 @@ import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessToken
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DialogPortal, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
-import { AccessTokenWithFolder } from "@/lib/definitions"
+import { PersonAccessTokenWithFolder } from "@/lib/definitions"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, BadgeCheck, BadgeMinus, Eye, MoreHorizontal } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
 
-export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
+export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -37,6 +36,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         ),
         enableSorting: false,
         enableHiding: false,
+        size: 50
     },
     {
         id: "folder_name",
@@ -54,8 +54,13 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         },
         cell: ({ row }) => {
             const name: string = row.getValue("folder_name");
-            return <p className="font-semibold">{name}</p>
+            return <p className="font-semibold truncate">{name}</p>
         }
+    },
+    {
+        accessorKey: "email",
+        header: "Email",
+        size: 340
     },
     {
         accessorKey: "permission",
@@ -67,7 +72,8 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
             } else if (permission === "WRITE") {
                 return <Badge className="capitalize bg-orange-600 hover:bg-orange-700">{permission}</Badge>
             }
-        }
+        },
+        size: 100
     },
     {
         accessorKey: "isActive",
@@ -80,17 +86,19 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                     : <Badge className="bg-red-600 hover:bg-red-700 flex gap-2 w-fit"><BadgeMinus /> Inactive</Badge>
                 }
             </>
-        }
+        },
+        size: 120
     },
     {
         accessorKey: "uses",
         header: "Views",
         cell: ({ row }) => {
             const uses: string = row.getValue("uses") ?? 0;
-            return <p className="flex items-center text-muted-foreground">
+            return <p className="flex items-center text-muted-foreground truncate">
                 <Eye className="mr-2" /> {uses} views
             </p>
-        }
+        },
+        size: 120
     },
     {
         accessorKey: "createdAt",
@@ -99,8 +107,9 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
             const date: Date = row.getValue("createdAt");
 
             const locale = useLocale();
-            return <p className="capitalize">{date.toLocaleDateString(locale, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
-        }
+            return <p className="capitalize truncate">{date.toLocaleDateString(locale, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
+        },
+        size: 250
     },
     {
         accessorKey: "expires",
@@ -109,8 +118,9 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
             const date: Date = row.getValue("expires");
 
             const locale = useLocale();
-            return <p className="capitalize">{date.toLocaleDateString(locale, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
-        }
+            return <p className="capitalize truncate">{date.toLocaleDateString(locale, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
+        },
+        size: 250
     },
     {
         id: "actions",
@@ -138,7 +148,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                                     description: "Link copied to your clipboard"
                                 })
                             }}>
-                                Copy link
+                                Send again
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem asChild>
@@ -158,5 +168,6 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                 </>
             )
         },
+        size: 50
     },
 ]

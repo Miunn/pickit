@@ -3,10 +3,11 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "./auth";
 import { FolderTokenPermission, PersonAccessToken } from "@prisma/client";
+import { PersonAccessTokenWithFolder } from "@/lib/definitions";
 
-export async function getPersonAccessTokens(): Promise<{
+export async function getPersonsAccessTokens(): Promise<{
     error: string | null,
-    personAccessTokens: PersonAccessToken[]
+    personAccessTokens: PersonAccessTokenWithFolder[]
 }> {
     const session = await auth();
 

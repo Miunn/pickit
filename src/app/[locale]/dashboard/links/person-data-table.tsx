@@ -7,23 +7,24 @@ import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Link, Trash2 } from "lucide-react";
 import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessTokenDialog";
-import { AccessTokenWithFolder, LightFolder } from "@/lib/definitions";
+import { LightFolder, PersonAccessTokenWithFolder } from "@/lib/definitions";
 import { useEffect, useState } from "react";
+import { personColumns } from "./columns-persons";
 
-export default function LinksDataTable({ accessTokens, defaultTokenIndex, lightFolders }: { accessTokens: AccessTokenWithFolder[], defaultTokenIndex: number, lightFolders: LightFolder[] }) {
+export default function PersonDataTable({ personsAccessTokens, defaultTokenIndex, lightFolders }: { personsAccessTokens: PersonAccessTokenWithFolder[], defaultTokenIndex: number, lightFolders: LightFolder[] }) {
 
     const [selectedTokensIndexes, setSelectedTokensIndexes] = useState<{ [index: number]: boolean }>(defaultTokenIndex !== -1 ? { [defaultTokenIndex]: true } : {});
-    const [selectedTokens, setSelectedTokens] = useState<string[]>(defaultTokenIndex !== -1 ? [accessTokens[defaultTokenIndex].token] : []);
+    const [selectedTokens, setSelectedTokens] = useState<string[]>(defaultTokenIndex !== -1 ? [personsAccessTokens[defaultTokenIndex].token] : []);
     const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
 
     useEffect(() => {
-        setSelectedTokens(Object.keys(selectedTokensIndexes).map((k) => accessTokens[parseInt(k)].token));
+        setSelectedTokens(Object.keys(selectedTokensIndexes).map((k) => personsAccessTokens[parseInt(k)].token));
     }, [selectedTokensIndexes]);
 
     return (
         <DataTable
-            columns={linksColumns}
-            data={accessTokens}
+            columns={personColumns}
+            data={personsAccessTokens}
             selection={selectedTokensIndexes}
             setSelection={setSelectedTokensIndexes}
             rightHeadingNodes={

@@ -52,7 +52,7 @@ export function DataTable<TData, TValue>({
       rowSelection: selection,
     },
   })
-  
+
   return (
     <div className="w-full">
       <div className="flex items-center justify-between py-4">
@@ -76,7 +76,7 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} style={{ width: header.getSize() !== 150 ? header.getSize() : undefined }}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
