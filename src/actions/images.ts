@@ -7,6 +7,7 @@ import sharp from "sharp";
 import { revalidatePath } from "next/cache";
 import { ImageLightWithFolderName, ImageWithFolder } from "@/lib/definitions";
 import { imageCreateManyAndUpdateSizes, imageDeleteAndUpdateSizes } from "@/lib/prismaExtend";
+import { changeFolderCover } from "./folders";
 
 export async function getLightImages(): Promise<{
     error: string | null;
@@ -103,6 +104,16 @@ export async function uploadImages(parentFolderId: string, formData: FormData): 
     }));
 
     await imageCreateManyAndUpdateSizes(imagesDb, parentFolderId, session.user.id!);
+
+    if (folder.coverId === null) {
+        const cover = await prisma.image.findFirst({
+            where: {
+                folderId: parentFolderId
+            },
+            select: { id: true }
+        });
+        await changeFolderCover(parentFolderId, cover!.id);
+    }
 
     revalidatePath(`dashboard/folders/${parentFolderId}`);
     revalidatePath("dashboard");

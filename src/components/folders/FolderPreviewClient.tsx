@@ -49,10 +49,9 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                     <Link href={`/${locale}/dashboard/folders/${folder.id}`} locale={locale}
                         className={"inline-block w-64 p-2"}>
                         {folder.cover
-                            ? <div className={`mb-4 flex justify-center items-center`}>
-                                <AspectRatio ratio={16 / 9}>
-                                    <Image src={`/api/folders/${folder.id}/images/${folder.cover.id}`} alt={folder.name} className={"relative border border-black rounded-xl"} fill />
-                                </AspectRatio>
+                            ? <div className={`relative h-36 mb-4 flex justify-center items-center`}>
+                                <Image src={`/api/folders/${folder.id}/images/${folder.coverId}`} alt={folder.cover.name}
+                                    className={"relative border border-black rounded-xl object-cover"} sizes="33vw" fill />
                             </div>
                             : <div
                                 className={"border rounded-2xl bg-gray-100 h-32 mb-4 flex justify-center items-center"}>
