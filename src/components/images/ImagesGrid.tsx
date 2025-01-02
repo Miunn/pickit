@@ -109,7 +109,7 @@ export const ImagesGrid = ({ folder }: { folder: FolderWithImagesWithFolder }) =
                                 />
 
                                 {uploading
-                                    ? <Button className="ml-auto flex" type="button" disabled><Loader2 className="w-4 h-4" /> Uploading</Button>
+                                    ? <Button className="ml-auto flex" type="button" disabled><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Uploading</Button>
                                     : <Button className="ml-auto flex" type="submit">Upload</Button>
                                 }
                             </form>

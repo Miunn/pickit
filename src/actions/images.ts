@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/actions/auth";
 import * as fs from "fs";
+import sharp from "sharp";
 import { revalidatePath } from "next/cache";
 import { ImageLightWithFolderName, ImageWithFolder } from "@/lib/definitions";
 import { imageCreateManyAndUpdateSizes, imageDeleteAndUpdateSizes } from "@/lib/prismaExtend";
@@ -48,9 +49,7 @@ export async function getLightImages(): Promise<{
     return { error: null, lightImages: images }
 }
 
-export async function uploadImages(parentFolderId: string, formData: FormData): Promise<{
-    error: string | null
-}> {
+export async function uploadImages(parentFolderId: string, formData: FormData): Promise<{ error: string | null }> {
     const session = await auth();
 
     if (!session?.user) {
@@ -60,9 +59,7 @@ export async function uploadImages(parentFolderId: string, formData: FormData): 
     const folder = await prisma.folder.findUnique({
         where: {
             id: parentFolderId,
-            createdBy: {
-                id: session.user.id
-            }
+            createdBy: { id: session.user.id }
         }
     });
 
@@ -70,39 +67,46 @@ export async function uploadImages(parentFolderId: string, formData: FormData): 
         return { error: "You are not authorized to upload images to this folder" };
     }
 
-    // Create folders if it doesn't exist
-    if (!fs.existsSync(`drive/${parentFolderId}`)) {
-        fs.mkdirSync(`drive/${parentFolderId}`);
+    const folderPath = `drive/${parentFolderId}`;
+    if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath, { recursive: true });
     }
 
-    let imagesDb: { name: string, slug: string, extension: string, size: number }[] = [];
-    for (const file of formData.values() as IterableIterator<File>) {
+    const files = Array.from(formData.values()) as File[];
+    const imagesDb = await Promise.all(files.map(async (file) => {
         const arrayBuffer = await file.arrayBuffer();
-        const buffer = new Uint8Array(arrayBuffer);
+        const buffer = Buffer.from(arrayBuffer);
 
-        const nameWithoutExtension = file.name.split('.').slice(0, -1).join('.');
-        const extension = file.name.split('.').pop();
-        const slug = file.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() + "-" + Date.now();
+        const nameWithoutExtension = file.name.replace(/\.[^/.]+$/, "");
+        const slug = `${file.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}-${Date.now()}`;
 
-        fs.writeFile(`drive/${parentFolderId}/${slug}.${extension}`, buffer, async (err) => {
-            if (err) {
-                console.error("Error uploading file", err);
-                return;
-            }
-        });
+        const image = sharp(buffer);
+        const metadata = await image.metadata();
 
-        imagesDb.push({
+        const imageData = {
             name: nameWithoutExtension,
-            slug: slug,
-            extension: extension || "png",
-            size: file.size
-        });
-    }
+            slug,
+            extension: metadata.format || "png",
+            size: file.size,
+            width: metadata.width || 0,
+            height: metadata.height || 0
+        };
+
+        try {
+            await fs.promises.writeFile(`${folderPath}/${slug}.${imageData.extension}`, buffer);
+        } catch (err) {
+            console.error("Error writing file:", err);
+            throw new Error("File upload failed");
+        }
+
+        return imageData;
+    }));
 
     await imageCreateManyAndUpdateSizes(imagesDb, parentFolderId, session.user.id!);
 
-    revalidatePath("dashboard/folders/" + parentFolderId);
+    revalidatePath(`dashboard/folders/${parentFolderId}`);
     revalidatePath("dashboard");
+
     return { error: null };
 }
 

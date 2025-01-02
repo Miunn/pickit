@@ -1,13 +1,16 @@
 import { prisma } from "./prisma"
 
-export async function imageCreateManyAndUpdateSizes(data: { name: string, slug: string, extension: string, size: number }[], folderId: string, userId: string) {
+export async function imageCreateManyAndUpdateSizes(data: { name: string, slug: string, extension: string, size: number, width: number, height: number }[], folderId: string, userId: string) {
     await prisma.image.createMany({
-        data: data.map(({ name, slug, extension, size }) => ({
+        data: data.map(({ name, slug, extension, size, width, height }) => ({
             name: name,
+            extension,
             path: `drive/${folderId}/${slug}.${extension}`,
-            size: size,
             createdById: userId,
-            folderId: folderId
+            folderId: folderId,
+            size,
+            width,
+            height
         }))
     })
 
@@ -27,12 +30,15 @@ export async function imageCreateManyAndUpdateSizes(data: { name: string, slug: 
     })
 }
 
-export async function imageCreateAndUpdateSizes(name: string, folderId: string, slug: string, extension: string, size: number, userId: string) {
+export async function imageCreateAndUpdateSizes(name: string, folderId: string, slug: string, extension: string, size: number, width: number, height: number, userId: string) {
     await prisma.image.create({
         data: {
             name: name,
+            extension,
             path: `drive/${folderId}/${slug}.${extension}`,
-            size: size,
+            size,
+            width,
+            height,
             createdBy: {
                 connect: {
                     id: userId

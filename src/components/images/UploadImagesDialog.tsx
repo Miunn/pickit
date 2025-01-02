@@ -84,7 +84,7 @@ export const UploadImagesDialog = ({folderId}: { folderId: string }) => {
 
                         <DialogFooter>
                             {loading
-                                ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"}/> {t('submitting')}
+                                ? <Button disabled={true}><Loader2 className={"w-4 h-4 mr-2 animate-spin"}/> {t('submitting')}
                                 </Button>
                                 : <Button type={"submit"}>{t('submit')}</Button>
                             }

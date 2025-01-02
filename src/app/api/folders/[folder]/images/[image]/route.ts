@@ -63,7 +63,8 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
 
         const buffer = await fs.promises.readFile(image.path);
         const res = new NextResponse(buffer);
-        res.headers.set('Content-Type', 'image/*');
+        res.headers.set('Content-Disposition', 'inline');
+        res.headers.set('Content-Type', `image/${image.extension}`);
         return res;
     }
 }

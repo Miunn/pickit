@@ -1,9 +1,9 @@
-import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import React, { useState } from "react";
 import ImagesCarousel from "./ImagesCarousel";
 import { ImageWithFolder } from "@/lib/definitions";
 
-export const CarouselDialog = ({images, title, carouselOpen, setCarouselOpen, startIndex}: {
+export const CarouselDialog = ({ images, title, carouselOpen, setCarouselOpen, startIndex }: {
     images: ImageWithFolder[],
     title: string,
     carouselOpen: any,
