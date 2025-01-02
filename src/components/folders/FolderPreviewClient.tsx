@@ -46,7 +46,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
             <ContextMenu>
                 <ContextMenuTrigger asChild>
                     <Link href={`/${locale}/dashboard/folders/${folder.id}`} locale={locale}
-                        className={"inline-block w-64 p-2"}>
+                        className={"inline-block w-64"}>
                         {folder.cover
                             ? <div className={`relative h-36 mb-4 flex justify-center items-center`}>
                                 <Image src={`/api/folders/${folder.id}/images/${folder.coverId}`} alt={folder.cover.name}

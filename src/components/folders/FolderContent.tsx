@@ -16,7 +16,7 @@ export const FolderContent = ({ folder, locale }: { folder: FolderWithImagesWith
 
     return (
         <div className="flex flex-col">
-            <h3 className={"font-semibold mb-5 flex justify-between"}>
+            <h3 className={"font-semibold mb-2 flex justify-between"}>
                 {folder.name}
 
                 <div className={"flex gap-4"}>
