@@ -59,7 +59,7 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             {children}
-            <DialogContent>
+            <DialogContent className="max-w-lg">
                 <DialogHeader>
                     <DialogTitle>Create a new sharing link</DialogTitle>
                     <DialogDescription>Select a folder and permissions to create a new access token</DialogDescription>
@@ -74,13 +74,13 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
                                     <FormLabel>Folder</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select a folder" />
+                                            <SelectTrigger className="w-[462px] truncate">
+                                                <SelectValue placeholder="Select a folder" className="truncate" />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             {folders.map((folder) => (
-                                                <SelectItem key={folder.id} value={folder.id}>{folder.name}</SelectItem>
+                                                <SelectItem key={folder.id} value={folder.id} className="truncate">{folder.name}</SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
