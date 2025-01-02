@@ -16,7 +16,6 @@ import { ShareFolderDialog } from "./ShareFolderDialog";
 import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, ImageWithFolder } from "@/lib/definitions";
 import ChangeCoverFolderDialog from "./ChangeCoverFolderDialog";
 import { getImagesWithFolderFromFolder } from "@/actions/images";
-import { AspectRatio } from "../ui/aspect-ratio";
 
 export default function FolderPreviewClient({ folder, coverB64, locale }: {
     folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover,
@@ -54,15 +53,13 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                                     className={"relative border border-black rounded-xl object-cover"} sizes="33vw" fill />
                             </div>
                             : <div
-                                className={"border rounded-2xl bg-gray-100 h-32 mb-4 flex justify-center items-center"}>
+                                className={"border rounded-2xl bg-gray-100 h-36 mb-4 flex justify-center items-center"}>
                                 <Images className={"opacity-50"} />
                             </div>
                         }
                         <p className="truncate">{folder.name}</p>
-                        <div className={"text-sm grid h-4 items-center"} style={{
-                            gridTemplateColumns: "1fr auto 2fr",
-                        }}>
-                            <p className={"opacity-60"}>{folder._count.images ?? 0} images</p>
+                        <div className={"text-sm flex h-4 items-center flex-nowrap"}>
+                            <p className={"opacity-60 text-nowrap"}>{folder._count.images ?? 0} images</p>
                             <Separator className="mx-2" orientation="vertical" />
                             <TooltipProvider>
                                 <Tooltip>

@@ -1,16 +1,13 @@
-import { Separator } from "@/components/ui/separator";
 import { useFormatter, useTranslations } from "next-intl";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import React from "react";
 import Image from "next/image";
 import { ImageWithFolder } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
-import { AspectRatio } from "../ui/aspect-ratio";
 import { formatBytes } from "@/lib/utils";
 
 export interface ImagePreviewProps {
     image: ImageWithFolder;
-    withFolder: boolean;
     selecting: boolean;
     setSelecting: React.Dispatch<React.SetStateAction<boolean>>;
     selected: string[];
@@ -19,7 +16,7 @@ export interface ImagePreviewProps {
     onDelete?: (imageId: string) => void;
 }
 
-export const ImagePreview = ({ image, withFolder, selecting, setSelecting, selected, setSelected, onClick, onDelete }: ImagePreviewProps) => {
+export const ImagePreview = ({ image, selecting, setSelecting, selected, setSelected, onClick, onDelete }: ImagePreviewProps) => {
 
     const format = useFormatter();
     const t = useTranslations("images");
@@ -46,14 +43,7 @@ export const ImagePreview = ({ image, withFolder, selecting, setSelecting, selec
                         </div>
                         <p className={"text-start"}>{image.name}</p>
                         <div className={"text-sm h-4 flex items-center justify-between"}>
-                            <div className="flex items-center">
-                                {(withFolder ?? false)
-                                    ? <>
-                                        <p className={"opacity-60"}>{image.folder.name}</p>
-                                        <Separator className="mx-2" orientation="vertical" />
-                                    </>
-                                    : null
-                                }
+                            <div className="h-full flex items-center">
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
@@ -76,7 +66,7 @@ export const ImagePreview = ({ image, withFolder, selecting, setSelecting, selec
                                     </Tooltip>
                                 </TooltipProvider>
                             </div>
-                            <p className="text-muted-foreground">{formatBytes(image.size)}</p>
+                            <p className="text-muted-foreground text-nowrap">{formatBytes(image.size)}</p>
                         </div>
                     </div>
                 </button>

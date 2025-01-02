@@ -23,7 +23,7 @@ export default function ReviewFolders({ locale, folders }: { locale: string, fol
                 {folders.map((folder) => (
                     <div key={folder.id} className="flex items-center justify-between py-2 border-b border-gray-200">
                         <div>
-                            <h4 className="font-semibold">{folder.name}</h4>
+                            <h4 className="font-semibold truncate">{folder.name}</h4>
                             <p className="text-sm text-muted-foreground capitalize">{folder.createdAt.toLocaleDateString(locale, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
                         </div>
                         <div className="flex items-center gap-3">

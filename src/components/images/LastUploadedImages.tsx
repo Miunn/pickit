@@ -59,7 +59,6 @@ export const LastUploadedImages = ({ images, locale }: { images: ImageWithFolder
                         <Fragment key={image.id}>
                         <ImagePreview
                             image={image}
-                            withFolder={false}
                             selected={selected}
                             setSelected={setSelected}
                             selecting={false}

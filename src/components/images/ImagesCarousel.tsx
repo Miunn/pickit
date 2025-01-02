@@ -3,7 +3,7 @@ import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, Car
 import { ImageWithFolder } from "@/lib/definitions";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { Check, Copy, ExternalLink, Maximize, Navigation, Navigation2, Table, Upload } from "lucide-react";
+import { Check, Copy, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/hooks/use-toast";
 
@@ -37,10 +37,6 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
         }, 2000);
     }
 
-    const fullScreenImage = () => {
-        imagesItemsRefs[currentIndex - 1].current?.requestFullscreen();
-    }
-
     useEffect(() => {
         if (!carouselApi) return;
 
@@ -54,7 +50,7 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
 
     return (
         <div className={"p-4 mx-auto"}>
-            <div className="flex justify-between items-center mb-2 gap-2">
+            <div className="flex justify-between items-center mb-2 gap-2 px-2">
                 <p className="font-semibold">{
                     currentIndex == 0
                         ? images[currentIndex]?.name
@@ -73,17 +69,17 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                     </Button>
                 </div>
             </div>
-            <Carousel className="w-full max-w-xl h-96" opts={{
+            <Carousel className="w-full h-fit mx-auto max-w-xl mb-2" opts={{
                 align: "center",
                 loop: true,
                 startIndex: startIndex
             }} setApi={setCarouselApi}>
-                <CarouselContent>
+                <CarouselContent className="h-fit">
                     {images.map((image, index) => (
-                        <CarouselItem ref={imagesItemsRefs[index]} key={image.id}>
-                            <div className={"w-full max-h-96 flex justify-center items-center p-2"}>
+                        <CarouselItem ref={imagesItemsRefs[index]} key={image.id} className="h-fit">
+                            <div className={"h-96 flex justify-center items-center p-2"}>
                                 <Image src={`/api/folders/${image.folder.id}/images/${image.id}`}
-                                    alt={image.name} className={"h-full max-h-96 object-contain rounded-md"} width={900} height={600} />
+                                    alt={image.name} className={"h-96 max-h-96 object-contain rounded-md"} width={900} height={384} />
                             </div>
                         </CarouselItem>
                     ))}
@@ -91,14 +87,20 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                 <CarouselPrevious />
                 <CarouselNext />
             </Carousel>
-            <p className="py-2 text-sm flex justify-between items-center">
-                <span>{
-                    currentIndex == 0
-                        ? `${images[currentIndex]?.width}x${images[currentIndex]?.height}`
-                        : `${images[currentIndex - 1]?.width}x${images[currentIndex - 1]?.height}`
-                }</span>
-                <span className="text-muted-foreground">Slide {currentIndex} of {count}</span>
-            </p>
+            <div className="max-w-xl grid grid-cols-2 items-center px-2">
+                <p className="truncate">
+                    {currentIndex == 0
+                        ? images[currentIndex]?.folder.name
+                        : images[currentIndex - 1]?.folder.name}
+                </p>
+                <p className="text-sm text-muted-foreground text-nowrap text-end">
+                    <span>{
+                        currentIndex == 0
+                            ? `${images[currentIndex]?.width}x${images[currentIndex]?.height}`
+                            : `${images[currentIndex - 1]?.width}x${images[currentIndex - 1]?.height}`
+                    }</span> - <span>Slide {currentIndex} of {count}</span>
+                </p>
+            </div>
         </div>
     )
 }

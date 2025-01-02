@@ -119,7 +119,6 @@ export const ImagesGrid = ({ folder }: { folder: FolderWithImagesWithFolder }) =
                         <Fragment key={image.id}>
                             <ImagePreview
                                 image={image}
-                                withFolder={false}
                                 selecting={selecting}
                                 setSelecting={setSelecting}
                                 selected={selected}
