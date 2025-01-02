@@ -15,13 +15,13 @@ export default async function LinksPage({ searchParams }: { searchParams: { l?: 
 
     return (
         <div>
-            <h3 className="font-semibold">Manage links</h3>
-
-            <LinksDataTable accessTokens={accessTokens} defaultTokenIndex={defaultSelectedIndex} lightFolders={lightFolders}/>
-
             <h3 className="font-semibold">Manage persons</h3>
 
             <PersonDataTable personsAccessTokens={personsAccessTokens} defaultTokenIndex={defaultSelectedIndex} lightFolders={lightFolders}/>
+            
+            <h3 className="font-semibold">Manage links</h3>
+
+            <LinksDataTable accessTokens={accessTokens} defaultTokenIndex={defaultSelectedIndex} lightFolders={lightFolders}/>
         </div>
     )
 }
