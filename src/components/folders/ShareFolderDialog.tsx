@@ -78,10 +78,6 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
         setTokenList([...tokenList, { email, permission, expiryDate: expiresAt }]);
     }
 
-    const submitEmails = () => {
-
-    }
-
     useEffect(() => {
         if (!emailScroll.current) {
             return;
@@ -113,7 +109,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     </Button>
                 </div>
                 <div className={"grid gap-3 w-full items-center"} style={{
-                    gridTemplateColumns: "0.5fr 1fr auto"
+                    gridTemplateColumns: "0.3fr 1fr auto"
                 }}>
                     {validTokens.length > 0
                         ? validTokens.sort((a, b) => a.permission.localeCompare(b.permission)).map((token) => <Fragment key={token.token}>
