@@ -17,6 +17,9 @@ export default async function FoldersPage({ params }: { params: { locale: string
             _count: {
                 select: { images: true }
             }
+        },
+        omit: {
+            locked: false
         }
     });
 

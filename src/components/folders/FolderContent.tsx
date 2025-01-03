@@ -1,16 +1,18 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Download, Settings2 } from "lucide-react";
+import { Download, FolderLock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { UploadImagesDialog } from "@/components/images/UploadImagesDialog";
 import { ImagesGrid } from "@/components/images/ImagesGrid";
 import { downloadFolder } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
-import { FolderWithAccessToken, FolderWithImagesWithFolder } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithImagesWithFolder, FolderWithLocked } from "@/lib/definitions";
+import LockFolderDialog from "./LockFolderDialog";
+import { DialogTrigger } from "../ui/dialog";
 
-export const FolderContent = ({ folder, locale }: { folder: FolderWithImagesWithFolder & FolderWithAccessToken, locale: string }) => {
+export const FolderContent = ({ folder, locale }: { folder: FolderWithImagesWithFolder & FolderWithAccessToken & FolderWithLocked, locale: string }) => {
 
     const t = useTranslations("folders");
 
@@ -21,6 +23,11 @@ export const FolderContent = ({ folder, locale }: { folder: FolderWithImagesWith
 
                 <div className={"flex gap-4"}>
                     <UploadImagesDialog folderId={folder.id} />
+                    <LockFolderDialog folderId={folder.id}>
+                        <DialogTrigger asChild>
+                            <Button variant="outline"><FolderLock className="mr-2" /> Lock folder</Button>
+                        </DialogTrigger>
+                    </LockFolderDialog>
                     <ShareFolderDialog folder={folder} />
                     <Button variant="outline" onClick={async () => {
                         const r = await downloadFolder(folder);

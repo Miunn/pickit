@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Folder" ALTER COLUMN "lockCode" SET DATA TYPE TEXT;

@@ -13,12 +13,12 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { downloadFolder } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { ShareFolderDialog } from "./ShareFolderDialog";
-import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, ImageWithFolder } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, FolderWithLocked, ImageWithFolder } from "@/lib/definitions";
 import ChangeCoverFolderDialog from "./ChangeCoverFolderDialog";
 import { getImagesWithFolderFromFolder } from "@/actions/images";
 
 export default function FolderPreviewClient({ folder, coverB64, locale }: {
-    folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover,
+    folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover & FolderWithLocked,
     coverB64: string,
     locale: string
 }) {

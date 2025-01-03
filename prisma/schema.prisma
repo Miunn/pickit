@@ -27,7 +27,7 @@ model Folder {
   cover             Image?              @relation(fields: [coverId], references: [id])
   coverId           String?             @unique
   locked            Boolean             @default(false)
-  lockCode          Int?
+  lockCode          String?
   createdBy         User                @relation("UserFolders", fields: [createdById], references: [id])
   createdById       String
   createdAt         DateTime            @default(now())

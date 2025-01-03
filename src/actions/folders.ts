@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/actions/auth";
 import * as fs from "fs";
 import { revalidatePath } from "next/cache";
-import { LightFolder } from "@/lib/definitions";
+import { LightFolder, LockFolderFormSchema } from "@/lib/definitions";
 import { folderDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 
 export async function getLightFolders(): Promise<{
@@ -149,6 +149,79 @@ export async function changeFolderCover(folderId: string, coverId: string): Prom
                     id: coverId
                 }
             }
+        }
+    });
+
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/folders");
+    return { error: null }
+}
+
+export async function lockFolder(folderId: string, pin: string): Promise<{
+    error: string | null
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to lock a folder" };
+    }
+
+    try {
+        LockFolderFormSchema.safeParse({ pin: pin });
+    } catch (e: any) {
+        return { error: "invalid-pin" };
+    }
+
+    await prisma.folder.update({
+        where: {
+            id: folderId,
+            createdBy: {
+                id: session.user.id as string
+            }
+        },
+        data: {
+            locked: true,
+            lockCode: pin
+        }
+    });
+
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/folders");
+    return { error: null }
+}
+
+export async function unlockFolder(folderId: string): Promise<{
+    error: string | null
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to unlock a folder" };
+    }
+
+    const folder = await prisma.folder.findUnique({
+        where: {
+            id: folderId,
+            createdBy: {
+                id: session.user.id as string
+            }
+        }
+    });
+
+    if (!folder) {
+        return { error: "folder-not-found" };
+    }
+
+    await prisma.folder.update({
+        where: {
+            id: folderId,
+            createdBy: {
+                id: session.user.id as string
+            }
+        },
+        data: {
+            locked: false,
+            lockCode: null
         }
     });
 

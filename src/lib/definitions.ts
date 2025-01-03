@@ -74,6 +74,14 @@ export const UploadImagesFormSchema = z.object({
             })
 });
 
+export const LockFolderFormSchema = z.object({
+    pin: z.string().min(6, {
+        message: "PIN must be 6 characters long"
+    }).max(6, {
+        message: "PIN must be 6 characters long"
+    })
+});
+
 export const CreateAccessTokenFormSchema = z.object({
     folder: z.string().max(255, {
         message: "Choosen folder is invalid"
@@ -172,6 +180,12 @@ const lightFolders = Prisma.validator<Prisma.FolderDefaultArgs>()({
 })
 
 export type LightFolder = Prisma.FolderGetPayload<typeof lightFolders>
+
+const folderWithLocked = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    select: { locked: true }
+})
+
+export type FolderWithLocked = Prisma.FolderGetPayload<typeof folderWithLocked>
 
 const folderWithImages = Prisma.validator<Prisma.FolderDefaultArgs>()({
     include: { images: true }

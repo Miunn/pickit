@@ -1,9 +1,9 @@
 import {FolderX} from "lucide-react";
 import FolderPreview from "@/components/folders/FolderPreview";
 import {useTranslations} from "next-intl";
-import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, FolderWithLocked } from "@/lib/definitions";
 
-export default function FoldersContent({ folders, locale }: { folders: (FolderWithAccessToken & FolderWithImagesCount & FolderWithCover)[], locale: string }) {
+export default function FoldersContent({ folders, locale }: { folders: (FolderWithAccessToken & FolderWithImagesCount & FolderWithCover & FolderWithLocked)[], locale: string }) {
 
     const t = useTranslations("folders");
 

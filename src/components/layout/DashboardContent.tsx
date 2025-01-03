@@ -3,9 +3,9 @@ import FolderPreview from "@/components/folders/FolderPreview";
 import {useTranslations} from "next-intl";
 import React from "react";
 import {LastUploadedImages} from "@/components/images/LastUploadedImages";
-import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, ImageWithFolder } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, FolderWithLocked, ImageWithFolder } from "@/lib/definitions";
 
-export default function DashboardContent({lastFolders, lastImages, locale}: { lastFolders: (FolderWithAccessToken & FolderWithImagesCount & FolderWithCover)[], lastImages: ImageWithFolder[], locale: string }) {
+export default function DashboardContent({lastFolders, lastImages, locale}: { lastFolders: (FolderWithAccessToken & FolderWithImagesCount & FolderWithCover & FolderWithLocked)[], lastImages: ImageWithFolder[], locale: string }) {
 
     const t = useTranslations("dashboard");
 
