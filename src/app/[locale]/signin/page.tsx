@@ -3,7 +3,7 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import SignupForm from "@/components/auth/SignupForm";
 import {useTranslations} from "next-intl";
 
-export default function LoginPage({ params }: { params: { locale: string } }) {
+export default function LoginPage({ params, searchParams }: { params: { locale: string }, searchParams: { side?: string } }) {
 
     const t = useTranslations('auth');
 
@@ -14,7 +14,7 @@ export default function LoginPage({ params }: { params: { locale: string } }) {
             left: "50%",
             transform: "translate(-50%, -50%)",
         }}>
-            <Tabs defaultValue="login">
+            <Tabs defaultValue={searchParams.side === "register" ? "register" : "login"}>
                 <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="login">{t("signInTab")}</TabsTrigger>
                     <TabsTrigger value="register">{t("signUpTab")}</TabsTrigger>
