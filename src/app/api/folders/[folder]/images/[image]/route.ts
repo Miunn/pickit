@@ -5,6 +5,7 @@ import * as bcrypt from "bcryptjs";
 import fs from "fs";
 
 export async function GET(req: NextRequest, { params }: { params: {image: string}, }): Promise<NextResponse> {
+    console.log("REQUEST IMAGE", req.nextUrl);
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
     console.log("TRY TO GET IMAGE WITH ACCESS KEY", accessKey);

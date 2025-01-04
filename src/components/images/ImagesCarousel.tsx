@@ -58,7 +58,7 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                 }</p>
                 <div className="flex gap-2">
                     <Button variant={"outline"} size={"icon"} type="button" asChild>
-                        <Link href={`/_next/image?url=/api/folders/${images.at(currentIndex - 1)?.folderId}/images/${images.at(currentIndex - 1)?.id}&share=${shareToken}&h=${shareHashPin}&w=3840&q=100`} target="_blank">
+                        <Link href={`/api/folders/${images.at(currentIndex - 1)?.folderId}/images/${images.at(currentIndex - 1)?.id}?share=${shareToken}&h=${shareHashPin}`} target="_blank">
                             <ExternalLink className="w-4 h-4" />
                         </Link>
                     </Button>

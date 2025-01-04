@@ -36,6 +36,30 @@ const InputOTPSlot = React.forwardRef<
   const inputOTPContext = React.useContext(OTPInputContext)
   const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index]
 
+  const [displayChar, setDisplayChar] = React.useState<string | null>(char)
+
+  React.useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+
+    if (char) {
+      setDisplayChar(char);
+      timer = setTimeout(() => {
+        setDisplayChar("•");
+      }, 1500);
+    }
+
+    // Mask immediately if next slot is filled
+    const nextSlotFilled = inputOTPContext.slots[index + 1]?.char;
+    if (nextSlotFilled) {
+      setDisplayChar("•");
+      if (timer) clearTimeout(timer); // Cancel ongoing timeout
+    }
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [char, inputOTPContext.slots, index]);
+
   return (
     <div
       ref={ref}
@@ -46,7 +70,7 @@ const InputOTPSlot = React.forwardRef<
       )}
       {...props}
     >
-      {char}
+      {displayChar}
       {hasFakeCaret && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div className="h-4 w-px animate-caret-blink bg-foreground duration-1000" />
