@@ -63,7 +63,7 @@ export default function RequestPasswordReset({ locale, defaultEmail }: { locale:
                         />
 
                         <div className="flex gap-2 self-end">
-                        <Button variant={"outline"} type="button">
+                        <Button variant={"outline"} type="button" asChild>
                             <Link href={`/${locale}/signin`}>Back to login</Link>
                         </Button>
                         {loading

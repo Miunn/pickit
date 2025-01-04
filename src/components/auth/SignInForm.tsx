@@ -74,8 +74,8 @@ export default function SignInForm({ locale }: { locale: string }) {
                                 <FormItem>
                                     <div className="flex justify-between">
                                         <FormLabel>{t('form.password')}</FormLabel>
-                                        <Button variant={"link"} className="ml-auto p-0 h-fit">
-                                            <Link href={`/${locale}/account/forgot-password`}>Forgot password</Link>
+                                        <Button variant={"link"} className="ml-auto p-0 h-fit focus-visible:ring-offset-2" asChild>
+                                            <Link href={`/${locale}/account/forgot-password`} className="">Forgot password</Link>
                                         </Button>
                                     </div>
                                     <FormControl>
