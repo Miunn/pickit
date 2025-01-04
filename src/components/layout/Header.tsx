@@ -18,7 +18,7 @@ export default async function Header({ locale }: { locale: string }) {
                             <Link href={`/${locale}/signin`}>Login</Link>
                         </li>
                         <li>
-                            <Button>
+                            <Button asChild>
                                 <Link href={`/${locale}/signin`}>Start</Link>
                             </Button>
                         </li>
