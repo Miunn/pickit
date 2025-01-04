@@ -9,10 +9,11 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, Di
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { lockFolder } from "@/actions/folders";
 import { toast } from "@/hooks/use-toast";
+import { lockAccessToken } from "@/actions/accessTokens";
+import { lockPersonAccessToken } from "@/actions/accessTokensPerson";
 
-export default function LockFolderDialog({ children, open, setOpen, folderId }: { children?: React.ReactNode, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>>, folderId: string }) {
+export default function LockTokenDialog({ children, openState, setOpenState, tokenId, tokenType }: { children?: React.ReactNode, openState?: boolean, setOpenState?: React.Dispatch<React.SetStateAction<boolean>>, tokenId: string, tokenType: "accessToken" | "personAccessToken" }) {
 
     const [saveLoading, setSaveLoading] = useState<boolean>(false);
 
@@ -25,22 +26,27 @@ export default function LockFolderDialog({ children, open, setOpen, folderId }: 
 
     async function submit(data: z.infer<typeof LockFolderFormSchema>) {
         setSaveLoading(true);
-        const r = await lockFolder(folderId, data.pin);
+        let r;
+        if (tokenType === "accessToken") {
+            r = await lockAccessToken(tokenId, data.pin);
+        } else if (tokenType === "personAccessToken") {
+            r = await lockPersonAccessToken(tokenId, data.pin);
+        } else {
+            setSaveLoading(false);
+            toast({
+                title: "Error",
+                description: "Wrong token type",
+            });
+            return;
+        }
         setSaveLoading(false);
 
+        console.log(r);
         if (r.error) {
-            if (r.error === "invalid-pin") {
-                form.setError("pin", {
-                    type: "manual",
-                    message: "Invalid PIN"
-                })
-            } else {
-                toast({
-                    title: "Error",
-                    description: "An error occurred while locking the folder",
-                    variant: "destructive"
-                })
-            }
+            toast({
+                title: "Error",
+                description: "An error occurred while locking the folder",
+            });
             return;
         }
 
@@ -49,13 +55,13 @@ export default function LockFolderDialog({ children, open, setOpen, folderId }: 
             description: "Your folder has been locked successfully"
         });
 
-        if (setOpen) {
-            setOpen(false);
+        if (setOpenState) {
+            setOpenState(false);
         }
     }
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={openState} onOpenChange={setOpenState}>
             {children}
             <DialogContent>
                 <DialogHeader>
@@ -92,11 +98,11 @@ export default function LockFolderDialog({ children, open, setOpen, folderId }: 
                         />
 
                         <div className="mt-8 flex justify-end gap-2">
-                            <DialogClose>
+                            <DialogClose asChild>
                                 <Button type={"button"} variant={"outline"}>Cancel</Button>
                             </DialogClose>
                             {saveLoading
-                                ? <Button type={"button"} disabled><Loader2 className={"w-4 h-4 mr-2"} /> Saving</Button>
+                                ? <Button type={"button"} disabled><Loader2 className={"w-4 h-4 mr-2 animate-spin"} /> Saving</Button>
                                 : <Button type={"submit"}>Save</Button>}
                         </div>
                     </form>

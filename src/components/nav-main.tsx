@@ -18,11 +18,13 @@ import {
 import Link from "next/link"
 
 export type NavMainItems = {
+  key: string
   title: string
   url: string
   icon: LucideIcon
   isActive?: boolean
   items?: {
+    key: string
     title: string
     url: string
   }[]
@@ -35,7 +37,7 @@ export function NavMain({ items }: { items: NavMainItems }) {
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible
-            key={item.title}
+            key={item.key}
             asChild
             defaultOpen={item.isActive}
             className="group/collapsible"
@@ -53,7 +55,7 @@ export function NavMain({ items }: { items: NavMainItems }) {
               <CollapsibleContent>
                 {item.items && item.items.length > 0 ? <SidebarMenuSub>
                   {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
+                    <SidebarMenuSubItem key={subItem.key}>
                       <SidebarMenuSubButton asChild>
                         <a href={subItem.url}>
                           <span>{subItem.title}</span>

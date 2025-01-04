@@ -8,11 +8,9 @@ import { ImagesGrid } from "@/components/images/ImagesGrid";
 import { downloadFolder } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
-import { FolderWithAccessToken, FolderWithImagesWithFolder, FolderWithLocked } from "@/lib/definitions";
-import LockFolderDialog from "./LockFolderDialog";
-import { DialogTrigger } from "../ui/dialog";
+import { FolderWithAccessToken, FolderWithImagesWithFolder } from "@/lib/definitions";
 
-export const FolderContent = ({ folder, locale }: { folder: FolderWithImagesWithFolder & FolderWithAccessToken & FolderWithLocked, locale: string }) => {
+export const FolderContent = ({ folder, locale }: { folder: FolderWithImagesWithFolder & FolderWithAccessToken, locale: string }) => {
 
     const t = useTranslations("folders");
 
@@ -23,11 +21,6 @@ export const FolderContent = ({ folder, locale }: { folder: FolderWithImagesWith
 
                 <div className={"flex gap-4"}>
                     <UploadImagesDialog folderId={folder.id} />
-                    <LockFolderDialog folderId={folder.id}>
-                        <DialogTrigger asChild>
-                            <Button variant="outline"><FolderLock className="mr-2" /> Lock folder</Button>
-                        </DialogTrigger>
-                    </LockFolderDialog>
                     <ShareFolderDialog folder={folder} />
                     <Button variant="outline" onClick={async () => {
                         const r = await downloadFolder(folder);

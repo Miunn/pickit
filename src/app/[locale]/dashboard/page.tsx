@@ -23,9 +23,6 @@ export default async function Home({ params }: { params: { locale: string } }) {
                 select: { images: true }
             },
         },
-        omit: {
-            locked: false
-        },
         take: 6,
     });
     const lastImages = await prisma.image.findMany({

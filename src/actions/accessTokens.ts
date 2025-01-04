@@ -127,6 +127,90 @@ export async function changeAccessTokenActiveState(token: string, isActive: bool
     return { error: null }
 }
 
+export async function lockAccessToken(tokenId: string, pin: string): Promise<{
+    error: string | null
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to lock an access token" }
+    }
+
+    try {
+        const token = await prisma.accessToken.findFirst({
+            where: {
+                id: tokenId,
+                folder: {
+                    createdBy: {
+                        id: session.user.id
+                    }
+                }
+            }
+        });
+
+        if (!token) {
+            return { error: "Token not found" }
+        }
+
+        await prisma.accessToken.update({
+            where: {
+                id: tokenId
+            },
+            data: {
+                locked: true,
+                pinCode: pin
+            }
+        });
+
+        revalidatePath("/dashboard/links");
+        return { error: null }
+    } catch (e) {
+        return { error: "An unknown error happened when trying to lock this token" }
+    }
+}
+
+export async function unlockAccessToken(tokenId: string): Promise<{
+    error: string | null
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to unlock an access token" }
+    }
+
+    try {
+        const token = await prisma.accessToken.findFirst({
+            where: {
+                token: tokenId,
+                folder: {
+                    createdBy: {
+                        id: session.user.id
+                    }
+                }
+            }
+        });
+
+        if (!token) {
+            return { error: "Token not found" }
+        }
+
+        await prisma.accessToken.update({
+            where: {
+                token: tokenId
+            },
+            data: {
+                locked: false,
+                pinCode: null
+            }
+        });
+
+        revalidatePath("/dashboard/links");
+        return { error: null }
+    } catch (e) {
+        return { error: "An unknown error happened when trying to unlock this token" }
+    }
+}
+
 export async function deleteAccessToken(tokens: string[]): Promise<{ error: string | null }> {
     const session = await auth();
 

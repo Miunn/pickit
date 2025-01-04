@@ -6,9 +6,11 @@ const prismaClientSingleton = () => {
             user: {
                 password: true,
             },
-            folder: {
-                locked: true,
-                lockCode: true,
+            accessToken: {
+                pinCode: true,
+            },
+            personAccessToken: {
+                pinCode: true,
             }
         }
     })

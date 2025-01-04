@@ -1,7 +1,9 @@
 "use client"
 
 import { changeAccessTokenActiveState } from "@/actions/accessTokens";
+import { unlockPersonAccessToken } from "@/actions/accessTokensPerson";
 import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessTokenDialog";
+import LockTokenDialog from "@/components/folders/LockTokenDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -9,7 +11,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { toast } from "@/hooks/use-toast";
 import { PersonAccessTokenWithFolder } from "@/lib/definitions"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, BadgeCheck, BadgeMinus, Eye, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, BadgeCheck, BadgeMinus, Eye, Lock, LockOpen, MoreHorizontal } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
@@ -90,6 +92,20 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
         size: 120
     },
     {
+        accessorKey: "locked",
+        header: "Locked ?",
+        cell: ({ row }) => {
+            const isLocked: boolean = row.getValue("locked")
+            return <>
+                {isLocked
+                    ? <p className="flex items-center text-muted-foreground truncate"><Lock className="mr-2" /> Locked</p>
+                    : <p className="flex items-center text-muted-foreground truncate"><LockOpen className="mr-2" /> Unlocked</p>
+                }
+            </>
+        },
+        size: 120
+    },
+    {
         accessorKey: "uses",
         header: "Views",
         cell: ({ row }) => {
@@ -128,6 +144,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
             const accessToken = row.original
 
             const locale = useLocale();
+            const [lockOpen, setLockOpen] = useState<boolean>(false);
             const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
             const link = `http://localhost:3000/${locale}/dashboard/folders/${accessToken.folder.id}?share=${accessToken.token}`;
             return (
@@ -160,10 +177,15 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                                 ? <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, false)}>Set as inactive</DropdownMenuItem>
                                 : <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, true)}>Set as active</DropdownMenuItem>
                             }
+                            {accessToken.locked
+                                ? <DropdownMenuItem onClick={() => unlockPersonAccessToken(accessToken.id)}>Unlock</DropdownMenuItem>
+                                : <DropdownMenuItem onClick={() => setLockOpen(true)}>Lock link</DropdownMenuItem>
+                            }
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => setDeleteOpen(true)} className="text-red-600 focus:text-red-600 font-semibold">Delete</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
+                    <LockTokenDialog tokenId={accessToken.id} tokenType="personAccessToken" openState={lockOpen} setOpenState={setLockOpen} />
                     <DeleteAccessTokenDialog tokens={[accessToken.token]} openState={deleteOpen} setOpenState={setDeleteOpen} />
                 </>
             )

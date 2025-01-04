@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "./auth";
 import { FolderTokenPermission, PersonAccessToken } from "@prisma/client";
 import { PersonAccessTokenWithFolder } from "@/lib/definitions";
+import { revalidatePath } from "next/cache";
 
 export async function getPersonsAccessTokens(): Promise<{
     error: string | null,
@@ -113,4 +114,89 @@ export async function createMultiplePersonAccessTokens(folderId: string, data: {
     });
 
     return { error: null }
+}
+
+export async function lockPersonAccessToken(tokenId: string, pin: string): Promise<{
+    error: string | null
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to lock an access token" }
+    }
+
+    console.log("Token ID", tokenId);
+    try {
+        const token = await prisma.personAccessToken.findFirst({
+            where: {
+                id: tokenId,
+                folder: {
+                    createdBy: {
+                        id: session.user.id
+                    }
+                }
+            }
+        });
+
+        if (!token) {
+            return { error: "Token not found" }
+        }
+
+        await prisma.personAccessToken.update({
+            where: {
+                id: tokenId
+            },
+            data: {
+                locked: true,
+                pinCode: pin
+            }
+        });
+
+        revalidatePath("/dashboard/links");
+        return { error: null }
+    } catch (e) {
+        return { error: "An unknown error happened when trying to lock this token" }
+    }
+}
+
+export async function unlockPersonAccessToken(tokenId: string): Promise<{
+    error: string | null
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to unlock an access token" }
+    }
+
+    try {
+        const token = await prisma.accessToken.findFirst({
+            where: {
+                token: tokenId,
+                folder: {
+                    createdBy: {
+                        id: session.user.id
+                    }
+                }
+            }
+        });
+
+        if (!token) {
+            return { error: "Token not found" }
+        }
+
+        await prisma.accessToken.update({
+            where: {
+                token: tokenId
+            },
+            data: {
+                locked: false,
+                pinCode: null
+            }
+        });
+
+        revalidatePath("/dashboard/links");
+        return { error: null }
+    } catch (e) {
+        return { error: "An unknown error happened when trying to unlock this token" }
+    }
 }

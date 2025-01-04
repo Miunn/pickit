@@ -20,9 +20,6 @@ export default async function FolderPage({ params }: { params: { folderId: strin
             },
             AccessToken: true
         },
-        omit: {
-            locked: false
-        }
     });
 
     return (

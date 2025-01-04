@@ -18,9 +18,6 @@ export default async function FoldersPage({ params }: { params: { locale: string
                 select: { images: true }
             }
         },
-        omit: {
-            locked: false
-        }
     });
 
     return (

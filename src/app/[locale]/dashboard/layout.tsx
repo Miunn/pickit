@@ -44,32 +44,39 @@ export default async function LocaleLayout({
                 <AppSidebar locale={locale} user={me} items={{
                     navMainItems: [
                         {
+                            key: "folders",
                             title: "Folders",
                             icon: Folder,
                             url: `/${locale}/dashboard/folders`,
                             isActive: true,
                             items: folders.map((folder) => ({
+                                key: folder.id,
                                 title: folder.name,
                                 url: `/${locale}/dashboard/folders/${folder.id}`
                             }))
                         },
                         {
+                            key: "images",
                             title: "Images",
                             icon: Image,
                             url: `/${locale}/dashboard/images`,
                             items: images.map((image) => ({
+                                key: image.id,
                                 title: `${image.folder.name} - ${image.name}`,
                                 url: `/${locale}/dashboard/folders/${image.folder.id}`
                             }))
                         },
                         {
+                            key: "links",
                             title: "Links",
                             icon: Link,
                             url: `/${locale}/dashboard/links`,
                             items: accessTokens.map((accessToken) => ({
+                                key: accessToken.id,
                                 title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
                                 url: `/${locale}/dashboard/links?l=${accessToken.id}`
                             })).concat(personsAccessTokens.map((accessToken) => ({
+                                key: accessToken.id,
                                 title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
                                 url: `/${locale}/dashboard/links?l=${accessToken.id}`
                             })))

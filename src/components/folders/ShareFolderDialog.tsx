@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label";
 import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { z } from "zod";
-import { CreatePersonAccessTokenFormSchema, FolderWithAccessToken, FolderWithLocked } from "@/lib/definitions";
+import { CreatePersonAccessTokenFormSchema, FolderWithAccessToken } from "@/lib/definitions";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,10 +33,9 @@ import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
 import { createMultiplePersonAccessTokens } from "@/actions/accessTokensPerson";
 import { Switch } from "../ui/switch";
-import LockFolderDialog from "./LockFolderDialog";
-import { unlockFolder } from "@/actions/folders";
+import LockTokenDialog from "./LockTokenDialog";
 
-export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWithAccessToken & FolderWithLocked, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
+export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWithAccessToken, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
     const locale = useLocale();
     const [openLockDialog, setOpenLockDialog] = useState(false);
@@ -113,12 +112,6 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
         }
     }
 
-    useMemo(() => {
-        if (openLockDialog === false) {
-            setLockedChecked(folder.locked);
-        }
-    }, [folder.locked, openLockDialog]);
-
     useEffect(() => {
         if (!emailScroll.current) {
             return;
@@ -141,36 +134,6 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                         <DialogTitle>{t('title')}</DialogTitle>
                         <DialogDescription>{t('description')}</DialogDescription>
                     </DialogHeader>
-
-                    <Label>Lock folder</Label>
-                    <div className="flex justify-between items-center">
-                        <p className="text-sm max-w-96">Lock your folder with a personnal code that people you share to will have to enter</p>       
-                            <Switch checked={lockedChecked} onCheckedChange={async (checked) => {
-                                if (checked) {
-                                    setOpenLockDialog(true);
-                                    setLockedChecked(checked);
-                                }
-
-                                if (!checked) {
-                                    const r = await unlockFolder(folder.id);
-
-                                    if (r.error) {
-                                        toast({
-                                            title: "Error",
-                                            description: "An error occurred while unlocking the folder",
-                                            variant: "destructive"
-                                        })
-                                        return;
-                                    }
-
-                                    toast({
-                                        title: "Folder unlocked",
-                                        description: "Your folder has been unlocked successfully"
-                                    });
-                                    setLockedChecked(checked);
-                                }
-                            }} />
-                    </div>
 
                     <div className="flex justify-between items-center">
                         <Label>{t('fields.link.label')}</Label>
@@ -313,7 +276,6 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-            <LockFolderDialog open={openLockDialog} setOpen={setOpenLockDialog} folderId={folder.id} />
         </>
     )
 }

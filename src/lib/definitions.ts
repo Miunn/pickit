@@ -181,12 +181,6 @@ const lightFolders = Prisma.validator<Prisma.FolderDefaultArgs>()({
 
 export type LightFolder = Prisma.FolderGetPayload<typeof lightFolders>
 
-const folderWithLocked = Prisma.validator<Prisma.FolderDefaultArgs>()({
-    select: { locked: true }
-})
-
-export type FolderWithLocked = Prisma.FolderGetPayload<typeof folderWithLocked>
-
 const folderWithImages = Prisma.validator<Prisma.FolderDefaultArgs>()({
     include: { images: true }
 })
