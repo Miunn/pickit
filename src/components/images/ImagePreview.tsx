@@ -14,9 +14,11 @@ export interface ImagePreviewProps {
     setSelected: React.Dispatch<React.SetStateAction<string[]>>;
     onClick?: (imageId: string) => void;
     onDelete?: (imageId: string) => void;
+    shareToken?: string | null;
+    shareHashPin?: string | null;
 }
 
-export const ImagePreview = ({ image, selecting, setSelecting, selected, setSelected, onClick, onDelete }: ImagePreviewProps) => {
+export const ImagePreview = ({ image, selecting, setSelecting, selected, setSelected, onClick, onDelete, shareToken, shareHashPin }: ImagePreviewProps) => {
 
     const format = useFormatter();
     const t = useTranslations("images");
@@ -38,7 +40,7 @@ export const ImagePreview = ({ image, selecting, setSelecting, selected, setSele
                 }} style={{ all: "unset", cursor: "pointer" }}>
                     <div className={`inline-block w-64 rounded-2xl ${selected.includes(image.id) ? "bg-blue-100" : ""}`}>
                         <div className={`relative h-36 mb-4 flex justify-center items-center`}>
-                            <Image src={`/api/folders/${image.folderId}/images/${image.id}`} alt={image.name}
+                            <Image src={`/api/folders/${image.folderId}/images/${image.id}?share=${shareToken}&h=${shareHashPin}`} alt={image.name}
                                 className={"relative border border-black rounded-xl object-cover"} sizes="33vw" fill />
                         </div>
                         <p className={"text-start"}>{image.name}</p>

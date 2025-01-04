@@ -79,17 +79,19 @@ export default function LockTokenDialog({ children, openState, setOpenState, tok
                                 <FormItem className="w-fit mx-auto">
                                     <FormLabel>PIN Code</FormLabel>
                                     <FormControl>
-                                        <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS} {...field}>
+                                        <InputOTP maxLength={8} pattern={REGEXP_ONLY_DIGITS} {...field}>
                                             <InputOTPGroup>
                                                 <InputOTPSlot index={0} />
                                                 <InputOTPSlot index={1} />
                                                 <InputOTPSlot index={2} />
+                                                <InputOTPSlot index={3} />
                                             </InputOTPGroup>
                                             <InputOTPSeparator />
                                             <InputOTPGroup>
-                                                <InputOTPSlot index={3} />
                                                 <InputOTPSlot index={4} />
                                                 <InputOTPSlot index={5} />
+                                                <InputOTPSlot index={6} />
+                                                <InputOTPSlot index={7} />
                                             </InputOTPGroup>
                                         </InputOTP>
                                     </FormControl>

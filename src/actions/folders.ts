@@ -4,8 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/actions/auth";
 import * as fs from "fs";
 import { revalidatePath } from "next/cache";
-import { LightFolder, LockFolderFormSchema } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithImagesWithFolder, LightFolder, LockFolderFormSchema } from "@/lib/definitions";
 import { folderDeleteAndUpdateSizes } from "@/lib/prismaExtend";
+import * as bcrypt from "bcryptjs";
 
 export async function getLightFolders(): Promise<{
     lightFolders: LightFolder[],
@@ -56,6 +57,113 @@ export async function getFolderName(id: string): Promise<{
     });
 
     return { folder: folder, error: null }
+}
+
+export async function getFolderFull(folderId: string, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashedPinCode?: string): Promise<{
+    error: string | null,
+    folder: (FolderWithImagesWithFolder & FolderWithAccessToken) | null
+}> {
+    const session = await auth();
+
+    if (!session?.user && !shareToken) {
+        return { error: "unauthorized", folder: null };
+    }
+
+    if (!session?.user && shareToken) {
+        let accessToken;
+        if (tokenType === "accessToken") {
+            accessToken = await prisma.accessToken.findUnique({
+                where: {
+                    token: shareToken,
+                    folderId: folderId,
+                    expires: {
+                        gte: new Date()
+                    }
+                },
+                include: {
+                    folder: {
+                        include: {
+                            images: {
+                                include: {
+                                    folder: true
+                                }
+                            },
+                        }
+                    }
+                },
+                omit: {
+                    pinCode: false
+                }
+            });
+        } else if (tokenType === "personAccessToken") {
+            accessToken = await prisma.personAccessToken.findUnique({
+                where: {
+                    token: shareToken,
+                    folderId: folderId,
+                    expires: {
+                        gte: new Date()
+                    }
+                },
+                include: {
+                    folder: {
+                        include: {
+                            images: {
+                                include: {
+                                    folder: true
+                                }
+                            },
+                        }
+                    }
+                },
+                omit: {
+                    pinCode: false
+                }
+            });
+        } else {
+            return { error: "invalid-token-type", folder: null };
+        }
+
+        if (!accessToken) {
+            return { error: "unauthorized", folder: null };
+        }
+
+        if (accessToken.locked && !hashedPinCode) {
+            return { error: "code-needed", folder: null };
+        }
+
+        if (accessToken.locked) {
+            if (!hashedPinCode) {
+                return { error: "unauthorized", folder: null };
+            }
+
+            const match = bcrypt.compareSync(accessToken.pinCode as string, hashedPinCode);
+
+            if (!match) {
+                return { error: "unauthorized", folder: null };
+            }
+        }
+
+        return { error: null, folder: {...accessToken.folder, AccessToken: []} };
+    }
+
+    const folder = await prisma.folder.findUnique({
+        where: {
+            id: folderId,
+            createdBy: {
+                id: session?.user?.id
+            }
+        },
+        include: {
+            images: {
+                include: {
+                    folder: true
+                }
+            },
+            AccessToken: true
+        }
+    });
+
+    return { error: null, folder: folder };
 }
 
 export async function createFolder(name: string): Promise<{
@@ -180,7 +288,7 @@ export async function deleteFolder(folderId: string): Promise<any> {
         return { error: "folder-not-found" };
     }
 
-    fs.rm(process.cwd() + "/drive/" + folderId, { recursive: true, force: true}, (err: any) => {
+    fs.rm(process.cwd() + "/drive/" + folderId, { recursive: true, force: true }, (err: any) => {
         if (err) {
             console.error("Error deleting folder", err);
         }

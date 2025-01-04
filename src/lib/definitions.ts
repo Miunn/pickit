@@ -75,9 +75,9 @@ export const UploadImagesFormSchema = z.object({
 });
 
 export const LockFolderFormSchema = z.object({
-    pin: z.string().min(6, {
+    pin: z.string().min(8, {
         message: "PIN must be 6 characters long"
-    }).max(6, {
+    }).max(8, {
         message: "PIN must be 6 characters long"
     })
 });

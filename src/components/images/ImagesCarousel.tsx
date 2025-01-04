@@ -7,7 +7,7 @@ import { Check, Copy, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/hooks/use-toast";
 
-export default function ImagesCarousel({ images, startIndex, currentIndex, setCurrentIndex }: { images: ImageWithFolder[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>> }) {
+export default function ImagesCarousel({ images, startIndex, currentIndex, setCurrentIndex, shareToken, shareHashPin }: { images: ImageWithFolder[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>>, shareToken?: string, shareHashPin?: string }) {
 
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
     const imagesItemsRefs = images.map(() => useRef<HTMLDivElement>(null));
@@ -16,7 +16,7 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
     const [copied, setCopied] = useState<boolean>(false);
 
     const copyImageToClipboard = async () => {
-        let image = await (await fetch(`/api/folders/${images.at(currentIndex - 1)?.folderId}/images/${images.at(currentIndex - 1)?.id}`)).blob();
+        let image = await (await fetch(`/api/folders/${images.at(currentIndex - 1)?.folderId}/images/${images.at(currentIndex - 1)?.id}?share=${shareToken}&h=${shareHashPin}`)).blob();
         image = image.slice(0, image.size, "image/png")
 
         navigator.clipboard.write([
@@ -58,7 +58,7 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                 }</p>
                 <div className="flex gap-2">
                     <Button variant={"outline"} size={"icon"} type="button" asChild>
-                        <Link href={`/_next/image?url=/api/folders/${images.at(currentIndex - 1)?.folderId}/images/${images.at(currentIndex - 1)?.id}&w=3840&q=100`} target="_blank">
+                        <Link href={`/_next/image?url=/api/folders/${images.at(currentIndex - 1)?.folderId}/images/${images.at(currentIndex - 1)?.id}&share=${shareToken}&h=${shareHashPin}&w=3840&q=100`} target="_blank">
                             <ExternalLink className="w-4 h-4" />
                         </Link>
                     </Button>
@@ -78,7 +78,7 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                     {images.map((image, index) => (
                         <CarouselItem ref={imagesItemsRefs[index]} key={image.id} className="h-fit">
                             <div className={"h-96 flex justify-center items-center p-2"}>
-                                <Image src={`/api/folders/${image.folder.id}/images/${image.id}`}
+                                <Image src={`/api/folders/${image.folder.id}/images/${image.id}?share=${shareToken}&h=${shareHashPin}`}
                                     alt={image.name} className={"h-96 max-h-96 object-contain rounded-md"} width={900} height={384} />
                             </div>
                         </CarouselItem>

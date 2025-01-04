@@ -1,11 +1,14 @@
 import {NextRequest, NextResponse} from "next/server";
 import {auth} from "@/actions/auth";
 import {prisma} from "@/lib/prisma";
+import * as bcrypt from "bcryptjs";
 import fs from "fs";
 
-export async function GET(req: NextRequest, { params }: { params: {image: string} }): Promise<NextResponse> {
-    const accessKey = req.nextUrl.searchParams.get("accessKey");
-    if (!accessKey) {
+export async function GET(req: NextRequest, { params }: { params: {image: string}, }): Promise<NextResponse> {
+    const shareToken = req.nextUrl.searchParams.get("share");
+    const accessKey = req.nextUrl.searchParams.get("h");
+    console.log("TRY TO GET IMAGE WITH ACCESS KEY", accessKey);
+    if (!shareToken) {
         const session = await auth();
 
         if (!session?.user) {
@@ -28,12 +31,13 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
         const buffer = await fs.promises.readFile(image.path);
         const res = new NextResponse(buffer);
         res.headers.set('Content-Disposition', 'inline');
-        res.headers.set('Content-Type', 'image/*');
+        res.headers.set('Content-Type', `image/${image.extension}`);
+        console.log("SENDING IMAGE", image);
         return res;
     } else {
         const access = await prisma.accessToken.findUnique({
             where: {
-                token: accessKey
+                token: shareToken
             },
             include: {
                 folder: {
@@ -41,11 +45,28 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
                         id: true
                     }
                 }
+            },
+            omit: {
+                pinCode: false
             }
         });
 
         if (!access) {
-            return NextResponse.json({error: "Invalid access key"});
+            return NextResponse.json({error: "Invalid share token"});
+        }
+
+        console.log("Got a matching access token", access);
+        if (access.locked && access.pinCode) {
+            console.log("Access locked with pin code", access.pinCode);
+            if (!accessKey) {
+                return NextResponse.json({error: "Invalid access key"});
+            }
+
+            const match = bcrypt.compareSync(access.pinCode as string, accessKey);
+
+            if (!match) {
+                return NextResponse.json({error: "Invalid access key"});
+            }
         }
 
         const image = await prisma.image.findUnique({
@@ -65,6 +86,7 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
         const res = new NextResponse(buffer);
         res.headers.set('Content-Disposition', 'inline');
         res.headers.set('Content-Type', `image/${image.extension}`);
+        console.log("SENDING IMAGE WITH ACCESS KEY", image);
         return res;
     }
 }

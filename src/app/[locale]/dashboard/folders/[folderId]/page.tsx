@@ -1,33 +1,11 @@
-import { prisma } from "@/lib/prisma";
 import { FolderContent } from "@/components/folders/FolderContent";
-import { auth } from "@/actions/auth";
+import { getFolderFull } from "@/actions/folders";
 
-export default async function FolderPage({ params }: { params: { folderId: string, locale: string } }) {
+export default async function FolderPage({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { share?: string, t?: string } }) {
 
-    const session = await auth();
-    const folder = await prisma.folder.findUnique({
-        where: {
-            id: params.folderId,
-            createdBy: {
-                id: session?.user?.id
-            }
-        },
-        include: {
-            images: {
-                include: {
-                    folder: true
-                }
-            },
-            AccessToken: true
-        },
-    });
+    const folder = (await getFolderFull(params.folderId, searchParams.share, searchParams.t === "p" ? "personAccessToken" : "accessToken"));
 
     return (
-        <>
-            {folder
-                ? (<FolderContent folder={folder} locale={params.locale} />)
-                : null
-            }
-        </>
-    )
+        <FolderContent folderId={params.folderId} folder={folder.folder} shareToken={searchParams.share} locale={params.locale} />
+    )   
 }

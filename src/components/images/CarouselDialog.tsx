@@ -3,12 +3,14 @@ import React, { useState } from "react";
 import ImagesCarousel from "./ImagesCarousel";
 import { ImageWithFolder } from "@/lib/definitions";
 
-export const CarouselDialog = ({ images, title, carouselOpen, setCarouselOpen, startIndex }: {
+export const CarouselDialog = ({ images, title, carouselOpen, setCarouselOpen, startIndex, shareToken, shareHashPin }: {
     images: ImageWithFolder[],
     title: string,
     carouselOpen: any,
     setCarouselOpen: React.Dispatch<React.SetStateAction<boolean>>,
     startIndex: number
+    shareToken?: string,
+    shareHashPin?: string
 }) => {
 
     const [current, setCurrent] = useState<number>(startIndex);
@@ -21,7 +23,7 @@ export const CarouselDialog = ({ images, title, carouselOpen, setCarouselOpen, s
                     <DialogDescription>Images</DialogDescription>
                 </DialogHeader>
 
-                <ImagesCarousel images={images} startIndex={startIndex} currentIndex={current} setCurrentIndex={setCurrent} />
+                <ImagesCarousel images={images} startIndex={startIndex} currentIndex={current} setCurrentIndex={setCurrent} shareToken={shareToken} shareHashPin={shareHashPin} />
             </DialogContent>
         </Dialog>
     )

@@ -30,7 +30,7 @@ export default async function LocaleLayout({
     children: React.ReactNode;
     params: { locale: string };
 }>) {
-    const me = (await getMe()).user!;
+    const me = (await getMe()).user;
     const messages = await getMessages();
 
     const folders = (await getLightFolders()).lightFolders;
@@ -94,7 +94,7 @@ export default async function LocaleLayout({
                             <HeaderBreadcumb />
                         </div>
                     </header>
-                    {me.emailVerified === false ? (
+                    {me?.emailVerified === false ? (
                         <UnverifiedEmail locale={locale} userDeletionDate={me.emailVerificationDeadline || addDays(me.createdAt, 7)} />
                     ) : null}
                     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">

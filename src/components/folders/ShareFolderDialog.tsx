@@ -32,14 +32,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
 import { createMultiplePersonAccessTokens } from "@/actions/accessTokensPerson";
-import { Switch } from "../ui/switch";
-import LockTokenDialog from "./LockTokenDialog";
 
 export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWithAccessToken, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
     const locale = useLocale();
-    const [openLockDialog, setOpenLockDialog] = useState(false);
-    const [lockedChecked, setLockedChecked] = useState(false);
     const [loadingShare, setLoadingShare] = useState(false);
     const [tokenList, setTokenList] = useState<{ email: string, permission: FolderTokenPermission, expiryDate: Date }[]>([]);
     const emailScroll = useRef<HTMLDivElement>(null);

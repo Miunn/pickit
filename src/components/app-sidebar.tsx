@@ -37,7 +37,7 @@ export interface AppSidebarProps {
 }
 
 export function AppSidebar({ locale, user, items, ...props }: {
-  locale: string, user: UserLight, items: AppSidebarProps & React.ComponentProps<typeof Sidebar>
+  locale: string, user?: UserLight | null, items: AppSidebarProps & React.ComponentProps<typeof Sidebar>
 }) {
   return (
     <Sidebar variant="inset" {...props}>
@@ -72,8 +72,8 @@ export function AppSidebar({ locale, user, items, ...props }: {
         {/*<NavProjects projects={items.nav} />*/}
       </SidebarContent>
       <SidebarFooter>
-        <NavSecondary locale={locale} userUsedStorage={user.usedStorage} items={items.navSecondayrItems} />
-        <NavUser user={user} />
+        {user ? <NavSecondary locale={locale} userUsedStorage={user.usedStorage} items={items.navSecondayrItems} /> : null}
+        {user ? <NavUser user={user} /> : null}
       </SidebarFooter>
     </Sidebar>
   )
