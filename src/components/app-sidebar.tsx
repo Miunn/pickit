@@ -27,7 +27,6 @@ import {
 import { Button } from "./ui/button"
 import CreateFolderDialog from "./folders/CreateFolderDialog"
 import { DialogTrigger } from "./ui/dialog"
-import { User } from "@prisma/client"
 import { UserLight } from "@/lib/definitions"
 import Link from "next/link"
 
@@ -59,11 +58,11 @@ export function AppSidebar({ locale, user, items, ...props }: {
         </SidebarMenu>
         <SidebarMenu>
           <SidebarMenuItem>
-            <CreateFolderDialog>
+            {user && <CreateFolderDialog>
               <DialogTrigger asChild>
                 <Button variant={"outline"} className="w-full">New folder</Button>
               </DialogTrigger>
-            </CreateFolderDialog>
+            </CreateFolderDialog>}
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
