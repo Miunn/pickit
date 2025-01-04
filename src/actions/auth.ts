@@ -35,7 +35,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                 });
 
                 if (!user) {
-                    console.log("User not found");
                     return null;
                 }
 

@@ -41,7 +41,6 @@ export default function LockTokenDialog({ children, openState, setOpenState, tok
         }
         setSaveLoading(false);
 
-        console.log(r);
         if (r.error) {
             toast({
                 title: "Error",

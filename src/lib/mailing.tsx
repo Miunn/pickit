@@ -76,7 +76,6 @@ export async function sendVerificationEmail(email: string): Promise<{
     html: content,
   })
 
-  console.log("Message sent: %s", mail.messageId);
   return { error: null, user };
 }
 
@@ -121,5 +120,4 @@ export async function sendPasswordResetRequest(userId: string) {
     html: content,
   })
 
-  console.log("Message sent: %s", mail.messageId);
 }

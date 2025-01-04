@@ -56,7 +56,6 @@ export const FolderContent = ({ folderId, folder, shareToken, isGuest, locale }:
             return;
         }
 
-        console.log("GET FOLDER FULL", r);
         if (r.folder) {
             setFolderContent(r.folder);
         }

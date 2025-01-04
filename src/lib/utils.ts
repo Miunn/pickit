@@ -29,8 +29,6 @@ export const downloadFolder = async (folder: Folder): Promise<number> => {
   const res = await fetch(`/api/folders/${folder.id}/download`);
 
   if (!res || !res.ok) {
-    console.log(res);
-    console.log("Return status:", res.status);
     return res.status;
   }
 

@@ -13,7 +13,6 @@ export default function DeleteAccessTokenDialog({ tokens, children, openState, s
         setLoading(true);
 
         const r = await deleteAccessToken(tokens);
-        console.log(r);
 
         setLoading(false);
 

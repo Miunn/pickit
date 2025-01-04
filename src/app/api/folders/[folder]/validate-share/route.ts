@@ -15,15 +15,12 @@ export async function GET(req: NextRequest) {
     });
 
     if (!accessToken) {
-        console.log("Invalid token")
         return Response.json({ result: "invalid-token" })
     }
 
     if (!accessToken.isActive) {
-        console.log("Token is not active")
         return Response.json({ result: "invalid-token" });
     }
 
-    console.log("Token is valid")
     return Response.json({ result: "valid-token", permission: accessToken.permission })
 }

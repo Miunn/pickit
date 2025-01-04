@@ -115,7 +115,6 @@ export async function uploadImages(parentFolderId: string, formData: FormData): 
         await changeFolderCover(parentFolderId, cover!.id);
     }
 
-    console.log("Revalidate");
     revalidatePath(`dashboard/folders/${parentFolderId}`);
     revalidatePath("dashboard/folders");
     revalidatePath("dashboard");

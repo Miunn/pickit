@@ -85,7 +85,6 @@ export async function updateUser(id: string, name?: string, email?: string) {
     });
 
     if ((email && email != user?.email)) {
-        console.log("Send verification email");
         await sendVerificationEmail(email);
     }
 
@@ -247,7 +246,6 @@ export async function requestPasswordReset(email: string): Promise<{
         }
     });
 
-    console.log(user);
     if (!user) {
         return { error: null }; // Don't leak if the email is registered or not
     }

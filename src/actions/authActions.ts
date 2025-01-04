@@ -8,9 +8,7 @@ export async function SignIn({email, password, redirectUrl}: { email: string, pa
     error: string
 } | null> {
 
-    console.log("Base URL:", process.env.NEXTAUTH_URL);
     if (!redirectUrl.startsWith(process.env.NEXTAUTH_URL!)) {
-        console.log("Redirect not allowed:", redirectUrl);
         return null;
     }
 

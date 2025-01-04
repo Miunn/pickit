@@ -125,7 +125,6 @@ export async function lockPersonAccessToken(tokenId: string, pin: string): Promi
         return { error: "You must be logged in to lock an access token" }
     }
 
-    console.log("Token ID", tokenId);
     try {
         const token = await prisma.personAccessToken.findFirst({
             where: {

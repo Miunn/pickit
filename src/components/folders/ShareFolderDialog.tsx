@@ -114,7 +114,6 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
         }
 
         emailScroll.current!.scrollIntoView(false);
-        console.log(tokenList);
     }, [tokenList]);
 
     return (

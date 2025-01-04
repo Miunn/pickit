@@ -16,7 +16,6 @@ export default function ChangeCoverFolderDialog({ images, folderId, open, setOpe
     const [loading, setLoading] = useState<boolean>(false);
 
     async function submitCover() {
-        console.log(`Change cover index ${current-1}, image id: ${images.at(current-1)?.id}`)
         setLoading(true);
 
         const image = images.at(current-1);

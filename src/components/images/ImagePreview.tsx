@@ -27,7 +27,6 @@ export const ImagePreview = ({ image, selecting, setSelecting, selected, setSele
         <ContextMenu key={image.id}>
             <ContextMenuTrigger asChild>
                 <button onClick={() => {
-                    console.log("Selecting", selecting);
                     if (selecting) {
                         if (selected.includes(image.id)) {
                             setSelected(selected.filter((id) => id !== image.id));

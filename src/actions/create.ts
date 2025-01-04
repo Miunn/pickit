@@ -46,7 +46,6 @@ export async function createUserHandler({name, email, password, passwordConfirma
             },
         });
         
-        console.log("Create OK");
         return {
             status: 'ok'
         };

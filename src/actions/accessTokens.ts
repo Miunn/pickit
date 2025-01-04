@@ -232,7 +232,6 @@ export async function deleteAccessToken(tokens: string[]): Promise<{ error: stri
             }
         })
     } catch (e) {
-        console.log("Error while deleting access token", e);
         return { error: "An unknown error happened when trying to delete this access token" }
     }
 

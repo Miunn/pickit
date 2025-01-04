@@ -5,10 +5,8 @@ import * as bcrypt from "bcryptjs";
 import fs from "fs";
 
 export async function GET(req: NextRequest, { params }: { params: {image: string}, }): Promise<NextResponse> {
-    console.log("REQUEST IMAGE", req.nextUrl);
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
-    console.log("TRY TO GET IMAGE WITH SHARETOKEN", shareToken, " AND ACCESS KEY", accessKey);
     if (!shareToken || shareToken === "undefined") {
         const session = await auth();
 
@@ -33,7 +31,6 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
         const res = new NextResponse(buffer);
         res.headers.set('Content-Disposition', 'inline');
         res.headers.set('Content-Type', `image/${image.extension}`);
-        console.log("SENDING IMAGE", image);
         return res;
     } else {
         const access = await prisma.accessToken.findUnique({
@@ -56,9 +53,7 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
             return NextResponse.json({error: "Invalid share token"});
         }
 
-        console.log("Got a matching access token", access);
         if (access.locked && access.pinCode) {
-            console.log("Access locked with pin code", access.pinCode);
             if (!accessKey) {
                 return NextResponse.json({error: "Invalid access key"});
             }
@@ -87,7 +82,6 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
         const res = new NextResponse(buffer);
         res.headers.set('Content-Disposition', 'inline');
         res.headers.set('Content-Type', `image/${image.extension}`);
-        console.log("SENDING IMAGE WITH ACCESS KEY", image);
         return res;
     }
 }
