@@ -72,7 +72,7 @@ export function AppSidebar({ locale, user, items, ...props }: {
       </SidebarContent>
       <SidebarFooter>
         {user ? <NavSecondary locale={locale} userUsedStorage={user.usedStorage} items={items.navSecondayrItems} /> : null}
-        {user ? <NavUser user={user} /> : null}
+        {user ? <NavUser user={user} /> : <Button variant={"outline"} className="w-full" asChild><Link href={`/${locale}/signin`}>Sign in</Link></Button>}
       </SidebarFooter>
     </Sidebar>
   )

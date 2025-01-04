@@ -8,8 +8,8 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
     console.log("REQUEST IMAGE", req.nextUrl);
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
-    console.log("TRY TO GET IMAGE WITH ACCESS KEY", accessKey);
-    if (!shareToken) {
+    console.log("TRY TO GET IMAGE WITH SHARETOKEN", shareToken, " AND ACCESS KEY", accessKey);
+    if (!shareToken || shareToken === "undefined") {
         const session = await auth();
 
         if (!session?.user) {
@@ -63,7 +63,7 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
                 return NextResponse.json({error: "Invalid access key"});
             }
 
-            const match = bcrypt.compareSync(access.pinCode as string, accessKey);
+            const match = bcrypt.compareSync(access.pinCode as string, accessKey || "");
 
             if (!match) {
                 return NextResponse.json({error: "Invalid access key"});
