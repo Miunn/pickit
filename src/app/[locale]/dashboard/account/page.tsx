@@ -2,11 +2,12 @@ import { Separator } from "@/components/ui/separator";
 import AccountForm from "./accountForm";
 import getMe from "@/actions/user";
 import ReviewFolders from "./reviewFolders";
-import { getLightFolders } from "@/actions/folders";
 import { prisma } from "@/lib/prisma";
+import { getTranslations } from "next-intl/server";
 
 export default async function AccountPage({ params }: { params: { locale: string } }) {
 
+    const t = await getTranslations("pages.account");
     const user = (await getMe()).user;
     const folders = await prisma.folder.findMany({
         where: {
@@ -27,8 +28,8 @@ export default async function AccountPage({ params }: { params: { locale: string
 
     return (
         <div className="flex flex-col">
-            <h3 className="font-semibold">Your account</h3>
-            <p className="text-sm text-muted-foreground my-0">Manage your account settings</p>
+            <h3 className="font-semibold">{ t('headline') }</h3>
+            <p className="text-sm text-muted-foreground my-0">{ t('subtitle') }</p>
 
             <Separator orientation="horizontal" className="my-6" />
 

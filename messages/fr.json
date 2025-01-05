@@ -90,6 +90,11 @@
       "links": {
         "title": "Gestion des liens"
       }
+    },
+    "account": {
+      "title": "Pickit - Compte",
+      "headline": "Votre compte",
+      "subtitle": "Gérer les paramètres de votre compte"
     }
   },
   "components": {},
