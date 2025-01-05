@@ -66,6 +66,13 @@
       "logout": "Log out"
     }
   },
+  "breadcumb": {
+    "dashboard": "Dashboard",
+    "folders": "Folders",
+    "images": "Images",
+    "links": "Links",
+    "account": "Account"
+  },
   "pages": {
     "dashboard": {
       "title": "Pickit - Dashboard",

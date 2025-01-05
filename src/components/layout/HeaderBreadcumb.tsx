@@ -3,15 +3,15 @@
 import { usePathname } from "next/navigation";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { getFolderName } from "@/actions/folders";
 
 export default function HeaderBreadcumb() {
 
     const locale = useLocale();
     const pathname = usePathname();
+    const t = useTranslations('breadcumb');
 
-    const [pathTokens, setPathTokens] = useState<string[]>([]);
     const [pathDashboard, setPathDashboard] = useState<boolean>(false);
     const [pathListFolders, setPathListFolders] = useState<boolean>(false);
     const [pathListImages, setPathListImages] = useState<boolean>(false);
@@ -30,8 +30,6 @@ export default function HeaderBreadcumb() {
 
     useEffect(() => {
         const tokens = pathname.split("/").filter(path => path && !(new RegExp("^(en|fr)$").test(path)));
-
-        setPathTokens(tokens);
 
         if (tokens[0] === "dashboard" && tokens.length === 1) {
             setPathDashboard(true);
@@ -100,13 +98,13 @@ export default function HeaderBreadcumb() {
                 {pathDashboard ? (
                     <>
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Dashboard</BreadcrumbPage>
+                            <BreadcrumbPage>{t('dashboard')}</BreadcrumbPage>
                         </BreadcrumbItem>
                     </>
                 ) : (
                     <BreadcrumbItem className="hidden md:block">
                         <BreadcrumbLink href={`/${locale}/dashboard`}>
-                            Dashboard
+                        {t('dashboard')}
                         </BreadcrumbLink>
                     </BreadcrumbItem>
                 )}
@@ -114,7 +112,7 @@ export default function HeaderBreadcumb() {
                     <>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Folders</BreadcrumbPage>
+                            <BreadcrumbPage>{t('folders')}</BreadcrumbPage>
                         </BreadcrumbItem>
                     </>
                 ) : null}
@@ -122,7 +120,7 @@ export default function HeaderBreadcumb() {
                     <>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Images</BreadcrumbPage>
+                            <BreadcrumbPage>{t('images')}</BreadcrumbPage>
                         </BreadcrumbItem>
                     </>
                 ) : null}
@@ -130,7 +128,7 @@ export default function HeaderBreadcumb() {
                     <>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard/folders">Folders</BreadcrumbLink>
+                            <BreadcrumbLink href="/dashboard/folders">{t('folders')}</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator className="hidden md:block" />
                         <BreadcrumbItem>
@@ -142,7 +140,7 @@ export default function HeaderBreadcumb() {
                     <>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                        <BreadcrumbPage>Links</BreadcrumbPage>
+                        <BreadcrumbPage>{t('links')}</BreadcrumbPage>
                     </BreadcrumbItem>
                 </>
                 ) : null}
@@ -150,7 +148,7 @@ export default function HeaderBreadcumb() {
                     <>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Account</BreadcrumbPage>
+                            <BreadcrumbPage>{t('account')}</BreadcrumbPage>
                         </BreadcrumbItem>
                     </>
                 ) : null}

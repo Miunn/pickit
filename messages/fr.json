@@ -66,6 +66,13 @@
       "logout": "Déconnexion"
     }
   },
+  "breadcumb": {
+    "dashboard": "Tableau de bord",
+    "folders": "Dossiers",
+    "images": "Images",
+    "links": "Liens",
+    "account": "Compte"
+  },
   "pages": {
     "dashboard": {
       "title": "Pickit - Dashboard",
