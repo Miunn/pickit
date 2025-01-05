@@ -109,7 +109,35 @@
       "message": "Your email address is not verified yet. Verify your email address before {date} to avoid deletion of your account"
     }
   },
-  "dialogs": {},
+  "dialogs": {
+    "accessTokens": {
+      "create": {
+        "title": "Create a new sharing link",
+        "description": "Select a folder and permissions to create a new sharing link",
+        "form": {
+          "folder": {
+            "label": "Folder"
+          },
+          "permissions": {
+            "label": "People should be able to",
+            "options": {
+              "read": "View",
+              "write": "Edit"
+            }
+          },
+          "expiry": {
+            "label": "Expiry date",
+            "description": "Link will be invalid after this date"
+          }
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Create",
+          "submitting": "Creating"
+        }
+      }
+    }
+  },
   "folders": {
     "page": {
       "title": "Folders",

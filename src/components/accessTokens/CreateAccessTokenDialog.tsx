@@ -13,13 +13,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
-import { addYears, format } from "date-fns";
+import { addYears } from "date-fns";
+import { fr, enUS as en } from "date-fns/locale";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { createNewAccessToken } from "@/actions/accessTokens";
 import { toast } from "@/hooks/use-toast";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 
 export default function CreateAccessTokenDialog({ children, folders }: { children?: React.ReactNode, folders: LightFolder[] }) {
 
+    const locale = useLocale();
+    const intlFormatter = useFormatter();
+    const t = useTranslations('dialogs.accessTokens.create');
     const [loading, setLoading] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
 
@@ -61,8 +66,8 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
             {children}
             <DialogContent className="max-w-lg">
                 <DialogHeader>
-                    <DialogTitle>Create a new sharing link</DialogTitle>
-                    <DialogDescription>Select a folder and permissions to create a new access token</DialogDescription>
+                    <DialogTitle>{t('title')}</DialogTitle>
+                    <DialogDescription>{t('description')}</DialogDescription>
                 </DialogHeader>
                 <Form {...newTokenForm}>
                     <form onSubmit={newTokenForm.handleSubmit(submit)} className="space-y-6">
@@ -71,7 +76,7 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
                             name="folder"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Folder</FormLabel>
+                                    <FormLabel>{t('form.folder.label')}</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
                                             <SelectTrigger className="w-[462px] truncate">
@@ -93,7 +98,7 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
                             name="permission"
                             render={({ field }) => (
                                 <FormItem className="space-y-1">
-                                    <FormLabel>People should be able to...</FormLabel>
+                                    <FormLabel>{t('form.permissions.label')}</FormLabel>
                                     <FormControl>
                                         <RadioGroup
                                             onValueChange={field.onChange}
@@ -105,7 +110,7 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
                                                     <RadioGroupItem value="READ" />
                                                 </FormControl>
                                                 <FormLabel className="font-normal">
-                                                    Read
+                                                    {t('form.permissions.options.read')}
                                                 </FormLabel>
                                             </FormItem>
                                             <FormItem className="flex items-center space-x-3 space-y-0">
@@ -113,7 +118,7 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
                                                     <RadioGroupItem value="WRITE" />
                                                 </FormControl>
                                                 <FormLabel className="font-normal">
-                                                    Write
+                                                    {t('form.permissions.options.write')}
                                                 </FormLabel>
                                             </FormItem>
                                         </RadioGroup>
@@ -127,19 +132,19 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
                             name="expiresAt"
                             render={({ field }) => (
                                 <FormItem className="flex flex-col">
-                                    <FormLabel>Expiry date</FormLabel>
+                                    <FormLabel>{t('form.expiry.label')}</FormLabel>
                                     <Popover>
                                         <PopoverTrigger asChild>
                                             <FormControl>
                                                 <Button
                                                     variant={"outline"}
                                                     className={cn(
-                                                        "text-left font-normal",
+                                                        "text-left font-normal capitalize",
                                                         !field.value && "text-muted-foreground"
                                                     )}
                                                 >
                                                     {field.value ? (
-                                                        format(field.value, "PPP")
+                                                        intlFormatter.dateTime(field.value, { month: "long", day: "numeric", year: "numeric" })
                                                     ) : (
                                                         <span>Pick a date</span>
                                                     )}
@@ -153,24 +158,23 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
                                                 selected={field.value}
                                                 onSelect={field.onChange}
                                                 disabled={(date) => date < new Date()}
+                                                locale={locale === "fr" && fr || en}
                                                 initialFocus
                                             />
                                         </PopoverContent>
                                     </Popover>
-                                    <FormDescription>
-                                        Link will be invalid after this date
-                                    </FormDescription>
+                                    <FormDescription>{t('form.expiry.description')}</FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
                         <DialogFooter className="mt-4">
                             <DialogClose asChild>
-                                <Button variant="outline">Cancel</Button>
+                                <Button variant="outline">{t('actions.cancel')}</Button>
                             </DialogClose>
                             {loading
-                                ? <Button type="button" disabled={true}><Loader2 className={"mr-2 animate-spin"} /> Creating</Button>
-                                : <Button type="submit">Create</Button>
+                                ? <Button type="button" disabled={true}><Loader2 className={"mr-2 animate-spin"} /> {t('actions.submitting')}</Button>
+                                : <Button type="submit">{t('actions.submit')}</Button>
                             }
                         </DialogFooter>
                     </form>

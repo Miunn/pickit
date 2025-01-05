@@ -109,7 +109,35 @@
       "message": "Votre adresse mail n'est pas encore vérifiée. Confirmez votre adresse mail avant le {date} afin d'éviter la suppression de votre compte"
     }
   },
-  "dialogs": {},
+  "dialogs": {
+    "accessTokens": {
+      "create": {
+        "title": "Créer un nouveau lien de partage",
+        "description": "Sélectionnez un dossier ainsi que les permissions d'accès afin de créer un nouveau lien de partage",
+        "form": {
+          "folder": {
+            "label": "Dossier"
+          },
+          "permissions": {
+            "label": "Les personnes consultant le lien devraient avoir le droit de",
+            "options": {
+              "read": "Voir",
+              "write": "Modifier"
+            }
+          },
+          "expiry": {
+            "label": "Expiration",
+            "description": "Le lien deviendra invalide après cette date"
+          }
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Créer",
+          "submitting": "Création"
+        }
+      }
+    }
+  },
   "folders": {
     "page": {
       "title": "Folders",
