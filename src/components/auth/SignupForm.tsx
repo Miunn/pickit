@@ -40,16 +40,17 @@ export default function SignupForm({ locale }: { locale: string }) {
 
         if (r.status !== 'ok') {
             toast({
-                title: "Error",
-                description: r.message,
+                title: t('form.error.unknown.title'),
+                description: t('form.error.unknown.description'),
+                variant: "destructive"
             });
             return;
         }
 
         toast({
-            title: "Success",
-            description: "Account created",
-            action: <ToastAction altText="Login"><Link href={"/signin"}>Login</Link></ToastAction>
+            title: t('form.success.title'),
+            description: t('form.success.description'),
+            action: <ToastAction altText="Login"><Link href={"/signin"}>{t('form.success.action')}</Link></ToastAction>
         });
     }
 
@@ -119,7 +120,7 @@ export default function SignupForm({ locale }: { locale: string }) {
                         />
 
                         {loading
-                            ? <Button className={"ml-auto mr-0 flex"} type="button" disabled><Loader2 className="animate-spin mr-2" /> {t('form.submit')}</Button>
+                            ? <Button className={"ml-auto mr-0 flex"} type="button" disabled><Loader2 className="animate-spin mr-2" /> {t('form.submitting')}</Button>
                             : <Button className={"block ml-auto mr-0"} type="submit">{t('form.submit')}</Button>
                         }
                     </form>

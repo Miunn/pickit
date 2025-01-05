@@ -5,30 +5,44 @@
     "manageLinks": "Manage links"
   },
   "auth": {
-    "signInTab": "Login",
-    "signUpTab": "Sign up",
+    "signInTab": "Se connecter",
+    "signUpTab": "Créer un compte",
     "signIn": {
-      "title": "Login",
-      "description": "Login to your Pickit account",
+      "title": "Connexion",
+      "description": "Connectez-vous à votre compte Pickit",
       "form": {
-        "email": "Email",
-        "password": "Password",
-        "submit": "Login",
+        "email": "Adresse mail",
+        "password": "Mot de passe",
+        "forgotPassword": "Mot de passe oublié",
+        "submit": "Se connecter",
+        "submitting": "Connexion",
         "error": {
-          "title": "Login error",
-          "message": "Invalid email or password"
+          "title": "Echec de connexion",
+          "message": "Adresse mail ou mot de passe invalide"
         }
       }
     },
     "signUp": {
-      "title": "Sign up",
-      "description": "Create your Pickit account",
+      "title": "Créer un compte",
+      "description": "Créez votre compte Pickit",
       "form": {
-        "name": "Name",
-        "email": "Email",
-        "password": "Password",
-        "confirmPassword": "Confirm password",
-        "submit": "Sign up"
+        "name": "Nom",
+        "email": "Adresse mail",
+        "password": "Mot de passe",
+        "confirmPassword": "Confirmez votre mot de passe",
+        "submit": "Créer un compte",
+        "submitting": "Création",
+        "success": {
+          "title": "Compte créé",
+          "description": "Compte créé avec succès. Vous pouvez désormais vous connecter",
+          "action": "Connexion"
+        },
+        "error": {
+          "unknown": {
+            "title": "Impossible de créer votre compte",
+            "description": "Une erreur est survenue lors de la création de votre compte"
+          }
+        }
       }
     }
   },

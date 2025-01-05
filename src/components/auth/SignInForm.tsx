@@ -75,7 +75,7 @@ export default function SignInForm({ locale }: { locale: string }) {
                                     <div className="flex justify-between">
                                         <FormLabel>{t('form.password')}</FormLabel>
                                         <Button variant={"link"} className="ml-auto p-0 h-fit focus-visible:ring-offset-2" asChild>
-                                            <Link href={`/${locale}/account/forgot-password`} className="">Forgot password</Link>
+                                            <Link href={`/${locale}/account/forgot-password`} className="">{t('form.forgotPassword')}</Link>
                                         </Button>
                                     </div>
                                     <FormControl>
@@ -87,7 +87,7 @@ export default function SignInForm({ locale }: { locale: string }) {
                         />
 
                         {loading
-                            ? <Button className={"ml-auto mr-0 flex"} type="submit" disabled><Loader2 className="animate-spin mr-2" /> {t('form.submit')}</Button>
+                            ? <Button className={"ml-auto mr-0 flex"} type="submit" disabled><Loader2 className="animate-spin mr-2" /> {t('form.submitting')}</Button>
                             : <Button className={"block ml-auto mr-0"} type="submit"> {t('form.submit')}</Button>
                         }
                     </form>
