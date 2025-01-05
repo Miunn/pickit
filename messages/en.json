@@ -104,7 +104,11 @@
       "subtitle": "Manage your account settings"
     }
   },
-  "components": {},
+  "components": {
+    "unverifiedEmail": {
+      "message": "Your email address is not verified yet. Verify your email address before {date} to avoid deletion of your account"
+    }
+  },
   "dialogs": {},
   "folders": {
     "page": {

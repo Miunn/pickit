@@ -104,7 +104,11 @@
       "subtitle": "Gérer les paramètres de votre compte"
     }
   },
-  "components": {},
+  "components": {
+    "unverifiedEmail": {
+      "message": "Votre adresse mail n'est pas encore vérifiée. Confirmez votre adresse mail avant le {date} afin d'éviter la suppression de votre compte"
+    }
+  },
   "dialogs": {},
   "folders": {
     "page": {
