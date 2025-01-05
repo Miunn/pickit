@@ -7,13 +7,8 @@ import fs from "fs";
 export async function GET(req: NextRequest, { params }: { params: {image: string}, }): Promise<NextResponse> {
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
-    if (!shareToken || shareToken === "undefined") {
-        const session = await auth();
-
-        if (!session?.user) {
-            return NextResponse.json({error: "You must be logged in to load image"});
-        }
-
+    const session = await auth();
+    if (session?.user) {
         const image = await prisma.image.findUnique({
             where: {
                 id: params.image,
@@ -32,7 +27,7 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
         res.headers.set('Content-Disposition', 'inline');
         res.headers.set('Content-Type', `image/${image.extension}`);
         return res;
-    } else {
+    } else if (shareToken && shareToken !== "undefined") {
         const access = await prisma.accessToken.findUnique({
             where: {
                 token: shareToken
@@ -83,5 +78,7 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
         res.headers.set('Content-Disposition', 'inline');
         res.headers.set('Content-Type', `image/${image.extension}`);
         return res;
+    } else {
+        return NextResponse.json({error: "Unauthorized"});
     }
 }
