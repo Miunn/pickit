@@ -1,15 +1,15 @@
 import {FolderX} from "lucide-react";
 import FolderPreview from "@/components/folders/FolderPreview";
 import {useTranslations} from "next-intl";
-import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, FolderWithLocked } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount } from "@/lib/definitions";
 
-export default function FoldersContent({ folders, locale }: { folders: (FolderWithAccessToken & FolderWithImagesCount & FolderWithCover & FolderWithLocked)[], locale: string }) {
+export default function FoldersContent({ folders, locale }: { folders: (FolderWithAccessToken & FolderWithImagesCount & FolderWithCover)[], locale: string }) {
 
-    const t = useTranslations("folders");
+    const t = useTranslations("pages.folders");
 
     return (
         <main className="flex flex-col flex-grow">
-            <h3 className={"font-semibold mb-5"}>{t('page.subtitle')}</h3>
+            <h3 className={"font-semibold mb-5"}>{t('headline')}</h3>
 
             <div className={`flex flex-wrap gap-6 ${folders.length == 0 && "justify-center"} mb-10`}>
                 {folders.length == 0

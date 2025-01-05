@@ -77,6 +77,10 @@
         "lastUploadedImages": "Dernières images téléchargées",
         "empty": "Aucune image téléchargée"
       }
+    },
+    "folders": {
+      "title": "Pickit - Dosseris",
+      "headline": "Vos dossiers créés"
     }
   },
   "components": {},

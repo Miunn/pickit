@@ -67,24 +67,24 @@
     }
   },
   "pages": {
-  "dashboard": {
-    "title": "Pickit - Dashboard",
-    "folders": {
-      "lastUpdatedFolders": "Last updated folders",
-      "empty": "No folders created"
+    "dashboard": {
+      "title": "Pickit - Dashboard",
+      "folders": {
+        "lastUpdatedFolders": "Last updated folders",
+        "empty": "No folders created"
+      },
+      "images": {
+        "lastUploadedImages": "Last uploaded images",
+        "empty": "No images uploaded"
+      }
     },
-    "images": {
-      "lastUploadedImages": "Last uploaded images",
-      "empty": "No images uploaded"
+    "folders": {
+      "title": "Pickit - Folders",
+      "headline": "Your created folders"
     }
-  }
-},
-"components": {
-
-},
-"dialogs": {
-
-},
+  },
+  "components": {},
+  "dialogs": {},
   "folders": {
     "page": {
       "title": "Folders",
