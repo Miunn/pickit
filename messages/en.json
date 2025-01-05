@@ -81,6 +81,15 @@
     "folders": {
       "title": "Pickit - Folders",
       "headline": "Your created folders"
+    },
+    "links": {
+      "title": "Pickit - Links",
+      "persons": {
+        "title": "Manage persons"
+      },
+      "links": {
+        "title": "Manage links"
+      }
     }
   },
   "components": {},

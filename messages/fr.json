@@ -81,6 +81,15 @@
     "folders": {
       "title": "Pickit - Dosseris",
       "headline": "Vos dossiers créés"
+    },
+    "links": {
+      "title": "Pickit - Links",
+      "persons": {
+        "title": "Gestion des partage aux personnes"
+      },
+      "links": {
+        "title": "Gestion des liens"
+      }
     }
   },
   "components": {},
