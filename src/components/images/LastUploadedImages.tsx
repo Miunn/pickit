@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { ImageWithFolder } from "@/lib/definitions";
 
 export const LastUploadedImages = ({ images, locale }: { images: ImageWithFolder[], locale: string }) => {
-    const t = useTranslations("images");
+    const t = useTranslations("pages.dashboard.images");
 
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);
     const [openDelete, setOpenDelete] = useState(false);

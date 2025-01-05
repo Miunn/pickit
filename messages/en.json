@@ -46,7 +46,12 @@
       }
     }
   },
+  "sidebar": {
+
+  },
+  "pages": {
   "dashboard": {
+    "title": "Pickit - Dashboard",
     "folders": {
       "lastUpdatedFolders": "Last updated folders",
       "empty": "No folders created"
@@ -55,7 +60,14 @@
       "lastUploadedImages": "Last uploaded images",
       "empty": "No images uploaded"
     }
-  },
+  }
+},
+"components": {
+
+},
+"dialogs": {
+
+},
   "folders": {
     "page": {
       "title": "Folders",

@@ -46,16 +46,22 @@
       }
     }
   },
-  "dashboard": {
-    "folders": {
-      "lastUpdatedFolders": "Last updated folders",
-      "empty": "No folders created"
-    },
-    "images": {
-      "lastUploadedImages": "Last uploaded images",
-      "empty": "No images uploaded"
+  "sidebar": {},
+  "pages": {
+    "dashboard": {
+      "title": "Pickit - Dashboard",
+      "folders": {
+        "lastUpdatedFolders": "Derniers dossiers mis à jour",
+        "empty": "Aucun dossier créé"
+      },
+      "images": {
+        "lastUploadedImages": "Dernières images téléchargées",
+        "empty": "Aucune image téléchargée"
+      }
     }
   },
+  "components": {},
+  "dialogs": {},
   "folders": {
     "page": {
       "title": "Folders",
@@ -120,7 +126,7 @@
             "error": {
               "title": "Invalid email",
               "description": "Provided email is invalid or already exists in the list"
-           }
+            }
           }
         },
         "button": {
