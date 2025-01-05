@@ -69,14 +69,15 @@ export async function middleware(req: NextRequest) {
         'i'
     );
 
-    if (RegExp(`^(/${locales.join('|')})/signin$`).test(pathname) && session?.user) {
+    if (RegExp(`^/(${locales.join('|')})/signin$`).test(pathname) && session?.user) {
         if (req.nextUrl.searchParams.get("callbackUrl") === null) {
+            console.log("Redirect with callback");
             return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/${locale}/dashboard`);
         }
         return NextResponse.redirect(req.nextUrl.searchParams.get("callbackUrl")!);
     }
 
-    if (RegExp(`^(/${locales.join('|')})/signin$`).test(pathname) && req.nextUrl.searchParams.get("callbackUrl") === null) {
+    if (RegExp(`^/(${locales.join('|')})/signin$`).test(pathname) && req.nextUrl.searchParams.get("callbackUrl") === null) {
         const defaultSignInUrl = new URL(`/${locale}/signin?callbackUrl=${process.env.NEXTAUTH_URL}/${locale}/dashboard${req.nextUrl.search.replace("?", "&")}`, req.url);
         return NextResponse.redirect(defaultSignInUrl);
     }
