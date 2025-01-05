@@ -1,5 +1,5 @@
 {
-  "DashboardPage": {
+  "app": {
     "newFolder": "New folder",
     "uploadImages": "Upload",
     "manageLinks": "Manage links"
@@ -46,7 +46,26 @@
       }
     }
   },
-  "sidebar": {},
+  "sidebar": {
+    "title": "Pickit",
+    "message": "Save moments of life",
+    "main": {
+      "title": "Vos sauvegardes",
+      "folders": "Dossiers",
+      "images": "Images",
+      "links": "Liens"
+    },
+    "secondary": {
+      "used": "Espace utilisé"
+    },
+    "user": {
+      "upgrade": "Changer de plan",
+      "account": "Compte",
+      "billing": "Facturation",
+      "notifications": "Notifications",
+      "logout": "Déconnexion"
+    }
+  },
   "pages": {
     "dashboard": {
       "title": "Pickit - Dashboard",

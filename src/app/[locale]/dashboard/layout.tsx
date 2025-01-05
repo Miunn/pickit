@@ -1,19 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "../../globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Folder, Image, Link } from "lucide-react";
 import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
-import { auth } from "@/actions/auth";
 import { getLightFolders } from "@/actions/folders";
 import { getLightImages } from "@/actions/images";
 import { getAccessTokens } from "@/actions/accessTokens";
-import getMe, { getUserVerificationRequest } from "@/actions/user";
+import getMe from "@/actions/user";
 import UnverifiedEmail from "@/components/layout/UnverifiedEmail";
 import { addDays } from "date-fns";
 import { getPersonsAccessTokens } from "@/actions/accessTokensPerson";
@@ -30,22 +28,21 @@ export default async function LocaleLayout({
     children: React.ReactNode;
     params: { locale: string };
 }>) {
+    const t = await getTranslations("sidebar");
     const me = (await getMe()).user;
-    const messages = await getMessages();
-
     const folders = (await getLightFolders()).lightFolders;
     const images = (await getLightImages()).lightImages;
     const accessTokens = (await getAccessTokens()).accessTokens;
     const personsAccessTokens = (await getPersonsAccessTokens()).personAccessTokens;
 
     return (
-        <NextIntlClientProvider messages={messages}>
+        <>
             <SidebarProvider>
                 <AppSidebar locale={locale} user={me} items={{
                     navMainItems: [
                         {
                             key: "folders",
-                            title: "Folders",
+                            title: t('main.folders'),
                             icon: Folder,
                             url: `/${locale}/dashboard/folders`,
                             isActive: true,
@@ -57,7 +54,7 @@ export default async function LocaleLayout({
                         },
                         {
                             key: "images",
-                            title: "Images",
+                            title: t('main.images'),
                             icon: Image,
                             url: `/${locale}/dashboard/images`,
                             items: images.map((image) => ({
@@ -68,7 +65,7 @@ export default async function LocaleLayout({
                         },
                         {
                             key: "links",
-                            title: "Links",
+                            title: t('main.links'),
                             icon: Link,
                             url: `/${locale}/dashboard/links`,
                             items: accessTokens.map((accessToken) => ({
@@ -103,6 +100,6 @@ export default async function LocaleLayout({
                 </SidebarInset>
             </SidebarProvider>
             <Toaster />
-        </NextIntlClientProvider>
+        </>
     );
 }

@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/sidebar"
 import { CaretSortIcon, ComponentPlaceholderIcon } from "@radix-ui/react-icons"
 import { SignOut } from "@/actions/authActions"
-import { useLocale } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import Link from "next/link"
 import { UserLight } from "@/lib/definitions"
 
@@ -40,6 +40,7 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar();
   const locale = useLocale();
+  const t = useTranslations('sidebar.user');
 
   return (
     <SidebarMenu>
@@ -83,7 +84,7 @@ export function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem className="flex gap-2">
                 <Sparkles className="w-4 h-4" />
-                Upgrade to Pro
+                { t('upgrade') }
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
@@ -91,22 +92,22 @@ export function NavUser({
               <Link href={`/${locale}/dashboard/account`}>
                 <DropdownMenuItem className="flex gap-2 items-center">
                   <BadgeCheck className="w-4 h-4" />
-                  Account
+                  { t('account') }
                 </DropdownMenuItem>
               </Link>
               <DropdownMenuItem className="flex gap-2">
                 <ComponentPlaceholderIcon className="w-4 h-4" />
-                Billing
+                { t('billing') }
               </DropdownMenuItem>
               <DropdownMenuItem className="flex gap-2">
                 <Bell className="w-4 h-4" />
-                Notifications
+                { t('notifications') }
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="flex gap-2" onClick={() => SignOut(locale)}>
               <LogOut className="w-4 h-4" />
-              Log out
+              { t('logout') }
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

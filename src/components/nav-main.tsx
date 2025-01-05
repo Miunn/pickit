@@ -16,6 +16,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 
 export type NavMainItems = {
   key: string
@@ -31,9 +32,12 @@ export type NavMainItems = {
 }[]
 
 export function NavMain({ items }: { items: NavMainItems }) {
+
+  const t = useTranslations('sidebar.main');
+
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Your saves</SidebarGroupLabel>
+      <SidebarGroupLabel>{ t('title') }</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible
