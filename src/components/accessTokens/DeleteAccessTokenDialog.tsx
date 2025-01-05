@@ -4,9 +4,11 @@ import { useState } from "react";
 import { deleteAccessToken } from "@/actions/accessTokens";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function DeleteAccessTokenDialog({ tokens, children, openState, setOpenState, submitNext }: { tokens: string[], children?: React.ReactNode, openState?: boolean, setOpenState?: React.Dispatch<React.SetStateAction<boolean>>, submitNext?: () => void }) {
 
+    const t = useTranslations('dialogs.accessTokens.delete');
     const [loading, setLoading] = useState<boolean>(false);
 
     const submit = async () => {
@@ -18,8 +20,8 @@ export default function DeleteAccessTokenDialog({ tokens, children, openState, s
 
         if (r.error) {
             toast({
-                title: "Error while deleting accesss token",
-                description: "An unknown error happened when trying to delete this access token",
+                title: t('errors.unknown.title'),
+                description: t('errors.unknown.description'),
                 variant: "destructive"
             });
             return;
@@ -39,16 +41,16 @@ export default function DeleteAccessTokenDialog({ tokens, children, openState, s
             {children}
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Delete link</DialogTitle>
-                    <DialogDescription>Are you sure</DialogDescription>
+                    <DialogTitle>{t('title')}</DialogTitle>
+                    <DialogDescription>{t('description')}</DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
                     <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
+                        <Button variant="outline">{t('actions.cancel')}</Button>
                     </DialogClose>
                     {loading
-                        ? <Button disabled={true} variant="destructive"><Loader2 className={"mr-2 animate-spin"} /> Deleting</Button>
-                        : <Button onClick={submit} variant="destructive">Delete</Button>
+                        ? <Button disabled={true} variant="destructive"><Loader2 className={"mr-2 animate-spin"} /> {t('actions.submitting')}</Button>
+                        : <Button onClick={submit} variant="destructive">{t('actions.submit')}</Button>
                     }
                 </DialogFooter>
             </DialogContent>

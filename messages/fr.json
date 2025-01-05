@@ -135,6 +135,21 @@
           "submit": "Créer",
           "submitting": "Création"
         }
+      },
+      "delete": {
+        "title": "Supprimer le lien de partage",
+        "description": "Êtes-vous sûr de vouloir supprimer le lien de partage ? Cette action est irréversible.",
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Supprimer",
+          "submitting": "Suppression"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de supprimer le lien",
+            "description": "Une erreur inconnue est survenue lors de la suppression du lien"
+          }
+        }
       }
     }
   },
