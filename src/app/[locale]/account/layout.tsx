@@ -19,20 +19,13 @@ export default async function LocaleLayout({
     children: React.ReactNode;
     params: { locale: string };
 }>) {
-
-    const messages = await getMessages();
-
     return (
-        <html lang={locale}>
-            <body className={inter.className}>
-                <NextIntlClientProvider messages={messages}>
-                    <div className={"min-h-screen flex flex-col"}>
-                        <Header />
-                        {children}
-                    </div>
-                    <Toaster />
-                </NextIntlClientProvider>
-            </body>
-        </html>
+        <>
+            <div className={"min-h-screen flex flex-col"}>
+                <Header locale={locale} />
+                {children}
+            </div>
+            <Toaster />
+        </>
     );
 }

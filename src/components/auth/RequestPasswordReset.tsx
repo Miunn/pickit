@@ -13,9 +13,11 @@ import { Loader2 } from "lucide-react"
 import { requestPasswordReset } from "@/actions/user"
 import { toast } from "@/hooks/use-toast"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 
 export default function RequestPasswordReset({ locale, defaultEmail }: { locale: string, defaultEmail?: string }) {
 
+    const t = useTranslations('components.auth.requestPasswordReset');
     const [loading, setLoading] = useState<boolean>(false);
 
     const form = useForm<z.infer<typeof RequestPasswordResetFormSchema>>({
@@ -40,10 +42,10 @@ export default function RequestPasswordReset({ locale, defaultEmail }: { locale:
     }
 
     return (
-        <Card className="w-96">
+        <Card className="">
             <CardHeader>
-                <CardTitle>Request a new password</CardTitle>
-                <CardDescription>Enter the email associated to your account</CardDescription>
+                <CardTitle>{t('title')}</CardTitle>
+                <CardDescription>{t('description')}</CardDescription>
             </CardHeader>
             <CardContent>
                 <Form {...form}>
@@ -53,22 +55,22 @@ export default function RequestPasswordReset({ locale, defaultEmail }: { locale:
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel>{t('form.email.label')}</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Email" {...field} />
+                                        <Input placeholder={t('form.email.placeholder')} {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
 
-                        <div className="flex gap-2 self-end">
+                        <div className="w-full flex gap-2 self-end">
                         <Button variant={"outline"} type="button" asChild>
-                            <Link href={`/${locale}/signin`}>Back to login</Link>
+                            <Link href={`/${locale}/signin`}>{t('actions.backToLogin')}</Link>
                         </Button>
                         {loading
-                            ? <Button type="button" disabled><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Requesting...</Button>
-                            : <Button type="submit">Request a password reset</Button>}
+                            ? <Button type="button" className="flex-1" disabled><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t('actions.submitting')}</Button>
+                            : <Button type="submit" className="flex-1">{t('actions.submit')}</Button>}
                             </div>
                     </form>
                 </Form>

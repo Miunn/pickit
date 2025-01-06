@@ -107,6 +107,23 @@
   "components": {
     "unverifiedEmail": {
       "message": "Votre adresse mail n'est pas encore vérifiée. Confirmez votre adresse mail avant le {date} afin d'éviter la suppression de votre compte"
+    },
+    "auth": {
+      "requestPasswordReset": {
+        "title": "Réinitialiser votre mot de passe",
+        "description": "Entrez l'adresse mail associée à votre compte",
+        "form": {
+          "email": {
+            "label": "Adresse mail",
+            "placeholder": "Adresse mail"
+          }
+        },
+        "actions": {
+          "backToLogin": "Retour à la connexion",
+          "submit": "Réinitialisation votre mot de passe",
+          "submitting": "Réinitialisation"
+        }
+      }
     }
   },
   "dialogs": {

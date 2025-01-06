@@ -107,6 +107,23 @@
   "components": {
     "unverifiedEmail": {
       "message": "Your email address is not verified yet. Verify your email address before {date} to avoid deletion of your account"
+    },
+    "auth": {
+      "requestPasswordReset": {
+        "title": "Request a new password",
+        "description": "Enter the email address associated to your account",
+        "form": {
+          "email": {
+            "label": "Email",
+            "placeholder": "Email address"
+          }
+        },
+        "actions": {
+          "backToLogin": "Back to login",
+          "submit": "Request a password reset",
+          "submitting": "Requesting a password reset"
+        }
+      }
     }
   },
   "dialogs": {
