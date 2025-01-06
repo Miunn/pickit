@@ -46,16 +46,16 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
 
         if (r.error) {
             toast({
-                title: "Error",
-                description: "An error happened when trying to create sharing link",
+                title: t('errors.unknown.title'),
+                description: t('errors.unknown.description'),
                 variant: "destructive"
             });
             return;
         }
 
         toast({
-            title: "Sharing link created",
-            description: "New sharing link successfully created"
+            title: t('success.title'),
+            description: t('success.description')
         });
 
         setOpen(false);

@@ -134,6 +134,16 @@
           "cancel": "Annuler",
           "submit": "Créer",
           "submitting": "Création"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de créer le lien de partage",
+            "description": "Une erreur inconnue est survenue lors de la création du lien de partage"
+          }
+        },
+        "success": {
+          "title": "Lien de partage créé",
+          "description": "Le lien de partage a été créé avec succès"
         }
       },
       "delete": {

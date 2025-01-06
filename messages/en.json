@@ -134,6 +134,16 @@
           "cancel": "Cancel",
           "submit": "Create",
           "submitting": "Creating"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't create sharing link",
+            "description": "An unknown error happened while creating the sharing link"
+          }
+        },
+        "success": {
+          "title": "Sharing link created",
+          "description": "The sharing link has been created successfully"
         }
       },
       "delete": {
