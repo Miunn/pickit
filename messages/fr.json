@@ -206,6 +206,33 @@
           "description": "Le dossier a été créé avec succès"
         }
       },
+      "rename": {
+        "trigger": "Renommer",
+        "title": "Renommer le dossier",
+        "description": "Entrez le nouveau nom pour {folder}",
+        "form": {
+          "name": {
+            "label": "Nom du dossier",
+            "placeholder": "Anniversaire de Julien",
+            "description": "Cela sera le nouveau nom pour {folder}"
+          }
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Renommer",
+          "submitting": "Renommage"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de renommer le dossier",
+            "description": "Une erreur inconnue est survenue lors du renommage du dossier"
+          }
+        },
+        "success": {
+          "title": "Dossier renommé",
+          "description": "Le dossier a été renommé avec succès"
+        }
+      },
       "delete": {
         "trigger": "Supprimer",
         "title": "Supprimer le dossier",

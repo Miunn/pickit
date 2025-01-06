@@ -92,7 +92,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                             {t('actions.open')}
                         </Link>
                     </ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenRename(true)}>{t('dialog.rename.trigger')}</ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenRename(true)}>{dialogsTranslations('rename.trigger')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenChangeCover(true)} disabled={folderImages.length === 0}>{dialogsTranslations('changeCover.trigger')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenShare(true)}>Share</ContextMenuItem>
                     <ContextMenuItem onClick={async () => {

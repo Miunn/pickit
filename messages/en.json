@@ -207,6 +207,33 @@
           "description": "The folder has been created successfully"
         }
       },
+      "rename": {
+        "trigger": "Rename",
+        "title": "Rename folder",
+        "description": "Entrez le nouveau nom pour {folder}",
+        "form": {
+          "name": {
+            "label": "Folder's name",
+            "placeholder": "Julien's birthday",
+            "description": "The new name for {folder}"
+          }
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Rename",
+          "submitting": "Renaming"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't rename folder",
+            "description": "An unknown error happened while renaming the folder"
+          }
+        },
+        "success": {
+          "title": "Folder renamed",
+          "description": "The folder has been renamed successfully"
+        }
+      },
       "delete": {
         "trigger": "Delete",
         "title": "Delete folder",

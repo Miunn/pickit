@@ -24,7 +24,7 @@ import {CreateFolderFormSchema} from "@/lib/definitions";
 
 export default function RenameFolderDialog({openState, setOpenState, folderId, folderName}: { openState: boolean, setOpenState: any, folderId: string, folderName: string }) {
 
-    const t = useTranslations("folders.dialog.rename");
+    const t = useTranslations("dialogs.folders.rename");
 
     const [loading, setLoading] = useState(false);
 
@@ -42,24 +42,24 @@ export default function RenameFolderDialog({openState, setOpenState, folderId, f
 
             if (d.error) {
                 toast({
-                    title: "Error",
-                    description: `An error occurred while renaming the folder. ${d.error}`,
+                    title: t('errors.unknown.title'),
+                    description: t('errors.unknown.description'),
                     variant: "destructive"
                 });
             }
 
             form.reset();
             toast({
-                title: "Folder created",
-                description: "The folders was renamed successfully.",
+                title: t('success.title'),
+                description: t('success.description'),
             });
 
             setOpenState(false);
         }).catch((r) => {
             setLoading(false);
             toast({
-                title: "Error",
-                description: `An error occurred while renaming the folder.`,
+                title: t('errors.unknown.title'),
+                description: t('errors.unknown.description'),
                 variant: "destructive"
             });
         });
@@ -70,7 +70,7 @@ export default function RenameFolderDialog({openState, setOpenState, folderId, f
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{t('title')}</DialogTitle>
-                    <DialogDescription>{t('description')}</DialogDescription>
+                    <DialogDescription>{t('description', {folder: folderName})}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -79,21 +79,21 @@ export default function RenameFolderDialog({openState, setOpenState, folderId, f
                             name="name"
                             render={({field}) => (
                                 <FormItem>
-                                    <FormLabel>{t('fields.name.label')}</FormLabel>
+                                    <FormLabel>{t('form.name.label')}</FormLabel>
                                     <FormControl>
-                                        <Input placeholder={"Julien's birthday"} {...field} />
+                                        <Input placeholder={t('form.name.placeholder')} {...field} />
                                     </FormControl>
-                                    <FormDescription>{t('fields.name.description', {folder: folderName})}</FormDescription>
+                                    <FormDescription>{t('form.name.description', {folder: folderName})}</FormDescription>
                                     <FormMessage/>
                                 </FormItem>
                             )}
                         />
 
                         <DialogFooter>
-                            <Button type={"button"} onClick={() => setOpenState(false)} variant="outline">{t('cancel')}</Button>
+                            <Button type={"button"} onClick={() => setOpenState(false)} variant="outline">{t('actions.cancel')}</Button>
                             {loading
-                                ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"}/> {t('submitting')}</Button>
-                                : <Button type={"submit"}>{t('submit')}</Button>
+                                ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"}/> {t('actions.submitting')}</Button>
+                                : <Button type={"submit"}>{t('actions.submit')}</Button>
                             }
                         </DialogFooter>
                     </form>
