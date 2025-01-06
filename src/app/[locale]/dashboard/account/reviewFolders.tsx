@@ -7,11 +7,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatBytes } from "@/lib/utils";
 import { set } from "date-fns";
 import { MoreHorizontal } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
 
 export default function ReviewFolders({ locale, folders }: { locale: string, folders: { id: string, name: string, size: number, createdAt: Date, _count: { images: number } }[] }) {
 
+    const deleteFolderTranslations = useTranslations("dialogs.folders.delete");
     const [openDeleteFolderDialog, setOpenDeleteFolderDialog] = useState<boolean>(false);
     const [selectedFolder, setSelectedFolder] = useState<{ id: string, name: string } | null>(null);
 
@@ -52,7 +54,7 @@ export default function ReviewFolders({ locale, folders }: { locale: string, fol
                                     <DropdownMenuItem className="text-red-600 focus:text-red-600 font-semibold" onClick={() => {
                                         setSelectedFolder(folder);
                                         setOpenDeleteFolderDialog(true);
-                                    }}>Delete</DropdownMenuItem>
+                                    }}>{deleteFolderTranslations('trigger')}</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>

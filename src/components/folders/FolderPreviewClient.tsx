@@ -24,7 +24,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
 }) {
 
     const t = useTranslations("folders");
-    const coverTranslations = useTranslations("dialogs.folders.changeCover");
+    const dialogsTranslations = useTranslations("dialogs.folders");
     const format = useFormatter();
 
     const [openRename, setOpenRename] = useState<boolean>(false);
@@ -93,7 +93,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                         </Link>
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenRename(true)}>{t('dialog.rename.trigger')}</ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenChangeCover(true)} disabled={folderImages.length === 0}>{coverTranslations('trigger')}</ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenChangeCover(true)} disabled={folderImages.length === 0}>{dialogsTranslations('changeCover.trigger')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenShare(true)}>Share</ContextMenuItem>
                     <ContextMenuItem onClick={async () => {
                         const r = await downloadFolder(folder);
@@ -121,7 +121,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                         });
 
                     }} disabled={folderImages.length === 0}>{t('actions.download')}</ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenDelete(true)} className="text-red-600 focus:text-red-600 font-semibold">{t('dialog.delete.trigger')}</ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenDelete(true)} className="text-red-600 focus:text-red-600 font-semibold">{dialogsTranslations('delete.trigger')}</ContextMenuItem>
                 </ContextMenuContent>
             </ContextMenu>
             <RenameFolderDialog folderId={folder.id} folderName={folder.name} openState={openRename}

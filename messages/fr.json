@@ -205,6 +205,26 @@
           "title": "Dossier créé",
           "description": "Le dossier a été créé avec succès"
         }
+      },
+      "delete": {
+        "trigger": "Supprimer",
+        "title": "Supprimer le dossier",
+        "description": "Êtes-vous sûr de vouloir supprimer {folder} ? Toutes les images associées seront également supprimées. Cette action est irréversible.",
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Supprimer",
+          "submitting": "Suppression"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de supprimer le dossier",
+            "description": "Une erreur inconnue est survenue lors de la suppression du dossier"
+          }
+        },
+        "success": {
+          "title": "Dossier supprimé",
+          "description": "Le dossier a été supprimé avec succès"
+        }
       }
     },
     "accessTokens": {

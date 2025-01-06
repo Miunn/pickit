@@ -206,6 +206,26 @@
           "title": "Folder created",
           "description": "The folder has been created successfully"
         }
+      },
+      "delete": {
+        "trigger": "Delete",
+        "title": "Delete folder",
+        "description": "Are you sure you want to delete {folder} ? Every related images will be deleted. This action cannot be undone.",
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Delete",
+          "submitting": "Deleting"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't delete folder",
+            "description": "An unknown error happened while deleting the folder"
+          }
+        },
+        "success": {
+          "title": "Folder deleted",
+          "description": "The folder has been deleted successfully"
+        }
       }
     },
     "accessTokens": {
