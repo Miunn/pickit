@@ -179,6 +179,33 @@
           "title": "Folder's cover changed",
           "description": "The folder's cover has been changed successfully"
         }
+      },
+      "create": {
+        "trigger": "New folder",
+        "title": "New folder",
+        "description": "Create a new folder to organize your images",
+        "form": {
+          "name": {
+            "label": "Folder's name",
+            "placeholder": "Julien's birthday",
+            "description": "This will be your album name"
+          }
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Create",
+          "submitting": "Creating"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't create folder",
+            "description": "An unknown error happened while creating the folder"
+          }
+        },
+        "success": {
+          "title": "Folder created",
+          "description": "The folder has been created successfully"
+        }
       }
     },
     "accessTokens": {

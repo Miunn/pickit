@@ -178,6 +178,33 @@
           "title": "Couverture du dossier mise à jour",
           "description": "La couverture du dossier a été mise à jour avec succès"
         }
+      },
+      "create": {
+        "trigger": "Nouveau dossier",
+        "title": "Créer un nouveau dossier",
+        "description": "Créez un nouveau dossier pour organiser vos images",
+        "form": {
+          "name": {
+            "label": "Nom du dossier",
+            "placeholder": "Anniversaire de Julien",
+            "description": "Cela sera le nom de votre album"
+          }
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Créer",
+          "submitting": "Création"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de créer le dossier",
+            "description": "Une erreur inconnue est survenue lors de la création du dossier"
+          }
+        },
+        "success": {
+          "title": "Dossier créé",
+          "description": "Le dossier a été créé avec succès"
+        }
       }
     },
     "accessTokens": {
@@ -246,19 +273,6 @@
       "download": "Download as ZIP"
     },
     "dialog": {
-      "create": {
-        "trigger": "New folder",
-        "title": "Create new folder",
-        "description": "Create a new folder to organize your images.",
-        "fields": {
-          "name": {
-            "label": "Folder's name",
-            "description": "This will be your album name"
-          }
-        },
-        "submit": "Create",
-        "submitting": "Creating..."
-      },
       "rename": {
         "trigger": "Rename",
         "title": "Rename folder",

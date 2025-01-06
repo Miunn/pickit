@@ -30,6 +30,7 @@ export function AppSidebar({ locale, user, items, ...props }: {
 }) {
   
   const t = useTranslations("sidebar");
+  const createFolderTranslations = useTranslations("dialogs.folders.create");
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -53,7 +54,7 @@ export function AppSidebar({ locale, user, items, ...props }: {
           <SidebarMenuItem>
             {user && <CreateFolderDialog>
               <DialogTrigger asChild>
-                <Button variant={"outline"} className="w-full">New folder</Button>
+                <Button variant={"outline"} className="w-full">{createFolderTranslations('trigger')}</Button>
               </DialogTrigger>
             </CreateFolderDialog>}
           </SidebarMenuItem>

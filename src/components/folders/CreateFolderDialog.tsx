@@ -6,11 +6,10 @@ import {
     DialogDescription, DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger
 } from "@/components/ui/dialog";
-import {Button, buttonVariants} from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
-import {FolderPlus, Loader2} from "lucide-react";
+import {Loader2} from "lucide-react";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 
 import {zodResolver} from "@hookform/resolvers/zod"
@@ -24,7 +23,7 @@ import {CreateFolderFormSchema} from "@/lib/definitions";
 
 export default function CreateFolderDialog({ children }: { children: React.ReactNode }) {
 
-    const t = useTranslations("folders.actions");
+    const t = useTranslations("dialogs.folders.create");
 
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -43,8 +42,8 @@ export default function CreateFolderDialog({ children }: { children: React.React
 
             if (d.error) {
                 toast({
-                    title: "Error",
-                    description: `An error occurred while creating the folder. ${d.error}`,
+                    title: t('errors.unknown.title'),
+                    description: t('errors.unknown.description'),
                     variant: "destructive"
                 });
                 return;
@@ -52,8 +51,8 @@ export default function CreateFolderDialog({ children }: { children: React.React
 
             form.reset();
             toast({
-                title: "Folder created",
-                description: "The folders was created successfully.",
+                title: t('success.title'),
+                description: t('success.description'),
             });
 
             setOpen(false);
@@ -65,10 +64,8 @@ export default function CreateFolderDialog({ children }: { children: React.React
             { children }
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>New Folder</DialogTitle>
-                    <DialogDescription>
-                        Create a new folder to organize your images.
-                    </DialogDescription>
+                    <DialogTitle>{t('title')}</DialogTitle>
+                    <DialogDescription>{t('description')}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -77,11 +74,11 @@ export default function CreateFolderDialog({ children }: { children: React.React
                             name="name"
                             render={({field}) => (
                                 <FormItem>
-                                    <FormLabel>Folder's name</FormLabel>
+                                    <FormLabel>{t('form.name.label')}</FormLabel>
                                     <FormControl>
-                                        <Input placeholder={"Julien's birthday"} {...field} />
+                                        <Input placeholder={t('form.name.placeholder')} {...field} />
                                     </FormControl>
-                                    <FormDescription>This will be your album name</FormDescription>
+                                    <FormDescription>{t('form.name.description')}</FormDescription>
                                     <FormMessage/>
                                 </FormItem>
                             )}
@@ -89,8 +86,8 @@ export default function CreateFolderDialog({ children }: { children: React.React
 
                         <DialogFooter>
                             {loading
-                                ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"}/> Creating</Button>
-                                : <Button type={"submit"}>Create</Button>
+                                ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"}/> {t('actions.submitting')}</Button>
+                                : <Button type={"submit"}>{t('actions.submit')}</Button>
                             }
                         </DialogFooter>
                     </form>
