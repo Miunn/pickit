@@ -17,7 +17,7 @@ import Link from "next/link";
 
 export default function SignInForm({ locale }: { locale: string }) {
 
-    const t = useTranslations("auth.signIn");
+    const t = useTranslations("components.auth.signIn");
     const searchParams = useSearchParams();
     const [loading, setLoading] = useState<boolean>(false);
     const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';

@@ -18,7 +18,7 @@ import Link from "next/link";
 
 export default function SignupForm({ locale }: { locale: string }) {
 
-    const t = useTranslations('auth.signUp');
+    const t = useTranslations('components.auth.signUp');
     const [loading, setLoading] = useState<boolean>(false);
     const form = useForm<z.infer<typeof SignupFormSchema>>({
         resolver: zodResolver(SignupFormSchema),

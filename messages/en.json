@@ -6,45 +6,7 @@
   },
   "auth": {
     "signInTab": "Login",
-    "signUpTab": "Sign up",
-    "signIn": {
-      "title": "Login",
-      "description": "Login to your Pickit account",
-      "form": {
-        "email": "Email",
-        "password": "Password",
-        "forgotPassword": "Forgot password",
-        "submit": "Login",
-        "submitting": "Login",
-        "error": {
-          "title": "Login error",
-          "message": "Invalid email or password"
-        }
-      }
-    },
-    "signUp": {
-      "title": "Sign up",
-      "description": "Create your Pickit account",
-      "form": {
-        "name": "Name",
-        "email": "Email",
-        "password": "Password",
-        "confirmPassword": "Confirm password",
-        "submit": "Sign up",
-        "submitting": "Sign up",
-        "success": {
-          "title": "Account created",
-          "description": "Account created successfully. You can now login",
-          "action": "Login"
-        },
-        "error": {
-          "unknown": {
-            "title": "Can't create your account",
-            "description": "An error happened while creating your account."
-          }
-        }
-      }
-    }
+    "signUpTab": "Sign up"
   },
   "sidebar": {
     "title": "Pickit",
@@ -109,6 +71,44 @@
       "message": "Your email address is not verified yet. Verify your email address before {date} to avoid deletion of your account"
     },
     "auth": {
+      "signIn": {
+        "title": "Login",
+        "description": "Login to your Pickit account",
+        "form": {
+          "email": "Email",
+          "password": "Password",
+          "forgotPassword": "Forgot password",
+          "submit": "Login",
+          "submitting": "Login",
+          "error": {
+            "title": "Login error",
+            "message": "Invalid email or password"
+          }
+        }
+      },
+      "signUp": {
+        "title": "Sign up",
+        "description": "Create your Pickit account",
+        "form": {
+          "name": "Name",
+          "email": "Email",
+          "password": "Password",
+          "confirmPassword": "Confirm password",
+          "submit": "Sign up",
+          "submitting": "Sign up",
+          "success": {
+            "title": "Account created",
+            "description": "Account created successfully. You can now login",
+            "action": "Login"
+          },
+          "error": {
+            "unknown": {
+              "title": "Can't create your account",
+              "description": "An error happened while creating your account."
+            }
+          }
+        }
+      },
       "requestPasswordReset": {
         "title": "Request a new password",
         "description": "Enter the email address associated to your account",

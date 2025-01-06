@@ -6,45 +6,7 @@
   },
   "auth": {
     "signInTab": "Se connecter",
-    "signUpTab": "Créer un compte",
-    "signIn": {
-      "title": "Connexion",
-      "description": "Connectez-vous à votre compte Pickit",
-      "form": {
-        "email": "Adresse mail",
-        "password": "Mot de passe",
-        "forgotPassword": "Mot de passe oublié",
-        "submit": "Se connecter",
-        "submitting": "Connexion",
-        "error": {
-          "title": "Echec de connexion",
-          "message": "Adresse mail ou mot de passe invalide"
-        }
-      }
-    },
-    "signUp": {
-      "title": "Créer un compte",
-      "description": "Créez votre compte Pickit",
-      "form": {
-        "name": "Nom",
-        "email": "Adresse mail",
-        "password": "Mot de passe",
-        "confirmPassword": "Confirmez votre mot de passe",
-        "submit": "Créer un compte",
-        "submitting": "Création",
-        "success": {
-          "title": "Compte créé",
-          "description": "Compte créé avec succès. Vous pouvez désormais vous connecter",
-          "action": "Connexion"
-        },
-        "error": {
-          "unknown": {
-            "title": "Impossible de créer votre compte",
-            "description": "Une erreur est survenue lors de la création de votre compte"
-          }
-        }
-      }
-    }
+    "signUpTab": "Créer un compte"
   },
   "sidebar": {
     "title": "Pickit",
@@ -109,6 +71,44 @@
       "message": "Votre adresse mail n'est pas encore vérifiée. Confirmez votre adresse mail avant le {date} afin d'éviter la suppression de votre compte"
     },
     "auth": {
+      "signIn": {
+        "title": "Connexion",
+        "description": "Connectez-vous à votre compte Pickit",
+        "form": {
+          "email": "Adresse mail",
+          "password": "Mot de passe",
+          "forgotPassword": "Mot de passe oublié",
+          "submit": "Se connecter",
+          "submitting": "Connexion",
+          "error": {
+            "title": "Echec de connexion",
+            "message": "Adresse mail ou mot de passe invalide"
+          }
+        }
+      },
+      "signUp": {
+        "title": "Créer un compte",
+        "description": "Créez votre compte Pickit",
+        "form": {
+          "name": "Nom",
+          "email": "Adresse mail",
+          "password": "Mot de passe",
+          "confirmPassword": "Confirmez votre mot de passe",
+          "submit": "Créer un compte",
+          "submitting": "Création",
+          "success": {
+            "title": "Compte créé",
+            "description": "Compte créé avec succès. Vous pouvez désormais vous connecter",
+            "action": "Connexion"
+          },
+          "error": {
+            "unknown": {
+              "title": "Impossible de créer votre compte",
+              "description": "Une erreur est survenue lors de la création de votre compte"
+            }
+          }
+        }
+      },
       "requestPasswordReset": {
         "title": "Réinitialiser votre mot de passe",
         "description": "Entrez l'adresse mail associée à votre compte",
