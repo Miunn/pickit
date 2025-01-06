@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import { Input } from "../ui/input"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { Button } from "../ui/button"
 import { useState } from "react"
 import { Loader2, MessageCircleQuestion } from "lucide-react"
@@ -14,9 +14,11 @@ import { resetPassword } from "@/actions/user"
 import { toast } from "@/hooks/use-toast"
 import { ToastAction } from "../ui/toast"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 
 export default function ResetPasswordForm({ locale, token }: { locale: string, token: string | null }) {
 
+    const t = useTranslations('components.auth.resetPasswordForm');
     const [loading, setLoading] = useState<boolean>(false);
 
     const form = useForm<z.infer<typeof ResetPasswordFormSchema>>({
@@ -34,17 +36,17 @@ export default function ResetPasswordForm({ locale, token }: { locale: string, t
 
         if (r.error) {
             toast({
-                title: "Error",
-                description: "An error occurred while resetting your password. Please try again.",
+                title: t('errors.unknown.title'),
+                description: t('errors.unknown.description'),
                 variant: "destructive"
             });
             return;
         }
 
         toast({
-            title: "Success",
-            description: "Your password has been reset successfully.",
-            action: <ToastAction altText="Login"><Link href={`/${locale}/signin`}>Login</Link></ToastAction>
+            title: t('success.title'),
+            description: t('success.description'),
+            action: <ToastAction altText="Login"><Link href={`/${locale}/signin`}>{t('success.action')}</Link></ToastAction>
         });
 
         setLoading(false);
@@ -56,8 +58,8 @@ export default function ResetPasswordForm({ locale, token }: { locale: string, t
                 ? (
                     <Card className="w-96">
                         <CardHeader>
-                            <CardTitle>Reset your password</CardTitle>
-                            <CardDescription>Enter your new password</CardDescription>
+                            <CardTitle>{t('title')}</CardTitle>
+                            <CardDescription>{t('description')}</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <Form {...form}>
@@ -67,9 +69,9 @@ export default function ResetPasswordForm({ locale, token }: { locale: string, t
                                         name="password"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Password</FormLabel>
+                                                <FormLabel>{t('form.password.label')}</FormLabel>
                                                 <FormControl>
-                                                    <Input type="password" placeholder="Password" {...field} />
+                                                    <Input type="password" placeholder={t('form.password.placeholder')} {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -80,9 +82,9 @@ export default function ResetPasswordForm({ locale, token }: { locale: string, t
                                         name="passwordConfirmation"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Confirm password</FormLabel>
+                                                <FormLabel>{t('form.confirmPassword.label')}</FormLabel>
                                                 <FormControl>
-                                                    <Input type="password" placeholder="Confirm password" {...field} />
+                                                    <Input type="password" placeholder={t('form.confirmPassword.placeholder')} {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -90,8 +92,8 @@ export default function ResetPasswordForm({ locale, token }: { locale: string, t
                                     />
 
                                     {loading
-                                        ? <Button type="button" className="self-end" disabled><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Reseting...</Button>
-                                        : <Button type="submit" className="self-end">Reset</Button>}
+                                        ? <Button type="button" className="self-end" disabled><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t('actions.submitting')}</Button>
+                                        : <Button type="submit" className="self-end">{t('actions.submit')}</Button>}
                                 </form>
                             </Form>
                         </CardContent>
@@ -100,9 +102,7 @@ export default function ResetPasswordForm({ locale, token }: { locale: string, t
                 : (
                     <div className="w-fit flex flex-col items-center gap-2">
                         <MessageCircleQuestion size={128} className="text-orange-600" />
-                        <h1 className="text-center text-xl text-orange-600 font-bold">
-                            This reset password link has expired or is invalid.
-                        </h1>
+                        <h1 className="text-center text-xl text-orange-600 font-bold">{t('invalid.title')}</h1>
                     </div>
                 )
             }

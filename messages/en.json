@@ -123,6 +123,38 @@
           "submit": "Request a password reset",
           "submitting": "Requesting a password reset"
         }
+      },
+      "resetPasswordForm": {
+        "title": "Reset your password",
+        "description": "Enter your new password",
+        "invalid": {
+          "title": "This reset password link has expired or is invalid"
+        },
+        "form": {
+          "password": {
+            "label": "New password",
+            "placeholder": "New password"
+          },
+          "confirmPassword": {
+            "label": "Confirm password",
+            "placeholder": "Confirm password"
+          }
+        },
+        "actions": {
+          "submit": "Reset",
+          "submitting": "Resetting"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't reset your password",
+            "description": "An unknown error happened while resetting your password. Please try again"
+          }
+        },
+        "success": {
+          "title": "Password reset",
+          "description": "Your password has been reset successfully. You can now login with your new password",
+          "action": "Login"
+        }
       }
     }
   },

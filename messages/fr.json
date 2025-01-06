@@ -123,6 +123,37 @@
           "submit": "Réinitialisation votre mot de passe",
           "submitting": "Réinitialisation"
         }
+      },
+      "resetPasswordForm": {
+        "title": "Réinitialiser votre mot de passe",
+        "description": "Entrez votre nouveau mot de passe",
+        "invalid": {
+          "title": "This reset password link has expired or is invalid"
+        },
+        "form": {
+          "password": {
+            "label": "Mot de passe",
+            "placeholder": "Mot de passe"
+          },
+          "confirmPassword": {
+            "label": "Confirmez votre mot de passe",
+            "placeholder": "Confirmez votre mot de passe"
+          }
+        },
+        "actions": {
+          "submit": "Réinitialiser",
+          "submitting": "Réinitialisation"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de réinitialiser votre mot de passe",
+            "description": "Une erreur inconnue est survenue lors de la réinitialisation de votre mot de passe"
+          }
+        },
+        "success": {
+          "title": "Mot de passe réinitialisé",
+          "description": "Votre mot de passe a été réinitialisé avec succès"
+        }
       }
     }
   },
