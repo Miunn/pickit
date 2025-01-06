@@ -159,6 +159,28 @@
     }
   },
   "dialogs": {
+    "folders": {
+      "changeCover": {
+        "trigger": "Change cover",
+        "title": "Change folder's cover",
+        "description": "Choose an image to set as folder's cover",
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Change",
+          "submitting": "Changing"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't change folder's cover",
+            "description": "An unknown error happened while changing the folder's cover"
+          }
+        },
+        "success": {
+          "title": "Folder's cover changed",
+          "description": "The folder's cover has been changed successfully"
+        }
+      }
+    },
     "accessTokens": {
       "create": {
         "title": "Create a new sharing link",
@@ -252,13 +274,7 @@
         "submitting": "Renaming...",
         "cancel": "Cancel"
       },
-      "cover": {
-        "trigger": "Change cover",
-        "title": "Change folder's cover",
-        "description": "Choose an image to set as folder's cover",
-        "submit": "Change cover",
-        "submitting": "Changing cover..."
-      },
+      
       "share": {
         "trigger": "Share",
         "title": "Share folder",

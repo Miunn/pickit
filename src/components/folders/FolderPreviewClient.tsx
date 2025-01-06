@@ -24,6 +24,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
 }) {
 
     const t = useTranslations("folders");
+    const coverTranslations = useTranslations("dialogs.folders.changeCover");
     const format = useFormatter();
 
     const [openRename, setOpenRename] = useState<boolean>(false);
@@ -92,7 +93,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                         </Link>
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenRename(true)}>{t('dialog.rename.trigger')}</ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenChangeCover(true)} disabled={folderImages.length === 0}>Change cover</ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenChangeCover(true)} disabled={folderImages.length === 0}>{coverTranslations('trigger')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenShare(true)}>Share</ContextMenuItem>
                     <ContextMenuItem onClick={async () => {
                         const r = await downloadFolder(folder);

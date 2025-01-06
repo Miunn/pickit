@@ -10,7 +10,7 @@ import { toast } from "@/hooks/use-toast";
 
 export default function ChangeCoverFolderDialog({ images, folderId, open, setOpen }: { images: ImageWithFolder[], folderId: string, open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
 
-    const t = useTranslations("folders.dialog.cover");
+    const t = useTranslations("dialogs.folders.changeCover");
 
     const [current, setCurrent] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
@@ -30,14 +30,19 @@ export default function ChangeCoverFolderDialog({ images, folderId, open, setOpe
 
         if (r.error) {
             toast({
-                title: "Cover change failed",
-                description: "An error happened when trying to change folder's cover",
+                title: t('errors.unknown.title'),
+                description: t('errors.unknown.description'),
                 variant: "destructive"
             });
             return;
         }
 
         setOpen(false);
+
+        toast({
+            title: t('success.title'),
+            description: t('success.description'),
+        });
     }
 
     return (
@@ -52,11 +57,11 @@ export default function ChangeCoverFolderDialog({ images, folderId, open, setOpe
 
                 <DialogFooter>
                     <DialogClose asChild>
-                        <Button variant={"outline"}>Cancel</Button>
+                        <Button variant={"outline"}>{t('actions.cancel')}</Button>
                     </DialogClose>
                     {loading
-                        ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"} /> {t('submitting')}</Button>
-                        : <Button type={"submit"} onClick={submitCover}>{t('submit')}</Button>
+                        ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"} /> {t('actions.submitting')}</Button>
+                        : <Button type={"submit"} onClick={submitCover}>{t('actions.submit')}</Button>
                     }
                 </DialogFooter>
             </DialogContent>

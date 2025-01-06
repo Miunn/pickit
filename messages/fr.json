@@ -158,6 +158,28 @@
     }
   },
   "dialogs": {
+    "folders": {
+      "changeCover": {
+        "trigger": "Changer la couverture",
+        "title": "Changer la couverture du dossier",
+        "description": "Choisissez une image pour définir la couverture du dossier",
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Sélectionner",
+          "submitting": "Mise à jour"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de changer la couverture du dossier",
+            "description": "Une erreur inconnue est survenue lors de la mise à jour de la couverture du dossier"
+          }
+        },
+        "success": {
+          "title": "Couverture du dossier mise à jour",
+          "description": "La couverture du dossier a été mise à jour avec succès"
+        }
+      }
+    },
     "accessTokens": {
       "create": {
         "title": "Créer un nouveau lien de partage",
@@ -250,13 +272,6 @@
         "submit": "Rename",
         "submitting": "Renaming...",
         "cancel": "Cancel"
-      },
-      "cover": {
-        "trigger": "Change cover",
-        "title": "Change folder's cover",
-        "description": "Choose an image to set as folder's cover",
-        "submit": "Change cover",
-        "submitting": "Changing cover..."
       },
       "share": {
         "trigger": "Share",
