@@ -234,6 +234,62 @@
           "description": "The folder has been renamed successfully"
         }
       },
+      "share": {
+        "trigger": "Share",
+        "title": "Share folder",
+        "description": "Share the folder with others",
+        "manageAccesses": "Manage accesses",
+        "links": {
+          "empty": "No sharing links created",
+          "link": {
+            "permissions": {
+              "read": "View",
+              "write": "Edit"
+            },
+            "placeholder": "Sharing link",
+            "copy": "Copy link"
+          }
+        },
+        "people": {
+          "title": "Share to people",
+          "form": {
+            "permission": {
+              "label": "Permission",
+              "placeholder": "Permission",
+              "options": {
+                "read": "View",
+                "write": "Edit"
+              }
+            },
+            "email": {
+              "label": "Email",
+              "placeholder": "Email address",
+              "description": "Send this link to an email",
+              "error": {
+                "title": "Invalid email",
+                "description": "Provided email is invalid or already exists in the list"
+              }
+            }
+          }
+        },
+        "buttons": {
+          "copy": "Copy link",
+          "emailAdd": "Add email",
+          "emailRemove": "Remove email"
+        },
+        "toast": {
+          "copy": {
+            "success": {
+              "title": "Link copied",
+              "description": "The link has been copied to your clipboard"
+            },
+            "error": {
+              "title": "Error",
+              "description": "An error occurred while copying the link"
+            }
+          }
+        }
+      },
       "delete": {
         "trigger": "Delete",
         "title": "Delete folder",
@@ -319,82 +375,6 @@
       "open": "Open",
       "manage": "Manage links",
       "download": "Download"
-    },
-    "dialog": {
-      "create": {
-        "trigger": "New folder",
-        "title": "Create new folder",
-        "description": "Create a new folder to organize your images.",
-        "fields": {
-          "name": {
-            "label": "Folder's name",
-            "description": "This will be your album name"
-          }
-        },
-        "submit": "Create",
-        "submitting": "Creating..."
-      },
-      "rename": {
-        "trigger": "Rename",
-        "title": "Rename folder",
-        "description": "Rename the folder",
-        "fields": {
-          "name": {
-            "label": "Folder's name",
-            "description": "The new name for {folder}"
-          }
-        },
-        "submit": "Rename",
-        "submitting": "Renaming...",
-        "cancel": "Cancel"
-      },
-      
-      "share": {
-        "trigger": "Share",
-        "title": "Share folder",
-        "description": "Share the folder with others",
-        "fields": {
-          "link": {
-            "label": "Link",
-            "description": "Share this link with others",
-            "placeholder": "Link"
-          },
-          "email": {
-            "label": "Email",
-            "description": "Send this link to an email",
-            "placeholder": "Email address",
-            "error": {
-              "title": "Invalid email",
-              "description": "Provided email is invalid or already exists in the list"
-            }
-          }
-        },
-        "button": {
-          "copy": "Copy link",
-          "emailAdd": "Add email",
-          "emailRemove": "Remove email"
-        },
-        "toast": {
-          "copy": {
-            "success": {
-              "title": "Link copied",
-              "description": "The link has been copied to your clipboard"
-            },
-            "error": {
-              "title": "Error",
-              "description": "An error occurred while copying the link"
-            }
-          }
-        }
-      },
-      "delete": {
-        "trigger": "Delete",
-        "title": "Delete folder",
-        "description": "Are you sure you want to delete {folder} ? Every related images will be deleted. This action cannot be undone.",
-        "submit": "Delete",
-        "submitting": "Deleting...",
-        "cancel": "Cancel"
-      }
     },
     "empty": "No folders created"
   },

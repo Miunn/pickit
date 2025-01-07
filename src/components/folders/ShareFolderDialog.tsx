@@ -6,8 +6,6 @@ import {
     DialogDescription,
     DialogFooter,
     DialogHeader,
-    DialogOverlay,
-    DialogPortal,
     DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -36,10 +34,10 @@ import { createMultiplePersonAccessTokens } from "@/actions/accessTokensPerson";
 export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWithAccessToken, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
     const locale = useLocale();
+    const t = useTranslations("dialogs.folders.share");
     const [loadingShare, setLoadingShare] = useState(false);
     const [tokenList, setTokenList] = useState<{ email: string, permission: FolderTokenPermission, expiryDate: Date }[]>([]);
     const emailScroll = useRef<HTMLDivElement>(null);
-    const t = useTranslations("folders.dialog.share");
     const validTokens = folder.AccessToken.filter((token) => token.expires > new Date() && token.isActive);
 
     const sharePersonAccessTokenForm = useForm<z.infer<typeof CreatePersonAccessTokenFormSchema>>({
@@ -131,11 +129,9 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     </DialogHeader>
 
                     <div className="flex justify-between items-center">
-                        <Label>{t('fields.link.label')}</Label>
+                        <Label>{t('form.link.label')}</Label>
                         <Button variant={"link"} className="pr-0" asChild>
-                            <Link href={`/${locale}/dashboard/links`}>
-                                Manage accesses
-                            </Link>
+                            <Link href={`/${locale}/dashboard/links`}>{t('manageAccesses')}</Link>
                         </Button>
                     </div>
                     <div className={"grid gap-3 w-full items-center"} style={{
@@ -144,17 +140,17 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                         {validTokens.length > 0
                             ? validTokens.sort((a, b) => a.permission.localeCompare(b.permission)).map((token) => <Fragment key={token.token}>
                                 <Label className="capitalize">{token.permission}</Label>
-                                <Input placeholder={t('fields.link.placeholder')} disabled={true}
+                                <Input placeholder={t('links.link.placeholder')} disabled={true}
                                     value={`${typeof window !== 'undefined' ? window.location.origin : ''}/dashboard/folders/${folder.id}?share=${token.token}`} />
                                 <Button onClick={() => copyToClipboard(token.token)} className="text-start">
-                                    {t('button.copy')}
+                                    {t('links.link.copy')}
                                 </Button>
                             </Fragment>)
-                            : <p className="col-span-3 text-sm">No links exists for this folder</p>}
+                            : <p className="col-span-3 text-sm">{t('links.empty')}</p>}
                     </div>
                     <Separator orientation={"horizontal"} className={"my-4"} />
 
-                    <Label>Share to people</Label>
+                    <Label>{t('people.title')}</Label>
                     <Form {...sharePersonAccessTokenForm}>
                         <form onSubmit={sharePersonAccessTokenForm.handleSubmit(addEmail)} className="flex gap-3 w-full items-end">
                             <FormField
@@ -162,16 +158,16 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                 name={"permission"}
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col w-24">
-                                        <FormLabel>Permission</FormLabel>
+                                        <FormLabel>{t('people.form.permission.label')}</FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                             <FormControl>
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="Permission" />
+                                                    <SelectValue placeholder={t('people.form.permission.placeholder')} />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value={FolderTokenPermission.READ}>Read</SelectItem>
-                                                <SelectItem value={FolderTokenPermission.WRITE}>Write</SelectItem>
+                                                <SelectItem value={FolderTokenPermission.READ}>{t('people.form.permission.options.read')}</SelectItem>
+                                                <SelectItem value={FolderTokenPermission.WRITE}>{t('people.form.permission.options.write')}</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </FormItem>
@@ -182,9 +178,9 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                 name={"email"}
                                 render={({ field }) => (
                                     <FormItem className="flex-1 flex flex-col">
-                                        <FormLabel>Email</FormLabel>
+                                        <FormLabel>{t('people.form.email.label')}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder={t('fields.email.placeholder')} {...field} />
+                                            <Input placeholder={t('people.form.email.placeholder')} {...field} />
                                         </FormControl>
                                     </FormItem>
                                 )}
