@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator";
-import AccountForm from "./accountForm";
+import AccountForm from "@/components/account/accountForm";
 import getMe from "@/actions/user";
-import ReviewFolders from "./reviewFolders";
+import ReviewFolders from "@/components/account/reviewFolders";
 import { prisma } from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
 

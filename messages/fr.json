@@ -155,6 +155,20 @@
           "description": "Votre mot de passe a été réinitialisé avec succès"
         }
       }
+    },
+    "account": {
+      "reviewFolders": {
+        "title": "Passez en revue vos dossiers",
+        "folder": {
+          "images": "{count, plural, one {# image} other {# images}}",
+          "dropdown": {
+            "fallback": "Actions",
+            "label": "Actions",
+            "openFolder": "Ouvrir",
+            "manageAccesses": "Gérer les accès"
+          }  
+        }
+      }
     }
   },
   "dialogs": {

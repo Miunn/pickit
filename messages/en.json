@@ -156,6 +156,20 @@
           "action": "Login"
         }
       }
+    },
+    "account": {
+      "reviewFolders": {
+        "title": "Review your folders",
+        "folder": {
+          "images": "{count, plural, one {# image} other {# images}}",
+          "dropdown": {
+            "fallback": "Open menu",
+            "label": "Actions",
+            "openFolder": "Open folder",
+            "manageAccesses": "Manage accesses"
+          }  
+        }
+      }
     }
   },
   "dialogs": {
