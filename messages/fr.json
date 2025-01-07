@@ -361,6 +361,26 @@
           "title": "Image supprimée",
           "description": "L'image a été supprimée avec succès"
         }
+      },
+      "deleteMultiple": {
+        "trigger": "Supprimer",
+        "title": "Supprimer les images",
+        "description": "Êtes-vous sûr de vouloir supprimer {n} images ? Cette action est irréversible.",
+        "actions": {
+          "submit": "Supprimer",
+          "submitting": "Suppression...",
+          "cancel": "Annuler"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de supprimer les images",
+            "description": "Une erreur inconnue est survenue lors de la suppression des images"
+          }
+        },
+        "success": {
+          "title": "Images supprimées",
+          "description": "{n, plural, one {# image a été supprimée} other {# images ont été supprimées}} avec succès"
+        }
       }
     },
     "accessTokens": {

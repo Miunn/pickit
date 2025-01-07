@@ -21,6 +21,7 @@ import { handleImagesSubmission } from "@/lib/utils";
 export const ImagesGrid = ({ folder, shareToken, hashPin }: { folder: FolderWithImagesWithFolder, shareToken?: string, hashPin?: string }) => {
 
     const t = useTranslations("images");
+    const deleteMultipleTranslations = useTranslations("dialogs.images.deleteMultiple");
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
     const [openDelete, setOpenDelete] = useState<boolean>(false);
     const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
@@ -64,7 +65,7 @@ export const ImagesGrid = ({ folder, shareToken, hashPin }: { folder: FolderWith
                     <Button variant="outline" onClick={() => {
                         setOpenDeleteMultiple(true);
                     }}>
-                        <Trash2 className={"mr-2"} /> {t('actions.delete')}
+                        <Trash2 className={"mr-2"} /> {deleteMultipleTranslations('trigger')}
                     </Button>
                 </div>
                 : null

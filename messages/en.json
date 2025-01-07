@@ -418,6 +418,26 @@
           "title": "Image deleted",
           "description": "The image has been deleted successfully"
         }
+      },
+      "deleteMultiple": {
+        "trigger": "Delete",
+        "title": "Delete images",
+        "description": "Are you sure you want to delete {n} images ? This action cannot be undone.",
+        "actions": {
+          "submit": "Delete",
+          "submitting": "Deleting...",
+          "cancel": "Cancel"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't delete images",
+            "description": "An unknown error happened while deleting the images"
+          }
+        },
+        "success": {
+          "title": "Images deleted",
+          "description": "{n, plural, one {# image} other {# images}} have been deleted successfully"
+        }
       }
     },
     "accessTokens": {

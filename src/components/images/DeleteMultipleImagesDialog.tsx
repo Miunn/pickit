@@ -8,16 +8,16 @@ import {
     DialogHeader,
     DialogTitle
 } from "@/components/ui/dialog";
-import {useTranslations} from "next-intl";
-import {Button} from "@/components/ui/button";
-import React, {useState} from "react";
-import {Loader2} from "lucide-react";
-import {deleteImages} from "@/actions/images";
-import {toast} from "@/hooks/use-toast";
+import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { deleteImages } from "@/actions/images";
+import { toast } from "@/hooks/use-toast";
 
-export const DeleteMultipleImagesDialog = ({images, open, setOpen, setSelected, setSelecting}: { images: any[], open: boolean, setOpen: any, setSelected: React.Dispatch<React.SetStateAction<string[]>>, setSelecting: React.Dispatch<React.SetStateAction<boolean>> }) => {
+export const DeleteMultipleImagesDialog = ({ images, open, setOpen, setSelected, setSelecting }: { images: any[], open: boolean, setOpen: any, setSelected: React.Dispatch<React.SetStateAction<string[]>>, setSelecting: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
-    const t = useTranslations("images.dialog.deleteMultiple");
+    const t = useTranslations("dialogs.images.deleteMultiple");
     const [deleting, setDeleting] = useState(false);
 
     return (
@@ -29,31 +29,38 @@ export const DeleteMultipleImagesDialog = ({images, open, setOpen, setSelected, 
                 </DialogHeader>
                 <DialogFooter>
                     <DialogClose>
-                        <Button variant="outline">{t('cancel')}</Button>
+                        <Button variant="outline">{t('actions.cancel')}</Button>
                     </DialogClose>
                     <Button onClick={() => {
                         setDeleting(true);
                         deleteImages(images)
                             .then(r => {
-                                if (!r?.error) {
+                                if (r.error) {
                                     toast({
-                                        title: "Images deleted",
-                                        description: "The images have been deleted successfully",
+                                        title: t('errors.unknown.title'),
+                                        description: t('errors.unknown.description'),
                                     });
-                                    setSelected([]);
-                                    setSelecting(false);
-                                    setDeleting(false);
-                                    setOpen(false);
+                                    return;
                                 }
+
+                                setSelected([]);
+                                setSelecting(false);
+                                setDeleting(false);
+                                setOpen(false);
+
+                                toast({
+                                    title: t('success.title'),
+                                    description: t('success.description', { n: images.length }),
+                                });
                             });
-                    }} disabled={deleting}>{
-                        deleting ? (
+                    }} disabled={deleting} variant={"destructive"}>{
+                            deleting ? (
                                 <>
-                                    <Loader2 className={"animate-spin mr-2"}/> {t('submitting')}
+                                    <Loader2 className={"animate-spin mr-2"} /> {t('actions.submitting')}
                                 </>
                             )
-                            : t('submit')
-                    }</Button>
+                                : t('actions.submit')
+                        }</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
