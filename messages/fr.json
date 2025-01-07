@@ -222,6 +222,23 @@
           }
         }
       }
+    },
+    "fileUploader": {
+      "title": "Déplacer et déposer vos fichiers ici ou cliquez pour les télécharger",
+      "dragActiveTitle": "Déposez vos fichiers ici",
+      "description": "Vous pouvez télécharger {count, plural, one {un fichier} other {vos images}} jusqu'à {max} {count, plural, one {} other {chacune}}",
+      "remove": "Supprimer"
+    },
+    "images": {
+      "carousel": {
+        "slide": "Image {current} sur {total}",
+        "actions": {
+          "copy": {
+            "title": "Image copiée",
+            "description": "L'image a été copiée dans votre presse-papiers"
+          }
+        }
+      }
     }
   },
   "dialogs": {
@@ -319,6 +336,11 @@
           "title": "Dossier supprimé",
           "description": "Le dossier a été supprimé avec succès"
         }
+      }
+    },
+    "images": {
+      "carousel": {
+        "description": "Images"
       }
     },
     "accessTokens": {

@@ -12,6 +12,7 @@ import {Progress} from "@/components/ui/progress";
 import React from "react";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
     /**
@@ -107,6 +108,7 @@ export const FileUploader = (props: FileUploaderProps) => {
         ...dropzoneProps
     } = props
 
+    const t = useTranslations("components.fileUploader");
     const [files, setFiles] = useControllableState({
         prop: valueProp,
         onChange: onValueChange,
@@ -207,7 +209,7 @@ export const FileUploader = (props: FileUploaderProps) => {
                                     />
                                 </div>
                                 <p className="font-medium text-muted-foreground">
-                                    Drop the files here
+                                    {t('dragActiveTitle')}
                                 </p>
                             </div>
                         ) : (
@@ -220,14 +222,10 @@ export const FileUploader = (props: FileUploaderProps) => {
                                 </div>
                                 <div className="flex flex-col gap-px">
                                     <p className="font-medium text-muted-foreground">
-                                        Drag {`'n'`} drop files here, or click to select files
+                                        {t('title')}
                                     </p>
                                     <p className="text-sm text-muted-foreground/70">
-                                        You can upload
-                                        {maxFileCount > 1
-                                            ? ` ${maxFileCount === Infinity ? "multiple" : maxFileCount}
-                      files (up to ${formatBytes(maxSize)} each)`
-                                            : ` a file with ${formatBytes(maxSize)}`}
+                                        {t('description', {count: maxFileCount, max: formatBytes(maxSize)})}
                                     </p>
                                 </div>
                             </div>
@@ -260,6 +258,7 @@ interface FileCardProps {
 }
 
 function FileCard({ file, progress, onRemove }: FileCardProps) {
+    const t = useTranslations("components.fileUploader");
     return (
         <div className="relative flex items-center gap-2.5">
             <div className="flex flex-1 gap-2.5">
@@ -285,7 +284,7 @@ function FileCard({ file, progress, onRemove }: FileCardProps) {
                     onClick={onRemove}
                 >
                     <Cross2Icon className="size-4" aria-hidden="true" />
-                    <span className="sr-only">Remove file</span>
+                    <span className="sr-only">{t('remove')}</span>
                 </Button>
             </div>
         </div>

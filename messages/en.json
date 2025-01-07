@@ -223,6 +223,23 @@
           }
         }
       }
+    },
+    "fileUploader": {
+      "title": "Drag 'n' drop your files here or click to select files",
+      "dragActiveTitle": "Drop your files here",
+      "description": "You can upload {count, plural, one {a file} other {multiple file}} up to {maxSize} {count, plural, one {} other {each}}",
+      "remove": "Remove file"
+    },
+    "images": {
+      "carousel": {
+        "slide": "Slide {current} of {total}",
+        "actions": {
+          "copy": {
+            "title": "Image copied",
+            "description": "Image has been copied to your clipboard"
+          }
+        }
+      }
     }
   },
   "dialogs": {
@@ -376,6 +393,11 @@
           "title": "Folder deleted",
           "description": "The folder has been deleted successfully"
         }
+      }
+    },
+    "images": {
+      "carousel": {
+        "description": "Images"
       }
     },
     "accessTokens": {

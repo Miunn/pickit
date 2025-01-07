@@ -6,9 +6,11 @@ import { Button } from "../ui/button";
 import { Check, Copy, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/hooks/use-toast";
+import { useTranslations } from "next-intl";
 
 export default function ImagesCarousel({ images, startIndex, currentIndex, setCurrentIndex, shareToken, shareHashPin }: { images: ImageWithFolder[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>>, shareToken?: string, shareHashPin?: string }) {
 
+    const t = useTranslations("components.images.carousel");
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
     const imagesItemsRefs = images.map(() => useRef<HTMLDivElement>(null));
     const [count, setCount] = useState(images.length);
@@ -27,8 +29,8 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
 
         setCopied(true);
         toast({
-            title: "Image copied",
-            description: "Image has been copied to your clipboard",
+            title: t('actions.copy.title'),
+            description: t('actions.copy.description'),
             duration: 2000
         });
 
@@ -98,7 +100,7 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                         currentIndex == 0
                             ? `${images[currentIndex]?.width}x${images[currentIndex]?.height}`
                             : `${images[currentIndex - 1]?.width}x${images[currentIndex - 1]?.height}`
-                    }</span> - <span>Slide {currentIndex} of {count}</span>
+                    }</span> - <span>{t('slide', {current: currentIndex, total: count})}</span>
                 </p>
             </div>
         </div>
