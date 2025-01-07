@@ -22,6 +22,7 @@ export const ImagePreview = ({ image, selecting, setSelecting, selected, setSele
 
     const format = useFormatter();
     const t = useTranslations("images");
+    const deleteTranslations = useTranslations("dialogs.images.delete");
 
     return (
         <ContextMenu key={image.id}>
@@ -91,7 +92,7 @@ export const ImagePreview = ({ image, selecting, setSelecting, selected, setSele
                         onDelete(image.id);
                     }
                 }} className="text-red-600 focus:text-red-600 font-semibold">
-                    {t('actions.delete')}
+                    {deleteTranslations('trigger')}
                 </ContextMenuItem>
             </ContextMenuContent>
         </ContextMenu>

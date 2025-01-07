@@ -341,6 +341,26 @@
     "images": {
       "carousel": {
         "description": "Images"
+      },
+      "delete": {
+        "trigger": "Supprimer",
+        "title": "Supprimer l'image",
+        "description": "Êtes-vous sûr de vouloir supprimer {image} ? Cette action est irréversible.",
+        "actions": {
+          "submit": "Supprimer",
+          "submitting": "Suppression...",
+          "cancel": "Annuler"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de supprimer l'image",
+            "description": "Une erreur inconnue est survenue lors de la suppression de l'image"
+          }
+        },
+        "success": {
+          "title": "Image supprimée",
+          "description": "L'image a été supprimée avec succès"
+        }
       }
     },
     "accessTokens": {

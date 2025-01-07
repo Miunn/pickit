@@ -398,6 +398,26 @@
     "images": {
       "carousel": {
         "description": "Images"
+      },
+      "delete": {
+        "trigger": "Delete",
+        "title": "Delete image",
+        "description": "Are you sure you want to delete {image} ? This action cannot be undone.",
+        "actions": {
+          "submit": "Delete",
+          "submitting": "Deleting...",
+          "cancel": "Cancel"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't delete image",
+            "description": "An unknown error happened while deleting the image"
+          }
+        },
+        "success": {
+          "title": "Image deleted",
+          "description": "The image has been deleted successfully"
+        }
       }
     },
     "accessTokens": {
@@ -506,14 +526,6 @@
         },
         "submit": "Upload",
         "submitting": "Uploading..."
-      },
-      "delete": {
-        "trigger": "Delete",
-        "title": "Delete image",
-        "description": "Are you sure you want to delete {image} ? This action cannot be undone.",
-        "submit": "Delete",
-        "submitting": "Deleting...",
-        "cancel": "Cancel"
       },
       "deleteMultiple": {
         "trigger": "Delete",
