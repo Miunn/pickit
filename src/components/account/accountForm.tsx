@@ -14,6 +14,7 @@ import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import ChangeEmailConfirmationDialog from "./ChangeEmailConfirmationDialog"
 
 export default function AccountForm({ user }: { user?: UserLight }) {
 
@@ -274,26 +275,18 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                 </form>
             </Form>
 
-            <Dialog open={openEmailDialog} onOpenChange={setOpenEmailDialog}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Change your email ?</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to change your email ? You will need to verify your new email address.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <DialogClose asChild><Button variant={"outline"} onClick={() => {
-                            setOpenEmailDialog(false);
-                            accountFormSchema.setValue("email", user?.email);
-                        }}>Cancel</Button></DialogClose>
-                        <Button variant="destructive" onClick={() => {
-                            setOpenEmailDialog(false);
-                            accountFormSchema.handleSubmit(submitAccount)();
-                        }}>Change email</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+            <ChangeEmailConfirmationDialog
+                open={openEmailDialog}
+                setOpen={setOpenEmailDialog}
+                onCancel={() => {
+                    setOpenEmailDialog(false);
+                    accountFormSchema.setValue("email", user?.email);
+                }}
+                onSubmit={() => {
+                    setOpenEmailDialog(false);
+                    accountFormSchema.handleSubmit(submitAccount)();
+                }}
+            />
         </div >
     )
 }
