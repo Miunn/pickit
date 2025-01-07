@@ -157,6 +157,59 @@
       }
     },
     "account": {
+      "accountForm": {
+        "form": {
+          "profilePicture": {
+            "label": "Photo de profil",
+            "description": "Cliquez pour changer votre photo de profil"
+          },
+          "name": {
+            "label": "Changez votre nom",
+            "placeholder": "John Doe"
+          },
+          "email": {
+            "label": "Changez votre adresse mail",
+            "placeholder": "exemple@mail.fr",
+            "warning": "Changer votre adresse mail nécessitera une nouvelle vérification",
+            "requestVerification": "Renvoyer l'email de vérification",
+            "verified": "Adresse mail vérifiée",
+            "unverified": "Votre adresse mail n'est pas vérifiée"
+          },
+          "actions": {
+            "submit": "Sauvegarder",
+            "submitting": "Sauvegarde"
+          }
+        },
+        "passwordForm": {
+          "title": "Changer votre mot de passe",
+          "currentPassword": {
+            "label": "Mot de passe actuel",
+            "placeholder": "••••••••"
+          },
+          "newPassword": {
+            "label": "Nouveau mot de passe",
+            "placeholder": "••••••••"
+          },
+          "confirmPassword": {
+            "label": "Confirmez votre mot de passe",
+            "placeholder": "••••••••"
+          },
+          "actions": {
+            "submit": "Changer",
+            "submitting": "Changement"
+          }
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't change your password",
+            "description": "An unknown error happened while changing your password. Please try again"
+          }
+        },
+        "success": {
+          "title": "Password changed",
+          "description": "Your password has been changed successfully"
+        }
+      },
       "reviewFolders": {
         "title": "Passez en revue vos dossiers",
         "folder": {
@@ -166,7 +219,7 @@
             "label": "Actions",
             "openFolder": "Ouvrir",
             "manageAccesses": "Gérer les accès"
-          }  
+          }
         }
       }
     }

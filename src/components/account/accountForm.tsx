@@ -10,12 +10,14 @@ import { toast } from "@/hooks/use-toast"
 import { AccountFormSchema, ChangePasswordSchema, UserLight } from "@/lib/definitions"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CircleAlert, CircleCheck, Loader2 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 export default function AccountForm({ user }: { user?: UserLight }) {
 
+    const t = useTranslations("components.account.accountForm");
     const [loadingInfos, setLoadingInfos] = useState<boolean>(false);
     const [newVerficiationLoading, setNewVerificationLoading] = useState<boolean>(false);
     const [loadingPassword, setLoadingPassword] = useState<boolean>(false);
@@ -145,9 +147,9 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                                 </FormControl>
                                 <div>
                                     <FormLabel className="font-normal">
-                                        Profile picture
+                                        {t("form.profilePicture.label")}
                                     </FormLabel>
-                                    <FormDescription>Custom your profile with a nice pic</FormDescription>
+                                    <FormDescription>{t("form.profilePicture.description")}</FormDescription>
                                     <FormMessage />
                                 </div>
                             </FormItem>
@@ -159,10 +161,10 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                         render={({ field }) => (
                             <FormItem className="space-y-1">
                                 <FormLabel className="font-normal">
-                                    Full name
+                                    {t('form.name.label')}
                                 </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="John Doe" {...field} />
+                                    <Input placeholder={t('form.name.placeholder')} {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -174,25 +176,25 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                         render={({ field }) => (
                             <FormItem className="space-y-1">
                                 <FormLabel className="font-normal flex justify-between items-center">
-                                    Change your email
+                                    {t('form.email.label')}
 
                                     {user?.emailVerified ?
-                                        <span className="text-green-600 flex items-center"><CircleCheck className="w-4 h-4 mr-1" /> Your email is verified</span>
-                                        : <span className="text-yellow-600 flex items-center"><CircleAlert className="w-4 h-4 mr-1" /> Your email isn't verified</span>}
+                                        <span className="text-green-600 flex items-center"><CircleCheck className="w-4 h-4 mr-1" /> {t('form.email.verified')}</span>
+                                        : <span className="text-yellow-600 flex items-center"><CircleAlert className="w-4 h-4 mr-1" /> {t('form.email.unverified')}</span>}
                                 </FormLabel>
                                 <FormControl>
                                     <Input placeholder="exemple@mail.com" {...field} />
                                 </FormControl>
                                 <FormDescription className="flex justify-between gap-2">
-                                    <span>Changing your email will require an updated verification</span>
+                                    <span>{t('form.email.warning')}</span>
                                     {!user?.emailVerified
                                         ? <>
                                             {newVerficiationLoading
                                                 ? <Button type="button" variant="link" className="text-muted-foreground p-0 h-fit text-[0.8rem] font-normal" disabled>
                                                     <Loader2 className={"w-4 h-4 mr-2 animate-spin"} />
-                                                    Request a new email
+                                                    {t('form.email.requestVerification')}
                                                 </Button>
-                                                : <Button type="button" variant="link" className="text-muted-foreground p-0 h-fit text-[0.8rem] font-normal" onClick={requestNewVerificationEmail}>Request a new email</Button>
+                                                : <Button type="button" variant="link" className="text-muted-foreground p-0 h-fit text-[0.8rem] font-normal" onClick={requestNewVerificationEmail}>{t('form.email.requestVerification')}</Button>
                                             }
                                         </>
                                         : null}
@@ -203,7 +205,7 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                     />
 
                     {loadingInfos
-                        ? <Button type="button" disabled={true}><Loader2 className={"mr-2 animate-spin"} /> Submiting</Button>
+                        ? <Button type="button" disabled={true}><Loader2 className={"mr-2 animate-spin"} /> {t('form.actions.submitting')}</Button>
                         : <Button type="button" onClick={() => {
                             // If email has changed from default value, trigger the dialog
                             if (accountFormSchema.getValues().email !== user?.email && user?.emailVerified === true) {
@@ -211,12 +213,12 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                             } else {
                                 accountFormSchema.handleSubmit(submitAccount)();
                             }
-                        }}>Submit</Button>
+                        }}>{t('form.actions.submit')}</Button>
                     }
                 </form>
             </Form>
 
-            <h4 className="w-fit font-semibold mt-10 mb-2">Change your password</h4>
+            <h4 className="w-fit font-semibold mt-10 mb-2">{t('passwordForm.title')}</h4>
             <Form {...passwordFormSchema}>
                 <form onSubmit={passwordFormSchema.handleSubmit(submitPassword)} className="space-y-6">
                     <FormField
@@ -224,10 +226,10 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                         name="oldPassword"
                         render={({ field }) => (
                             <FormItem className="space-y-1">
-                                <FormLabel>Old password</FormLabel>
+                                <FormLabel>{t('passwordForm.currentPassword.label')}</FormLabel>
                                 <FormControl>
                                     <FormControl>
-                                        <Input placeholder="••••••••" type={"password"} {...field} />
+                                        <Input placeholder={t('passwordForm.newPassword.placeholder')} type={"password"} {...field} />
                                     </FormControl>
                                 </FormControl>
                                 <FormMessage />
@@ -239,10 +241,10 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                         name="newPassword"
                         render={({ field }) => (
                             <FormItem className="space-y-1">
-                                <FormLabel>New password</FormLabel>
+                                <FormLabel>{t('passwordForm.newPassword.label')}</FormLabel>
                                 <FormControl>
                                     <FormControl>
-                                        <Input placeholder="••••••••" type={"password"} {...field} />
+                                        <Input placeholder={t('passwordForm.newPassword.placeholder')} type={"password"} {...field} />
                                     </FormControl>
                                 </FormControl>
                                 <FormMessage />
@@ -254,10 +256,10 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                         name="passwordConfirmation"
                         render={({ field }) => (
                             <FormItem className="space-y-1">
-                                <FormLabel>Confirm your new password</FormLabel>
+                                <FormLabel>{t('passwordForm.confirmPassword.label')}</FormLabel>
                                 <FormControl>
                                     <FormControl>
-                                        <Input placeholder="••••••••" type={"password"} {...field} />
+                                        <Input placeholder={t('passwordForm.confirmPassword.placeholder')} type={"password"} {...field} />
                                     </FormControl>
                                 </FormControl>
                                 <FormMessage />
@@ -266,8 +268,8 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                     />
 
                     {loadingPassword
-                        ? <Button type="button" disabled={true}><Loader2 className={"mr-2 animate-spin"} /> Submiting</Button>
-                        : <Button type="submit">Submit</Button>
+                        ? <Button type="button" disabled={true}><Loader2 className={"mr-2 animate-spin"} /> {t('passwordForm.actions.submitting')}</Button>
+                        : <Button type="submit">{t('passwordForm.actions.submit')}</Button>
                     }
                 </form>
             </Form>

@@ -158,6 +158,59 @@
       }
     },
     "account": {
+      "accountForm": {
+        "form": {
+          "profilePicture": {
+            "label": "Profile picture",
+            "description": "Customize your profile picture with a nice picture"
+          },
+          "name": {
+            "label": "Full name",
+            "placeholder": "John Doe"
+          },
+          "email": {
+            "label": "Change your email",
+            "placeholder": "Email address",
+            "warning": "Changing your email will require an updated verification",
+            "requestVerification": "Request a new verification email",
+            "verified": "Your email is verified",
+            "unverified": "Your email is not verified"
+          },
+          "actions": {
+            "submit": "Save",
+            "submitting": "Saving"
+          }
+        },
+        "passwordForm": {
+          "title": "Change your password",
+          "currentPassword": {
+            "label": "Current password",
+            "placeholder": "••••••••"
+          },
+          "newPassword": {
+            "label": "New password",
+            "placeholder": "••••••••"
+          },
+          "confirmPassword": {
+            "label": "Confirm password",
+            "placeholder": "••••••••"
+          },
+          "actions": {
+            "submit": "Change",
+            "submitting": "Changing"
+          }
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't change your password",
+            "description": "An unknown error happened while changing your password. Please try again"
+          }
+        },
+        "success": {
+          "title": "Password changed",
+          "description": "Your password has been changed successfully"
+        }
+      },
       "reviewFolders": {
         "title": "Review your folders",
         "folder": {
@@ -167,7 +220,7 @@
             "label": "Actions",
             "openFolder": "Open folder",
             "manageAccesses": "Manage accesses"
-          }  
+          }
         }
       }
     }
