@@ -429,6 +429,16 @@
           }
         }
       }
+    },
+    "account": {
+      "changeEmailConfirmation": {
+        "title": "Change your email ?",
+        "description": "Are you sure you want to change your email ? You will need to verify your new email address.",
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Change email"
+        }
+      }
     }
   },
   "folders": {

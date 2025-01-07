@@ -372,6 +372,16 @@
           }
         }
       }
+    },
+    "account": {
+      "changeEmailConfirmation": {
+        "title": "Changer votre adresse mail ?",
+        "description": "Êtes-vous sûr de vouloir changer votre adresse mail ? Vous devrez la confirmer à nouveau",
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Changer l'adresse"
+        }
+      }
     }
   },
   "folders": {
