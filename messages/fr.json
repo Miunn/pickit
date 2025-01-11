@@ -317,6 +317,79 @@
           "description": "Le dossier a été renommé avec succès"
         }
       },
+      "share": {
+        "trigger": "Partager",
+        "title": "Partager le dossier",
+        "description": "Partagez le dossier avec d'autres personnes",
+        "manageAccesses": "Gérer les accès",
+        "links": {
+          "label": "Liens de partage",
+          "empty": "Aucun lien de partage créé",
+          "link": {
+            "permissions": {
+              "read": "Voir",
+              "write": "Modifier"
+            },
+            "placeholder": "Lien de partage",
+            "copy": "Copier le lien"
+          }
+        },
+        "people": {
+          "title": "Personnes",
+          "form": {
+            "permission": {
+              "label": "Permission",
+              "placeholder": "Sélectionnez une permission",
+              "options": {
+                "read": "Voir",
+                "write": "Modifier"
+              }
+            },
+            "email": {
+              "label": "Adresse mail",
+              "placeholder": "Adresse mail",
+              "description": "Entrez l'adresse mail de la personne à inviter"
+            }
+          }
+        },
+        "buttons": {
+          "copy": "Copier le lien",
+          "emailAdd": "Ajouter une adresse mail",
+          "emailRemove": "Supprimer"
+        },
+        "toast": {
+          "emailAdd": {
+            "success": {
+              "title": "Adresse mail ajoutée",
+              "description": "L'adresse mail a été ajoutée avec succès"
+            },
+            "error": {
+                "title": "Adresse mail invalide",
+                "description": "L'adresse mail fournie est invalide ou existe déjà dans la liste"
+              }
+          },
+          "copy": {
+            "success": {
+              "title": "Lien copié",
+              "description": "Le lien a été copié dans votre presse-papiers"
+            },
+            "error": {
+              "title": "Erreur",
+              "description": "Une erreur est survenue lors de la copie du lien"
+            }
+          },
+          "submit": {
+            "success": {
+              "title": "Personnes invitées",
+              "description": "Les personnes ont été invitées avec succès"
+            },
+            "error": {
+              "title": "Impossible de partager le dossier",
+              "description": "Une erreur est survenue lors du partage du dossier"
+            }
+          }
+        }
+      },
       "delete": {
         "trigger": "Supprimer",
         "title": "Supprimer le dossier",
@@ -379,7 +452,7 @@
         },
         "success": {
           "title": "Images supprimées",
-          "description": "{n, plural, one {# image a été supprimée} other {# images ont été supprimées}} avec succès"
+          "description": "{n, plural, zero {aucune image n'a été supprimée} one {# image a été supprimée} other {# images ont été supprimées}} avec succès"
         }
       }
     },
@@ -442,6 +515,119 @@
         "actions": {
           "cancel": "Annuler",
           "submit": "Changer l'adresse"
+        }
+      }
+    }
+  },
+  "dataTables": {
+    "generic": {
+      "filtering": {
+        "selection": "{selected} sur {total, plural, one {# ligne} other {# lignes}} {selected, plural, zero {sélectionnée} one {sélectionnée} other {sélectionnées}}"
+      },
+      "pagination": {
+        "label": "Page {page} sur {pageCount}",
+        "previous": "Précédent",
+        "next": "Suivant",
+        "goToFirst": "Aller à la première page",
+        "goToLast": "Aller à la dernière page"
+      }
+    },
+    "people": {
+      "columns": {
+        "name": {
+          "header": "Nom"
+        },
+        "email": {
+          "header": "Adresse mail"
+        },
+        "permission": {
+          "header": "Permission",
+          "read": "Voir",
+          "write": "Modifier"
+        },
+        "active": {
+          "header": "Actif",
+          "active": "Actif",
+          "inactive": "Inactif"
+        },
+        "locked": {
+          "header": "Verrouillé",
+          "locked": "Verrouillé",
+          "unlocked": "Dévérouillé"
+        },
+        "views": {
+          "header": "Vues",
+          "count": "{count, plural, one {# vue} other {# vues}}"
+        },
+        "createdAt": {
+          "header": "Créé le"
+        },
+        "expiresAt": {
+          "header": "Expire le"
+        },
+        "actions": {
+          "label": "Actions",
+          "sendAgain": {
+            "label": "Renvoyer l'email",
+            "success": {
+              "title": "Email envoyé",
+              "description": "L'email a été envoyé avec succès"
+            }
+          },
+          "open": "Ouvrir",
+          "setActive": "Définir comme actif",
+          "setInactive": "Définir comme inactif",
+          "lock": "Vérouiller",
+          "unlock": "Dévérouiller",
+          "delete": "Supprimer"
+        }
+      }
+    },
+    "links": {
+      "columns": {
+        "name": {
+          "header": "Nom"
+        },
+        "permission": {
+          "header": "Permission",
+          "read": "Voir",
+          "write": "Modifier"
+        },
+        "active": {
+          "header": "Actif",
+          "active": "Actif",
+          "inactive": "Inactif"
+        },
+        "locked": {
+          "header": "Verrouillé",
+          "locked": "Verrouillé",
+          "unlocked": "Dévérouillé"
+        },
+        "views": {
+          "header": "Vues",
+          "count": "{count, plural, one {# vue} other {# vues}}"
+        },
+        "createdAt": {
+          "header": "Créé le"
+        },
+        "expiresAt": {
+          "header": "Expire le"
+        },
+        "actions": {
+          "label": "Actions",
+          "copy": {
+            "label": "Copier le lien",
+            "success": {
+              "title": "Lien copié",
+              "description": "Le lien a été copié dans votre presse-papiers"
+            }
+          },
+          "open": "Ouvrir le dossier",
+          "setActive": "Définir comme actif",
+          "setInactive": "Définir comme inactif",
+          "lock": "Vérouiller",
+          "unlock": "Dévérouiller",
+          "delete": "Supprimer"
         }
       }
     }

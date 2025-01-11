@@ -12,7 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { PersonAccessTokenWithFolder } from "@/lib/definitions"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, BadgeCheck, BadgeMinus, Eye, Lock, LockOpen, MoreHorizontal } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -44,12 +44,13 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
         id: "folder_name",
         accessorKey: "folder.name",
         header: ({ column }) => {
+            const t = useTranslations("dataTables.people.columns")
             return (
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Folders name
+                    {t("name.header")}
                     <ArrowUpDown className="w-4 h-4 ml-2" />
                 </Button>
             )
@@ -61,31 +62,51 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "email",
-        header: "Email",
+        header: () => {
+            const t = useTranslations("dataTables.people.columns");
+
+            return (
+                <p>{t('email.header')}</p>
+            )
+        },
         size: 340
     },
     {
         accessorKey: "permission",
-        header: "Permission",
+        header: () => {
+            const t = useTranslations("dataTables.people.columns.permission");
+
+            return (
+                <p>{t('header')}</p>
+            )
+        },
         cell: ({ row }) => {
+            const t = useTranslations("dataTables.people.columns.permission");
             const permission: string = row.getValue("permission");
             if (permission === "READ") {
-                return <Badge className="capitalize bg-blue-600 hover:bg-blue-700">{permission}</Badge>
+                return <Badge className="capitalize bg-blue-600 hover:bg-blue-700">{t('read')}</Badge>
             } else if (permission === "WRITE") {
-                return <Badge className="capitalize bg-orange-600 hover:bg-orange-700">{permission}</Badge>
+                return <Badge className="capitalize bg-orange-600 hover:bg-orange-700">{t('write')}</Badge>
             }
         },
         size: 100
     },
     {
         accessorKey: "isActive",
-        header: "Is active",
+        header: () => {
+            const t = useTranslations("dataTables.people.columns");
+
+            return (
+                <p>{t('active.header')}</p>
+            )
+        },
         cell: ({ row }) => {
+            const t = useTranslations("dataTables.people.columns.active");
             const isActive: boolean = row.getValue("isActive")
             return <>
                 {isActive
-                    ? <Badge className="bg-green-600 hover:bg-green-700 flex gap-2 w-fit">< BadgeCheck /> Active</Badge >
-                    : <Badge className="bg-red-600 hover:bg-red-700 flex gap-2 w-fit"><BadgeMinus /> Inactive</Badge>
+                    ? <Badge className="bg-green-600 hover:bg-green-700 flex gap-2 w-fit">< BadgeCheck /> {t('active')}</Badge >
+                    : <Badge className="bg-red-600 hover:bg-red-700 flex gap-2 w-fit"><BadgeMinus /> {t('inactive')}</Badge>
                 }
             </>
         },
@@ -93,13 +114,20 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "locked",
-        header: "Locked ?",
+        header: () => {
+            const t = useTranslations("dataTables.people.columns");
+
+            return (
+                <p>{t('locked.header')}</p>
+            )
+        },
         cell: ({ row }) => {
+            const t = useTranslations("dataTables.people.columns.locked");
             const isLocked: boolean = row.getValue("locked")
             return <>
                 {isLocked
-                    ? <p className="flex items-center text-muted-foreground truncate"><Lock className="mr-2" /> Locked</p>
-                    : <p className="flex items-center text-muted-foreground truncate"><LockOpen className="mr-2" /> Unlocked</p>
+                    ? <p className="flex items-center text-muted-foreground truncate"><Lock className="mr-2" /> {t('locked')}</p>
+                    : <p className="flex items-center text-muted-foreground truncate"><LockOpen className="mr-2" /> {t('unlocked')}</p>
                 }
             </>
         },
@@ -107,18 +135,31 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "uses",
-        header: "Views",
+        header: () => {
+            const t = useTranslations("dataTables.people.columns");
+
+            return (
+                <p>{t('views.header')}</p>
+            )
+        },
         cell: ({ row }) => {
+            const t = useTranslations("dataTables.people.columns.views");
             const uses: string = row.getValue("uses") ?? 0;
             return <p className="flex items-center text-muted-foreground truncate">
-                <Eye className="mr-2" /> {uses} views
+                <Eye className="mr-2" /> {t('count', {count: uses})}
             </p>
         },
         size: 120
     },
     {
         accessorKey: "createdAt",
-        header: "Created at",
+        header: () => {
+            const t = useTranslations("dataTables.people.columns");
+
+            return (
+                <p>{t('createdAt.header')}</p>
+            )
+        },
         cell: ({ row }) => {
             const date: Date = row.getValue("createdAt");
 
@@ -129,7 +170,13 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "expires",
-        header: "Expire at",
+        header: () => {
+            const t = useTranslations("dataTables.people.columns");
+
+            return (
+                <p>{t('expiresAt.header')}</p>
+            )
+        },
         cell: ({ row }) => {
             const date: Date = row.getValue("expires");
 
@@ -141,6 +188,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
     {
         id: "actions",
         cell: ({ row }) => {
+            const t = useTranslations("dataTables.people.columns.actions");
             const accessToken = row.original
 
             const locale = useLocale();
@@ -157,32 +205,32 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="min-w-40">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
                             <DropdownMenuItem onClick={() => {
                                 navigator.clipboard.writeText(link);
                                 toast({
-                                    title: "Copied !",
-                                    description: "Link copied to your clipboard"
+                                    title: t('sendAgain.success.title'),
+                                    description: t('sendAgain.success.description'),
                                 })
                             }}>
-                                Send again
+                                {t('sendAgain.label')}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem asChild>
                                 <Link href={`http://localhost:3000/${locale}/dashboard/folders/${accessToken.folder.id}`} className="cursor-default">
-                                    View folder
+                                    {t('open')}
                                 </Link>
                             </DropdownMenuItem>
                             {accessToken.isActive
-                                ? <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, false)}>Set as inactive</DropdownMenuItem>
-                                : <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, true)}>Set as active</DropdownMenuItem>
+                                ? <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, false)}>{t('setActive')}</DropdownMenuItem>
+                                : <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, true)}>{t('setInactive')}</DropdownMenuItem>
                             }
                             {accessToken.locked
-                                ? <DropdownMenuItem onClick={() => unlockPersonAccessToken(accessToken.id)}>Unlock</DropdownMenuItem>
-                                : <DropdownMenuItem onClick={() => setLockOpen(true)}>Lock link</DropdownMenuItem>
+                                ? <DropdownMenuItem onClick={() => unlockPersonAccessToken(accessToken.id)}>{t('unlock')}</DropdownMenuItem>
+                                : <DropdownMenuItem onClick={() => setLockOpen(true)}>{t('lock')}</DropdownMenuItem>
                             }
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => setDeleteOpen(true)} className="text-red-600 focus:text-red-600 font-semibold">Delete</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setDeleteOpen(true)} className="text-red-600 focus:text-red-600 font-semibold">{t('delete')}</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <LockTokenDialog tokenId={accessToken.id} tokenType="personAccessToken" openState={lockOpen} setOpenState={setLockOpen} />

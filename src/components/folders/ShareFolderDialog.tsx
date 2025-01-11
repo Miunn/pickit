@@ -68,8 +68,8 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
         const emailSchema = z.string().email();
         if (!email || email.length === 0 || tokenList.map((t) => t.email).includes(email) || !emailSchema.safeParse(email).success) {
             toast({
-                title: t('fields.email.error.title'),
-                description: t('fields.email.error.description'),
+                title: t('toast.emailAdd.error.title'),
+                description: t('toast.emailAdd.error.description'),
                 variant: "destructive"
             })
             return;
@@ -87,8 +87,8 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
 
         if (r.error) {
             toast({
-                title: t('toast.error.title'),
-                description: t('toast.error.description'),
+                title: t('toast.submit.error.title'),
+                description: t('toast.submit.error.description'),
                 variant: "destructive"
             })
             return;
@@ -97,8 +97,8 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
         setTokenList([]);
 
         toast({
-            title: t('toast.success.title'),
-            description: t('toast.success.description'),
+            title: t('toast.submit.success.title'),
+            description: t('toast.submit.success.description'),
         });
 
         if (setOpen) {
@@ -129,7 +129,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     </DialogHeader>
 
                     <div className="flex justify-between items-center">
-                        <Label>{t('form.link.label')}</Label>
+                        <Label>{t('links.label')}</Label>
                         <Button variant={"link"} className="pr-0" asChild>
                             <Link href={`/${locale}/dashboard/links`}>{t('manageAccesses')}</Link>
                         </Button>
@@ -224,7 +224,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                 )}
                             />
 
-                            <Button type="submit">{t('button.emailAdd')}</Button>
+                            <Button type="submit">{t('buttons.emailAdd')}</Button>
                         </form>
                     </Form>
                     <ScrollArea className={"max-h-40"}>

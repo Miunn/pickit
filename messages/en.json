@@ -324,6 +324,7 @@
         "description": "Share the folder with others",
         "manageAccesses": "Manage accesses",
         "links": {
+          "label": "Share folder with a link",
           "empty": "No sharing links created",
           "link": {
             "permissions": {
@@ -348,11 +349,7 @@
             "email": {
               "label": "Email",
               "placeholder": "Email address",
-              "description": "Send this link to an email",
-              "error": {
-                "title": "Invalid email",
-                "description": "Provided email is invalid or already exists in the list"
-              }
+              "description": "Send this link to an email"
             }
           }
         },
@@ -362,6 +359,16 @@
           "emailRemove": "Remove email"
         },
         "toast": {
+          "emailAdd": {
+            "success": {
+              "title": "Email added",
+              "description": "The email has been added successfully"
+            },
+            "error": {
+              "title": "Can't add email",
+              "description": "Provided email is invalid or already exists in the list"
+            }
+          },
           "copy": {
             "success": {
               "title": "Link copied",
@@ -370,6 +377,16 @@
             "error": {
               "title": "Error",
               "description": "An error occurred while copying the link"
+            }
+          },
+          "submit": {
+            "success": {
+              "title": "Folder shared",
+              "description": "People have been invited successfully"
+            },
+            "error": {
+              "title": "Can't share folder",
+              "description": "An unknown error happened while sharing the folder"
             }
           }
         }
@@ -499,6 +516,131 @@
         "actions": {
           "cancel": "Cancel",
           "submit": "Change email"
+        }
+      }
+    }
+  },
+  "dataTables": {
+    "generic": {
+      "filtering": {
+        "selection": "{selected} of {total, plural, one {# row} other {# rows}} selected"
+      },
+      "pagination": {
+        "label": "Page {page} of {pageCount}",
+        "previous": "Previous",
+        "next": "Next",
+        "goToFirst": "Go to first page",
+        "goToLast": "Go to last page"
+      }
+    },
+    "people": {
+      "columns": {
+        "name": {
+          "header": "Folders name"
+        },
+        "email": {
+          "header": "Email"
+        },
+        "permission": {
+          "header": "Permission",
+          "read": "View",
+          "write": "Edit"
+        },
+        "active": {
+          "header": "Is active",
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "locked": {
+          "header": "Is locked",
+          "locked": "Locked",
+          "unlocked": "Unlocked"
+        },
+        "views": {
+          "header": "Views",
+          "count": "{count, plural, one {# view} other {# views}}"
+        },
+        "createdAt": {
+          "header": "Created at"
+        },
+        "expiresAt": {
+          "header": "Expires at"
+        },
+        "actions": {
+          "label": "Actions",
+          "sendAgain": {
+            "label": "Send again",
+            "success": {
+              "title": "Email sent",
+              "description": "The email has been sent successfully"
+            }
+          },
+          "open": "Open folder",
+          "setActive": "Set as active",
+          "setInactive": "Set as inactive",
+          "lock": "Lock",
+          "unlock": "Unlock",
+          "delete": {
+            "label": "Delete",
+            "success": {
+              "title": "Access deleted",
+              "description": "The access for this person has been deleted successfully"
+            }
+          }
+        }
+      }
+    },
+    "links": {
+      "columns": {
+        "name": {
+          "header": "Folders name"
+        },
+        "permission": {
+          "header": "Permission",
+          "read": "View",
+          "write": "Edit"
+        },
+        "active": {
+          "header": "Is active",
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "locked": {
+          "header": "Is locked",
+          "locked": "Locked",
+          "unlocked": "Unlocked"
+        },
+        "views": {
+          "header": "Views",
+          "count": "{count, plural, one {# view} other {# views}}"
+        },
+        "createdAt": {
+          "header": "Created at"
+        },
+        "expiresAt": {
+          "header": "Expires at"
+        },
+        "actions": {
+          "label": "Actions",
+          "copy": {
+            "label": "Copy link",
+            "success": {
+              "title": "Link copied",
+              "description": "The link has been copied to your clipboard"
+            }
+          },
+          "open": "Open folder",
+          "setActive": "Set as active",
+          "setInactive": "Set as inactive",
+          "lock": "Lock",
+          "unlock": "Unlock",
+          "delete": {
+            "label": "Delete",
+            "success": {
+              "title": "Link deleted",
+              "description": "The link has been deleted successfully"
+            }
+          }
         }
       }
     }

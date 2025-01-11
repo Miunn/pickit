@@ -10,8 +10,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { toast } from "@/hooks/use-toast";
 import { AccessTokenWithFolder } from "@/lib/definitions"
 import { ColumnDef } from "@tanstack/react-table"
+import { count } from "console";
 import { ArrowUpDown, BadgeCheck, BadgeMinus, Eye, Lock, LockOpen, MoreHorizontal } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -43,12 +44,14 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         id: "folder_name",
         accessorKey: "folder.name",
         header: ({ column }) => {
+            const t = useTranslations("dataTables.links.columns")
+
             return (
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Folders name
+                    {t('name.header')}
                     <ArrowUpDown className="w-4 h-4 ml-2" />
                 </Button>
             )
@@ -62,11 +65,12 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         accessorKey: "permission",
         header: "Permission",
         cell: ({ row }) => {
+            const t = useTranslations("dataTables.links.columns.permission")
             const permission: string = row.getValue("permission");
             if (permission === "READ") {
-                return <Badge className="capitalize bg-blue-600 hover:bg-blue-700">{permission}</Badge>
+                return <Badge className="capitalize bg-blue-600 hover:bg-blue-700">{t('read')}</Badge>
             } else if (permission === "WRITE") {
-                return <Badge className="capitalize bg-orange-600 hover:bg-orange-700">{permission}</Badge>
+                return <Badge className="capitalize bg-orange-600 hover:bg-orange-700">{t('write')}</Badge>
             }
         },
         size: 100
@@ -75,11 +79,12 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         accessorKey: "isActive",
         header: "Is active",
         cell: ({ row }) => {
+            const t = useTranslations("dataTables.links.columns.active")
             const isActive: boolean = row.getValue("isActive")
             return <>
                 {isActive
-                    ? <Badge className="bg-green-600 hover:bg-green-700 flex gap-2 w-fit">< BadgeCheck /> Active</Badge >
-                    : <Badge className="bg-red-600 hover:bg-red-700 flex gap-2 w-fit"><BadgeMinus /> Inactive</Badge>
+                    ? <Badge className="bg-green-600 hover:bg-green-700 flex gap-2 w-fit">< BadgeCheck /> {t('active')}</Badge >
+                    : <Badge className="bg-red-600 hover:bg-red-700 flex gap-2 w-fit"><BadgeMinus /> {t('inactive')}</Badge>
                 }
             </>
         },
@@ -89,11 +94,12 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         accessorKey: "locked",
         header: "Locked ?",
         cell: ({ row }) => {
+            const t = useTranslations("dataTables.links.columns.locked")
             const isLocked: boolean = row.getValue("locked")
             return <>
                 {isLocked
-                    ? <p className="flex items-center text-muted-foreground truncate"><Lock className="mr-2" /> Locked</p>
-                    : <p className="flex items-center text-muted-foreground truncate"><LockOpen className="mr-2" /> Unlocked</p>
+                    ? <p className="flex items-center text-muted-foreground truncate"><Lock className="mr-2" /> {t('locked')}</p>
+                    : <p className="flex items-center text-muted-foreground truncate"><LockOpen className="mr-2" /> {t('unlocked')}</p>
                 }
             </>
         },
@@ -103,9 +109,10 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         accessorKey: "uses",
         header: "Views",
         cell: ({ row }) => {
+            const t = useTranslations("dataTables.links.columns.views")
             const uses: string = row.getValue("uses") ?? 0;
             return <p className="flex items-center text-muted-foreground truncate">
-                <Eye className="mr-2" /> {uses} views
+                <Eye className="mr-2" /> {t('count', { count: uses })}
             </p>
         },
         size: 120
@@ -135,6 +142,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
     {
         id: "actions",
         cell: ({ row }) => {
+            const t = useTranslations("dataTables.links.columns.actions")
             const accessToken = row.original
 
             const locale = useLocale();
@@ -151,32 +159,32 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="min-w-40">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
                             <DropdownMenuItem onClick={() => {
                                 navigator.clipboard.writeText(link);
                                 toast({
-                                    title: "Copied !",
-                                    description: "Link copied to your clipboard"
+                                    title: t('copy.success.title'),
+                                    description: t('copy.success.description')
                                 })
                             }}>
-                                Copy link
+                                {t('copy.label')}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem asChild>
                                 <Link href={`http://localhost:3000/${locale}/dashboard/folders/${accessToken.folder.id}`} className="cursor-default">
-                                    View folder
+                                    {t('open')}
                                 </Link>
                             </DropdownMenuItem>
                             {accessToken.isActive
-                                ? <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, false)}>Set as inactive</DropdownMenuItem>
-                                : <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, true)}>Set as active</DropdownMenuItem>
+                                ? <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, false)}>{t('setInactive')}</DropdownMenuItem>
+                                : <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, true)}>{t('setActive')}</DropdownMenuItem>
                             }
                             {accessToken.locked
-                                ? <DropdownMenuItem onClick={() => unlockAccessToken(accessToken.id)}>Unlock</DropdownMenuItem>
-                                : <DropdownMenuItem onClick={() => setLockOpen(true)}>Lock link</DropdownMenuItem>
+                                ? <DropdownMenuItem onClick={() => unlockAccessToken(accessToken.id)}>{t('unlock')}</DropdownMenuItem>
+                                : <DropdownMenuItem onClick={() => setLockOpen(true)}>{t('lock')}</DropdownMenuItem>
                             }                            
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => setDeleteOpen(true)} className="text-red-600 focus:text-red-600 font-semibold">Delete</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setDeleteOpen(true)} className="text-red-600 focus:text-red-600 font-semibold">{t('delete')}</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <LockTokenDialog tokenId={accessToken.id} tokenType="accessToken" openState={lockOpen} setOpenState={setLockOpen} />
