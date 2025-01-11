@@ -94,7 +94,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenRename(true)}>{dialogsTranslations('rename.trigger')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenChangeCover(true)} disabled={folderImages.length === 0}>{dialogsTranslations('changeCover.trigger')}</ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenShare(true)}>Share</ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenShare(true)}>{dialogsTranslations('share.trigger')}</ContextMenuItem>
                     <ContextMenuItem onClick={async () => {
                         const r = await downloadFolder(folder);
 
