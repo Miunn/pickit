@@ -70,7 +70,7 @@ export const FolderContent = ({ folderId, folder, shareToken, isGuest, locale }:
 
                         <div className={"flex gap-4"}>
                             <UploadImagesDialog folderId={folderContent.id} />
-                            {!!isGuest ? <ShareFolderDialog folder={folderContent} /> : null}
+                            {!!!isGuest ? <ShareFolderDialog folder={folderContent} /> : null}
                             <Button variant="outline" onClick={async () => {
                                 const r = await downloadFolder(folderContent);
 
