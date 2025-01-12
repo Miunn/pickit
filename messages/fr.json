@@ -569,9 +569,17 @@
           "label": "Actions",
           "sendAgain": {
             "label": "Renvoyer l'email",
+            "inProgress": {
+              "title": "En cours d'envoi",
+              "description": "L'email est en cours d'envoi"
+            },
             "success": {
               "title": "Email envoyé",
               "description": "L'email a été envoyé avec succès"
+            },
+            "error": {
+              "title": "Impossible d'envoyer l'email",
+              "description": "Une erreur est survenue lors de l'envoi de l'email"
             }
           },
           "open": "Ouvrir",

@@ -570,9 +570,17 @@
           "label": "Actions",
           "sendAgain": {
             "label": "Send again",
+            "inProgress": {
+              "title": "Email sending",
+              "description": "The email is being sent"
+            },
             "success": {
               "title": "Email sent",
               "description": "The email has been sent successfully"
+            },
+            "error": {
+              "title": "Can't send email",
+              "description": "An error occurred while sending the email"
             }
           },
           "open": "Open folder",

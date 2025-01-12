@@ -1,8 +1,8 @@
 import fs from "fs";
 import FolderPreviewClient from "@/components/folders/FolderPreviewClient";
-import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, FolderWithLocked } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount } from "@/lib/definitions";
 
-export default function FolderPreview({folder, locale}: { folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover & FolderWithLocked, locale: string }) {
+export default function FolderPreview({folder, locale}: { folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover, locale: string }) {
 
     function getFile() {
         try {

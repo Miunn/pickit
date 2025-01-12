@@ -256,3 +256,37 @@ export async function deletePersonAccessTokens(tokens: string[]): Promise<{ erro
     revalidatePath("/dashboard/links");
     return { error: null }
 }
+
+export async function sendAgainPersonAccessToken(token: string) {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to send an access token again" }
+    }
+
+    const personAccessToken = await prisma.personAccessToken.findFirst({
+        where: {
+            token: token,
+            folder: {
+                createdBy: {
+                    id: session.user.id
+                }
+            }
+        },
+        include: {
+            folder: {
+                select: {
+                    name: true
+                }
+            }
+        }
+    });
+
+    if (!personAccessToken) {
+        return { error: "Token not found" }
+    }
+
+    await sendShareFolderEmail([{ email: personAccessToken.email, link: `${process.env.NEXTAUTH_URL}/dashboard/folders/${personAccessToken.folderId}?share=${token}&t=p` }], session.user.name!, personAccessToken.folder.name)
+
+    return { error: null }
+}

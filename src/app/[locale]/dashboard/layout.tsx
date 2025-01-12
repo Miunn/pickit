@@ -15,6 +15,7 @@ import getMe from "@/actions/user";
 import UnverifiedEmail from "@/components/layout/UnverifiedEmail";
 import { addDays } from "date-fns";
 import { getPersonsAccessTokens } from "@/actions/accessTokensPerson";
+import SwitchLocale from "@/components/generic/SwitchLocale";
 
 export const metadata: Metadata = {
     title: "Pickit",
@@ -85,10 +86,13 @@ export default async function LocaleLayout({
                 }} />
                 <SidebarInset>
                     <header className="flex h-16 shrink-0 items-center gap-2">
-                        <div className="flex items-center gap-2 px-4">
+                        <div className="w-full flex justify-between items-center px-4">
+                            <div className="flex items-center gap-2">
                             <SidebarTrigger className="-ml-1" />
                             <Separator orientation="vertical" className="mr-2 h-4" />
                             <HeaderBreadcumb />
+                            </div>
+                            <SwitchLocale locale={locale} className="text-xs" />
                         </div>
                     </header>
                     {me?.emailVerified === false ? (

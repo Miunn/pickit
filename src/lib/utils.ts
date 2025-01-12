@@ -37,6 +37,17 @@ export const downloadFolder = async (folder: Folder): Promise<number> => {
   return 200;
 }
 
+export const switchLocaleUrl = (url: string, locale: string): string => {
+  // Remove the locale from the url
+  url = url.replace(/\/[a-z]{2}\//, "/");
+
+  if (url.startsWith("/")) {
+    return `/${locale}${url}`;
+  }
+
+  return `/${locale}/${url}`;
+}
+
 export const handleImagesSubmission = async (
   setUploading: React.Dispatch<React.SetStateAction<boolean>>,
   data: z.infer<typeof UploadImagesFormSchema>,

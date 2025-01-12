@@ -1,7 +1,7 @@
 "use client"
 
 import { changeAccessTokenActiveState } from "@/actions/accessTokens";
-import { changePersonAccessTokenActiveState, unlockPersonAccessToken } from "@/actions/accessTokensPerson";
+import { changePersonAccessTokenActiveState, sendAgainPersonAccessToken, unlockPersonAccessToken } from "@/actions/accessTokensPerson";
 import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessTokenDialog";
 import LockTokenDialog from "@/components/folders/LockTokenDialog";
 import { Badge } from "@/components/ui/badge";
@@ -10,8 +10,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
 import { PersonAccessTokenWithFolder } from "@/lib/definitions"
+import { FolderTokenPermission } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, BadgeCheck, BadgeMinus, Eye, Lock, LockOpen, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, BadgeCheck, BadgeMinus, Eye, Lock, LockOpen, MoreHorizontal, Pencil, PencilOff } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
@@ -83,10 +84,10 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
         cell: ({ row }) => {
             const t = useTranslations("dataTables.people.columns.permission");
             const permission: string = row.getValue("permission");
-            if (permission === "READ") {
-                return <Badge className="capitalize bg-blue-600 hover:bg-blue-700">{t('read')}</Badge>
+            if (permission === FolderTokenPermission.READ) {
+                return <Badge className="bg-blue-600 hover:bg-blue-700 flex gap-2 w-fit"><PencilOff /> {t('read')}</Badge>
             } else if (permission === "WRITE") {
-                return <Badge className="capitalize bg-orange-600 hover:bg-orange-700">{t('write')}</Badge>
+                return <Badge className="bg-orange-600 hover:bg-orange-700 flex gap-2 w-fit"><Pencil /> {t('write')}</Badge>
             }
         },
         size: 100
@@ -206,8 +207,21 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="min-w-40">
                             <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => {
-                                navigator.clipboard.writeText(link);
+                            <DropdownMenuItem onClick={async () => {
+                                toast({
+                                    title: t('sendAgain.inProgress.title'),
+                                    description: t('sendAgain.inProgress.description'),
+                                })
+                                const r = await sendAgainPersonAccessToken(accessToken.token);
+                                
+                                if (r.error) {
+                                    toast({
+                                        title: t('sendAgain.error.title'),
+                                        description: t('sendAgain.error.description'),
+                                    })
+                                    return;
+                                }
+                                
                                 toast({
                                     title: t('sendAgain.success.title'),
                                     description: t('sendAgain.success.description'),
