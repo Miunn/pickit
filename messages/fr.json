@@ -354,7 +354,7 @@
         },
         "buttons": {
           "copy": "Copier le lien",
-          "emailAdd": "Ajouter une adresse mail",
+          "emailAdd": "Ajouter",
           "emailRemove": "Supprimer"
         },
         "toast": {
