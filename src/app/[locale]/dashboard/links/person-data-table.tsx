@@ -34,11 +34,6 @@ export default function PersonDataTable({ personsAccessTokens, defaultTokenIndex
                             <Button variant="outline" disabled={selectedTokens.length === 0} className={(selectedTokens.length === 0) ? "!opacity-0" : "opacity-100"}><Trash2 className="w-4 h-4 mr-2" /> Delete selection</Button>
                         </DialogTrigger>
                     </DeleteAccessTokenDialog>
-                    <CreateAccessTokenDialog folders={lightFolders}>
-                        <DialogTrigger asChild>
-                            <Button variant="outline"><Link className="w-4 h-4 mr-2" /> New link</Button>
-                        </DialogTrigger>
-                    </CreateAccessTokenDialog>
                 </div>
             }
         />
