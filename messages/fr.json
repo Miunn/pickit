@@ -493,8 +493,8 @@
         }
       },
       "delete": {
-        "title": "Supprimer le lien de partage",
-        "description": "Êtes-vous sûr de vouloir supprimer le lien de partage ? Cette action est irréversible.",
+        "title": "{count, plural, one {Supprimer le lien de partage} other {Supprimer les liens de partage}}",
+        "description": "Êtes-vous sûr de vouloir supprimer {count, plural, one {le lien de partage} other {les liens de partage}} ? Cette action est irréversible.",
         "actions": {
           "cancel": "Annuler",
           "submit": "Supprimer",

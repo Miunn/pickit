@@ -28,7 +28,7 @@ export default function LinksDataTable({ accessTokens, defaultTokenIndex, lightF
             setSelection={setSelectedTokensIndexes}
             rightHeadingNodes={
                 <div className="flex gap-2">
-                    <DeleteAccessTokenDialog tokens={selectedTokens} openState={deleteOpen} setOpenState={setDeleteOpen} submitNext={() => setSelectedTokensIndexes({})}>
+                    <DeleteAccessTokenDialog tokens={selectedTokens} tokensType="links" openState={deleteOpen} setOpenState={setDeleteOpen} submitNext={() => setSelectedTokensIndexes({})}>
                         <DialogTrigger asChild>
                             <Button variant="outline" disabled={selectedTokens.length === 0} className={(selectedTokens.length === 0) ? "!opacity-0" : "opacity-100"}><Trash2 className="w-4 h-4 mr-2" /> Delete selection</Button>
                         </DialogTrigger>

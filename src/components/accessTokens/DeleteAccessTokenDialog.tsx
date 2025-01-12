@@ -5,8 +5,9 @@ import { deleteAccessToken } from "@/actions/accessTokens";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { deletePersonAccessTokens } from "@/actions/accessTokensPerson";
 
-export default function DeleteAccessTokenDialog({ tokens, children, openState, setOpenState, submitNext }: { tokens: string[], children?: React.ReactNode, openState?: boolean, setOpenState?: React.Dispatch<React.SetStateAction<boolean>>, submitNext?: () => void }) {
+export default function DeleteAccessTokenDialog({ tokens, tokensType, children, openState, setOpenState, submitNext }: { tokens: string[], tokensType: "persons" | "links", children?: React.ReactNode, openState?: boolean, setOpenState?: React.Dispatch<React.SetStateAction<boolean>>, submitNext?: () => void }) {
 
     const t = useTranslations('dialogs.accessTokens.delete');
     const [loading, setLoading] = useState<boolean>(false);
@@ -14,8 +15,12 @@ export default function DeleteAccessTokenDialog({ tokens, children, openState, s
     const submit = async () => {
         setLoading(true);
 
-        const r = await deleteAccessToken(tokens);
-
+        let r;
+        if (tokensType === "persons") {
+            r = await deletePersonAccessTokens(tokens);
+        } else {
+            r = await deleteAccessToken(tokens);
+        }
         setLoading(false);
 
         if (r.error) {
@@ -41,8 +46,8 @@ export default function DeleteAccessTokenDialog({ tokens, children, openState, s
             {children}
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>{t('title')}</DialogTitle>
-                    <DialogDescription>{t('description')}</DialogDescription>
+                    <DialogTitle>{t('title', { count: tokens.length })}</DialogTitle>
+                    <DialogDescription>{t('description', { count: tokens.length })}</DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
                     <DialogClose asChild>

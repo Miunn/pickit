@@ -494,8 +494,8 @@
         }
       },
       "delete": {
-        "title": "Delete sharing link",
-        "description": "Are you sure you want to delete this sharing link ? This action cannot be undone.",
+        "title": "Delete sharing {count, plural, one {link} other {links}}",
+        "description": "Are you sure you want to delete {count, plural, one {this sharing link} other {these sharing links}} ? This action cannot be undone.",
         "actions": {
           "cancel": "Cancel",
           "submit": "Delete",

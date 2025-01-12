@@ -188,7 +188,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <LockTokenDialog tokenId={accessToken.id} tokenType="accessToken" openState={lockOpen} setOpenState={setLockOpen} />
-                    <DeleteAccessTokenDialog tokens={[accessToken.token]} openState={deleteOpen} setOpenState={setDeleteOpen} />
+                    <DeleteAccessTokenDialog tokens={[accessToken.token]} tokensType="links" openState={deleteOpen} setOpenState={setDeleteOpen} />
                 </>
             )
         },

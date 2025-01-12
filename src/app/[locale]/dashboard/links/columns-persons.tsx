@@ -234,7 +234,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <LockTokenDialog tokenId={accessToken.id} tokenType="personAccessToken" openState={lockOpen} setOpenState={setLockOpen} />
-                    <DeleteAccessTokenDialog tokens={[accessToken.token]} openState={deleteOpen} setOpenState={setDeleteOpen} />
+                    <DeleteAccessTokenDialog tokens={[accessToken.token]} tokensType="persons" openState={deleteOpen} setOpenState={setDeleteOpen} />
                 </>
             )
         },

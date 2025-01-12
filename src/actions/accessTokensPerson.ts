@@ -201,3 +201,31 @@ export async function unlockPersonAccessToken(tokenId: string): Promise<{
         return { error: "An unknown error happened when trying to unlock this token" }
     }
 }
+
+export async function deletePersonAccessTokens(tokens: string[]): Promise<{ error: string | null }> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to delete an access token" }
+    }
+
+    try {
+        await prisma.personAccessToken.deleteMany({
+            where: {
+                token: {
+                    in: tokens
+                },
+                folder: {
+                    createdBy: {
+                        id: session.user.id
+                    }
+                }
+            }
+        })
+    } catch (e) {
+        return { error: "An unknown error happened when trying to delete access tokens" }
+    }
+
+    revalidatePath("/dashboard/links");
+    return { error: null }
+}
