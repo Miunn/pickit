@@ -327,8 +327,8 @@
           "empty": "Aucun lien de partage créé",
           "link": {
             "permissions": {
-              "read": "Voir",
-              "write": "Modifier"
+              "read": "Lecture",
+              "write": "Modification"
             },
             "placeholder": "Lien de partage",
             "copy": "Copier le lien"

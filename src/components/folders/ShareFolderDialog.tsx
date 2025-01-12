@@ -139,7 +139,11 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     }}>
                         {validTokens.length > 0
                             ? validTokens.sort((a, b) => a.permission.localeCompare(b.permission)).map((token) => <Fragment key={token.token}>
-                                <Label className="capitalize">{token.permission}</Label>
+                                <Label className="capitalize">{
+                                token.permission === FolderTokenPermission.READ
+                                ? t('links.link.permissions.read')
+                                : t('links.link.permissions.write')
+                                }</Label>
                                 <Input placeholder={t('links.link.placeholder')} disabled={true}
                                     value={`${typeof window !== 'undefined' ? window.location.origin : ''}/dashboard/folders/${folder.id}?share=${token.token}`} />
                                 <Button onClick={() => copyToClipboard(token.token)} className="text-start">
