@@ -41,7 +41,7 @@ export default function ResetPasswordTemplate({ name, folderName, link }: { name
                                             fontSize: "1.5rem",
                                             color: "#333",
                                             textAlign: "center",
-                                        }}>Reset your password</h1>
+                                        }}>You've been shared a folder!</h1>
                                         <h2 style={{
                                             fontSize: "1.2rem",
                                             color: "#333",
