@@ -587,7 +587,13 @@
           "setInactive": "Définir comme inactif",
           "lock": "Vérouiller",
           "unlock": "Dévérouiller",
-          "delete": "Supprimer"
+          "delete": {
+            "label": "Supprimer",
+            "success": {
+              "title": "Accès supprimée",
+              "description": "L'accès pour cette personne a été supprimé"
+            }
+          }
         }
       }
     },
