@@ -6,6 +6,7 @@ import * as nodemailer from 'nodemailer';
 import { prisma } from './prisma';
 import { addDays } from 'date-fns';
 import ResetPasswordTemplate from '@/components/emails/ResetPasswordTemplate';
+import ShareFolderTemplate from '@/components/emails/ShareFolderTemplate';
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -120,4 +121,20 @@ export async function sendPasswordResetRequest(userId: string) {
     html: content,
   })
 
+}
+
+export async function sendShareFolderEmail(data: { email: string, link: string }[], name: string, folderName: string) {
+  const ReactDOMServer = (await import('react-dom/server')).default;
+  
+  data.forEach(async (d) => {
+    const content = ReactDOMServer.renderToString(<ShareFolderTemplate name={name} folderName={folderName} link={d.link} />);
+
+    await transporter.sendMail({
+      from: `"The Pickit Team" <${process.env.MAIL_SENDER}>`,
+      to: d.email,
+      subject: "You've been shared a folder",
+      text: "You've been shared a folder",
+      html: content,
+    })
+  });
 }

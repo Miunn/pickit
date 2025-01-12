@@ -7,21 +7,59 @@ export async function GET(req: NextRequest) {
 
     if (!token) return;
 
-    await prisma.accessToken.update({
+    const accessToken = await prisma.accessToken.findUnique({   
         where: {
             token: token
-        },
-        data: {
-            uses: {
-                increment: 1
-            }
         }
-    })
+    });
 
-    revalidatePath("/dashboard/links");
+    if (accessToken) {
+        await prisma.accessToken.update({
+            where: {
+                token: token
+            },
+            data: {
+                uses: {
+                    increment: 1
+                }
+            }
+        })
+        revalidatePath("/dashboard/links");
+        return NextResponse.json({
+            message: "Token was successfullly incremented"
+        }, {
+            status: 200
+        });
+    }
+
+    const personAccessToken = await prisma.personAccessToken.findUnique({
+        where: {
+            token: token
+        }
+    });
+
+    if (personAccessToken) {
+        await prisma.personAccessToken.update({
+            where: {
+                token: token
+            },
+            data: {
+                uses: {
+                    increment: 1
+                }
+            }
+        })
+        revalidatePath("/dashboard/links");
+        return NextResponse.json({
+            message: "Token was successfullly incremented"
+        }, {
+            status: 200
+        });
+    }
+
     return NextResponse.json({
-        message: "Token was successfullly incremented"
+        message: "Token not found"
     }, {
-        status: 200
+        status: 404
     });
 }

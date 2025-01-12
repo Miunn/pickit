@@ -5,6 +5,7 @@ import { auth } from "./auth";
 import { FolderTokenPermission, PersonAccessToken } from "@prisma/client";
 import { PersonAccessTokenWithFolder } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
+import { sendShareFolderEmail } from "@/lib/mailing";
 
 export async function getPersonsAccessTokens(): Promise<{
     error: string | null,
@@ -113,6 +114,7 @@ export async function createMultiplePersonAccessTokens(folderId: string, data: {
         }))
     });
 
+    await sendShareFolderEmail(data.map((d, i) => ({ email: d.email, link: `${process.env.NEXTAUTH_URL}/dashboard/folders/${folderId}?share=${tokens[i]}&t=p`})), session.user.name!, folder.name)
     return { error: null }
 }
 

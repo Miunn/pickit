@@ -14,13 +14,22 @@ export async function GET(req: NextRequest) {
         },
     });
 
-    if (!accessToken) {
+    const personAccessToken = await prisma.personAccessToken.findUnique({
+        where: {
+            token: shareToken
+        }
+    })
+
+    console.log("Access token:", accessToken);
+    console.log("Person access token:", personAccessToken);
+
+    if (!accessToken && !personAccessToken) {
         return Response.json({ result: "invalid-token" })
     }
 
-    if (!accessToken.isActive) {
+    if ((accessToken && !accessToken.isActive) || (personAccessToken && !personAccessToken.isActive)) {
         return Response.json({ result: "invalid-token" });
     }
 
-    return Response.json({ result: "valid-token", permission: accessToken.permission })
+    return Response.json({ result: "valid-token", permission: accessToken?.permission || personAccessToken?.permission })
 }
