@@ -40,19 +40,18 @@ const InputOTPSlot = React.forwardRef<
 
   React.useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
-
-    if (char) {
-      setDisplayChar(char);
-      timer = setTimeout(() => {
-        setDisplayChar("•");
-      }, 1500);
-    }
-
-    // Mask immediately if next slot is filled
     const nextSlotFilled = inputOTPContext.slots[index + 1]?.char;
+    // Mask immediately if next slot is filled
     if (nextSlotFilled) {
       setDisplayChar("•");
       if (timer) clearTimeout(timer); // Cancel ongoing timeout
+    } else if (displayChar !== "•" || !char) {
+      setDisplayChar(char);
+    }
+    if (char) {
+      timer = setTimeout(() => {
+        setDisplayChar("•");
+      }, 1500);
     }
 
     return () => {
