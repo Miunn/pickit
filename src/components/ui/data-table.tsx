@@ -57,7 +57,7 @@ export function DataTable<TData, TValue>({
   });
   
   useMemo(() => {
-    table.setPageSize(4);
+    table.setPageSize(12);
   }, []);
 
   return (

@@ -4,6 +4,7 @@ import LinksDataTable from "./links-data-table";
 import PersonDataTable from "./person-data-table";
 import { getPersonsAccessTokens } from "@/actions/accessTokensPerson";
 import { getTranslations } from "next-intl/server";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default async function LinksPage({ searchParams }: { searchParams: { l?: string } }) {
 
@@ -17,14 +18,17 @@ export default async function LinksPage({ searchParams }: { searchParams: { l?: 
     const defaultSelectedPersonAccessTokenIndex = personsAccessTokens.map((act) => act.id).indexOf(searchParams.l || "");
 
     return (
-        <div>
-            <h3 className="font-semibold">{ t('persons.title') }</h3>
-
-            <PersonDataTable personsAccessTokens={personsAccessTokens} defaultTokenIndex={defaultSelectedPersonAccessTokenIndex} lightFolders={lightFolders}/>
-            
-            <h3 className="font-semibold">{ t('links.title') }</h3>
-
-            <LinksDataTable accessTokens={accessTokens} defaultTokenIndex={defaultSelectedAccessTokenIndex} lightFolders={lightFolders}/>
-        </div>
+        <Tabs defaultValue="persons">
+            <TabsList>
+                <TabsTrigger value="persons">{t('persons.title')}</TabsTrigger>
+                <TabsTrigger value="links">{t('links.title')}</TabsTrigger>
+            </TabsList>
+            <TabsContent value="persons">
+                <PersonDataTable personsAccessTokens={personsAccessTokens} defaultTokenIndex={defaultSelectedPersonAccessTokenIndex} lightFolders={lightFolders} />
+            </TabsContent>
+            <TabsContent value="links">
+                <LinksDataTable accessTokens={accessTokens} defaultTokenIndex={defaultSelectedAccessTokenIndex} lightFolders={lightFolders} />
+            </TabsContent>
+        </Tabs>
     )
 }
