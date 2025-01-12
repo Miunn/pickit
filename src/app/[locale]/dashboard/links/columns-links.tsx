@@ -190,6 +190,11 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="min-w-40">
                             <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
+                            <DropdownMenuItem asChild>
+                                <Link href={`http://localhost:3000/${locale}/dashboard/folders/${accessToken.folder.id}`} className="cursor-default">
+                                    {t('open')}
+                                </Link>
+                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => {
                                 navigator.clipboard.writeText(link);
                                 toast({
@@ -200,10 +205,8 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                                 {t('copy.label')}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem asChild>
-                                <Link href={`http://localhost:3000/${locale}/dashboard/folders/${accessToken.folder.id}`} className="cursor-default">
-                                    {t('open')}
-                                </Link>
+                            <DropdownMenuItem>
+                                {t('edit')}
                             </DropdownMenuItem>
                             {accessToken.isActive
                                 ? <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, false)}>{t('setInactive')}</DropdownMenuItem>

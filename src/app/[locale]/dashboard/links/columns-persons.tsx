@@ -207,6 +207,11 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="min-w-40">
                             <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
+                            <DropdownMenuItem asChild>
+                                <Link href={`http://localhost:3000/${locale}/dashboard/folders/${accessToken.folder.id}`} className="cursor-default">
+                                    {t('open')}
+                                </Link>
+                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={async () => {
                                 toast({
                                     title: t('sendAgain.inProgress.title'),
@@ -230,10 +235,8 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                                 {t('sendAgain.label')}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem asChild>
-                                <Link href={`http://localhost:3000/${locale}/dashboard/folders/${accessToken.folder.id}`} className="cursor-default">
-                                    {t('open')}
-                                </Link>
+                            <DropdownMenuItem>
+                                {t('edit')}
                             </DropdownMenuItem>
                             {accessToken.isActive
                                 ? <DropdownMenuItem onClick={() => changePersonAccessTokenActiveState(accessToken.token, false)}>{t('setInactive')}</DropdownMenuItem>

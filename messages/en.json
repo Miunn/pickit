@@ -568,6 +568,7 @@
         },
         "actions": {
           "label": "Actions",
+          "open": "Open folder",
           "sendAgain": {
             "label": "Send again",
             "inProgress": {
@@ -583,7 +584,7 @@
               "description": "An error occurred while sending the email"
             }
           },
-          "open": "Open folder",
+          "edit": "Edit permission",
           "setActive": "Set as active",
           "setInactive": "Set as inactive",
           "lock": "Lock",
@@ -630,6 +631,7 @@
         },
         "actions": {
           "label": "Actions",
+          "open": "Open folder",
           "copy": {
             "label": "Copy link",
             "success": {
@@ -637,7 +639,7 @@
               "description": "The link has been copied to your clipboard"
             }
           },
-          "open": "Open folder",
+          "edit": "Edit permission",
           "setActive": "Set as active",
           "setInactive": "Set as inactive",
           "lock": "Lock",

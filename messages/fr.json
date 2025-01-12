@@ -567,6 +567,7 @@
         },
         "actions": {
           "label": "Actions",
+          "open": "Ouvrir",
           "sendAgain": {
             "label": "Renvoyer l'email",
             "inProgress": {
@@ -582,7 +583,7 @@
               "description": "Une erreur est survenue lors de l'envoi de l'email"
             }
           },
-          "open": "Ouvrir",
+          "edit": "Modifier les permissions",
           "setActive": "Définir comme actif",
           "setInactive": "Définir comme inactif",
           "lock": "Vérouiller",
@@ -629,6 +630,7 @@
         },
         "actions": {
           "label": "Actions",
+          "open": "Ouvrir le dossier",
           "copy": {
             "label": "Copier le lien",
             "success": {
@@ -636,7 +638,7 @@
               "description": "Le lien a été copié dans votre presse-papiers"
             }
           },
-          "open": "Ouvrir le dossier",
+          "edit": "Modifier les permissions",
           "setActive": "Définir comme actif",
           "setInactive": "Définir comme inactif",
           "lock": "Vérouiller",
