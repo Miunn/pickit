@@ -1,7 +1,7 @@
 "use client"
 
 import { changeAccessTokenActiveState } from "@/actions/accessTokens";
-import { unlockPersonAccessToken } from "@/actions/accessTokensPerson";
+import { changePersonAccessTokenActiveState, unlockPersonAccessToken } from "@/actions/accessTokensPerson";
 import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessTokenDialog";
 import LockTokenDialog from "@/components/folders/LockTokenDialog";
 import { Badge } from "@/components/ui/badge";
@@ -222,8 +222,8 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                                 </Link>
                             </DropdownMenuItem>
                             {accessToken.isActive
-                                ? <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, false)}>{t('setInactive')}</DropdownMenuItem>
-                                : <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, true)}>{t('setActive')}</DropdownMenuItem>
+                                ? <DropdownMenuItem onClick={() => changePersonAccessTokenActiveState(accessToken.token, false)}>{t('setInactive')}</DropdownMenuItem>
+                                : <DropdownMenuItem onClick={() => changePersonAccessTokenActiveState(accessToken.token, true)}>{t('setActive')}</DropdownMenuItem>
                             }
                             {accessToken.locked
                                 ? <DropdownMenuItem onClick={() => unlockPersonAccessToken(accessToken.id)}>{t('unlock')}</DropdownMenuItem>

@@ -118,6 +118,33 @@ export async function createMultiplePersonAccessTokens(folderId: string, data: {
     return { error: null }
 }
 
+export async function changePersonAccessTokenActiveState(token: string, isActive: boolean): Promise<{
+    error: string | null,
+}> {
+    const session = await auth();
+
+    if (!session?.user) {
+        return { error: "You must be logged in to change token state" }
+    }
+
+    await prisma.personAccessToken.update({
+        where: {
+            token: token,
+            folder: {
+                createdBy: {
+                    id: session.user.id
+                }
+            }
+        },
+        data: {
+            isActive: isActive
+        }
+    });
+
+    revalidatePath("/dashboard/links");
+    return { error: null }
+}
+
 export async function lockPersonAccessToken(tokenId: string, pin: string): Promise<{
     error: string | null
 }> {
