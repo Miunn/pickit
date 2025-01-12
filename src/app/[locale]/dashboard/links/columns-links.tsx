@@ -63,7 +63,12 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "permission",
-        header: "Permission",
+        header: () => {
+            const t = useTranslations("dataTables.links.columns.permission");
+            return (
+                <p>{t('header')}</p>
+            )
+        },
         cell: ({ row }) => {
             const t = useTranslations("dataTables.links.columns.permission")
             const permission: string = row.getValue("permission");
@@ -77,7 +82,12 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "isActive",
-        header: "Is active",
+        header: () => {
+            const t = useTranslations("dataTables.links.columns.active")
+            return (
+                <p>{t('header')}</p>
+            )
+        },
         cell: ({ row }) => {
             const t = useTranslations("dataTables.links.columns.active")
             const isActive: boolean = row.getValue("isActive")
@@ -92,7 +102,12 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "locked",
-        header: "Locked ?",
+        header: () => {
+            const t = useTranslations("dataTables.links.columns.locked")
+            return (
+                <p>{t('header')}</p>
+            )
+        },
         cell: ({ row }) => {
             const t = useTranslations("dataTables.links.columns.locked")
             const isLocked: boolean = row.getValue("locked")
@@ -107,7 +122,12 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "uses",
-        header: "Views",
+        header: () => {
+            const t = useTranslations("dataTables.links.columns.views")
+            return (
+                <p>{t('header')}</p>
+            )
+        },
         cell: ({ row }) => {
             const t = useTranslations("dataTables.links.columns.views")
             const uses: string = row.getValue("uses") ?? 0;
@@ -119,7 +139,12 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "createdAt",
-        header: "Created at",
+        header: () => {
+            const t = useTranslations("dataTables.links.columns.createdAt")
+            return (
+                <p>{t('header')}</p>
+            )
+        },
         cell: ({ row }) => {
             const date: Date = row.getValue("createdAt");
 
@@ -130,7 +155,12 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "expires",
-        header: "Expire at",
+        header: () => {
+            const t = useTranslations("dataTables.links.columns.expiresAt")
+            return (
+                <p>{t('header')}</p>
+            )
+        },
         cell: ({ row }) => {
             const date: Date = row.getValue("expires");
 
@@ -182,7 +212,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                             {accessToken.locked
                                 ? <DropdownMenuItem onClick={() => unlockAccessToken(accessToken.id)}>{t('unlock')}</DropdownMenuItem>
                                 : <DropdownMenuItem onClick={() => setLockOpen(true)}>{t('lock')}</DropdownMenuItem>
-                            }                            
+                            }
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => setDeleteOpen(true)} className="text-red-600 focus:text-red-600 font-semibold">{t('delete')}</DropdownMenuItem>
                         </DropdownMenuContent>
