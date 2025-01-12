@@ -222,8 +222,8 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                                 </Link>
                             </DropdownMenuItem>
                             {accessToken.isActive
-                                ? <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, false)}>{t('setActive')}</DropdownMenuItem>
-                                : <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, true)}>{t('setInactive')}</DropdownMenuItem>
+                                ? <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, false)}>{t('setInactive')}</DropdownMenuItem>
+                                : <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, true)}>{t('setActive')}</DropdownMenuItem>
                             }
                             {accessToken.locked
                                 ? <DropdownMenuItem onClick={() => unlockPersonAccessToken(accessToken.id)}>{t('unlock')}</DropdownMenuItem>
