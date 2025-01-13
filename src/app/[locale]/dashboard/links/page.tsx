@@ -6,7 +6,7 @@ import { getPersonsAccessTokens } from "@/actions/accessTokensPerson";
 import { getTranslations } from "next-intl/server";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export default async function LinksPage({ searchParams }: { searchParams: { l?: string } }) {
+export default async function LinksPage({ searchParams }: { searchParams: { s?: string, l?: string } }) {
 
     const t = await getTranslations("pages.links");
     const accessTokens = (await getAccessTokens()).accessTokens;
@@ -14,11 +14,12 @@ export default async function LinksPage({ searchParams }: { searchParams: { l?: 
 
     const lightFolders = (await getLightFolders()).lightFolders
 
+    const side = searchParams.s === "links" ? "links" : "persons";
     const defaultSelectedAccessTokenIndex = accessTokens.map((act) => act.id).indexOf(searchParams.l || "");
     const defaultSelectedPersonAccessTokenIndex = personsAccessTokens.map((act) => act.id).indexOf(searchParams.l || "");
 
     return (
-        <Tabs defaultValue="persons">
+        <Tabs defaultValue={side}>
             <TabsList>
                 <TabsTrigger value="persons">{t('persons.title')}</TabsTrigger>
                 <TabsTrigger value="links">{t('links.title')}</TabsTrigger>
