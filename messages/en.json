@@ -493,6 +493,34 @@
           "description": "The sharing link has been created successfully"
         }
       },
+      "lockToken": {
+        "title": "Lock sharing link",
+        "description": "Lock your sharing link with a PIN code",
+        "form": {
+          "pin": {
+            "label": "PIN Code"
+          }
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Lock",
+          "submitting": "Locking"
+        },
+        "errors": {
+          "tokenType": {
+            "title": "Type de lien incorrect",
+            "description": "Le type de lien de partage n'est pas valide"
+          },
+          "unknown": {
+            "title": "Can't lock sharing link",
+            "description": "An unknown error happened while locking the sharing link"
+          }
+        },
+        "success": {
+          "title": "Sharing link locked",
+          "description": "The sharing link has been locked successfully"
+        }
+      },
       "delete": {
         "title": "Delete sharing {count, plural, one {link} other {links}}",
         "description": "Are you sure you want to delete {count, plural, one {this sharing link} other {these sharing links}} ? This action cannot be undone.",

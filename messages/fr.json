@@ -364,9 +364,9 @@
               "description": "L'adresse mail a été ajoutée avec succès"
             },
             "error": {
-                "title": "Adresse mail invalide",
-                "description": "L'adresse mail fournie est invalide ou existe déjà dans la liste"
-              }
+              "title": "Adresse mail invalide",
+              "description": "L'adresse mail fournie est invalide ou existe déjà dans la liste"
+            }
           },
           "copy": {
             "success": {
@@ -490,6 +490,34 @@
         "success": {
           "title": "Lien de partage créé",
           "description": "Le lien de partage a été créé avec succès"
+        }
+      },
+      "lockToken": {
+        "title": "Vérouiller le lien de partage",
+        "description": "Vérouiller l'accès au dossier via ce lien de partage",
+        "form": {
+          "pin": {
+            "label": "Code PIN"
+          }
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Vérouiller",
+          "submitting": "Vérouillage"
+        },
+        "errors": {
+          "tokenType": {
+            "title": "Type de lien incorrect",
+            "description": "Le type de lien de partage n'est pas valide"
+          },
+          "unknown": {
+            "title": "Impossible de vérouiller le lien",
+            "description": "Une erreur inconnue est survenue lors du vérouillage du lien"
+          }
+        },
+        "success": {
+          "title": "Lien vérouillé",
+          "description": "Le lien de partage a été vérouillé avec succès"
         }
       },
       "delete": {

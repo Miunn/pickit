@@ -12,9 +12,11 @@ import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { lockAccessToken } from "@/actions/accessTokens";
 import { lockPersonAccessToken } from "@/actions/accessTokensPerson";
+import { useTranslations } from "next-intl";
 
 export default function LockTokenDialog({ children, openState, setOpenState, tokenId, tokenType }: { children?: React.ReactNode, openState?: boolean, setOpenState?: React.Dispatch<React.SetStateAction<boolean>>, tokenId: string, tokenType: "accessToken" | "personAccessToken" }) {
 
+    const t = useTranslations("dialogs.accessTokens.lockToken");
     const [saveLoading, setSaveLoading] = useState<boolean>(false);
 
     const form = useForm<z.infer<typeof LockFolderFormSchema>>({
@@ -34,8 +36,8 @@ export default function LockTokenDialog({ children, openState, setOpenState, tok
         } else {
             setSaveLoading(false);
             toast({
-                title: "Error",
-                description: "Wrong token type",
+                title: t('errors.tokenType.title'),
+                description: t('errors.tokenType.description')
             });
             return;
         }
@@ -43,15 +45,15 @@ export default function LockTokenDialog({ children, openState, setOpenState, tok
 
         if (r.error) {
             toast({
-                title: "Error",
-                description: "An error occurred while locking the folder",
+                title: t('errors.unknown.title'),
+                description: t('errors.unknown.description'),
             });
             return;
         }
 
         toast({
-            title: "Folder locked",
-            description: "Your folder has been locked successfully"
+            title: t('success.title'),
+            description: t('success.description'),
         });
 
         if (setOpenState) {
@@ -64,8 +66,8 @@ export default function LockTokenDialog({ children, openState, setOpenState, tok
             {children}
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Lock Folder</DialogTitle>
-                    <DialogDescription>Lock your folder with a personal code</DialogDescription>
+                    <DialogTitle>{t('title')}</DialogTitle>
+                    <DialogDescription>{t('description')}</DialogDescription>
                 </DialogHeader>
 
 
@@ -76,7 +78,7 @@ export default function LockTokenDialog({ children, openState, setOpenState, tok
                             name="pin"
                             render={({ field }) => (
                                 <FormItem className="w-fit mx-auto">
-                                    <FormLabel>PIN Code</FormLabel>
+                                    <FormLabel>{t('form.pin.label')}</FormLabel>
                                     <FormControl>
                                         <InputOTP maxLength={8} pattern={REGEXP_ONLY_DIGITS} {...field}>
                                             <InputOTPGroup>
@@ -100,11 +102,11 @@ export default function LockTokenDialog({ children, openState, setOpenState, tok
 
                         <div className="mt-8 flex justify-end gap-2">
                             <DialogClose asChild>
-                                <Button type={"button"} variant={"outline"}>Cancel</Button>
+                                <Button type={"button"} variant={"outline"}>{t('actions.cancel')}</Button>
                             </DialogClose>
                             {saveLoading
-                                ? <Button type={"button"} disabled><Loader2 className={"w-4 h-4 mr-2 animate-spin"} /> Saving</Button>
-                                : <Button type={"submit"}>Save</Button>}
+                                ? <Button type={"button"} disabled><Loader2 className={"w-4 h-4 mr-2 animate-spin"} /> {t('actions.submitting')}</Button>
+                                : <Button type={"submit"}>{t('actions.submit')}</Button>}
                         </div>
                     </form>
                 </Form>
