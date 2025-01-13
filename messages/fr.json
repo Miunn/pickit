@@ -239,6 +239,34 @@
           }
         }
       }
+    },
+    "accessTokens": {
+      "unlock": {
+        "form": {
+          "pin": {
+            "label": "Code PIN",
+            "description": "Ce dossier est protégé par un code PIN"
+          }
+        },
+        "actions": {
+          "submit": "Dévérouiller",
+          "submitting": "Dévérouillage"
+        },
+        "errors": {
+          "empty": {
+            "title": "Code PIN vide",
+            "description": "Le code PIN ne peut pas être vide"
+          },
+          "unauthorized": {
+            "title": "Accès refusé",
+            "description": "Le code PIN fourni est incorrect"
+          },
+          "unknown": {
+            "title": "Impossible de dévérouiller le dossier",
+            "description": "Une erreur inconnue est survenue lors du dévérouillage du dossier"
+          }
+        }
+      }
     }
   },
   "dialogs": {

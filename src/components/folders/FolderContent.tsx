@@ -19,6 +19,7 @@ export const FolderContent = ({ folderId, folder, shareToken, isGuest, locale }:
     const searchParams = useSearchParams();
 
     const t = useTranslations("folders");
+    const unlockTranslations = useTranslations("components.accessTokens.unlock");
     const [folderContent, setFolderContent] = useState<(FolderWithImagesWithFolder & FolderWithAccessToken) | null | undefined>(folder);
     const [hashPin, setHashPin] = useState<string | undefined>(undefined);
     const [unlockLoading, setUnlockLoading] = useState(false);
@@ -40,8 +41,8 @@ export const FolderContent = ({ folderId, folder, shareToken, isGuest, locale }:
 
         if (r.error === "unauthorized") {
             toast({
-                title: "Error",
-                description: "Unable to unlock this folder. Code may be incorrect",
+                title: unlockTranslations("errors.unauthorized.title"),
+                description: unlockTranslations("errors.unauthorized.description"),
                 variant: "destructive"
             });
             return;
@@ -49,8 +50,8 @@ export const FolderContent = ({ folderId, folder, shareToken, isGuest, locale }:
 
         if (r.error === "code-needed") {
             toast({
-                title: "Error",
-                description: "You must provide a code to unlock this folder",
+                title: unlockTranslations("errors.codeNeeded.title"),
+                description: unlockTranslations("errors.codeNeeded.description"),
                 variant: "destructive"
             });
             return;

@@ -7,8 +7,12 @@ import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { z } from "zod"
 import { Button } from "../ui/button"
 import { Loader2 } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 export default function UnlockTokenPrompt({ unlockLoading, submit }: { unlockLoading: boolean, submit: (data: z.infer<typeof LockFolderFormSchema>) => Promise<void> }) {
+    
+    const t = useTranslations("components.accessTokens.unlock");
+    
     const form = useForm<z.infer<typeof LockFolderFormSchema>>({
         resolver: zodResolver(LockFolderFormSchema),
         defaultValues: {
@@ -24,7 +28,7 @@ export default function UnlockTokenPrompt({ unlockLoading, submit }: { unlockLoa
                     name="pin"
                     render={({ field }) => (
                         <FormItem className="w-fit mx-auto">
-                            <FormLabel className="text-xl">PIN Code</FormLabel>
+                            <FormLabel className="text-xl">{t('form.pin.label')}</FormLabel>
                             <FormControl>
                                 <InputOTP maxLength={8} pattern={REGEXP_ONLY_DIGITS} className="text-xl" {...field}>
                                     <InputOTPGroup>
@@ -42,15 +46,15 @@ export default function UnlockTokenPrompt({ unlockLoading, submit }: { unlockLoa
                                     </InputOTPGroup>
                                 </InputOTP>
                             </FormControl>
-                            <FormDescription>This folder is protected by a PIN code</FormDescription>
+                            <FormDescription>{t('form.pin.description')}</FormDescription>
                         </FormItem>
                     )}
                 />
 
 
                 {unlockLoading
-                    ? <Button type={"button"} className="self-end" disabled><Loader2 className={"w-4 h-4 mr-2 animate-spin"} /> Unlocking</Button>
-                    : <Button type={"submit"} className="self-end">Unlock</Button>}
+                    ? <Button type={"button"} className="self-end" disabled><Loader2 className={"w-4 h-4 mr-2 animate-spin"} /> {t('actions.submitting')}</Button>
+                    : <Button type={"submit"} className="self-end">{t('actions.submit')}</Button>}
             </form>
         </Form>
     )

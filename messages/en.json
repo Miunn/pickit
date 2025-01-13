@@ -240,6 +240,34 @@
           }
         }
       }
+    },
+    "accessTokens": {
+      "unlock": {
+        "form": {
+          "pin": {
+            "label": "PIN Code",
+            "description": "This folder is protected by a PIN code. Enter the code to access it"
+          }
+        },
+        "actions": {
+          "submit": "Unlock",
+          "submitting": "Unlocking"
+        },
+        "errors": {
+          "empty": {
+            "title": "Empty PIN code",
+            "description": "Please enter a PIN code to unlock the folder"
+          },
+          "unauthorized": {
+            "title": "Unauthorized access",
+            "description": "Unable to unlock this folder. Code may be incorrect"
+          },
+          "unknown": {
+            "title": "Can't unlock folder",
+            "description": "An unknown error happened while unlocking the folder"
+          }
+        }
+      }
     }
   },
   "dialogs": {
