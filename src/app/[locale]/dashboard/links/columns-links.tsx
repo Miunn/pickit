@@ -209,8 +209,34 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                                 {t('edit')}
                             </DropdownMenuItem>
                             {accessToken.isActive
-                                ? <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, false)}>{t('setInactive')}</DropdownMenuItem>
-                                : <DropdownMenuItem onClick={() => changeAccessTokenActiveState(accessToken.token, true)}>{t('setActive')}</DropdownMenuItem>
+                                ? <DropdownMenuItem onClick={async () => {
+                                    const r = await changeAccessTokenActiveState(accessToken.token, false)
+                                    if (r.error) {
+                                        toast({
+                                            title: t('setInactive.error.title'),
+                                            description: t('setInactive.error.description')
+                                        })
+                                        return;
+                                    }
+                                    toast({
+                                        title: t('setInactive.success.title'),
+                                        description: t('setInactive.success.description')
+                                    })
+                                }}>{t('setInactive.label')}</DropdownMenuItem>
+                                : <DropdownMenuItem onClick={async () => {
+                                    const r = await changeAccessTokenActiveState(accessToken.token, true)
+                                    if (r.error) {
+                                        toast({
+                                            title: t('setActive.error.title'),
+                                            description: t('setActive.error.description')
+                                        })
+                                        return;
+                                    }
+                                    toast({
+                                        title: t('setActive.success.title'),
+                                        description: t('setActive.success.description')
+                                    })
+                                }}>{t('setActive.label')}</DropdownMenuItem>
                             }
                             {accessToken.locked
                                 ? <DropdownMenuItem onClick={() => unlockAccessToken(accessToken.id)}>{t('unlock')}</DropdownMenuItem>

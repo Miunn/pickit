@@ -585,8 +585,28 @@
             }
           },
           "edit": "Modifier les permissions",
-          "setActive": "Définir comme actif",
-          "setInactive": "Définir comme inactif",
+          "setActive": {
+            "label": "Définir comme actif",
+            "success": {
+              "title": "Accès activé",
+              "description": "L'accès pour cette personne a été activé"
+            },
+            "error": {
+              "title": "Impossible d'activer l'accès",
+              "description": "Une erreur est survenue lors de l'activation de l'accès"
+            }
+          },
+          "setInactive": {
+            "label": "Définir comme inactif",
+            "success": {
+              "title": "Accès désactivé",
+              "description": "L'accès pour cette personne a été désactivé"
+            },
+            "error": {
+              "title": "Impossible de désactiver l'accès",
+              "description": "Une erreur est survenue lors de la désactivation de l'accès"
+            }
+          },
           "lock": "Vérouiller",
           "unlock": "Dévérouiller",
           "delete": {
@@ -640,8 +660,28 @@
             }
           },
           "edit": "Modifier les permissions",
-          "setActive": "Définir comme actif",
-          "setInactive": "Définir comme inactif",
+          "setActive": {
+            "label": "Définir comme actif",
+            "success": {
+              "title": "Accès activé",
+              "description": "L'accès pour ce lien a été activé"
+            },
+            "error": {
+              "title": "Impossible d'activer l'accès",
+              "description": "Une erreur est survenue lors de l'activation de l'accès"
+            }
+          },
+          "setInactive": {
+            "label": "Définir comme inactif",
+            "success": {
+              "title": "Accès désactivé",
+              "description": "L'accès pour ce lien a été désactivé"
+            },
+            "error": {
+              "title": "Impossible de désactiver l'accès",
+              "description": "Une erreur est survenue lors de la désactivation de l'accès"
+            }
+          },
           "lock": "Vérouiller",
           "unlock": "Dévérouiller",
           "delete": "Supprimer"

@@ -586,8 +586,28 @@
             }
           },
           "edit": "Edit permission",
-          "setActive": "Set as active",
-          "setInactive": "Set as inactive",
+          "setActive": {
+            "label": "Set as active",
+            "success": {
+              "title": "Access activated",
+              "description": "The access for this person has been activated successfully"
+            },
+            "error": {
+              "title": "Can't activate access",
+              "description": "An error occurred while activating the access"
+            }
+          },
+          "setInactive": {
+            "label": "Set as inactive",
+            "success": {
+              "title": "Access deactivated",
+              "description": "The access for this person has been deactivated successfully"
+            },
+            "error": {
+              "title": "Can't deactivate access",
+              "description": "An error occurred while deactivating the access"
+            }
+          },
           "lock": "Lock",
           "unlock": "Unlock",
           "delete": {
@@ -641,8 +661,28 @@
             }
           },
           "edit": "Edit permission",
-          "setActive": "Set as active",
-          "setInactive": "Set as inactive",
+          "setActive": {
+            "label": "Set as active",
+            "success": {
+              "title": "Link activated",
+              "description": "The link has been activated successfully"
+            },
+            "error": {
+              "title": "Can't activate link",
+              "description": "An error occurred while activating the link"
+            }
+          },
+          "setInactive": {
+            "label": "Set as inactive",
+            "success": {
+              "title": "Link deactivated",
+              "description": "The link has been deactivated successfully"
+            },
+            "error": {
+              "title": "Can't deactivate link",
+              "description": "An error occurred while deactivating the link"
+            }
+          },
           "lock": "Lock",
           "unlock": "Unlock",
           "delete": {
