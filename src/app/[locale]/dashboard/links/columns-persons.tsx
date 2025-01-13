@@ -8,11 +8,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
 import { PersonAccessTokenWithFolder } from "@/lib/definitions"
 import { FolderTokenPermission } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, BadgeCheck, BadgeMinus, Eye, Lock, LockOpen, MoreHorizontal, Pencil, PencilOff } from "lucide-react";
+import { ArrowUpDown, BadgeCheck, BadgeMinus, CircleHelp, Eye, Lock, LockOpen, MoreHorizontal, Pencil, PencilOff } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
@@ -95,10 +96,22 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
     {
         accessorKey: "isActive",
         header: () => {
-            const t = useTranslations("dataTables.people.columns");
+            const t = useTranslations("dataTables.people.columns.active");
 
             return (
-                <p>{t('active.header')}</p>
+                <p className="flex gap-2 items-center">
+                    {t('header')}
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger>
+                            <CircleHelp className="w-4 h-4 cursor-pointer" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p  dangerouslySetInnerHTML={{__html: t('tooltip')}} />
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </p>
             )
         },
         cell: ({ row }) => {
@@ -147,7 +160,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
             const t = useTranslations("dataTables.people.columns.views");
             const uses: string = row.getValue("uses") ?? 0;
             return <p className="flex items-center text-muted-foreground truncate">
-                <Eye className="mr-2" /> {t('count', {count: uses})}
+                <Eye className="mr-2" /> {t('count', { count: uses })}
             </p>
         },
         size: 120
@@ -218,7 +231,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                                     description: t('sendAgain.inProgress.description'),
                                 })
                                 const r = await sendAgainPersonAccessToken(accessToken.token);
-                                
+
                                 if (r.error) {
                                     toast({
                                         title: t('sendAgain.error.title'),
@@ -226,7 +239,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                                     })
                                     return;
                                 }
-                                
+
                                 toast({
                                     title: t('sendAgain.success.title'),
                                     description: t('sendAgain.success.description'),

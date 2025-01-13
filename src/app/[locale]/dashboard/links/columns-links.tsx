@@ -11,7 +11,7 @@ import { toast } from "@/hooks/use-toast";
 import { AccessTokenWithFolder } from "@/lib/definitions"
 import { ColumnDef } from "@tanstack/react-table"
 import { count } from "console";
-import { ArrowUpDown, BadgeCheck, BadgeMinus, Eye, Lock, LockOpen, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, BadgeCheck, BadgeMinus, CircleHelp, Eye, Lock, LockOpen, MoreHorizontal } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
@@ -85,7 +85,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         header: () => {
             const t = useTranslations("dataTables.links.columns.active")
             return (
-                <p>{t('header')}</p>
+                <p>{t('header')} <CircleHelp /></p>
             )
         },
         cell: ({ row }) => {
