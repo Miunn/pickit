@@ -10,8 +10,8 @@ export default function SwitchLocale({ locale, className }: { locale: string, cl
     const pathname = usePathname();
 
     return (
-        <Button variant={"ghost"} size={"icon"}>
-        <Link href={switchLocaleUrl(pathname, locale === "en" ? "fr" : "en")} className={cn("font-normal", className)}>
+        <Button variant={"ghost"} size={"icon"} asChild>
+        <Link href={switchLocaleUrl(window.location.pathname + window.location.search, locale === "en" ? "fr" : "en")} className={cn("font-normal", className)}>
             <Languages className="w-4 h-4" />
         </Link>
         </Button>
