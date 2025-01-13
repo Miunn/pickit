@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { handleImagesSubmission } from "@/lib/utils";
 
-export const ImagesGrid = ({ folder, shareToken, hashPin }: { folder: FolderWithImagesWithFolder, shareToken?: string, hashPin?: string }) => {
+export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder: FolderWithImagesWithFolder, shareToken?: string, hashPin?: string, tokenType?: string }) => {
 
     const t = useTranslations("images");
     const deleteMultipleTranslations = useTranslations("dialogs.images.deleteMultiple");
@@ -126,6 +126,7 @@ export const ImagesGrid = ({ folder, shareToken, hashPin }: { folder: FolderWith
                                 }}
                                 shareToken={shareToken}
                                 shareHashPin={hashPin}
+                                tokenType={tokenType}
                                 />
                         </Fragment>
                     ))}

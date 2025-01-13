@@ -3,33 +3,35 @@ import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
     const shareToken = req.nextUrl.searchParams.get("share");
+    const shareType = req.nextUrl.searchParams.get("t");
 
     if (!shareToken) {
         return Response.json({ error: "missing-share-param" }, { status: 400 })
     }
 
-    const accessToken = await prisma.accessToken.findUnique({
-        where: {
-            token: shareToken
-        },
-    });
+    let accessToken;
 
-    const personAccessToken = await prisma.personAccessToken.findUnique({
-        where: {
-            token: shareToken
-        }
-    })
+    if (shareType === "p") {
+        accessToken = await prisma.personAccessToken.findUnique({
+            where: {
+                token: shareToken
+            },
+        });
+    } else {
+        accessToken = await prisma.accessToken.findUnique({
+            where: {
+                token: shareToken
+            },
+        });
+    }
 
-    console.log("Access token:", accessToken);
-    console.log("Person access token:", personAccessToken);
-
-    if (!accessToken && !personAccessToken) {
+    if (!accessToken) {
         return Response.json({ result: "invalid-token" })
     }
 
-    if ((accessToken && !accessToken.isActive) || (personAccessToken && !personAccessToken.isActive)) {
+    if (!accessToken.isActive) {
         return Response.json({ result: "invalid-token" });
     }
 
-    return Response.json({ result: "valid-token", permission: accessToken?.permission || personAccessToken?.permission })
+    return Response.json({ result: "valid-token", permission: accessToken.permission })
 }

@@ -1,12 +1,13 @@
-import {NextRequest, NextResponse} from "next/server";
-import {auth} from "@/actions/auth";
-import {prisma} from "@/lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/actions/auth";
+import { prisma } from "@/lib/prisma";
 import * as bcrypt from "bcryptjs";
 import fs from "fs";
 
-export async function GET(req: NextRequest, { params }: { params: {image: string}, }): Promise<NextResponse> {
+export async function GET(req: NextRequest, { params }: { params: { image: string }, }): Promise<NextResponse> {
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
+    const tokenType = req.nextUrl.searchParams.get("t");
     const session = await auth();
     if (session?.user) {
         const image = await prisma.image.findUnique({
@@ -19,7 +20,7 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
         });
 
         if (!image) {
-            return NextResponse.json({error: "Image not found"});
+            return NextResponse.json({ error: "Image not found" });
         }
 
         const buffer = await fs.promises.readFile(image.path);
@@ -28,35 +29,54 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
         res.headers.set('Content-Type', `image/${image.extension}`);
         return res;
     } else if (shareToken && shareToken !== "undefined") {
-        const access = await prisma.accessToken.findUnique({
-            where: {
-                token: shareToken
-            },
-            include: {
-                folder: {
-                    select: {
-                        id: true
+        let access;
+        if (tokenType === "p") {
+            access = await prisma.personAccessToken.findUnique({
+                where: {
+                    token: shareToken
+                },
+                include: {
+                    folder: {
+                        select: {
+                            id: true
+                        }
                     }
+                },
+                omit: {
+                    pinCode: false
                 }
-            },
-            omit: {
-                pinCode: false
-            }
-        });
+            });
+        } else {
+            access = await prisma.accessToken.findUnique({
+                where: {
+                    token: shareToken
+                },
+                include: {
+                    folder: {
+                        select: {
+                            id: true
+                        }
+                    }
+                },
+                omit: {
+                    pinCode: false
+                }
+            });
+        }
 
         if (!access) {
-            return NextResponse.json({error: "Invalid share token"});
+            return NextResponse.json({ error: "Invalid share token" });
         }
 
         if (access.locked && access.pinCode) {
             if (!accessKey) {
-                return NextResponse.json({error: "Invalid access key"});
+                return NextResponse.json({ error: "Invalid access key" });
             }
 
             const match = bcrypt.compareSync(access.pinCode as string, accessKey || "");
 
             if (!match) {
-                return NextResponse.json({error: "Invalid access key"});
+                return NextResponse.json({ error: "Invalid access key" });
             }
         }
 
@@ -70,7 +90,7 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
         });
 
         if (!image) {
-            return NextResponse.json({error: "Image not found"});
+            return NextResponse.json({ error: "Image not found" });
         }
 
         const buffer = await fs.promises.readFile(image.path);
@@ -79,6 +99,6 @@ export async function GET(req: NextRequest, { params }: { params: {image: string
         res.headers.set('Content-Type', `image/${image.extension}`);
         return res;
     } else {
-        return NextResponse.json({error: "Unauthorized"});
+        return NextResponse.json({ error: "Unauthorized" });
     }
 }

@@ -102,7 +102,7 @@ export const FolderContent = ({ folderId, folder, shareToken, isGuest, locale }:
                         </div>
                     </h3>
 
-                    <ImagesGrid folder={folderContent} shareToken={shareToken} hashPin={hashPin} />
+                    <ImagesGrid folder={folderContent} shareToken={shareToken} hashPin={hashPin} tokenType={searchParams.get('t') || undefined} />
                 </div>
                 </>
                 : <UnlockTokenPrompt unlockLoading={unlockLoading} submit={(data) => loadFolder(data.pin)} />
