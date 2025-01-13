@@ -659,6 +659,7 @@
         },
         "active": {
           "header": "Actif",
+          "tooltip": "Un lien inactif ne peut pas être utilisé pour accéder au dossier.<br />L'état peut être modifié à tout moment",
           "active": "Actif",
           "inactive": "Inactif"
         },

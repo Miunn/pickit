@@ -660,6 +660,7 @@
         },
         "active": {
           "header": "Is active",
+          "tooltip": "An inactive link can't be used to access the folder.<br />It can be reactivated at any time in the options.",
           "active": "Active",
           "inactive": "Inactive"
         },

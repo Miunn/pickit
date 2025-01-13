@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
 import { AccessTokenWithFolder } from "@/lib/definitions"
 import { ColumnDef } from "@tanstack/react-table"
@@ -85,7 +86,19 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         header: () => {
             const t = useTranslations("dataTables.links.columns.active")
             return (
-                <p>{t('header')} <CircleHelp /></p>
+                <p className="flex gap-2 items-center">
+                    {t('header')}
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <CircleHelp className="w-4 h-4 cursor-pointer" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p dangerouslySetInnerHTML={{ __html: t('tooltip') }} />
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </p>
             )
         },
         cell: ({ row }) => {
