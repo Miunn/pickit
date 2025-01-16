@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import { prisma } from "@/lib/prisma";
 import Credentials from "next-auth/providers/credentials";
 import * as bcrypt from "bcryptjs";
+import { User } from "@prisma/client";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
     session: {
@@ -16,7 +17,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                 email: { label: "Email", type: "email", placeholder: "email@mail.com" },
                 password: { label: "Password", type: "password" },
             },
-            async authorize(credentials: Partial<Record<"email" | "password", unknown>>) {
+            async authorize(credentials: Partial<Record<"email" | "password", unknown>>): Promise<null | { id: string, email: string, name: string, role: string[] }> {
 
                 if (!credentials.email || !credentials.password) {
                     return null;
@@ -66,10 +67,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         },
         jwt: ({ token, user }) => {
             if (user) {
+                const u = user as unknown as User;
                 return {
                     ...token,
-                    id: user.id,
-                    role: user.role,
+                    id: u.id,
+                    role: u.role,
                 };
             }
             return token;

@@ -10,8 +10,14 @@ const publicPages = [
     '/(fr|en)/account/.*',
     '/api/auth/signin',
     '/api/auth/signout',
+    '/(fr|en)/unauthorized',
     '/(fr|en)/emails'
 ];
+
+const adminPages = [
+    '/(fr|en)/dashboard/admin/.*',
+];
+
 const locales = ['en', 'fr'];
 const defaultLocale = 'en';
 
@@ -69,6 +75,13 @@ export async function middleware(req: NextRequest) {
         'i'
     );
 
+    const adminPathnameRegex = RegExp(
+        `^(/(${locales.join('|')}))?(${adminPages
+            .flatMap((p) => (p === '/' ? ['', '/'] : p))
+            .join('|')})/?$`,
+        'i'
+    );
+
     if (RegExp(`^/(${locales.join('|')})/signin$`).test(pathname) && session?.user) {
         if (req.nextUrl.searchParams.get("callbackUrl") === null) {
             console.log("Redirect with callback");
@@ -84,6 +97,12 @@ export async function middleware(req: NextRequest) {
 
     if (publicPathnameRegex.test(pathname)) {
         return handleI18nRouting(req);
+    }
+    
+    if (adminPathnameRegex.test(pathname) && !session?.user?.role.includes("ADMIN")) {
+        // Return unauthorized if user is not authenticated or does not have the required role
+        const unauthorizedUrl = new URL(`/${locale}/unauthorized`, req.url);
+        return NextResponse.redirect(unauthorizedUrl);
     }
 
     if (req.nextUrl.searchParams.get("share") && await isValidShareLink(params(req.url).folderId, req.nextUrl.searchParams.get("share"), req.nextUrl.searchParams.get("t"))) {
