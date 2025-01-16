@@ -16,7 +16,7 @@ import { useTranslations } from "next-intl";
 export type NavSecondaryItems = {
   title: string
   url: string
-  icon: LucideIcon
+  icon?: LucideIcon
 }[];
 
 
@@ -37,7 +37,7 @@ export function NavSecondary({
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild size="sm">
                 <a href={item.url}>
-                  <item.icon />
+                  {item.icon ? <item.icon /> : null}
                   <span>{item.title}</span>
                 </a>
               </SidebarMenuButton>

@@ -80,8 +80,12 @@ export default async function LocaleLayout({
                             })))
                         }
                     ],
-                    navSecondayrItems: [
-
+                    navSecondaryItems: [
+                        ...(me?.role.includes("ADMIN") ? [{
+                            title: "Administration",
+                            icon: undefined,
+                            url: `/${locale}/dashboard/admin`,
+                        }] : [])
                     ],
                 }} />
                 <SidebarInset>

@@ -30,6 +30,7 @@ export default async function getMe(): Promise<{
             email: true,
             emailVerified: true,
             emailVerificationDeadline: true,
+            role: true,
             image: true,
             usedStorage: true,
             createdAt: true,

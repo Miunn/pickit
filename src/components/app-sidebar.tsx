@@ -22,7 +22,7 @@ import { useTranslations } from "next-intl"
 
 export interface AppSidebarProps {
   navMainItems: NavMainItems;
-  navSecondayrItems: NavSecondaryItems;
+  navSecondaryItems: NavSecondaryItems;
 }
 
 export function AppSidebar({ locale, user, items, ...props }: {
@@ -65,7 +65,7 @@ export function AppSidebar({ locale, user, items, ...props }: {
         {/*<NavProjects projects={items.nav} />*/}
       </SidebarContent>
       <SidebarFooter>
-        {user ? <NavSecondary locale={locale} userUsedStorage={user.usedStorage} items={items.navSecondayrItems} /> : null}
+        {user ? <NavSecondary locale={locale} userUsedStorage={user.usedStorage} items={items.navSecondaryItems} /> : null}
         {user ? <NavUser user={user} /> : <Button variant={"outline"} className="w-full" asChild><Link href={`/${locale}/signin`}>Sign in</Link></Button>}
       </SidebarFooter>
     </Sidebar>
