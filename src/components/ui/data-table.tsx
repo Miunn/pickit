@@ -63,14 +63,14 @@ export function DataTable<TData, TValue>({
   return (
     <div className="w-full">
       <div className="flex items-center justify-between py-4">
-        <Input
+        {/*<Input
           placeholder="Filter..."
           value={(table.getColumn("folder_name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("folder_name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
-        />
+        />*/}
 
         <div>
           {rightHeadingNodes}

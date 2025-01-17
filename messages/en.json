@@ -751,6 +751,42 @@
           }
         }
       }
+    },
+    "users": {
+      "columns": {
+        "name": {
+          "header": "Name"
+        },
+        "email": {
+          "header": "Email"
+        },
+        "folders": {
+          "header": "Folders",
+          "count": "{count, plural, one {# folder} other {# folders}}"
+        },
+        "images": {
+          "header": "Images",
+          "count": "{count, plural, one {# image} other {# images}}"
+        },
+        "usedStorage": {
+          "header": "Used storage",
+          "count": "{count} used"
+        },
+        "createdAt": {
+          "header": "Created at"
+        },
+        "actions": {
+          "label": "Actions",
+          "edit": "Edit",
+          "delete": {
+            "label": "Delete",
+            "success": {
+              "title": "User deleted",
+              "description": "The user has been deleted successfully"
+            }
+          }
+        }
+      }
     }
   },
   "folders": {

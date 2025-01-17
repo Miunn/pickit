@@ -744,6 +744,42 @@
           "delete": "Supprimer"
         }
       }
+    },
+    "users": {
+      "columns": {
+        "name": {
+          "header": "Nom"
+        },
+        "email": {
+          "header": "Adresse mail"
+        },
+        "folders": {
+          "header": "Dossiers",
+          "count": "{count, plural, one {# dossier} other {# dossiers}}"
+        },
+        "images": {
+          "header": "Images",
+          "count": "{count, plural, one {# image} other {# images}}"
+        },
+        "usedStorage": {
+          "header": "Espace utilisé",
+          "count": "{count} utilisés"
+        },
+        "createdAt": {
+          "header": "Créé le"
+        },
+        "actions": {
+          "label": "Actions",
+          "edit": "Modifier",
+          "delete": {
+            "label": "Supprimer",
+            "success": {
+              "title": "Utilisateur supprimé",
+              "description": "L'utilisateur a été supprimé avec succès"
+            }
+          }
+        }
+      }
     }
   },
   "folders": {
