@@ -20,6 +20,8 @@ export default function UsersDataTable({ users, defaultUserIndex }: { users: Use
             data={users}
             selection={selectedUsersIndexes}
             setSelection={setSelectedUsersIndexes}
+            filterPlaceholder="Search users"
+            filterColumn="name"
             rightHeadingNodes={
                 <div className="flex gap-2">
                     

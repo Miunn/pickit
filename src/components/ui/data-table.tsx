@@ -19,8 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useEffect, useMemo, useState } from "react"
-import { Button } from "./button"
+import { useMemo, useState } from "react"
 import { Input } from "./input"
 import { DataTablePagination } from "./data-table-pagination"
 
@@ -29,6 +28,8 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
   selection?: { [index: number]: boolean }
   setSelection?: React.Dispatch<React.SetStateAction<{ [index: number]: boolean; }>>
+  filterPlaceholder?: string
+  filterColumn?: string
   rightHeadingNodes?: React.ReactNode
 }
 
@@ -37,6 +38,8 @@ export function DataTable<TData, TValue>({
   data,
   selection,
   setSelection,
+  filterPlaceholder,
+  filterColumn,
   rightHeadingNodes
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
@@ -55,7 +58,7 @@ export function DataTable<TData, TValue>({
       rowSelection: selection,
     },
   });
-  
+
   useMemo(() => {
     table.setPageSize(12);
   }, []);
@@ -63,14 +66,17 @@ export function DataTable<TData, TValue>({
   return (
     <div className="w-full">
       <div className="flex items-center justify-between py-4">
-        {/*<Input
-          placeholder="Filter..."
-          value={(table.getColumn("folder_name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("folder_name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />*/}
+        {
+          filterColumn
+            ? <Input
+              placeholder={filterPlaceholder}
+              value={(table.getColumn(filterColumn)?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn(filterColumn)?.setFilterValue(event.target.value)
+              }
+              className="max-w-sm"
+            />
+            : null}
 
         <div>
           {rightHeadingNodes}
@@ -87,9 +93,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}

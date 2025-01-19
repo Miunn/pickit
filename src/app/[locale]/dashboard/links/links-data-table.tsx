@@ -26,6 +26,8 @@ export default function LinksDataTable({ accessTokens, defaultTokenIndex, lightF
             data={accessTokens}
             selection={selectedTokensIndexes}
             setSelection={setSelectedTokensIndexes}
+            filterPlaceholder="Search links"
+            filterColumn="folder_name"
             rightHeadingNodes={
                 <div className="flex gap-2">
                     <DeleteAccessTokenDialog tokens={selectedTokens} tokensType="links" openState={deleteOpen} setOpenState={setDeleteOpen} submitNext={() => setSelectedTokensIndexes({})}>

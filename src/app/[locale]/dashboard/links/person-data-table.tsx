@@ -27,6 +27,8 @@ export default function PersonDataTable({ personsAccessTokens, defaultTokenIndex
             data={personsAccessTokens}
             selection={selectedTokensIndexes}
             setSelection={setSelectedTokensIndexes}
+            filterPlaceholder="Search links"
+            filterColumn="folder_name"
             rightHeadingNodes={
                 <div className="flex gap-2">
                     <DeleteAccessTokenDialog tokens={selectedTokens} tokensType="persons" openState={deleteOpen} setOpenState={setDeleteOpen} submitNext={() => setSelectedTokensIndexes({})}>
