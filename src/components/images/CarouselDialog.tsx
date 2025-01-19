@@ -10,8 +10,8 @@ export const CarouselDialog = ({ images, title, carouselOpen, setCarouselOpen, s
     carouselOpen: any,
     setCarouselOpen: React.Dispatch<React.SetStateAction<boolean>>,
     startIndex: number
-    shareToken?: string,
-    shareHashPin?: string
+    shareToken?: string | null,
+    shareHashPin?: string | null
 }) => {
 
     const t = useTranslations("dialogs.images.carousel");

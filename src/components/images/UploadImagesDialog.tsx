@@ -20,7 +20,7 @@ import {useState} from "react";
 import {FileUploader} from "@/components/generic/FileUploader";
 import { handleImagesSubmission } from "@/lib/utils";
 
-export const UploadImagesDialog = ({folderId}: { folderId: string }) => {
+export const UploadImagesDialog = ({folderId, shareToken, tokenType, hashCode}: { folderId: string, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashCode?: string }) => {
 
     const t = useTranslations("images.dialog.upload");
     const [open, setOpen] = useState(false);
@@ -34,7 +34,7 @@ export const UploadImagesDialog = ({folderId}: { folderId: string }) => {
     });
 
     async function submitImages(data: z.infer<typeof UploadImagesFormSchema>) {
-        const r = await handleImagesSubmission(setLoading, data, folderId, form);
+        const r = await handleImagesSubmission(setLoading, data, form, folderId, shareToken, tokenType, hashCode);
 
         if (r) {
             setOpen(false);

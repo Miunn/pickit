@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { handleImagesSubmission } from "@/lib/utils";
 
-export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder: FolderWithImagesWithFolder, shareToken?: string, hashPin?: string, tokenType?: string }) => {
+export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder: FolderWithImagesWithFolder, shareToken?: string | null, hashPin?: string, tokenType?: "accessToken" | "personAccessToken" | null }) => {
 
     const t = useTranslations("images");
     const deleteMultipleTranslations = useTranslations("dialogs.images.deleteMultiple");
@@ -41,7 +41,7 @@ export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder:
     });
 
     function submitImages(data: z.infer<typeof UploadImagesFormSchema>) {
-        handleImagesSubmission(setUploading, data, folder.id, uploadImageForm);
+        handleImagesSubmission(setUploading, data, uploadImageForm, folder.id, shareToken, tokenType, hashPin);
     }
 
     useEffect(() => {
@@ -126,7 +126,7 @@ export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder:
                                 }}
                                 shareToken={shareToken}
                                 shareHashPin={hashPin}
-                                tokenType={tokenType}
+                                tokenType={tokenType === "personAccessToken" ? "p" : null}
                                 />
                         </Fragment>
                     ))}

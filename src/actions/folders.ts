@@ -7,6 +7,8 @@ import { revalidatePath } from "next/cache";
 import { FolderWithAccessToken, FolderWithImagesWithFolder, LightFolder, LockFolderFormSchema } from "@/lib/definitions";
 import { folderDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 import * as bcrypt from "bcryptjs";
+import { FolderTokenPermission } from "@prisma/client";
+import { validateShareToken } from "@/lib/utils";
 
 export async function getLightFolders(): Promise<{
     lightFolders: LightFolder[],
@@ -62,6 +64,7 @@ export async function getFolderName(id: string): Promise<{
 export async function getFolderFull(folderId: string, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashedPinCode?: string): Promise<{
     error: string | null,
     folder: (FolderWithImagesWithFolder & FolderWithAccessToken) | null
+    permission?: FolderTokenPermission
 }> {
     const session = await auth();
 
@@ -70,80 +73,7 @@ export async function getFolderFull(folderId: string, shareToken?: string, token
     }
 
     if (!session?.user && shareToken) {
-        let accessToken;
-        if (tokenType === "accessToken") {
-            accessToken = await prisma.accessToken.findUnique({
-                where: {
-                    token: shareToken,
-                    folderId: folderId,
-                    expires: {
-                        gte: new Date()
-                    }
-                },
-                include: {
-                    folder: {
-                        include: {
-                            images: {
-                                include: {
-                                    folder: true
-                                }
-                            },
-                        }
-                    }
-                },
-                omit: {
-                    pinCode: false
-                }
-            });
-        } else if (tokenType === "personAccessToken") {
-            accessToken = await prisma.personAccessToken.findUnique({
-                where: {
-                    token: shareToken,
-                    folderId: folderId,
-                    expires: {
-                        gte: new Date()
-                    }
-                },
-                include: {
-                    folder: {
-                        include: {
-                            images: {
-                                include: {
-                                    folder: true
-                                }
-                            },
-                        }
-                    }
-                },
-                omit: {
-                    pinCode: false
-                }
-            });
-        } else {
-            return { error: "invalid-token-type", folder: null };
-        }
-
-        if (!accessToken) {
-            return { error: "unauthorized", folder: null };
-        }
-
-        if (accessToken.locked && !hashedPinCode) {
-            return { error: "code-needed", folder: null };
-        }
-
-        if (accessToken.locked) {
-            if (!hashedPinCode) {
-                return { error: "unauthorized", folder: null };
-            }
-
-            const match = bcrypt.compareSync(accessToken.pinCode as string, hashedPinCode);
-
-            if (!match) {
-                return { error: "unauthorized", folder: null };
-            }
-        }
-
-        return { error: null, folder: {...accessToken.folder, AccessToken: []} };
+        return await validateShareToken(shareToken, tokenType as "accessToken" | "personAccessToken", folderId, hashedPinCode);
     }
 
     const folder = await prisma.folder.findUnique({

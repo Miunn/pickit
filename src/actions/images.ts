@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 import { ImageLightWithFolderName, ImageWithFolder } from "@/lib/definitions";
 import { imageCreateManyAndUpdateSizes, imageDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 import { changeFolderCover } from "./folders";
+import { validateShareToken } from "@/lib/utils";
 
 export async function getLightImages(): Promise<{
     error: string | null;
@@ -50,17 +51,35 @@ export async function getLightImages(): Promise<{
     return { error: null, lightImages: images }
 }
 
-export async function uploadImages(parentFolderId: string, formData: FormData): Promise<{ error: string | null }> {
+export async function uploadImages(parentFolderId: string, formData: FormData, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashCode?: string | null): Promise<{ error: string | null }> {
+    console.log("Uploading images to folder", parentFolderId);
     const session = await auth();
 
+    console.log("Session", session);
+
     if (!session?.user) {
-        return { error: "You must be logged in to upload images" };
+        if (!shareToken || !tokenType) {
+            return { error: "You must be logged in to upload images" };
+        }
+
+        const validateToken = await validateShareToken(shareToken, tokenType, parentFolderId, hashCode);
+
+        if (validateToken.error) {
+            return { error: "You must have a valid share link to upload to this folder" };
+        }
+
+        if (validateToken.folder === null) {
+            return { error: "Folder not found" };
+        }
+
+        if (validateToken.permission === "READ") {
+            return { error: "You do not have permission to upload images to this folder" };
+        }
     }
 
     const folder = await prisma.folder.findUnique({
         where: {
             id: parentFolderId,
-            createdBy: { id: session.user.id }
         }
     });
 

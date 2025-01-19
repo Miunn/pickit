@@ -16,7 +16,7 @@ export interface ImagePreviewProps {
     onDelete?: (imageId: string) => void;
     shareToken?: string | null;
     shareHashPin?: string | null;
-    tokenType?: string;
+    tokenType?: "p" | null;
 }
 
 export const ImagePreview = ({ image, selecting, setSelecting, selected, setSelected, onClick, onDelete, shareToken, shareHashPin, tokenType }: ImagePreviewProps) => {

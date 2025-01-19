@@ -14,8 +14,17 @@ import { useCallback, useState } from "react";
 import { getFolderFull } from "@/actions/folders";
 import { useSearchParams } from "next/navigation";
 import * as bcrypt from "bcryptjs";
+import { FolderTokenPermission } from "@prisma/client";
 
-export const FolderContent = ({ folderId, folder, shareToken, isGuest, locale }: { folderId: string, folder?: (FolderWithImagesWithFolder & FolderWithAccessToken) | null, shareToken?: string, isGuest?: boolean, locale: string }) => {
+
+export interface FolderContentProps {
+    folderId: string;
+    folder?: FolderWithImagesWithFolder & FolderWithAccessToken | null;
+    isGuest?: boolean;
+    locale: string;
+}
+
+export const FolderContent = ({ folderId, folder, isGuest, locale }: FolderContentProps) => {
     const searchParams = useSearchParams();
 
     const t = useTranslations("folders");
@@ -23,6 +32,9 @@ export const FolderContent = ({ folderId, folder, shareToken, isGuest, locale }:
     const [folderContent, setFolderContent] = useState<(FolderWithImagesWithFolder & FolderWithAccessToken) | null | undefined>(folder);
     const [hashPin, setHashPin] = useState<string | undefined>(undefined);
     const [unlockLoading, setUnlockLoading] = useState(false);
+    const [permission, setPermission] = useState<FolderTokenPermission>(isGuest ? "READ" : "WRITE");
+
+    console.log("Is guest", isGuest);
 
     useCallback(() => {
         setFolderContent(folder);
@@ -60,6 +72,10 @@ export const FolderContent = ({ folderId, folder, shareToken, isGuest, locale }:
         if (r.folder) {
             setFolderContent(r.folder);
         }
+
+        console.log("Load permission", r.permission);
+
+        setPermission(r.permission || "READ");
     }
 
     return (
@@ -70,7 +86,9 @@ export const FolderContent = ({ folderId, folder, shareToken, isGuest, locale }:
                         {folderContent.name}
 
                         <div className={"flex gap-4"}>
-                            <UploadImagesDialog folderId={folderContent.id} />
+                            {permission === "WRITE"
+                                ? <UploadImagesDialog folderId={folderContent.id} shareToken={searchParams.get("share")} tokenType={searchParams.get("t") === "p" ? "personAccessToken" : "accessToken"} hashCode={hashPin} />
+                                : null}
                             {!!!isGuest ? <ShareFolderDialog folder={folderContent} /> : null}
                             <Button variant="outline" onClick={async () => {
                                 const r = await downloadFolder(folderContent);
@@ -102,7 +120,7 @@ export const FolderContent = ({ folderId, folder, shareToken, isGuest, locale }:
                         </div>
                     </h3>
 
-                    <ImagesGrid folder={folderContent} shareToken={shareToken} hashPin={hashPin} tokenType={searchParams.get('t') || undefined} />
+                    <ImagesGrid folder={folderContent} shareToken={searchParams.get("share")} hashPin={hashPin} tokenType={searchParams.get('t') === "p" ? "personAccessToken" : "accessToken"} />
                 </div>
                 </>
                 : <UnlockTokenPrompt unlockLoading={unlockLoading} submit={(data) => loadFolder(data.pin)} />
