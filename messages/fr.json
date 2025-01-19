@@ -33,7 +33,8 @@
     "folders": "Dossiers",
     "images": "Images",
     "links": "Liens",
-    "account": "Compte"
+    "account": "Compte",
+    "administration": "Administration"
   },
   "pages": {
     "dashboard": {

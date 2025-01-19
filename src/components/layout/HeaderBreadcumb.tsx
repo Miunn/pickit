@@ -20,6 +20,8 @@ export default function HeaderBreadcumb() {
 
     const [pathAccount, setPathAccount] = useState<boolean>(false);
 
+    const [pathAdministration, setPathAdministration] = useState<boolean>(false);
+
     const getPathFolderName = async (folderId: string) => {
         const folder = await getFolderName(folderId);
 
@@ -39,6 +41,7 @@ export default function HeaderBreadcumb() {
             setPathFolder(null);
             setPathLinks(false);
             setPathAccount(false);
+            setPathAdministration(false);
         }
 
         if (tokens[0] === "dashboard" && tokens[1] === "folders" && tokens.length === 2) {
@@ -49,6 +52,7 @@ export default function HeaderBreadcumb() {
             setPathFolder(null);
             setPathLinks(false);
             setPathAccount(false);
+            setPathAdministration(false);
         }
 
         if (tokens[0] === "dashboard" && tokens[1] === "images" && tokens.length === 2) {
@@ -59,6 +63,7 @@ export default function HeaderBreadcumb() {
             setPathFolder(null);
             setPathLinks(false);
             setPathAccount(false);
+            setPathAdministration(false);
         }
 
         if (tokens[0] === "dashboard" && tokens[1] === "folders" && tokens[2]) {
@@ -69,6 +74,7 @@ export default function HeaderBreadcumb() {
             setPathListImages(false);
             setPathLinks(false);
             setPathAccount(false);
+            setPathAdministration(false);
         }
 
         if (tokens[0] === "dashboard" && tokens[1] === "links" && tokens.length === 2) {
@@ -79,6 +85,7 @@ export default function HeaderBreadcumb() {
             setPathListImages(false);
             setPathFolder(null);
             setPathAccount(false);
+            setPathAdministration(false);
         }
 
         if (tokens[0] === "dashboard" && tokens[1] === "account" && tokens.length === 2) {
@@ -89,6 +96,18 @@ export default function HeaderBreadcumb() {
             setPathListImages(false);
             setPathFolder(null);
             setPathLinks(false);
+            setPathAdministration(false);
+        }
+
+        if (tokens[0] === "dashboard" && tokens[1] === "admin" && tokens.length === 2) {
+            setPathAdministration(true);
+
+            setPathDashboard(false);
+            setPathListFolders(false);
+            setPathListImages(false);
+            setPathFolder(null);
+            setPathLinks(false);
+            setPathAccount(false);
         }
     }, [pathname]);
 
@@ -104,7 +123,7 @@ export default function HeaderBreadcumb() {
                 ) : (
                     <BreadcrumbItem className="hidden md:block">
                         <BreadcrumbLink href={`/${locale}/dashboard`}>
-                        {t('dashboard')}
+                            {t('dashboard')}
                         </BreadcrumbLink>
                     </BreadcrumbItem>
                 )}
@@ -138,17 +157,26 @@ export default function HeaderBreadcumb() {
                 ) : null}
                 {pathLinks ? (
                     <>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbPage>{t('links')}</BreadcrumbPage>
-                    </BreadcrumbItem>
-                </>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>{t('links')}</BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </>
                 ) : null}
                 {pathAccount ? (
                     <>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
                             <BreadcrumbPage>{t('account')}</BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </>
+                ) : null}
+
+                {pathAdministration ? (
+                    <>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>{t('administration')}</BreadcrumbPage>
                         </BreadcrumbItem>
                     </>
                 ) : null}
