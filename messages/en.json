@@ -760,6 +760,13 @@
         "email": {
           "header": "Email"
         },
+        "emailVerified": {
+          "header": "Email verified",
+          "verified": "Verified",
+          "unverified": "Unverified",
+          "unverifiedDeadline": "Email must be verified before {date}",
+          "unverifiedDeadlineNull": "No verification deadline"
+        },
         "folders": {
           "header": "Folders",
           "count": "{count, plural, one {# folder} other {# folders}}"

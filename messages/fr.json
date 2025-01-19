@@ -753,6 +753,13 @@
         "email": {
           "header": "Adresse mail"
         },
+        "emailVerified": {
+          "header": "Vérifié",
+          "verified": "Vérifié",
+          "unverified": "Non vérifié",
+          "unverifiedDeadline": "Vérification requise avant le {date}",
+          "unverifiedDeadlineNull": "No verification deadline"
+        },
         "folders": {
           "header": "Dossiers",
           "count": "{count, plural, one {# dossier} other {# dossiers}}"

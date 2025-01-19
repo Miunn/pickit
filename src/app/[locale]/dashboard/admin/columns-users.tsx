@@ -1,14 +1,15 @@
 "use client"
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { UserAdministration } from "@/lib/definitions"
 import { formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
 
 export const usersColumns: ColumnDef<UserAdministration>[] = [
     {
@@ -42,6 +43,10 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
                 <p>{t('header')}</p>
             )
         },
+        cell: ({ row }) => {
+            const name: string = row.getValue("name");
+            return <p className="truncate font-semibold">{name}</p>
+        }
     },
     {
         accessorKey: "email",
@@ -51,6 +56,38 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
                 <p>{t('header')}</p>
             )
         },
+    },
+    {
+        accessorKey: "emailVerified",
+        header: () => {
+            const t = useTranslations("dataTables.users.columns.emailVerified")
+            return (
+                <p>{t('header')}</p>
+            )
+        },
+        cell: ({ row }) => {
+            const t = useTranslations("dataTables.users.columns.emailVerified");
+            const emailVerified: boolean = row.getValue("emailVerified");
+
+            if (emailVerified) {
+                return <Badge className="bg-green-600 hover:bg-green-700 font-semibold">{t('verified')}</Badge>
+            } else {
+                const emailVerifiedDeadline: Date | null = row.original.emailVerificationDeadline;
+                const locale = useLocale();
+
+                console.log("Email verified deadline:", emailVerifiedDeadline);
+                return (
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Badge className="bg-red-600 hover:bg-red-700 font-bold">{t('unverified')}</Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>{ t('unverifiedDeadline', { date: emailVerifiedDeadline?.toLocaleDateString(locale, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}) || t('unverifiedDeadlineNull') }</p>
+                        </TooltipContent>
+                    </Tooltip>
+                )
+            }
+        }
     },
     {
         id: "count_folders",
@@ -66,7 +103,7 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
             console.log(row);
             const folders: string = row.getValue("count_folders");
             console.log("Folders:", folders)
-            return <p>{t('count', { count: parseInt(folders) })}</p>
+            return <p className="truncate">{t('count', { count: parseInt(folders) })}</p>
         }
     },
     {
@@ -75,7 +112,7 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
         header: () => {
             const t = useTranslations("dataTables.users.columns.images")
             return (
-                <p>{t('header')}</p>
+                <p className="truncate">{t('header')}</p>
             )
         },
         cell: ({ row }) => {
