@@ -10,6 +10,7 @@ import { formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 
 export const usersColumns: ColumnDef<UserAdministration>[] = [
     {
@@ -45,7 +46,10 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
         },
         cell: ({ row }) => {
             const name: string = row.getValue("name");
-            return <p className="truncate font-semibold">{name}</p>
+            const id = row.original.id;
+            return <Button variant={'link'} className="truncate font-semibold" asChild>
+                <Link href={`/dashboard/admin/users/${id}`}>{name}</Link>
+            </Button>
         }
     },
     {
@@ -82,7 +86,7 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
                             <Badge className="bg-red-600 hover:bg-red-700 font-bold">{t('unverified')}</Badge>
                         </TooltipTrigger>
                         <TooltipContent>
-                            <p>{ t('unverifiedDeadline', { date: emailVerifiedDeadline?.toLocaleDateString(locale, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}) || t('unverifiedDeadlineNull') }</p>
+                            <p>{t('unverifiedDeadline', { date: emailVerifiedDeadline?.toLocaleDateString(locale, { weekday: "long", day: "numeric", year: "numeric", month: "long" }) }) || t('unverifiedDeadlineNull')}</p>
                         </TooltipContent>
                     </Tooltip>
                 )
