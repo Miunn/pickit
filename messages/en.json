@@ -799,6 +799,9 @@
         "createdAt": {
           "header": "Created at"
         },
+        "updatedAt": {
+          "header": "Updated at"
+        },
         "actions": {
           "label": "Actions",
           "edit": "Edit",

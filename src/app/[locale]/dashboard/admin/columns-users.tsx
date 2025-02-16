@@ -157,6 +157,21 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
         }
     },
     {
+        accessorKey: "updatedAt",
+        header: () => {
+            const t = useTranslations("dataTables.users.columns.updatedAt");
+            return (
+                <p>{ t('header') }</p>
+            )
+        },
+        cell: ({ row }) => {
+            const date: Date = row.getValue("updatedAt");
+
+            const locale = useLocale();
+            return <p className="capitalize truncate">{date.toLocaleDateString(locale, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
+        }
+    },
+    {
         id: "actions",
         cell: ({ row }) => {
             const t = useTranslations("dataTables.users.columns.actions");
