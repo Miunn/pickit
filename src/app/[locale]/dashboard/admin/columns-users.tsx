@@ -175,7 +175,9 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
 
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
-                                {t('edit')}
+                                <Link href={`/dashboard/admin/users/${user.id}`}>
+                                    {t('edit')}
+                                </Link>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem className="text-red-600 focus:text-red-600 font-semibold">{t('delete.label')}</DropdownMenuItem>

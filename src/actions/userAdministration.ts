@@ -3,6 +3,7 @@
 import { UserAdministration } from "@/lib/definitions";
 import { auth } from "./auth";
 import { prisma } from "@/lib/prisma";
+import { Role } from "@prisma/client";
 
 export async function getUsers(): Promise<{
     error?: string | null,
@@ -11,7 +12,7 @@ export async function getUsers(): Promise<{
 
     const session = await auth();
 
-    if (!session?.user || !session.user.role.includes("ADMIN")) {
+    if (!session?.user || !session.user.role.includes(Role.ADMIN)) {
         return { error: "Unauthorized", users: [] };
     }
 
@@ -46,7 +47,7 @@ export async function getUser(userId: string): Promise<{
 }> {
     const session = await auth();
 
-    if (!session?.user || !session.user.role.includes("ADMIN")) {
+    if (!session?.user || !session.user.role.includes(Role.ADMIN)) {
         return { error: "Unauthorized", user: {} as UserAdministration };
     }
 

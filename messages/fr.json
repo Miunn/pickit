@@ -34,7 +34,8 @@
     "images": "Images",
     "links": "Liens",
     "account": "Compte",
-    "administration": "Administration"
+    "administration": "Administration",
+    "administrationUsers": "Utilisateurs"
   },
   "pages": {
     "dashboard": {

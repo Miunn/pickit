@@ -1,4 +1,4 @@
-import getUsers from "@/actions/userAdministration";
+import { getUsers } from "@/actions/userAdministration";
 import UsersDataTable from "./users-data-table";
 
 export default async function AdminHome({ searchParams }: { searchParams: { u?: string } }) {
