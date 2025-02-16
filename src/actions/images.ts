@@ -122,7 +122,7 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
         return imageData;
     }));
 
-    await imageCreateManyAndUpdateSizes(imagesDb, parentFolderId, session.user.id!);
+    await imageCreateManyAndUpdateSizes(imagesDb, parentFolderId, session?.user.id ? session.user.id : folder.createdById);
 
     if (folder.coverId === null) {
         const cover = await prisma.image.findFirst({
@@ -134,7 +134,7 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
         await changeFolderCover(parentFolderId, cover!.id);
     }
 
-    revalidatePath(`dashboard/folders/${parentFolderId}`);
+    revalidatePath("dashboard/folders/${parentFolderId}");
     revalidatePath("dashboard/folders");
     revalidatePath("dashboard");
 

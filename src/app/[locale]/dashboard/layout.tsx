@@ -88,8 +88,8 @@ export default async function LocaleLayout({
                         }] : [])
                     ],
                 }} />
-                <SidebarInset>
-                    <header className="flex h-16 shrink-0 items-center gap-2">
+                <SidebarInset className="flex-1">
+                    <header className="sticky flex h-16 shrink-0 items-center gap-2">
                         <div className="w-full flex justify-between items-center px-4">
                             <div className="flex items-center gap-2">
                             <SidebarTrigger className="-ml-1" />
