@@ -189,7 +189,7 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
                             <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
 
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>
+                            <DropdownMenuItem asChild>
                                 <Link href={`/dashboard/admin/users/${user.id}`}>
                                     {t('edit')}
                                 </Link>
