@@ -206,7 +206,7 @@ export default function HeaderBreadcumb() {
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
                             <BreadcrumbLink href="/dashboard/admin">
-                            {t('administration')}
+                                {t('administration')}
                             </BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
@@ -215,7 +215,7 @@ export default function HeaderBreadcumb() {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                        <BreadcrumbPage>User</BreadcrumbPage>
+                            <BreadcrumbPage>User</BreadcrumbPage>
                         </BreadcrumbItem>
                     </>
                 ) : null}
