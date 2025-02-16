@@ -123,6 +123,21 @@
           "backToLogin": "Back to login",
           "submit": "Request a password reset",
           "submitting": "Requesting a password reset"
+        },
+        "errors": {
+          "recent-request": {
+            "title": "Password reset already requested",
+            "description": "A password reset has already been requested for this email. Please check your inbox or try again later."
+          },
+          "unknown": {
+            "title": "Can't request a password reset",
+            "description": "An unknown error happened while requesting a password reset. Please try again"
+          }
+        },
+        "success": {
+          "title": "Password reset requested",
+          "description": "If the email is associated to an account, you will receive an email with further instructions",
+          "action": "Login"
         }
       },
       "resetPasswordForm": {

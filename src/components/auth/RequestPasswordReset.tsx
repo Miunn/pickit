@@ -35,10 +35,10 @@ export default function RequestPasswordReset({ locale, defaultEmail }: { locale:
         requestPasswordReset(data.email);
 
         toast({
-            title: "Password reset requested",
-            description: "If the email is associated to an account, you will receive an email with further instructions",
-            action: <ToastAction altText={"Login"}>
-                <Button variant={"outline"}>Login</Button>
+            title: t('success.title'),
+            description: t('success.description'),
+            action: <ToastAction altText={t('success.action')}>
+                <Button variant={"outline"}>{ t('success.action') }</Button>
             </ToastAction>
         })
 

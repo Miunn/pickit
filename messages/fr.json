@@ -123,6 +123,21 @@
           "backToLogin": "Retour à la connexion",
           "submit": "Réinitialisation votre mot de passe",
           "submitting": "Réinitialisation"
+        },
+        "errors": {
+          "recent-request": {
+            "title": "Réinitialisation déjà demandée",
+            "description": "Une demande de réinitialisation de mot de passe a déjà été effectuée pour cette adresse mail. Veuillez vérifier votre boîte de réception ou réessayer plus tard"
+          },
+          "unknown": {
+            "title": "Impossible de réinitialiser votre mot de passe",
+            "description": "Une erreur inconnue est survenue lors de la réinitialisation de votre mot de passe"
+          }
+        },
+        "success": {
+          "title": "Email de réinitialisation envoyé",
+          "description": "Si <un compte existe avec l'adresse mail fournie, un email de réinitialisation de mot de passe a été envoyé",
+          "action": "Retour à la connexion"
         }
       },
       "resetPasswordForm": {
