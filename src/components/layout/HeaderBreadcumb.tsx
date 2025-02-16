@@ -5,6 +5,8 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { getFolderName } from "@/actions/folders";
+import { UserAdministration } from "@/lib/definitions";
+import { getUser } from "@/actions/userAdministration";
 
 export default function HeaderBreadcumb() {
 
@@ -22,6 +24,8 @@ export default function HeaderBreadcumb() {
 
     const [pathAdministration, setPathAdministration] = useState<boolean>(false);
     const [pathAdministrationUsers, setPathAdministrationUsers] = useState<boolean>(false);
+
+    const [adminUser, setAdminUser] = useState<UserAdministration | null>(null);
 
     const getPathFolderName = async (folderId: string) => {
         const folder = await getFolderName(folderId);
@@ -119,6 +123,13 @@ export default function HeaderBreadcumb() {
         }
 
         if (tokens[0] === "dashboard" && tokens[1] === "admin" && tokens[2] === "users" && tokens.length === 4) {
+            getUser(tokens[3]).then((r) => {
+                if (r.error) {
+                    return
+                }
+
+                setAdminUser(r.user)
+            });
             setPathAdministrationUsers(true);
 
             setPathDashboard(false);
@@ -215,7 +226,7 @@ export default function HeaderBreadcumb() {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>User</BreadcrumbPage>
+                            <BreadcrumbPage>{ adminUser?.name }</BreadcrumbPage>
                         </BreadcrumbItem>
                     </>
                 ) : null}
