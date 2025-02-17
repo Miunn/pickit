@@ -1,20 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/actions/auth";
 import { prisma } from "@/lib/prisma";
 import * as bcrypt from "bcryptjs";
 import fs from "fs";
+import { getCurrentSession } from "@/lib/authUtils";
 
 export async function GET(req: NextRequest, { params }: { params: { image: string }, }): Promise<NextResponse> {
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
     const tokenType = req.nextUrl.searchParams.get("t");
-    const session = await auth();
-    if (session?.user) {
+    const { user } = await getCurrentSession();
+    if (user) {
         const image = await prisma.image.findUnique({
             where: {
                 id: params.image,
                 createdBy: {
-                    id: session.user.id as string
+                    id: user.id as string
                 }
             }
         });

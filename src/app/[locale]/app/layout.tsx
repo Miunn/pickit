@@ -16,6 +16,9 @@ import UnverifiedEmail from "@/components/layout/UnverifiedEmail";
 import { addDays } from "date-fns";
 import { getPersonsAccessTokens } from "@/actions/accessTokensPerson";
 import SwitchLocale from "@/components/generic/SwitchLocale";
+import { Role } from "@prisma/client";
+import { getCurrentSession } from "@/lib/authUtils";
+import { redirect } from "@/i18n/routing";
 
 export const metadata: Metadata = {
     title: "Pickit",
@@ -29,8 +32,13 @@ export default async function LocaleLayout({
     children: React.ReactNode;
     params: { locale: string };
 }>) {
+    const me = (await getCurrentSession()).user;
+
+    if (!me) {
+        return redirect(`/signin`);
+    }
+    
     const t = await getTranslations("sidebar");
-    const me = (await getMe()).user;
     const folders = (await getLightFolders()).lightFolders;
     const images = (await getLightImages()).lightImages;
     const accessTokens = (await getAccessTokens()).accessTokens;
@@ -45,46 +53,46 @@ export default async function LocaleLayout({
                             key: "folders",
                             title: t('main.folders'),
                             icon: Folder,
-                            url: `/${locale}/dashboard/folders`,
+                            url: `/${locale}/app/folders`,
                             isActive: true,
                             items: folders.map((folder) => ({
                                 key: folder.id,
                                 title: folder.name,
-                                url: `/${locale}/dashboard/folders/${folder.id}`
+                                url: `/${locale}/app/folders/${folder.id}`
                             }))
                         },
                         {
                             key: "images",
                             title: t('main.images'),
                             icon: Image,
-                            url: `/${locale}/dashboard/images`,
+                            url: `/${locale}/app/images`,
                             items: images.map((image) => ({
                                 key: image.id,
                                 title: `${image.folder.name} - ${image.name}`,
-                                url: `/${locale}/dashboard/folders/${image.folder.id}`
+                                url: `/${locale}/app/folders/${image.folder.id}`
                             }))
                         },
                         {
                             key: "links",
                             title: t('main.links'),
                             icon: Link,
-                            url: `/${locale}/dashboard/links`,
+                            url: `/${locale}/app/links`,
                             items: accessTokens.map((accessToken) => ({
                                 key: accessToken.id,
                                 title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
-                                url: `/${locale}/dashboard/links?l=${accessToken.id}`
+                                url: `/${locale}/app/links?l=${accessToken.id}`
                             })).concat(personsAccessTokens.map((accessToken) => ({
                                 key: accessToken.id,
                                 title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
-                                url: `/${locale}/dashboard/links?l=${accessToken.id}`
+                                url: `/${locale}/app/links?l=${accessToken.id}`
                             })))
                         }
                     ],
                     navSecondaryItems: [
-                        ...(me?.role.includes("ADMIN") ? [{
+                        ...(me?.role.includes(Role.ADMIN) ? [{
                             title: "Administration",
                             icon: undefined,
-                            url: `/${locale}/dashboard/admin`,
+                            url: `/${locale}/app/administration`,
                         }] : [])
                     ],
                 }} />

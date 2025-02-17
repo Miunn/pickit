@@ -18,9 +18,7 @@ import Link from "next/link";
 export default function SignInForm({ locale }: { locale: string }) {
 
     const t = useTranslations("components.auth.signIn");
-    const searchParams = useSearchParams();
     const [loading, setLoading] = useState<boolean>(false);
-    const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
 
     const form = useForm({
         resolver: zodResolver(SignInFormSchema),
@@ -32,7 +30,7 @@ export default function SignInForm({ locale }: { locale: string }) {
 
     const onSubmit = async (data: { email: string, password: string }) => {
         setLoading(true);
-        const r = await SignIn({ email: data.email, password: data.password, redirectUrl: callbackUrl });
+        const r = await SignIn(data.email, data.password);
         if (r && r.error) {
             toast({
                 title: t("form.error.title"),

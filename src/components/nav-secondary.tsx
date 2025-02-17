@@ -45,7 +45,7 @@ export function NavSecondary({
           ))}
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="sm" className="items-start">
-              <Link href={`/dashboard/account`} className="h-auto flex flex-col items-start gap-1">
+              <Link href={`/app/account`} className="h-auto flex flex-col items-start gap-1">
                 <p className="text-start">{ t('used') }</p>
                 <div className="w-full flex items-center gap-2">
                   <Progress value={userUsedStorage / 10000000 * 100} className="w-full" />

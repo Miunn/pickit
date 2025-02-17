@@ -1,13 +1,13 @@
 import {NextRequest, NextResponse} from "next/server";
-import {auth} from "@/actions/auth";
 import {prisma} from "@/lib/prisma";
 import JSZip from "jszip";
 import fs from "fs";
+import { getCurrentSession } from "@/lib/authUtils";
 
 export async function GET(req: NextRequest, { params }: { params: {folder: string} }) {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return Response.json({ error: "You need to be authenticated or have a magic link to access this resource" }, { status: 400 })
     }
 
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest, { params }: { params: {folder: strin
         where: {
             folderId: params.folder,
             createdBy: {
-                id: session.user.id as string
+                id: user.id as string
             }
         }
     });

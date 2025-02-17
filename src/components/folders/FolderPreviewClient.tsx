@@ -46,7 +46,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
         <>
             <ContextMenu>
                 <ContextMenuTrigger asChild>
-                    <Link href={`/${locale}/dashboard/folders/${folder.id}`} locale={locale}
+                    <Link href={`/${locale}/app/folders/${folder.id}`} locale={locale}
                         className={"inline-block w-64"}>
                         {folder.cover
                             ? <div className={`relative h-36 mb-4 flex justify-center items-center`}>
@@ -88,7 +88,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                 </ContextMenuTrigger>
                 <ContextMenuContent className="w-48">
                     <ContextMenuItem asChild>
-                        <Link href={`/${locale}/dashboard/folders/${folder.id}`} locale={locale}>
+                        <Link href={`/${locale}/app/folders/${folder.id}`} locale={locale}>
                             {t('actions.open')}
                         </Link>
                     </ContextMenuItem>

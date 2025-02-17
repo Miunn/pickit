@@ -1,7 +1,7 @@
 "use server"
 
+import { getCurrentSession } from "@/lib/authUtils";
 import { UserAdministration } from "@/lib/definitions";
-import { auth } from "./auth";
 import { prisma } from "@/lib/prisma";
 import { Role } from "@prisma/client";
 
@@ -9,10 +9,9 @@ export async function getUsers(): Promise<{
     error?: string | null,
     users: UserAdministration[]
 }> {
+    const { user } = await getCurrentSession();
 
-    const session = await auth();
-
-    if (!session?.user || !session.user.role.includes(Role.ADMIN)) {
+    if (!user || !user.role.includes(Role.ADMIN)) {
         return { error: "Unauthorized", users: [] };
     }
 
@@ -36,7 +35,6 @@ export async function getUsers(): Promise<{
             }
         }
     })
-    console.log("Users: ", users);
 
     return { error: null, users: users };
 }
@@ -45,13 +43,13 @@ export async function getUser(userId: string): Promise<{
     error?: string | null,
     user: UserAdministration
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user || !session.user.role.includes(Role.ADMIN)) {
+    if (!user || !user.role.includes(Role.ADMIN)) {
         return { error: "Unauthorized", user: {} as UserAdministration };
     }
 
-    const user = await prisma.user.findUnique({
+    const userFetch = await prisma.user.findUnique({
         where: {
             id: userId
         },
@@ -75,9 +73,9 @@ export async function getUser(userId: string): Promise<{
         }
     })
 
-    if (!user) {
+    if (!userFetch) {
         return { error: "User not found", user: {} as UserAdministration };
     }
 
-    return { error: null, user: user };
+    return { error: null, user: userFetch };
 }

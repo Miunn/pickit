@@ -131,7 +131,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     <div className="flex justify-between items-center">
                         <Label>{t('links.label')}</Label>
                         <Button variant={"link"} className="pr-0" asChild>
-                            <Link href={`/${locale}/dashboard/links`}>{t('manageAccesses')}</Link>
+                            <Link href={`/${locale}/app/links`}>{t('manageAccesses')}</Link>
                         </Button>
                     </div>
                     <div className={"grid gap-3 w-full items-center"} style={{
@@ -145,7 +145,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                 : t('links.link.permissions.write')
                                 }</Label>
                                 <Input placeholder={t('links.link.placeholder')} disabled={true}
-                                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/dashboard/folders/${folder.id}?share=${token.token}`} />
+                                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/app/folders/${folder.id}?share=${token.token}`} />
                                 <Button onClick={() => copyToClipboard(token.token)} className="text-start">
                                     {t('links.link.copy')}
                                 </Button>

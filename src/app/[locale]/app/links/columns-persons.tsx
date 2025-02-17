@@ -208,7 +208,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
             const locale = useLocale();
             const [lockOpen, setLockOpen] = useState<boolean>(false);
             const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
-            const link = `http://localhost:3000/${locale}/dashboard/folders/${accessToken.folder.id}?share=${accessToken.token}`;
+            const link = `${process.env.APP_URL}/${locale}/app/folders/${accessToken.folder.id}?share=${accessToken.token}`;
             return (
                 <>
                     <DropdownMenu>
@@ -221,7 +221,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                         <DropdownMenuContent align="end" className="min-w-40">
                             <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
                             <DropdownMenuItem asChild>
-                                <Link href={`http://localhost:3000/${locale}/dashboard/folders/${accessToken.folder.id}`} className="cursor-default">
+                                <Link href={`${process.env.APP_URL}/${locale}/app/folders/${accessToken.folder.id}`} className="cursor-default">
                                     {t('open')}
                                 </Link>
                             </DropdownMenuItem>

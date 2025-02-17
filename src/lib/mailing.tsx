@@ -1,12 +1,12 @@
 "use server"
 
-import { auth } from '@/actions/auth';
 import VerifyTemplate from '@/components/emails/VerifyTemplate';
 import * as nodemailer from 'nodemailer';
 import { prisma } from './prisma';
 import { addDays } from 'date-fns';
 import ResetPasswordTemplate from '@/components/emails/ResetPasswordTemplate';
 import ShareFolderTemplate from '@/components/emails/ShareFolderTemplate';
+import { getCurrentSession } from './authUtils';
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -27,26 +27,10 @@ export async function sendVerificationEmail(email: string): Promise<{
     emailVerified: boolean
   } | null
 }> {
-  const session = await auth();
-
-  if (!session?.user) {
-    return { error: "You must be logged in to fetch user info", user: null };
-  }
-
-  const user = await prisma.user.findUnique({
-    where: {
-      id: session.user.id
-    },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      emailVerified: true
-    }
-  });
+  const { user } = await getCurrentSession();
 
   if (!user) {
-    return { error: "user-not-found", user: null };
+    return { error: "You must be logged in to fetch user info", user: null };
   }
 
   if (user.emailVerified) {
@@ -125,7 +109,7 @@ export async function sendPasswordResetRequest(userId: string) {
 
 export async function sendShareFolderEmail(data: { email: string, link: string }[], name: string, folderName: string) {
   const ReactDOMServer = (await import('react-dom/server')).default;
-  
+
   data.forEach(async (d) => {
     const content = ReactDOMServer.renderToString(<ShareFolderTemplate name={name} folderName={folderName} link={d.link} />);
 

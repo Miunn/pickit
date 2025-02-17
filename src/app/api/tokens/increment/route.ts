@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
                 }
             }
         })
-        revalidatePath("/dashboard/links");
+        revalidatePath("/app/links");
         return NextResponse.json({
             message: "Token was successfullly incremented"
         }, {
@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
                 }
             }
         })
-        revalidatePath("/dashboard/links");
+        revalidatePath("/app/links");
         return NextResponse.json({
             message: "Token was successfullly incremented"
         }, {

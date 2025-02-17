@@ -38,7 +38,7 @@ export default function HeaderBreadcumb() {
     useEffect(() => {
         const tokens = pathname.split("/").filter(path => path && !(new RegExp("^(en|fr)$").test(path)));
 
-        if (tokens[0] === "dashboard" && tokens.length === 1) {
+        if (tokens[0] === "app" && tokens.length === 1) {
             setPathDashboard(true);
 
             setPathListFolders(false);
@@ -50,7 +50,7 @@ export default function HeaderBreadcumb() {
             setPathAdministrationUsers(false);
         }
 
-        if (tokens[0] === "dashboard" && tokens[1] === "folders" && tokens.length === 2) {
+        if (tokens[0] === "app" && tokens[1] === "folders" && tokens.length === 2) {
             setPathListFolders(true);
 
             setPathDashboard(false);
@@ -62,7 +62,7 @@ export default function HeaderBreadcumb() {
             setPathAdministrationUsers(false);
         }
 
-        if (tokens[0] === "dashboard" && tokens[1] === "images" && tokens.length === 2) {
+        if (tokens[0] === "app" && tokens[1] === "images" && tokens.length === 2) {
             setPathListImages(true);
 
             setPathDashboard(false);
@@ -74,7 +74,7 @@ export default function HeaderBreadcumb() {
             setPathAdministrationUsers(false);
         }
 
-        if (tokens[0] === "dashboard" && tokens[1] === "folders" && tokens[2]) {
+        if (tokens[0] === "app" && tokens[1] === "folders" && tokens[2]) {
             getPathFolderName(tokens[2]);
 
             setPathDashboard(false);
@@ -86,7 +86,7 @@ export default function HeaderBreadcumb() {
             setPathAdministrationUsers(false);
         }
 
-        if (tokens[0] === "dashboard" && tokens[1] === "links" && tokens.length === 2) {
+        if (tokens[0] === "app" && tokens[1] === "links" && tokens.length === 2) {
             setPathLinks(true);
 
             setPathDashboard(false);
@@ -98,7 +98,7 @@ export default function HeaderBreadcumb() {
             setPathAdministrationUsers(false);
         }
 
-        if (tokens[0] === "dashboard" && tokens[1] === "account" && tokens.length === 2) {
+        if (tokens[0] === "app" && tokens[1] === "account" && tokens.length === 2) {
             setPathAccount(true);
 
             setPathDashboard(false);
@@ -110,7 +110,7 @@ export default function HeaderBreadcumb() {
             setPathAdministrationUsers(false);
         }
 
-        if (tokens[0] === "dashboard" && tokens[1] === "admin" && tokens.length === 2) {
+        if (tokens[0] === "app" && tokens[1] === "administration" && tokens.length === 2) {
             setPathAdministration(true);
 
             setPathDashboard(false);
@@ -122,7 +122,7 @@ export default function HeaderBreadcumb() {
             setPathAdministrationUsers(false);
         }
 
-        if (tokens[0] === "dashboard" && tokens[1] === "admin" && tokens[2] === "users" && tokens.length === 4) {
+        if (tokens[0] === "app" && tokens[1] === "administration" && tokens[2] === "users" && tokens.length === 4) {
             getUser(tokens[3]).then((r) => {
                 if (r.error) {
                     return
@@ -153,7 +153,7 @@ export default function HeaderBreadcumb() {
                     </>
                 ) : (
                     <BreadcrumbItem className="hidden md:block">
-                        <BreadcrumbLink href={`/${locale}/dashboard`}>
+                        <BreadcrumbLink href={`/${locale}/app`}>
                             {t('dashboard')}
                         </BreadcrumbLink>
                     </BreadcrumbItem>
@@ -178,7 +178,7 @@ export default function HeaderBreadcumb() {
                     <>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard/folders">{t('folders')}</BreadcrumbLink>
+                            <BreadcrumbLink href="/app/folders">{t('folders')}</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator className="hidden md:block" />
                         <BreadcrumbItem>
@@ -216,7 +216,7 @@ export default function HeaderBreadcumb() {
                     <>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard/admin">
+                            <BreadcrumbLink href="/app/administration">
                                 {t('administration')}
                             </BreadcrumbLink>
                         </BreadcrumbItem>

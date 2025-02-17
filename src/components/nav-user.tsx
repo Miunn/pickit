@@ -89,7 +89,7 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <Link href={`/${locale}/dashboard/account`}>
+              <Link href={`/${locale}/app/account`}>
                 <DropdownMenuItem className="flex gap-2 items-center">
                   <BadgeCheck className="w-4 h-4" />
                   { t('account') }

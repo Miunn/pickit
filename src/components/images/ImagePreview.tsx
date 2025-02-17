@@ -44,7 +44,7 @@ export const ImagePreview = ({ image, selecting, setSelecting, selected, setSele
                             <Image src={`/api/folders/${image.folderId}/images/${image.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`} alt={image.name}
                                 className={"relative border border-black rounded-xl object-cover"} sizes="33vw" fill />
                         </div>
-                        <p className={"text-start"}>{image.name}</p>
+                        <p className={"text-start truncate"}>{image.name}</p>
                         <div className={"text-sm h-4 flex items-center justify-between"}>
                             <div className="h-full flex items-center">
                                 <TooltipProvider>

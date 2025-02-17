@@ -1,28 +1,27 @@
 "use server"
 
 import { UserLight } from "@/lib/definitions";
-import { auth } from "./auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import * as bcrypt from "bcryptjs";
 import { sendPasswordResetRequest, sendVerificationEmail } from "@/lib/mailing";
 import { VerifyEmailRequest } from "@prisma/client";
 import { addDays } from "date-fns";
+import { getCurrentSession } from "@/lib/authUtils";
 
 export default async function getMe(): Promise<{
     error: string | null,
     user: UserLight | null
 }> {
+    const { user } = await getCurrentSession();
 
-    const session = await auth();
-
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to fetch user info", user: null };
     }
 
-    const user = await prisma.user.findUnique({
+    const userLight = await prisma.user.findUnique({
         where: {
-            id: session.user.id
+            id: user.id
         },
         select: {
             id: true,
@@ -38,39 +37,22 @@ export default async function getMe(): Promise<{
         }
     });
 
-    if (!user) {
+    if (!userLight) {
         return { error: "User not found", user: null };
     }
 
-    return { error: null, user };
+    return { error: null, user: userLight };
 }
 
 export async function updateUser(id: string, name?: string, email?: string) {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to fetch user info", user: null };
     }
 
-    if (session.user.id !== id) {
+    if (user.id !== id) {
         return { error: "You can't update another user's info", user: null };
-    }
-
-    const user = await prisma.user.findUnique({
-        where: {
-            id
-        },
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            emailVerified: true,
-            emailVerificationDeadline: true
-        }
-    });
-
-    if (!user) {
-        return { error: "User not found", user: null };
     }
 
     await prisma.user.update({
@@ -89,24 +71,24 @@ export async function updateUser(id: string, name?: string, email?: string) {
         await sendVerificationEmail(email);
     }
 
-    revalidatePath("/dashboard/account");
+    revalidatePath("/app/account");
     return true;
 }
 
 export async function changePassword(id: string, oldPassword: string, newPassword: string): Promise<{
     error: string | null,
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to fetch user info" };
     }
 
-    if (session.user.id !== id) {
+    if (user.id !== id) {
         return { error: "You can't update another user's info" };
     }
 
-    const user = await prisma.user.findUnique({
+    const userPassword = await prisma.user.findUnique({
         where: {
             id
         },
@@ -116,12 +98,12 @@ export async function changePassword(id: string, oldPassword: string, newPasswor
         }
     });
 
-    if (!user) {
+    if (!userPassword) {
         return { error: "user-not-found" };
     }
 
 
-    if (!bcrypt.compareSync(oldPassword, user.password)) {
+    if (!bcrypt.compareSync(oldPassword, userPassword.password)) {
         return { error: "invalid-old" };
     }
 
@@ -136,7 +118,7 @@ export async function changePassword(id: string, oldPassword: string, newPasswor
         }
     });
 
-    revalidatePath("/dashboard/account");
+    revalidatePath("/app/account");
     return { error: null };
 }
 
@@ -144,13 +126,13 @@ export async function getUserVerificationRequest(id: string): Promise<{
     error: string | null,
     token: VerifyEmailRequest | null,
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to fetch user info", token: null };
     }
 
-    if (session.user.id !== id) {
+    if (user.id !== id) {
         return { error: "You can't retreive another user's info", token: null };
     }
 
@@ -213,20 +195,10 @@ export async function requestVerificationEmail(): Promise<{
         emailVerified: boolean
       } | null
 }> {
-    const session = await auth();
-
-    if (!session?.user) {
-        return { error: "unauthorized", user: null };
-    }
-
-    const user = await prisma.user.findUnique({
-        where: {
-            id: session.user.id
-        }
-    })
+    const { user } = await getCurrentSession();
 
     if (!user) {
-        return { error: "user-not-found", user: null };
+        return { error: "unauthorized", user: null };
     }
 
     await prisma.verifyEmailRequest.delete({

@@ -1,7 +1,6 @@
 "use server"
 
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/actions/auth";
 import * as fs from "fs";
 import sharp from "sharp";
 import { revalidatePath } from "next/cache";
@@ -9,21 +8,22 @@ import { ImageLightWithFolderName, ImageWithFolder } from "@/lib/definitions";
 import { imageCreateManyAndUpdateSizes, imageDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 import { changeFolderCover } from "./folders";
 import { validateShareToken } from "@/lib/utils";
+import { getCurrentSession } from "@/lib/authUtils";
 
 export async function getLightImages(): Promise<{
     error: string | null;
     lightImages: ImageLightWithFolderName[];
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to get images", lightImages: [] }
     }
 
     const images = await prisma.image.findMany({
         where: {
             createdBy: {
-                id: session.user.id
+                id: user.id
             }
         },
         select: {
@@ -52,12 +52,9 @@ export async function getLightImages(): Promise<{
 }
 
 export async function uploadImages(parentFolderId: string, formData: FormData, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashCode?: string | null): Promise<{ error: string | null }> {
-    console.log("Uploading images to folder", parentFolderId);
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    console.log("Session", session);
-
-    if (!session?.user) {
+    if (!user) {
         if (!shareToken || !tokenType) {
             return { error: "You must be logged in to upload images" };
         }
@@ -122,7 +119,7 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
         return imageData;
     }));
 
-    await imageCreateManyAndUpdateSizes(imagesDb, parentFolderId, session?.user.id ? session.user.id : folder.createdById);
+    await imageCreateManyAndUpdateSizes(imagesDb, parentFolderId, user?.id ? user.id : folder.createdById);
 
     if (folder.coverId === null) {
         const cover = await prisma.image.findFirst({
@@ -134,9 +131,9 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
         await changeFolderCover(parentFolderId, cover!.id);
     }
 
-    revalidatePath("dashboard/folders/${parentFolderId}");
-    revalidatePath("dashboard/folders");
-    revalidatePath("dashboard");
+    revalidatePath("/app/folders/${parentFolderId}");
+    revalidatePath("/app/folders");
+    revalidatePath("/app");
 
     return { error: null };
 }
@@ -145,9 +142,9 @@ export async function getImagesWithFolderFromFolder(folderId: string): Promise<{
     images: ImageWithFolder[],
     error: string | null
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to load images from folder", images: [] }
     }
 
@@ -157,7 +154,7 @@ export async function getImagesWithFolderFromFolder(folderId: string): Promise<{
                 id: folderId
             },
             createdBy: {
-                id: session.user.id
+                id: user.id
             }
         },
         include: {
@@ -169,9 +166,9 @@ export async function getImagesWithFolderFromFolder(folderId: string): Promise<{
 }
 
 export async function deleteImage(imageId: string) {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to delete images" };
     }
 
@@ -182,7 +179,7 @@ export async function deleteImage(imageId: string) {
         where: {
             id: imageId,
             createdBy: {
-                id: session.user.id
+                id: user.id
             }
         },
         include: {
@@ -199,7 +196,7 @@ export async function deleteImage(imageId: string) {
         return { error: "Image not found" };
     }
 
-    if (image.folder.createdBy.id !== session.user.id) {
+    if (image.folder.createdBy.id !== user.id) {
         return { error: "You are not authorized to delete this image" };
     }
 
@@ -209,10 +206,10 @@ export async function deleteImage(imageId: string) {
         }
     });
 
-    await imageDeleteAndUpdateSizes(imageId, session.user.id);
+    await imageDeleteAndUpdateSizes(imageId, user.id);
     
-    revalidatePath("dashboard/folders/" + image.folder.id);
-    revalidatePath("dashboard");
+    revalidatePath("/app/folders/" + image.folder.id);
+    revalidatePath("/app");
     return { error: null };
 }
 

@@ -1,19 +1,19 @@
 "use server"
 
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/actions/auth";
 import { AccessTokenWithFolder, CreateAccessTokenFormSchema, ImageLightWithFolderName, ImageWithFolder } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { AccessToken, FolderTokenPermission } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { getCurrentSession } from "@/lib/authUtils";
 
 export async function getAccessTokens(): Promise<{
     error: string | null,
     accessTokens: AccessTokenWithFolder[]
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to get links", accessTokens: [] }
     }
 
@@ -21,7 +21,7 @@ export async function getAccessTokens(): Promise<{
         where: {
             folder: {
                 createdBy: {
-                    id: session.user.id
+                    id: user.id
                 }
             }
         },
@@ -44,9 +44,9 @@ export async function createNewAccessToken(folderId: string, permission: FolderT
     error: string | null,
     accessToken?: AccessToken
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to create a new access token" }
     }
 
@@ -64,7 +64,7 @@ export async function createNewAccessToken(folderId: string, permission: FolderT
         where: {
             id: folderId,
             createdBy: {
-                id: session.user.id
+                id: user.id
             }
         }
     });
@@ -87,8 +87,8 @@ export async function createNewAccessToken(folderId: string, permission: FolderT
                 expires: expiryDate
             }
         });
-        revalidatePath("/dashboard/links");
-        revalidatePath("/dashboard/folders/[folderId]");
+        revalidatePath("/app/links");
+        revalidatePath("/app/folders/[folderId]");
         return { error: null, accessToken: accessToken }
     } catch (e) {
         if (e instanceof PrismaClientKnownRequestError) {
@@ -103,9 +103,9 @@ export async function createNewAccessToken(folderId: string, permission: FolderT
 export async function changeAccessTokenActiveState(token: string, isActive: boolean): Promise<{
     error: string | null,
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to change token state" }
     }
 
@@ -114,7 +114,7 @@ export async function changeAccessTokenActiveState(token: string, isActive: bool
             token: token,
             folder: {
                 createdBy: {
-                    id: session.user.id
+                    id: user.id
                 }
             }
         },
@@ -123,16 +123,16 @@ export async function changeAccessTokenActiveState(token: string, isActive: bool
         }
     });
 
-    revalidatePath("/dashboard/links");
+    revalidatePath("/app/links");
     return { error: null }
 }
 
 export async function lockAccessToken(tokenId: string, pin: string): Promise<{
     error: string | null
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to lock an access token" }
     }
 
@@ -142,7 +142,7 @@ export async function lockAccessToken(tokenId: string, pin: string): Promise<{
                 id: tokenId,
                 folder: {
                     createdBy: {
-                        id: session.user.id
+                        id: user.id
                     }
                 }
             }
@@ -162,7 +162,7 @@ export async function lockAccessToken(tokenId: string, pin: string): Promise<{
             }
         });
 
-        revalidatePath("/dashboard/links");
+        revalidatePath("/app/links");
         return { error: null }
     } catch (e) {
         return { error: "An unknown error happened when trying to lock this token" }
@@ -173,9 +173,9 @@ export async function unlockAccessToken(tokenId: string): Promise<{
     error: string | null
 }> {
     console.log("Ask for unlock");
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to unlock an access token" }
     }
 
@@ -185,7 +185,7 @@ export async function unlockAccessToken(tokenId: string): Promise<{
                 id: tokenId,
                 folder: {
                     createdBy: {
-                        id: session.user.id
+                        id: user.id
                     }
                 }
             }
@@ -207,7 +207,7 @@ export async function unlockAccessToken(tokenId: string): Promise<{
         });
 
         console.log("Unlocked");
-        revalidatePath("/dashboard/links");
+        revalidatePath("/app/links");
         return { error: null }
     } catch (e) {
         console.log("Error", e);
@@ -216,9 +216,9 @@ export async function unlockAccessToken(tokenId: string): Promise<{
 }
 
 export async function deleteAccessToken(tokens: string[]): Promise<{ error: string | null }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to delete an access token" }
     }
 
@@ -230,7 +230,7 @@ export async function deleteAccessToken(tokens: string[]): Promise<{ error: stri
                 },
                 folder: {
                     createdBy: {
-                        id: session.user.id
+                        id: user.id
                     }
                 }
             }
@@ -239,6 +239,6 @@ export async function deleteAccessToken(tokens: string[]): Promise<{ error: stri
         return { error: "An unknown error happened when trying to delete this access token" }
     }
 
-    revalidatePath("/dashboard/links");
+    revalidatePath("/app/links");
     return { error: null }
 }

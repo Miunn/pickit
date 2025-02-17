@@ -1,29 +1,28 @@
 "use server"
 
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/actions/auth";
 import * as fs from "fs";
 import { revalidatePath } from "next/cache";
 import { FolderWithAccessToken, FolderWithImagesWithFolder, LightFolder, LockFolderFormSchema } from "@/lib/definitions";
 import { folderDeleteAndUpdateSizes } from "@/lib/prismaExtend";
-import * as bcrypt from "bcryptjs";
 import { FolderTokenPermission } from "@prisma/client";
 import { validateShareToken } from "@/lib/utils";
+import { getCurrentSession } from "@/lib/authUtils";
 
 export async function getLightFolders(): Promise<{
     lightFolders: LightFolder[],
     error?: string | null
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { lightFolders: [], error: "You must be logged in to create a folders" };
     }
 
     const folders = await prisma.folder.findMany({
         where: {
             createdBy: {
-                id: session.user.id as string
+                id: user.id as string
             }
         },
         select: {
@@ -39,9 +38,9 @@ export async function getFolderName(id: string): Promise<{
     folder?: LightFolder | null,
     error?: string | null
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { folder: null, error: "You must be logged in to get folder name" };
     }
 
@@ -49,7 +48,7 @@ export async function getFolderName(id: string): Promise<{
         where: {
             id: id,
             createdBy: {
-                id: session.user.id as string
+                id: user.id as string
             }
         },
         select: {
@@ -66,13 +65,13 @@ export async function getFolderFull(folderId: string, shareToken?: string, token
     folder: (FolderWithImagesWithFolder & FolderWithAccessToken) | null
     permission?: FolderTokenPermission
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user && !shareToken) {
+    if (!user && !shareToken) {
         return { error: "unauthorized", folder: null };
     }
 
-    if (!session?.user && shareToken) {
+    if (!user && shareToken) {
         return await validateShareToken(shareToken, tokenType as "accessToken" | "personAccessToken", folderId, hashedPinCode);
     }
 
@@ -80,7 +79,7 @@ export async function getFolderFull(folderId: string, shareToken?: string, token
         where: {
             id: folderId,
             createdBy: {
-                id: session?.user?.id
+                id: user?.id
             }
         },
         include: {
@@ -100,9 +99,9 @@ export async function createFolder(name: string): Promise<{
     folder: { id: string; name: string; coverId: string | null; createdById: string; createdAt: Date; updatedAt: Date; } | null,
     error: string | null,
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { folder: null, error: "You must be logged in to create a folders" };
     }
 
@@ -113,7 +112,7 @@ export async function createFolder(name: string): Promise<{
             name: name,
             createdBy: {
                 connect: {
-                    id: session.user.id as string
+                    id: user.id as string
                 }
             },
             AccessToken: {
@@ -133,8 +132,8 @@ export async function createFolder(name: string): Promise<{
         }
     });
 
-    revalidatePath("dashboard/folders");
-    revalidatePath("dashboard");
+    revalidatePath("/app/folders");
+    revalidatePath("/app");
     return { folder: folder, error: null };
 }
 
@@ -142,9 +141,9 @@ export async function renameFolder(folderId: string, name: string): Promise<{
     folder: { id: string; name: string; coverId: string | null; createdById: string; createdAt: Date; updatedAt: Date; } | null,
     error: string | null,
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { folder: null, error: "You must be logged in to rename a folders" };
     }
 
@@ -152,7 +151,7 @@ export async function renameFolder(folderId: string, name: string): Promise<{
         where: {
             id: folderId,
             createdBy: {
-                id: session.user.id as string
+                id: user.id as string
             }
         },
         data: {
@@ -160,17 +159,17 @@ export async function renameFolder(folderId: string, name: string): Promise<{
         }
     });
 
-    revalidatePath("dashboard/folders");
-    revalidatePath("dashboard");
+    revalidatePath("/app/folders");
+    revalidatePath("/app");
     return { folder: folder, error: null };
 }
 
 export async function changeFolderCover(folderId: string, coverId: string): Promise<{
     error: string | null
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to change a folder's cover" };
     }
 
@@ -178,7 +177,7 @@ export async function changeFolderCover(folderId: string, coverId: string): Prom
         where: {
             id: folderId,
             createdBy: {
-                id: session.user.id as string
+                id: user.id as string
             }
         },
         data: {
@@ -190,22 +189,22 @@ export async function changeFolderCover(folderId: string, coverId: string): Prom
         }
     });
 
-    revalidatePath("/dashboard");
-    revalidatePath("/dashboard/folders");
+    revalidatePath("/app");
+    revalidatePath("/app/folders");
     return { error: null }
 }
 
 export async function deleteFolder(folderId: string): Promise<any> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to delete a folders" };
     }
 
     const folder = await prisma.folder.findUnique({
         where: {
             id: folderId,
-            createdBy: { id: session.user.id as string }
+            createdBy: { id: user.id as string }
         },
         select: {
             createdBy: {
@@ -224,9 +223,9 @@ export async function deleteFolder(folderId: string): Promise<any> {
         }
     });
 
-    await folderDeleteAndUpdateSizes(folderId, session.user.id as string);
+    await folderDeleteAndUpdateSizes(folderId, user.id as string);
 
-    revalidatePath("dashboard/folders");
-    revalidatePath("dashboard");
+    revalidatePath("/app/folders");
+    revalidatePath("/app");
     return { error: null };
 }

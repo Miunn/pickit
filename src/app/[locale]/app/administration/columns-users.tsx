@@ -48,7 +48,7 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
             const name: string = row.getValue("name");
             const id = row.original.id;
             return <Button variant={'link'} className="truncate font-semibold" asChild>
-                <Link href={`/dashboard/admin/users/${id}`}>{name}</Link>
+                <Link href={`/app/administration/users/${id}`}>{name}</Link>
             </Button>
         }
     },
@@ -104,9 +104,7 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
         },
         cell: ({ row }) => {
             const t = useTranslations("dataTables.users.columns.folders");
-            console.log(row);
             const folders: string = row.getValue("count_folders");
-            console.log("Folders:", folders)
             return <p className="truncate">{t('count', { count: parseInt(folders) })}</p>
         }
     },
@@ -121,9 +119,7 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
         },
         cell: ({ row }) => {
             const t = useTranslations("dataTables.users.columns.images");
-            console.log(row);
             const images: string = row.getValue("count_images");
-            console.log("images:", images)
             return <p>{t('count', { count: parseInt(images) })}</p>
         }
     },
@@ -190,7 +186,7 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
 
                             <DropdownMenuSeparator />
                             <DropdownMenuItem asChild>
-                                <Link href={`/dashboard/admin/users/${user.id}`}>
+                                <Link href={`/app/administration/users/${user.id}`}>
                                     {t('edit')}
                                 </Link>
                             </DropdownMenuItem>

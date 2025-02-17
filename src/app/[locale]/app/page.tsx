@@ -1,14 +1,14 @@
 import {prisma} from "@/lib/prisma";
 import DashboardContent from "@/components/layout/DashboardContent";
-import { auth } from "@/actions/auth";
+import { getCurrentSession } from "@/lib/authUtils";
 
 export default async function Home({ params }: { params: { locale: string } }) {
 
-    const session = await auth();
+    const { user } = await getCurrentSession();
     const lastFolders = await prisma.folder.findMany({
         where: {
             createdBy: {
-                id: session?.user?.id
+                id: user?.id
             }
         },
         orderBy: [
@@ -28,7 +28,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
     const lastImages = await prisma.image.findMany({
         where: {
             createdBy: {
-                id: session?.user?.id
+                id: user?.id
             }
         },
         orderBy: [

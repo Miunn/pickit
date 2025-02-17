@@ -1,19 +1,19 @@
 "use server"
 
 import { prisma } from "@/lib/prisma";
-import { auth } from "./auth";
 import { FolderTokenPermission, PersonAccessToken } from "@prisma/client";
 import { PersonAccessTokenWithFolder } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { sendShareFolderEmail } from "@/lib/mailing";
+import { getCurrentSession } from "@/lib/authUtils";
 
 export async function getPersonsAccessTokens(): Promise<{
     error: string | null,
     personAccessTokens: PersonAccessTokenWithFolder[]
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "unauthorized", personAccessTokens: [] }
     }
 
@@ -21,7 +21,7 @@ export async function getPersonsAccessTokens(): Promise<{
         where: {
             folder: {
                 createdBy: {
-                    id: session.user.id
+                    id: user.id
                 }
             }
         },
@@ -44,9 +44,9 @@ export async function createNewPersonAccessToken(folderId: string, target: strin
     error: string | null,
     personAccessToken?: PersonAccessToken
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "unauthorized" }
     }
 
@@ -54,7 +54,7 @@ export async function createNewPersonAccessToken(folderId: string, target: strin
         where: {
             id: folderId,
             createdBy: {
-                id: session.user.id
+                id: user.id
             }
         }
     });
@@ -84,9 +84,9 @@ export async function createNewPersonAccessToken(folderId: string, target: strin
 export async function createMultiplePersonAccessTokens(folderId: string, data: { email: string, permission: FolderTokenPermission, expiryDate: Date }[]): Promise<{
     error: string | null
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "unauthorized" }
     }
 
@@ -94,7 +94,7 @@ export async function createMultiplePersonAccessTokens(folderId: string, data: {
         where: {
             id: folderId,
             createdBy: {
-                id: session.user.id
+                id: user.id
             }
         }
     });
@@ -114,16 +114,16 @@ export async function createMultiplePersonAccessTokens(folderId: string, data: {
         }))
     });
 
-    await sendShareFolderEmail(data.map((d, i) => ({ email: d.email, link: `${process.env.NEXTAUTH_URL}/dashboard/folders/${folderId}?share=${tokens[i]}&t=p`})), session.user.name!, folder.name)
+    await sendShareFolderEmail(data.map((d, i) => ({ email: d.email, link: `${process.env.APP_URL}/app/folders/${folderId}?share=${tokens[i]}&t=p`})), user.name!, folder.name)
     return { error: null }
 }
 
 export async function changePersonAccessTokenActiveState(token: string, isActive: boolean): Promise<{
     error: string | null,
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to change token state" }
     }
 
@@ -132,7 +132,7 @@ export async function changePersonAccessTokenActiveState(token: string, isActive
             token: token,
             folder: {
                 createdBy: {
-                    id: session.user.id
+                    id: user.id
                 }
             }
         },
@@ -141,16 +141,16 @@ export async function changePersonAccessTokenActiveState(token: string, isActive
         }
     });
 
-    revalidatePath("/dashboard/links");
+    revalidatePath("/app/links");
     return { error: null }
 }
 
 export async function lockPersonAccessToken(tokenId: string, pin: string): Promise<{
     error: string | null
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to lock an access token" }
     }
 
@@ -160,7 +160,7 @@ export async function lockPersonAccessToken(tokenId: string, pin: string): Promi
                 id: tokenId,
                 folder: {
                     createdBy: {
-                        id: session.user.id
+                        id: user.id
                     }
                 }
             }
@@ -180,7 +180,7 @@ export async function lockPersonAccessToken(tokenId: string, pin: string): Promi
             }
         });
 
-        revalidatePath("/dashboard/links");
+        revalidatePath("/app/links");
         return { error: null }
     } catch (e) {
         return { error: "An unknown error happened when trying to lock this token" }
@@ -190,9 +190,9 @@ export async function lockPersonAccessToken(tokenId: string, pin: string): Promi
 export async function unlockPersonAccessToken(tokenId: string): Promise<{
     error: string | null
 }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to unlock an access token" }
     }
 
@@ -202,7 +202,7 @@ export async function unlockPersonAccessToken(tokenId: string): Promise<{
                 token: tokenId,
                 folder: {
                     createdBy: {
-                        id: session.user.id
+                        id: user.id
                     }
                 }
             }
@@ -222,7 +222,7 @@ export async function unlockPersonAccessToken(tokenId: string): Promise<{
             }
         });
 
-        revalidatePath("/dashboard/links");
+        revalidatePath("/app/links");
         return { error: null }
     } catch (e) {
         return { error: "An unknown error happened when trying to unlock this token" }
@@ -230,9 +230,9 @@ export async function unlockPersonAccessToken(tokenId: string): Promise<{
 }
 
 export async function deletePersonAccessTokens(tokens: string[]): Promise<{ error: string | null }> {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to delete an access token" }
     }
 
@@ -244,7 +244,7 @@ export async function deletePersonAccessTokens(tokens: string[]): Promise<{ erro
                 },
                 folder: {
                     createdBy: {
-                        id: session.user.id
+                        id: user.id
                     }
                 }
             }
@@ -253,14 +253,14 @@ export async function deletePersonAccessTokens(tokens: string[]): Promise<{ erro
         return { error: "An unknown error happened when trying to delete access tokens" }
     }
 
-    revalidatePath("/dashboard/links");
+    revalidatePath("/app/links");
     return { error: null }
 }
 
 export async function sendAgainPersonAccessToken(token: string) {
-    const session = await auth();
+    const { user } = await getCurrentSession();
 
-    if (!session?.user) {
+    if (!user) {
         return { error: "You must be logged in to send an access token again" }
     }
 
@@ -269,7 +269,7 @@ export async function sendAgainPersonAccessToken(token: string) {
             token: token,
             folder: {
                 createdBy: {
-                    id: session.user.id
+                    id: user.id
                 }
             }
         },
@@ -286,7 +286,7 @@ export async function sendAgainPersonAccessToken(token: string) {
         return { error: "Token not found" }
     }
 
-    await sendShareFolderEmail([{ email: personAccessToken.email, link: `${process.env.NEXTAUTH_URL}/dashboard/folders/${personAccessToken.folderId}?share=${token}&t=p` }], session.user.name!, personAccessToken.folder.name)
+    await sendShareFolderEmail([{ email: personAccessToken.email, link: `${process.env.NEXTAUTH_URL}/app/folders/${personAccessToken.folderId}?share=${token}&t=p` }], user.name!, personAccessToken.folder.name)
 
     return { error: null }
 }
