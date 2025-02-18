@@ -591,6 +591,33 @@
           "submit": "Change email"
         }
       }
+    },
+    "admin": {
+      "users": {
+        "delete": {
+          "title": "Delete user",
+          "description": "Are you sure you want to delete {name} ? This action cannot be undone.",
+          "confirmation": {
+            "label": "Type user's name to confirm",
+            "placeholder": "Enter {name}"
+          },
+          "actions": {
+            "cancel": "Cancel",
+            "submit": "Delete",
+            "submitting": "Deleting"
+          },
+          "errors": {
+            "unknown": {
+              "title": "Can't delete user",
+              "description": "An unknown error happened while deleting the user"
+            }
+          },
+          "success": {
+            "title": "User deleted",
+            "description": "The user has been deleted successfully"
+          }
+        }
+      }
     }
   },
   "dataTables": {

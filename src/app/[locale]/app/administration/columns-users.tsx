@@ -1,5 +1,6 @@
 "use client"
 
+import DeleteUserDialog from "@/components/admin/users/DeleteUserDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -11,6 +12,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
+import { useState } from "react";
 
 export const usersColumns: ColumnDef<UserAdministration>[] = [
     {
@@ -170,6 +172,7 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
         id: "actions",
         cell: ({ row }) => {
             const t = useTranslations("dataTables.users.columns.actions");
+            const [deleteOpen, setDeleteOpen] = useState(false);
             const user = row.original;
             return (
                 <>
@@ -190,9 +193,10 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
                                 </Link>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-red-600 focus:text-red-600 font-semibold">{t('delete.label')}</DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600 focus:text-red-600 font-semibold" onClick={() => setDeleteOpen(true)}>{t('delete.label')}</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
+                    <DeleteUserDialog user={user} open={deleteOpen} setOpen={setDeleteOpen} />
                 </>
             )
         },

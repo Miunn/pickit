@@ -590,6 +590,33 @@
           "submit": "Changer l'adresse"
         }
       }
+    },
+    "admin": {
+      "users": {
+        "delete": {
+          "title": "Supprimer l'utilisateur",
+          "description": "Êtes-vous sûr de vouloir supprimer {name} ? Cette action est irréversible",
+          "confirmation": {
+            "label": "Entrez le nom de l'utilisateur pour confirmer",
+            "placeholder": "Nom de l'utilisateur"
+          },
+          "actions": {
+            "cancel": "Annuler",
+            "submit": "Supprimer",
+            "submitting": "Suppression"
+          },
+          "errors": {
+            "unknown": {
+              "title": "Impossible de supprimer l'utilisateur",
+              "description": "Une erreur inconnue est survenue lors de la suppression de l'utilisateur"
+            }
+          },
+          "success": {
+            "title": "Utilisateur supprimé",
+            "description": "L'utilisateur a été supprimé avec succès"
+          }
+        }
+      }
     }
   },
   "dataTables": {

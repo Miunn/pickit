@@ -30,7 +30,7 @@ model Folder {
   size              Int                 @default(0)
   cover             Image?              @relation(fields: [coverId], references: [id])
   coverId           String?             @unique
-  createdBy         User                @relation("UserFolders", fields: [createdById], references: [id])
+  createdBy         User                @relation("UserFolders", fields: [createdById], references: [id], onDelete: Cascade)
   createdById       String
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
@@ -49,7 +49,7 @@ model Image {
   folder      Folder   @relation("FolderImages", fields: [folderId], references: [id], onDelete: Cascade)
   folderId    String
   folderCover Folder?
-  createdBy   User     @relation("UserImages", fields: [createdById], references: [id])
+  createdBy   User     @relation("UserImages", fields: [createdById], references: [id], onDelete: Cascade)
   createdById String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -113,7 +113,7 @@ model VerifyEmailRequest {
   token   String   @unique @default(uuid(4))
   expires DateTime
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @unique
 }
 
@@ -122,7 +122,7 @@ model PasswordResetRequest {
   token   String   @unique @default(uuid(4))
   expires DateTime
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @unique
 }
 
