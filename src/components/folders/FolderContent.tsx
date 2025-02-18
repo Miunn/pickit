@@ -34,8 +34,6 @@ export const FolderContent = ({ folderId, folder, isGuest, locale }: FolderConte
     const [unlockLoading, setUnlockLoading] = useState(false);
     const [permission, setPermission] = useState<FolderTokenPermission>(isGuest ? "READ" : "WRITE");
 
-    console.log("Is guest", isGuest);
-
     useCallback(() => {
         setFolderContent(folder);
     }, [folder]);
@@ -72,8 +70,6 @@ export const FolderContent = ({ folderId, folder, isGuest, locale }: FolderConte
         if (r.folder) {
             setFolderContent(r.folder);
         }
-
-        console.log("Load permission", r.permission);
 
         setPermission(r.permission || "READ");
     }

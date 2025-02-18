@@ -79,7 +79,6 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
                 const emailVerifiedDeadline: Date | null = row.original.emailVerificationDeadline;
                 const locale = useLocale();
 
-                console.log("Email verified deadline:", emailVerifiedDeadline);
                 return (
                     <Tooltip>
                         <TooltipTrigger>
