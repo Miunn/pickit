@@ -30,7 +30,11 @@ export default function SignInForm({ locale }: { locale: string }) {
 
     const onSubmit = async (data: { email: string, password: string }) => {
         setLoading(true);
+        
         const r = await SignIn(data.email, data.password);
+
+        setLoading(false);
+        
         if (r && r.error) {
             toast({
                 title: t("form.error.title"),
@@ -39,7 +43,6 @@ export default function SignInForm({ locale }: { locale: string }) {
             });
         }
 
-        setLoading(false);
     };
 
     return (
