@@ -10,11 +10,12 @@ import { toast } from "@/hooks/use-toast";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
 import { FolderWithAccessToken, FolderWithImagesWithFolder } from "@/lib/definitions";
 import UnlockTokenPrompt from "./UnlockTokenPrompt";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getFolderFull } from "@/actions/folders";
 import { useSearchParams } from "next/navigation";
 import * as bcrypt from "bcryptjs";
 import { FolderTokenPermission } from "@prisma/client";
+import SortImages from "./SortImages";
 
 
 export interface FolderContentProps {
@@ -33,6 +34,7 @@ export const FolderContent = ({ folderId, folder, isGuest, locale }: FolderConte
     const [hashPin, setHashPin] = useState<string | undefined>(undefined);
     const [unlockLoading, setUnlockLoading] = useState(false);
     const [permission, setPermission] = useState<FolderTokenPermission>(isGuest ? "READ" : "WRITE");
+    const [sortState, setSortState] = useState<"name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc">("date-desc");
 
     useCallback(() => {
         setFolderContent(folder);
@@ -74,6 +76,65 @@ export const FolderContent = ({ folderId, folder, isGuest, locale }: FolderConte
         setPermission(r.permission || "READ");
     }
 
+    useEffect(() => {
+        switch (sortState) {
+            case "name-asc":
+                setFolderContent(prev => {
+                    if (!prev) return prev;
+                    return {
+                        ...prev,
+                        images: prev.images.sort((a, b) => a.name.localeCompare(b.name))
+                    }
+                });
+                break;
+            case "name-desc":
+                setFolderContent(prev => {
+                    if (!prev) return prev;
+                    return {
+                        ...prev,
+                        images: prev.images.sort((a, b) => b.name.localeCompare(a.name))
+                    }
+                });
+                break;
+            case "size-asc":
+                setFolderContent(prev => {
+                    if (!prev) return prev;
+                    return {
+                        ...prev,
+                        images: prev.images.sort((a, b) => a.size - b.size)
+                    }
+                });
+                break;
+            case "size-desc":
+                setFolderContent(prev => {
+                    if (!prev) return prev;
+                    return {
+                        ...prev,
+                        images: prev.images.sort((a, b) => b.size - a.size)
+                    }
+                });
+                break;
+            case "date-asc":
+                setFolderContent(prev => {
+                    if (!prev) return prev;
+                    return {
+                        ...prev,
+                        images: prev.images.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+                    }
+                });
+                break;
+            case "date-desc":
+                setFolderContent(prev => {
+                    if (!prev) return prev;
+                    return {
+                        ...prev,
+                        images: prev.images.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+                    }
+                });
+                break;
+        }
+    }, [sortState]);
+
     return (
         <>
             {folderContent
@@ -82,6 +143,7 @@ export const FolderContent = ({ folderId, folder, isGuest, locale }: FolderConte
                         {folderContent.name}
 
                         <div className={"flex gap-4"}>
+                            <SortImages sortState={sortState} setSortState={setSortState} />
                             {permission === "WRITE"
                                 ? <UploadImagesDialog folderId={folderContent.id} shareToken={searchParams.get("share")} tokenType={searchParams.get("t") === "p" ? "personAccessToken" : "accessToken"} hashCode={hashPin} />
                                 : null}

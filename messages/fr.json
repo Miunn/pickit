@@ -247,6 +247,14 @@
       "remove": "Supprimer"
     },
     "images": {
+      "sort": {
+        "trigger": "Trier par",
+        "options": {
+          "name": "Nom",
+          "size": "Taille",
+          "date": "Date"
+        }
+      },
       "carousel": {
         "slide": "Image {current} sur {total}",
         "actions": {

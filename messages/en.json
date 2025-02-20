@@ -248,6 +248,14 @@
       "remove": "Remove file"
     },
     "images": {
+      "sort": {
+        "trigger": "Sort by",
+        "options": {
+          "name": "Name",
+          "size": "Size",
+          "date": "Date"
+        }
+      },
       "carousel": {
         "slide": "Slide {current} of {total}",
         "actions": {

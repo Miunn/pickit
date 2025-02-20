@@ -1,14 +1,14 @@
 import {prisma} from "@/lib/prisma";
 import FoldersContent from "@/components/folders/FoldersContent";
-import { auth } from "@/actions/auth";
+import { getCurrentSession } from "@/lib/authUtils";
 
 export default async function FoldersPage({ params }: { params: { locale: string } }) {
 
-    const session = await auth();
+    const { user } = await getCurrentSession();
     const folders = await prisma.folder.findMany({
         where: {
             createdBy: {
-                id: session?.user?.id
+                id: user?.id
             }
         },
         include: {
