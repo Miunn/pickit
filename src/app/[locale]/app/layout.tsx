@@ -37,7 +37,7 @@ export default async function LocaleLayout({
     if (!me) {
         return redirect(`/signin`);
     }
-    
+
     const t = await getTranslations("sidebar");
     const folders = (await getLightFolders()).lightFolders;
     const images = (await getLightImages()).lightImages;
@@ -96,13 +96,13 @@ export default async function LocaleLayout({
                         }] : [])
                     ],
                 }} />
-                <SidebarInset className="flex-1">
-                    <header className="sticky flex h-16 shrink-0 items-center gap-2">
+                <SidebarInset className="flex-1 max-h-[calc(100svh-theme(spacing.4))]">
+                    <header className="flex h-16 shrink-0 items-center gap-2 border-b">
                         <div className="w-full flex justify-between items-center px-4">
                             <div className="flex items-center gap-2">
-                            <SidebarTrigger className="-ml-1" />
-                            <Separator orientation="vertical" className="mr-2 h-4" />
-                            <HeaderBreadcumb />
+                                <SidebarTrigger className="-ml-1" />
+                                <Separator orientation="vertical" className="mr-2 h-4" />
+                                <HeaderBreadcumb />
                             </div>
                             <SwitchLocale locale={locale} className="text-xs" />
                         </div>
@@ -110,7 +110,8 @@ export default async function LocaleLayout({
                     {me?.emailVerified === false ? (
                         <UnverifiedEmail locale={locale} userDeletionDate={me.emailVerificationDeadline || addDays(me.createdAt, 7)} />
                     ) : null}
-                    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+
+                    <div className="flex flex-1 flex-col gap-4 p-4 overflow-auto pt-4">
                         {children}
                     </div>
                 </SidebarInset>

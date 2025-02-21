@@ -16,7 +16,8 @@ import { FileUploader } from "../generic/FileUploader";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { handleImagesSubmission } from "@/lib/utils";
+import { formatBytes, handleImagesSubmission } from "@/lib/utils";
+import { set } from "date-fns";
 
 export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder: FolderWithImagesWithFolder, shareToken?: string | null, hashPin?: string, tokenType?: "accessToken" | "personAccessToken" | null }) => {
 
@@ -32,6 +33,7 @@ export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder:
 
     const [selecting, setSelecting] = useState<boolean>(false);
     const [selected, setSelected] = useState<string[]>([]);
+    const [sizeSelected, setSizeSelected] = useState<number>(0);
 
     const uploadImageForm = useForm<z.infer<typeof UploadImagesFormSchema>>({
         resolver: zodResolver(UploadImagesFormSchema),
@@ -47,6 +49,7 @@ export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder:
     useEffect(() => {
         if (selected.length === 0) {
             setSelecting(false);
+            setSizeSelected(0);
         }
     }, [selected]);
 
@@ -57,9 +60,10 @@ export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder:
                     <div className={"flex gap-2 items-center"}>
                         <Button variant="ghost" onClick={() => {
                             setSelected([]);
+                            setSizeSelected(0);
                             setSelecting(false);
                         }} size="icon"><X className={"w-4 h-4"} /></Button>
-                        <h2 className={"font-semibold"}>{selected.length} {t('selected')}</h2>
+                        <h2><span className={"font-semibold"}>{selected.length} {t('selected')}</span> - {formatBytes(sizeSelected, { decimals: 2, sizeType: "normal" })}</h2>
                     </div>
 
                     <Button variant="outline" onClick={() => {
@@ -112,13 +116,30 @@ export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder:
                         <Fragment key={image.id}>
                             <ImagePreview
                                 image={image}
-                                selecting={selecting}
-                                setSelecting={setSelecting}
                                 selected={selected}
-                                setSelected={setSelected}
                                 onClick={() => {
-                                    setStartIndex(folder.images.indexOf(image));
-                                    setCarouselOpen(true);
+                                    if (selecting) {
+                                        if (selected.includes(image.id)) {
+                                            setSelected(selected.filter((id) => id !== image.id));
+                                            setSizeSelected(sizeSelected - image.size);
+                                        } else {
+                                            setSelected([...selected, image.id]);
+                                            setSizeSelected(sizeSelected + image.size);
+                                        }
+                                    } else {
+                                        setStartIndex(folder.images.indexOf(image));
+                                        setCarouselOpen(true);
+                                    }
+                                }}
+                                onSelect={() => {
+                                    if (selected.includes(image.id)) {
+                                        setSelected(selected.filter((id) => id !== image.id));
+                                        setSizeSelected(sizeSelected - image.size);
+                                    } else {
+                                        setSelecting(true);
+                                        setSelected([...selected, image.id]);
+                                        setSizeSelected(sizeSelected + image.size);
+                                    }
                                 }}
                                 onDelete={() => {
                                     setSelectImageToDelete(image);
@@ -127,7 +148,7 @@ export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder:
                                 shareToken={shareToken}
                                 shareHashPin={hashPin}
                                 tokenType={tokenType === "personAccessToken" ? "p" : null}
-                                />
+                            />
                         </Fragment>
                     ))}
             </div>

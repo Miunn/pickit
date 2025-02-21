@@ -27,18 +27,6 @@ export function formatBytes(
 		}`
 }
 
-export const downloadFolder = async (folder: Folder): Promise<number> => {
-	const res = await fetch(`/api/folders/${folder.id}/download`);
-
-	if (!res || !res.ok) {
-		return res.status;
-	}
-
-	const blob = await res.blob();
-	saveAs(blob, `${folder.name}.zip`);
-	return 200;
-}
-
 export const switchLocaleUrl = (url: string, locale: string): string => {
 	// Remove the locale from the url
 	url = url.replace(/\/[a-z]{2}\//, "/");

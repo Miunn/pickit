@@ -8,18 +8,16 @@ import { formatBytes } from "@/lib/utils";
 
 export interface ImagePreviewProps {
     image: ImageWithFolder;
-    selecting: boolean;
-    setSelecting: React.Dispatch<React.SetStateAction<boolean>>;
     selected: string[];
-    setSelected: React.Dispatch<React.SetStateAction<string[]>>;
-    onClick?: (imageId: string) => void;
-    onDelete?: (imageId: string) => void;
+    onClick: () => void;
+    onSelect: () => void;
+    onDelete: () => void;
     shareToken?: string | null;
     shareHashPin?: string | null;
     tokenType?: "p" | null;
 }
 
-export const ImagePreview = ({ image, selecting, setSelecting, selected, setSelected, onClick, onDelete, shareToken, shareHashPin, tokenType }: ImagePreviewProps) => {
+export const ImagePreview = ({ image, selected, onClick, onSelect, onDelete, shareToken, shareHashPin, tokenType }: ImagePreviewProps) => {
 
     const format = useFormatter();
     const t = useTranslations("images");
@@ -28,17 +26,7 @@ export const ImagePreview = ({ image, selecting, setSelecting, selected, setSele
     return (
         <ContextMenu key={image.id}>
             <ContextMenuTrigger asChild>
-                <button onClick={() => {
-                    if (selecting) {
-                        if (selected.includes(image.id)) {
-                            setSelected(selected.filter((id) => id !== image.id));
-                        } else {
-                            setSelected([...selected, image.id]);
-                        }
-                    } else if (onClick) {
-                        onClick(image.id);
-                    }
-                }} style={{ all: "unset", cursor: "pointer" }}>
+                <button onClick={onClick} style={{ all: "unset", cursor: "pointer" }}>
                     <div className={`inline-block w-64 p-2 rounded-2xl ${selected.includes(image.id) ? "bg-blue-100" : ""}`}>
                         <div className={`relative h-36 mb-4 flex justify-center items-center`}>
                             <Image src={`/api/folders/${image.folderId}/images/${image.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`} alt={image.name}
@@ -75,24 +63,13 @@ export const ImagePreview = ({ image, selecting, setSelecting, selected, setSele
                 </button>
             </ContextMenuTrigger>
             <ContextMenuContent>
-                <ContextMenuItem onClick={() => {
-                    if (onClick) {
-                        onClick(image.id);
-                    }
-                }}>
+                <ContextMenuItem onClick={onClick}>
                     {t('actions.view')}
                 </ContextMenuItem>
-                <ContextMenuItem onClick={() => {
-                    setSelecting(true);
-                    setSelected([...selected, image.id])
-                }}>
+                <ContextMenuItem onClick={onSelect}>
                     {t('actions.select')}
                 </ContextMenuItem>
-                <ContextMenuItem onClick={() => {
-                    if (onDelete) {
-                        onDelete(image.id);
-                    }
-                }} className="text-red-600 focus:text-red-600 font-semibold">
+                <ContextMenuItem onClick={onDelete} className="text-red-600 focus:text-red-600 font-semibold">
                     {deleteTranslations('trigger')}
                 </ContextMenuItem>
             </ContextMenuContent>

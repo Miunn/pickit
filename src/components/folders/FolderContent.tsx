@@ -1,21 +1,23 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Download, FolderLock } from "lucide-react";
+import { Download } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { UploadImagesDialog } from "@/components/images/UploadImagesDialog";
 import { ImagesGrid } from "@/components/images/ImagesGrid";
-import { downloadFolder } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
 import { FolderWithAccessToken, FolderWithImagesWithFolder } from "@/lib/definitions";
 import UnlockTokenPrompt from "./UnlockTokenPrompt";
-import { useCallback, useEffect, useState } from "react";
-import { getFolderFull } from "@/actions/folders";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { downloadFolder, getFolderFull } from "@/actions/folders";
 import { useSearchParams } from "next/navigation";
 import * as bcrypt from "bcryptjs";
 import { FolderTokenPermission } from "@prisma/client";
 import SortImages from "./SortImages";
+import saveAs from "file-saver";
+import { ToastAction } from "../ui/toast";
+import { Progress } from "../ui/progress";
 
 
 export interface FolderContentProps {
@@ -35,6 +37,8 @@ export const FolderContent = ({ folderId, folder, isGuest, locale }: FolderConte
     const [unlockLoading, setUnlockLoading] = useState(false);
     const [permission, setPermission] = useState<FolderTokenPermission>(isGuest ? "READ" : "WRITE");
     const [sortState, setSortState] = useState<"name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc">("date-desc");
+    const [downloadProgress, setDownloadProgress] = useState<number>(0);
+    const downloadRef = useRef(null);
 
     useCallback(() => {
         setFolderContent(folder);
@@ -74,6 +78,42 @@ export const FolderContent = ({ folderId, folder, isGuest, locale }: FolderConte
         }
 
         setPermission(r.permission || "READ");
+    }
+
+    async function downloadCallback() {
+        if (!folderContent) return;
+
+        toast({
+            title: "Download started",
+            description: "Your download will start shortly",
+            action: <Progress value={downloadProgress} className="mt-2 w-full" />,
+            className: "flex-col items-start space-x-0",
+        });
+
+        const r = await fetch(`/api/folders/${folderContent.id}/download`);
+
+        if (r.status === 404) {
+            toast({
+                title: "No images found",
+                description: "There are no images in this folder to download"
+            });
+            return;
+        }
+
+        if (r.status !== 200) {
+            toast({
+                title: "Error",
+                description: "An error occurred while trying to download this folder",
+                variant: "destructive"
+            });
+            return;
+        }
+
+        setDownloadProgress(50);
+
+        saveAs(await r.blob(), `${folderContent.name}.zip`);
+
+        setDownloadProgress(100);
     }
 
     useEffect(() => {
@@ -138,8 +178,8 @@ export const FolderContent = ({ folderId, folder, isGuest, locale }: FolderConte
     return (
         <>
             {folderContent
-                ? <><div className="flex flex-col">
-                    <h3 className={"font-semibold mb-2 flex justify-between"}>
+                ? <div>
+                    <h3 className={"font-semibold mb-2 flex justify-between items-center"}>
                         {folderContent.name}
 
                         <div className={"flex gap-4"}>
@@ -148,39 +188,16 @@ export const FolderContent = ({ folderId, folder, isGuest, locale }: FolderConte
                                 ? <UploadImagesDialog folderId={folderContent.id} shareToken={searchParams.get("share")} tokenType={searchParams.get("t") === "p" ? "personAccessToken" : "accessToken"} hashCode={hashPin} />
                                 : null}
                             {!!!isGuest ? <ShareFolderDialog folder={folderContent} /> : null}
-                            <Button variant="outline" onClick={async () => {
-                                const r = await downloadFolder(folderContent);
-
-                                if (r === 404) {
-                                    toast({
-                                        title: "No images found",
-                                        description: "There are no images in this folder to download"
-                                    });
-                                    return;
-                                }
-
-                                if (r !== 200) {
-                                    toast({
-                                        title: "Error",
-                                        description: "An error occurred while trying to download this folder",
-                                        variant: "destructive"
-                                    });
-                                    return;
-                                }
-
-                                toast({
-                                    title: "Download started",
-                                    description: "Your download will start shortly",
-                                });
-                            }}>
+                            <Button variant="outline" onClick={downloadCallback}>
                                 <Download className={"mr-2"} /> {t('actions.download')}
                             </Button>
                         </div>
                     </h3>
 
-                    <ImagesGrid folder={folderContent} shareToken={searchParams.get("share")} hashPin={hashPin} tokenType={searchParams.get('t') === "p" ? "personAccessToken" : "accessToken"} />
+                    <div className="flex-1 overflow-auto">
+                        <ImagesGrid folder={folderContent} shareToken={searchParams.get("share")} hashPin={hashPin} tokenType={searchParams.get('t') === "p" ? "personAccessToken" : "accessToken"} />
+                    </div>
                 </div>
-                </>
                 : <UnlockTokenPrompt unlockLoading={unlockLoading} submit={(data) => loadFolder(data.pin)} />
             }
         </>
