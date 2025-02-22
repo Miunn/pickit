@@ -469,6 +469,29 @@
       "carousel": {
         "description": "Images"
       },
+      "properties": {
+        "title": "Images properties",
+        "description": "Properties {name}",
+        "name": "Name",
+        "parentFolder": "Parent folder",
+        "size": "Size",
+        "dimensions": "Dimensions",
+        "uploadedAt": "Uploaded at",
+        "actions": {
+          "copy": {
+            "trigger": "Copy",
+            "copied": "Copied",
+            "title": "Copied",
+            "description": "The image has been copied to your clipboard"
+          },
+          "download": {
+            "trigger": "Download",
+            "title": "Downloaded",
+            "description": "The image has been downloaded successfully"
+          },
+          "delete": "Delete"
+        }
+      },
       "delete": {
         "trigger": "Delete",
         "title": "Delete image",
@@ -875,8 +898,10 @@
       "startUpload": "Upload your first images"
     },
     "actions": {
-      "view": "View",
+      "view": "Open",
       "select": "Select",
+      "download": "Download",
+      "properties": "Properties",
       "upload": "Upload",
       "delete": "Delete",
       "share": "Share"

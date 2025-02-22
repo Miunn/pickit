@@ -3,8 +3,12 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import React from "react";
 import Image from "next/image";
 import { ImageWithFolder } from "@/lib/definitions";
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
 import { formatBytes } from "@/lib/utils";
+import { downloadImage } from "@/actions/images";
+import saveAs from "file-saver";
+import { toast } from "@/hooks/use-toast";
+import PropertiesDialog from "./PropertiesDialog";
 
 export interface ImagePreviewProps {
     image: ImageWithFolder;
@@ -23,56 +27,91 @@ export const ImagePreview = ({ image, selected, onClick, onSelect, onDelete, sha
     const t = useTranslations("images");
     const deleteTranslations = useTranslations("dialogs.images.delete");
 
+    const [openProperties, setOpenProperties] = React.useState(false);
+
+    const downloadImageHandler = async () => {
+        const r = await fetch(`/api/folders/${image.folder.id}/images/${image.id}/download`);
+
+        if (r.status === 404) {
+            toast({
+                title: "No images found",
+                description: "There are no images in this folder to download"
+            });
+            return;
+        }
+
+        if (r.status !== 200) {
+            toast({
+                title: "Error",
+                description: "An error occurred while trying to download this folder",
+                variant: "destructive"
+            });
+            return;
+        }
+
+        saveAs(await r.blob(), `${image.name}.${image.extension}`);
+    }
+
     return (
-        <ContextMenu key={image.id}>
-            <ContextMenuTrigger asChild>
-                <button onClick={onClick} style={{ all: "unset", cursor: "pointer" }}>
-                    <div className={`inline-block w-64 p-2 rounded-2xl ${selected.includes(image.id) ? "bg-blue-100" : ""}`}>
-                        <div className={`relative h-36 mb-4 flex justify-center items-center`}>
-                            <Image src={`/api/folders/${image.folderId}/images/${image.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`} alt={image.name}
-                                className={"relative border border-black rounded-xl object-cover"} sizes="33vw" fill />
-                        </div>
-                        <p className={"text-start truncate"}>{image.name}</p>
-                        <div className={"text-sm h-4 flex items-center justify-between"}>
-                            <div className="h-full flex items-center">
-                                <TooltipProvider>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
-                                                day: "numeric",
-                                                month: "short",
-                                                year: "numeric"
-                                            })}</p>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
-                                                weekday: "long",
-                                                day: "numeric",
-                                                month: "short",
-                                                year: "numeric",
-                                                hour: "numeric",
-                                                minute: "numeric"
-                                            })}</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
+        <>
+            <ContextMenu key={image.id}>
+                <ContextMenuTrigger asChild>
+                    <button onClick={onClick} style={{ all: "unset", cursor: "pointer" }}>
+                        <div className={`inline-block w-64 p-2 rounded-2xl ${selected.includes(image.id) ? "bg-blue-100" : ""}`}>
+                            <div className={`relative h-36 mb-4 flex justify-center items-center`}>
+                                <Image src={`/api/folders/${image.folderId}/images/${image.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`} alt={image.name}
+                                    className={"relative border border-black rounded-xl object-cover"} sizes="33vw" fill />
                             </div>
-                            <p className="text-muted-foreground text-nowrap">{formatBytes(image.size)}</p>
+                            <p className={"text-start truncate"}>{image.name}</p>
+                            <div className={"text-sm h-4 flex items-center justify-between"}>
+                                <div className="h-full flex items-center">
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
+                                                    day: "numeric",
+                                                    month: "short",
+                                                    year: "numeric"
+                                                })}</p>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
+                                                    weekday: "long",
+                                                    day: "numeric",
+                                                    month: "short",
+                                                    year: "numeric",
+                                                    hour: "numeric",
+                                                    minute: "numeric"
+                                                })}</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                </div>
+                                <p className="text-muted-foreground text-nowrap">{formatBytes(image.size)}</p>
+                            </div>
                         </div>
-                    </div>
-                </button>
-            </ContextMenuTrigger>
-            <ContextMenuContent>
-                <ContextMenuItem onClick={onClick}>
-                    {t('actions.view')}
-                </ContextMenuItem>
-                <ContextMenuItem onClick={onSelect}>
-                    {t('actions.select')}
-                </ContextMenuItem>
-                <ContextMenuItem onClick={onDelete} className="text-red-600 focus:text-red-600 font-semibold">
-                    {deleteTranslations('trigger')}
-                </ContextMenuItem>
-            </ContextMenuContent>
-        </ContextMenu>
+                    </button>
+                </ContextMenuTrigger>
+                <ContextMenuContent>
+                    <ContextMenuItem onClick={onClick}>
+                        {t('actions.view')}
+                    </ContextMenuItem>
+                    <ContextMenuItem onClick={onSelect}>
+                        {t('actions.select')}
+                    </ContextMenuItem>
+                    <ContextMenuItem onClick={downloadImageHandler}>
+                        {t('actions.download')}
+                    </ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenProperties(true)}>
+                        {t('actions.properties')}
+                    </ContextMenuItem>
+                    <ContextMenuSeparator />
+                    <ContextMenuItem onClick={onDelete} className="text-red-600 focus:text-red-600 font-semibold">
+                        {deleteTranslations('trigger')}
+                    </ContextMenuItem>
+                </ContextMenuContent>
+            </ContextMenu>
+            <PropertiesDialog image={image} open={openProperties} setOpen={setOpenProperties} />
+        </>
     )
 }

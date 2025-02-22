@@ -7,6 +7,7 @@ import { Check, Copy, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
+import { copyImageToClipboard } from "@/lib/utils";
 
 export default function ImagesCarousel({ images, startIndex, currentIndex, setCurrentIndex, shareToken, shareHashPin }: { images: ImageWithFolder[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>>, shareToken?: string | null, shareHashPin?: string | null }) {
 
@@ -16,28 +17,6 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
     const [count, setCount] = useState(images.length);
 
     const [copied, setCopied] = useState<boolean>(false);
-
-    const copyImageToClipboard = async () => {
-        let image = await (await fetch(`/api/folders/${images.at(currentIndex - 1)?.folderId}/images/${images.at(currentIndex - 1)?.id}?share=${shareToken}&h=${shareHashPin}`)).blob();
-        image = image.slice(0, image.size, "image/png")
-
-        navigator.clipboard.write([
-            new ClipboardItem({
-                [image.type]: image
-            })
-        ]);
-
-        setCopied(true);
-        toast({
-            title: t('actions.copy.title'),
-            description: t('actions.copy.description'),
-            duration: 2000
-        });
-
-        setTimeout(() => {
-            setCopied(false);
-        }, 2000);
-    }
 
     useEffect(() => {
         if (!carouselApi) return;
@@ -64,7 +43,20 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                             <ExternalLink className="w-4 h-4" />
                         </Link>
                     </Button>
-                    <Button variant={"outline"} size={"icon"} type="button" onClick={copyImageToClipboard}>
+                    <Button variant={"outline"} size={"icon"} type="button" onClick={async () => {
+                        await copyImageToClipboard(images.at(currentIndex - 1)?.folderId || '', images.at(currentIndex - 1)?.id || '', shareToken || '', shareHashPin || '');
+
+                        setCopied(true);
+                            toast({
+                                title: t('actions.copy.title'),
+                                description: t('actions.copy.description'),
+                                duration: 2000
+                            });
+                        
+                            setTimeout(() => {
+                                setCopied(false);
+                            }, 2000);
+                    }}>
                         {copied
                             ? <Check className="w-4 h-4" />
                             : <Copy className="w-4 h-4" />}

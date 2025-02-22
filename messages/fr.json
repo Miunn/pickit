@@ -468,6 +468,29 @@
       "carousel": {
         "description": "Images"
       },
+      "properties": {
+        "title": "Propriétés de l'image",
+        "description": "Propriétés de {name}",
+        "name": "Nom",
+        "parentFolder": "Dossier parent",
+        "size": "Taille",
+        "dimensions": "Dimensions",
+        "uploadedAt": "Téléchargée le",
+        "actions": {
+          "copy": {
+            "trigger": "Copier",
+            "copied": "Copiée",
+            "title": "Image copiée",
+            "description": "L'image a été copiée dans votre presse-papiers"
+          },
+          "download": {
+            "trigger": "Télécharger",
+            "title": "Image téléchargée",
+            "description": "L'image a été téléchargée avec succès"
+          },
+          "delete": "Supprimer"
+        }
+      },
       "delete": {
         "trigger": "Supprimer",
         "title": "Supprimer l'image",
@@ -929,11 +952,13 @@
       "startUpload": "Upload your first images"
     },
     "actions": {
-      "view": "View",
-      "select": "Select",
+      "view": "Ouvrir",
+      "select": "Sélectionner",
+      "download": "Télécharger",
+      "properties": "Propriétés",
       "upload": "Upload",
-      "delete": "Delete",
-      "share": "Share"
+      "delete": "Supprimer",
+      "share": "Partager"
     },
     "dialog": {
       "upload": {

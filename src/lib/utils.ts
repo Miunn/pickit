@@ -38,6 +38,19 @@ export const switchLocaleUrl = (url: string, locale: string): string => {
 	return `/${locale}/${url}`;
 }
 
+export const copyImageToClipboard = async (folderId: string, imageId: string, shareToken?: string, shareHashPin?: string): Promise<boolean> => {
+	let image = await (await fetch(`/api/folders/${folderId}/images/${imageId}?share=${shareToken}&h=${shareHashPin}`)).blob();
+	image = image.slice(0, image.size, "image/png")
+
+	navigator.clipboard.write([
+		new ClipboardItem({
+			[image.type]: image
+		})
+	]);
+
+	return true;
+}
+
 export const validateShareToken = async (token: string, type: "accessToken" | "personAccessToken", folderId: string, hashedPinCode?: string | null): Promise<{ error: string | null, folder: (FolderWithImagesWithFolder & FolderWithAccessToken) | null, permission?: FolderTokenPermission }> => {
 	let accessToken;
 	if (type === "accessToken") {
@@ -112,7 +125,7 @@ export const validateShareToken = async (token: string, type: "accessToken" | "p
 		}
 	}
 
-	return { error: null, folder: {...accessToken.folder, AccessToken: []}, permission: accessToken.permission };
+	return { error: null, folder: { ...accessToken.folder, AccessToken: [] }, permission: accessToken.permission };
 }
 
 export const handleImagesSubmission = async (

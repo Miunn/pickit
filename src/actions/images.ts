@@ -9,6 +9,7 @@ import { imageCreateManyAndUpdateSizes, imageDeleteAndUpdateSizes } from "@/lib/
 import { changeFolderCover } from "./folders";
 import { validateShareToken } from "@/lib/utils";
 import { getCurrentSession } from "@/lib/authUtils";
+import JSZip from "jszip";
 
 export async function getLightImages(): Promise<{
     error: string | null;
@@ -138,6 +139,69 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
     return { error: null };
 }
 
+export async function downloadImages(imageIds: string[]): Promise<ReadableStream<Uint8Array> | null> {
+    const { user } = await getCurrentSession();
+
+    if (!user) {
+        return null;
+    }
+
+    const images = await prisma.image.findMany({
+        where: {
+            id: {
+                in: imageIds
+            },
+            createdBy: {
+                id: user.id
+            }
+        }
+    });
+
+
+    if (images.length === 0) {
+        return null;
+    }
+
+    const zip = new JSZip();
+
+    for (const image of images) {
+        const file = fs.readFileSync(process.cwd() + "/" + image.path);
+        const nameFromPath = image.path.split("/").pop() as string;
+        zip.file(nameFromPath, file);
+    }
+
+    const zipData = await zip.generateAsync({ type: "blob" });
+
+    return zipData.stream();
+}
+
+export async function downloadImage(imageId: string): Promise<ReadableStream<Uint8Array> | null> {
+    const { user } = await getCurrentSession();
+
+    if (!user) {
+        return null;
+    }
+
+    const image = await prisma.image.findUnique({
+        where: {
+            id: imageId,
+            createdBy: {
+                id: user.id
+            }
+        }
+    });
+
+    if (!image) {
+        return null;
+    }
+
+    const file = fs.readFileSync(process.cwd() + "/" + image.path);
+
+    const blob = new Blob([file], { type: "image/" + image.extension });
+
+    return blob.stream();
+}
+
 export async function getImagesWithFolderFromFolder(folderId: string): Promise<{
     images: ImageWithFolder[],
     error: string | null
@@ -207,7 +271,7 @@ export async function deleteImage(imageId: string) {
     });
 
     await imageDeleteAndUpdateSizes(imageId, user.id);
-    
+
     revalidatePath("/app/folders/" + image.folder.id);
     revalidatePath("/app");
     return { error: null };
