@@ -38,6 +38,8 @@ export default function UnlockTokenPrompt({ folderId, shareToken, tokenType }: {
 
         router.push(`/app/folders/${folderId}?share=${shareToken}&t=${tokenType}&h=${hashedPin}`);
 
+        setUnlockLoading(false);
+
         /*if (r.error === "unauthorized") {
             toast({
                 title: unlockTranslations("errors.unauthorized.title"),
