@@ -58,37 +58,39 @@ export const ImagePreview = ({ image, selected, onClick, onSelect, shareToken, s
             <ContextMenu key={image.id}>
                 <ContextMenuTrigger asChild>
                     <button onClick={onClick} style={{ all: "unset", cursor: "pointer" }}>
-                        <div className={`inline-block w-64 p-2 rounded-2xl ${selected.includes(image.id) ? "bg-blue-100" : ""}`}>
-                            <div className={`relative h-36 mb-4 flex justify-center items-center`}>
-                                <Image src={`/api/folders/${image.folderId}/images/${image.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`} alt={image.name}
-                                    className={"relative border border-black rounded-xl object-cover"} sizes="33vw" fill />
-                            </div>
-                            <p className={"text-start truncate"}>{image.name}</p>
-                            <div className={"text-sm h-4 flex items-center justify-between"}>
-                                <div className="h-full flex items-center">
-                                    <TooltipProvider>
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
-                                                    day: "numeric",
-                                                    month: "short",
-                                                    year: "numeric"
-                                                })}</p>
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                                <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
-                                                    weekday: "long",
-                                                    day: "numeric",
-                                                    month: "short",
-                                                    year: "numeric",
-                                                    hour: "numeric",
-                                                    minute: "numeric"
-                                                })}</p>
-                                            </TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider>
+                        <div className={`inline-block w-64 rounded-2xl ${selected.includes(image.id) ? "bg-blue-100" : ""}`}>
+                            <div className={`${selected.includes(image.id) ? "scale-95" : ""}`}>
+                                <div className={`relative h-36 mb-4 flex justify-center items-center`}>
+                                    <Image src={`/api/folders/${image.folderId}/images/${image.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`} alt={image.name}
+                                        className={"relative border border-black rounded-xl object-cover"} sizes="33vw" fill />
                                 </div>
-                                <p className="text-muted-foreground text-nowrap">{formatBytes(image.size)}</p>
+                                <p className={"text-start truncate"}>{image.name}</p>
+                                <div className={"text-sm h-4 flex items-center justify-between"}>
+                                    <div className="h-full flex items-center">
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
+                                                        day: "numeric",
+                                                        month: "short",
+                                                        year: "numeric"
+                                                    })}</p>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
+                                                        weekday: "long",
+                                                        day: "numeric",
+                                                        month: "short",
+                                                        year: "numeric",
+                                                        hour: "numeric",
+                                                        minute: "numeric"
+                                                    })}</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    </div>
+                                    <p className="text-muted-foreground text-nowrap">{formatBytes(image.size)}</p>
+                                </div>
                             </div>
                         </div>
                     </button>

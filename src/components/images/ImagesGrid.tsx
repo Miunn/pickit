@@ -72,7 +72,7 @@ export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder:
                 </div>
                 : null
             }
-            <div className={"flex flex-wrap gap-2"}>
+            <div className={"flex flex-wrap gap-3"}>
                 {folder.images.length == 0
                     ? <div className={"mx-auto flex flex-col justify-center items-center"}>
                         <Form {...uploadImageForm}>
