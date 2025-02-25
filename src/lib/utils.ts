@@ -106,7 +106,7 @@ export const validateShareToken = async (folderId: string, token: string, type: 
 	}
 
 	if (!accessToken) {
-		return { error: "unauthorized", folder: null };
+		return { error: "invalid-token", folder: null };
 	}
 
 	if (accessToken.locked && !hashedPinCode) {
