@@ -7,7 +7,7 @@ import { UploadImagesDialog } from "@/components/images/UploadImagesDialog";
 import { ImagesGrid } from "@/components/images/ImagesGrid";
 import { toast } from "@/hooks/use-toast";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
-import { FolderWithAccessToken, FolderWithImagesWithFolder } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolder } from "@/lib/definitions";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import SortImages from "./SortImages";
@@ -15,7 +15,7 @@ import saveAs from "file-saver";
 import { Progress } from "../ui/progress";
 
 export interface FolderContentProps {
-    folder: FolderWithImagesWithFolder & FolderWithAccessToken;
+    folder: FolderWithCreatedBy & FolderWithImagesWithFolder & FolderWithAccessToken;
     isGuest?: boolean;
 }
 
@@ -110,8 +110,12 @@ export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
 
     return (
         <div>
-            <h3 className={"font-semibold mb-2 flex justify-between items-center"}>
-                {folder.name}
+            <h3 className={"mb-2 flex justify-between items-center"}>
+                <p className="font-semibold">{folder.name} {
+                    isGuest
+                    ? <span className="font-normal text-sm">- Shared by {folder.createdBy.name}</span>
+                    : null
+                }</p>
 
                 <div className={"flex gap-4"}>
                     <SortImages sortState={sortState} setSortState={setSortState} />

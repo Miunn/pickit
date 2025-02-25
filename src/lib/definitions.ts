@@ -186,6 +186,12 @@ const lightFolders = Prisma.validator<Prisma.FolderDefaultArgs>()({
 
 export type LightFolder = Prisma.FolderGetPayload<typeof lightFolders>
 
+const folderWithCreatedBy = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { createdBy: true }
+})
+
+export type FolderWithCreatedBy = Prisma.FolderGetPayload<typeof folderWithCreatedBy>
+
 const folderWithImages = Prisma.validator<Prisma.FolderDefaultArgs>()({
     include: { images: true }
 })
