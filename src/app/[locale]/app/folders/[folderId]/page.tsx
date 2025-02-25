@@ -4,7 +4,8 @@ import { FolderContent } from "@/components/folders/FolderContent";
 import { getFolderFull } from "@/actions/folders";
 import { getCurrentSession } from "@/lib/authUtils";
 import UnlockTokenPrompt from "@/components/folders/UnlockTokenPrompt";
-import { FolderSearch } from "lucide-react";
+import { ArrowRight, FolderSearch } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default async function FolderPage({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { share?: string, t?: string, h?: string } }) {
 
@@ -26,6 +27,7 @@ export default async function FolderPage({ params, searchParams }: { params: { f
                     <FolderSearch className="w-28 h-28 text-red-500" />
                     <h3 className="text-3xl text-center mb-3 text-red-600">Invalid or expired share token</h3>
                     <p className="text-center">We can't find the supplied token for this folder.<br />Perhaps it has expired or is invalid.</p>
+                    <Button variant={"link"}>Go to sign in <ArrowRight /></Button>
                 </div>
                 : null
             }

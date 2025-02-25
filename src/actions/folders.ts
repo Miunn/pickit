@@ -72,8 +72,12 @@ export async function getFolderFull(folderId: string, shareToken?: string, token
         return { error: "unauthorized", folder: null };
     }
 
-    if (!user && shareToken) {
-        return await validateShareToken(folderId, shareToken, tokenType as "accessToken" | "personAccessToken", hashedPinCode);
+    if (shareToken) {
+        const dataFromToken = await validateShareToken(folderId, shareToken, tokenType as "accessToken" | "personAccessToken", hashedPinCode);
+
+        if (!dataFromToken.error || !user) {
+            return dataFromToken;
+        }
     }
 
     if (!user) {
