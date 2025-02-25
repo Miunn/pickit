@@ -7,8 +7,9 @@ import { copyImageToClipboard, formatBytes } from "@/lib/utils";
 import { useFormatter } from "use-intl";
 import React from "react";
 import { toast } from "@/hooks/use-toast";
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import saveAs from "file-saver";
+import { DeleteImageDialog } from "./DeleteImageDialog";
 
 export default function PropertiesDialog({ image, open, setOpen }: { image: ImageWithFolder, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
 
@@ -17,9 +18,13 @@ export default function PropertiesDialog({ image, open, setOpen }: { image: Imag
 
     const [copied, setCopied] = React.useState(false);
 
-    const downloadImageHandler = async () => {
-        const r = await fetch(`/api/folders/${image.folder.id}/images/${image.id}/download`);
+    const [isCopying, setIsCopying] = React.useState(false);
+    const [isDownloading, setIsDownloading] = React.useState(false);
 
+    const downloadImageHandler = async () => {
+        setIsDownloading(true);
+        const r = await fetch(`/api/folders/${image.folder.id}/images/${image.id}/download`);
+        setIsDownloading(false);
         if (r.status === 404) {
             toast({
                 title: "No images found",
@@ -77,24 +82,42 @@ export default function PropertiesDialog({ image, open, setOpen }: { image: Imag
 
                 <DialogFooter>
                     <Button variant={"outline"} onClick={async () => {
+                        setIsCopying(true);
                         await copyImageToClipboard(image.folderId || '', image.id || '');
+                        setIsCopying(false);
 
                         setCopied(true);
-                            toast({
-                                title: t('actions.copy.title'),
-                                description: t('actions.copy.description'),
-                                duration: 2000
-                            });
-                        
-                            setTimeout(() => {
-                                setCopied(false);
-                            }, 2000);
-                    }}>{copied
+                        toast({
+                            title: t('actions.copy.title'),
+                            description: t('actions.copy.description'),
+                            duration: 2000
+                        });
+
+                        setTimeout(() => {
+                            setCopied(false);
+                        }, 2000);
+                    }} disabled={isCopying}>{copied
                         ? <><Check className="w-4 h-4 mr-2" /> {t('actions.copy.copied')}</>
-                        : t('actions.copy.trigger')
+                        : null
+                        }
+                        {isCopying
+                            ? <><Loader2 className="animate-spin mr-2" /> {t('actions.copy.copying')}</>
+                            : null
+                        }
+                        {!copied && !isCopying
+                            ? t('actions.copy.trigger')
+                            : null
+                        }
+                    </Button>
+                    <Button onClick={downloadImageHandler} disabled={isDownloading}>
+                        {isDownloading
+                            ? <><Loader2 className="animate-spin mr-2" /> {t('actions.download.downloading')}</>
+                            : t('actions.download.trigger')
                         }</Button>
-                    <Button onClick={downloadImageHandler}>{t('actions.download.trigger')}</Button>
-                    <Button variant={"destructive"}>{t('actions.delete')}</Button>
+
+                    <DeleteImageDialog image={image}>
+                        <Button variant={"destructive"}>{t('actions.delete')}</Button>
+                    </DeleteImageDialog>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

@@ -58,7 +58,7 @@ export default function ResetPasswordTemplate({ name, token }: { name: string, t
                                             <br />
                                             If you didn't do this request, you can safely ignore this email.
                                         </p>
-                                        <a href={`${process.env.NEXTAUTH_URL}/en/account/reset/${token}`} style={{
+                                        <a href={`${process.env.APP_URL}/en/account/reset/${token}`} style={{
                                             boxSizing: "border-box",
                                             width: "100%",
                                             backgroundColor: "#007bff",

@@ -34,10 +34,6 @@ export default async function LocaleLayout({
 }>) {
     const me = (await getCurrentSession()).user;
 
-    if (!me) {
-        return redirect(`/signin`);
-    }
-
     const t = await getTranslations("sidebar");
     const folders = (await getLightFolders()).lightFolders;
     const images = (await getLightImages()).lightImages;

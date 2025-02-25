@@ -9,25 +9,26 @@ import { downloadImage } from "@/actions/images";
 import saveAs from "file-saver";
 import { toast } from "@/hooks/use-toast";
 import PropertiesDialog from "./PropertiesDialog";
+import { DeleteImageDialog } from "./DeleteImageDialog";
 
 export interface ImagePreviewProps {
     image: ImageWithFolder;
     selected: string[];
     onClick: () => void;
     onSelect: () => void;
-    onDelete: () => void;
     shareToken?: string | null;
     shareHashPin?: string | null;
     tokenType?: "p" | null;
 }
 
-export const ImagePreview = ({ image, selected, onClick, onSelect, onDelete, shareToken, shareHashPin, tokenType }: ImagePreviewProps) => {
+export const ImagePreview = ({ image, selected, onClick, onSelect, shareToken, shareHashPin, tokenType }: ImagePreviewProps) => {
 
     const format = useFormatter();
     const t = useTranslations("images");
     const deleteTranslations = useTranslations("dialogs.images.delete");
 
     const [openProperties, setOpenProperties] = React.useState(false);
+    const [openDelete, setOpenDelete] = React.useState(false);
 
     const downloadImageHandler = async () => {
         const r = await fetch(`/api/folders/${image.folder.id}/images/${image.id}/download`);
@@ -106,11 +107,12 @@ export const ImagePreview = ({ image, selected, onClick, onSelect, onDelete, sha
                         {t('actions.properties')}
                     </ContextMenuItem>
                     <ContextMenuSeparator />
-                    <ContextMenuItem onClick={onDelete} className="text-red-600 focus:text-red-600 font-semibold">
+                    <ContextMenuItem onClick={() => setOpenDelete(true)} className="text-red-600 focus:text-red-600 font-semibold">
                         {deleteTranslations('trigger')}
                     </ContextMenuItem>
                 </ContextMenuContent>
             </ContextMenu>
+            <DeleteImageDialog image={image} open={openDelete} setOpen={setOpenDelete} />
             <PropertiesDialog image={image} open={openProperties} setOpen={setOpenProperties} />
         </>
     )

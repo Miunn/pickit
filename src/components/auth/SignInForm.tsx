@@ -8,17 +8,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SignInFormSchema } from "@/lib/definitions";
 import { SignIn } from "@/actions/authActions";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
+import { redirect } from "@/i18n/routing";
 
 export default function SignInForm({ locale }: { locale: string }) {
 
     const t = useTranslations("components.auth.signIn");
     const [loading, setLoading] = useState<boolean>(false);
+    const router = useRouter();
 
     const form = useForm({
         resolver: zodResolver(SignInFormSchema),
@@ -34,6 +36,8 @@ export default function SignInForm({ locale }: { locale: string }) {
         const r = await SignIn(data.email, data.password);
 
         setLoading(false);
+
+        console.log("r", r);
         
         if (r && r.error) {
             toast({
@@ -41,8 +45,10 @@ export default function SignInForm({ locale }: { locale: string }) {
                 description: t("form.error.message"),
                 variant: "destructive"
             });
+            return;
         }
 
+        router.push(`/${locale}/app`);
     };
 
     return (

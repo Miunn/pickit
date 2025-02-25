@@ -3,7 +3,6 @@
 import { ImageOff, Trash2, X } from "lucide-react";
 import { ImagePreview } from "@/components/images/ImagePreview";
 import { CarouselDialog } from "@/components/images/CarouselDialog";
-import { DeleteImageDialog } from "@/components/images/DeleteImageDialog";
 import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
 import React, { Fragment, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
@@ -14,16 +13,16 @@ export const LastUploadedImages = ({ images, locale }: { images: ImageWithFolder
     const t = useTranslations("pages.dashboard.images");
 
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);
-    const [openDelete, setOpenDelete] = useState(false);
     const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
     const [startIndex, setStartIndex] = React.useState(0);
-    const [selectImageToDelete, setSelectImageToDelete] = useState<ImageWithFolder | null>(null);
     const [selecting, setSelecting] = useState(false);
     const [selected, setSelected] = useState<string[]>([]);
+    const [sizeSelected, setSizeSelected] = useState<number>(0);
 
     useEffect(() => {
         if (selected.length === 0) {
             setSelecting(false);
+            setSizeSelected(0);
         }
     }, [selected]);
 
@@ -60,16 +59,19 @@ export const LastUploadedImages = ({ images, locale }: { images: ImageWithFolder
                         <ImagePreview
                             image={image}
                             selected={selected}
-                            setSelected={setSelected}
-                            selecting={false}
-                            setSelecting={setSelecting}
                             onClick={() => {
                                 setStartIndex(index);
                                 setCarouselOpen(!carouselOpen);
                             }}
-                            onDelete={() => {
-                                setSelectImageToDelete(image);
-                                setOpenDelete(true);
+                            onSelect={() => {
+                                if (selected.includes(image.id)) {
+                                    setSelected(selected.filter((id) => id !== image.id));
+                                    setSizeSelected(sizeSelected - image.size);
+                                } else {
+                                    setSelecting(true);
+                                    setSelected([...selected, image.id]);
+                                    setSizeSelected(sizeSelected + image.size);
+                                }
                             }}
                         />
                         </Fragment>
@@ -79,7 +81,6 @@ export const LastUploadedImages = ({ images, locale }: { images: ImageWithFolder
 
             <CarouselDialog images={images} title={"Last uploaded images"} carouselOpen={carouselOpen}
                 setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
-            <DeleteImageDialog image={selectImageToDelete} open={openDelete} setOpen={setOpenDelete} />
             <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple}
                 setSelected={setSelected} setSelecting={setSelecting} />
         </>

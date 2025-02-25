@@ -17,14 +17,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { formatBytes, handleImagesSubmission } from "@/lib/utils";
-import { set } from "date-fns";
 
 export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder: FolderWithImagesWithFolder, shareToken?: string | null, hashPin?: string, tokenType?: "accessToken" | "personAccessToken" | null }) => {
 
     const t = useTranslations("images");
     const deleteMultipleTranslations = useTranslations("dialogs.images.deleteMultiple");
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
-    const [openDelete, setOpenDelete] = useState<boolean>(false);
     const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
     const [selectImageToDelete, setSelectImageToDelete] = useState<ImageWithFolder | null>(null);
     const [startIndex, setStartIndex] = useState(0);
@@ -141,10 +139,6 @@ export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder:
                                         setSizeSelected(sizeSelected + image.size);
                                     }
                                 }}
-                                onDelete={() => {
-                                    setSelectImageToDelete(image);
-                                    setOpenDelete(true);
-                                }}
                                 shareToken={shareToken}
                                 shareHashPin={hashPin}
                                 tokenType={tokenType === "personAccessToken" ? "p" : null}
@@ -154,7 +148,6 @@ export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder:
             </div>
 
             <CarouselDialog images={folder.images} title={folder.name!} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} shareToken={shareToken} shareHashPin={hashPin} />
-            <DeleteImageDialog image={selectImageToDelete} open={openDelete} setOpen={setOpenDelete} />
             <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} setSelected={setSelected} setSelecting={setSelecting} />
         </div>
     )

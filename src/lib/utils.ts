@@ -51,7 +51,7 @@ export const copyImageToClipboard = async (folderId: string, imageId: string, sh
 	return true;
 }
 
-export const validateShareToken = async (token: string, type: "accessToken" | "personAccessToken", folderId: string, hashedPinCode?: string | null): Promise<{ error: string | null, folder: (FolderWithImagesWithFolder & FolderWithAccessToken) | null, permission?: FolderTokenPermission }> => {
+export const validateShareToken = async (folderId: string, token: string, type: "accessToken" | "personAccessToken", hashedPinCode?: string | null): Promise<{ error: string | null, folder: (FolderWithImagesWithFolder & FolderWithAccessToken) | null, permission?: FolderTokenPermission }> => {
 	let accessToken;
 	if (type === "accessToken") {
 		accessToken = await prisma.accessToken.findUnique({

@@ -73,14 +73,18 @@ export async function getFolderFull(folderId: string, shareToken?: string, token
     }
 
     if (!user && shareToken) {
-        return await validateShareToken(shareToken, tokenType as "accessToken" | "personAccessToken", folderId, hashedPinCode);
+        return await validateShareToken(folderId, shareToken, tokenType as "accessToken" | "personAccessToken", hashedPinCode);
+    }
+
+    if (!user) {
+        return { error: "unauthorized", folder: null };
     }
 
     const folder = await prisma.folder.findUnique({
         where: {
             id: folderId,
             createdBy: {
-                id: user?.id
+                id: user.id
             }
         },
         include: {

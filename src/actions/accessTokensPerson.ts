@@ -286,7 +286,7 @@ export async function sendAgainPersonAccessToken(token: string) {
         return { error: "Token not found" }
     }
 
-    await sendShareFolderEmail([{ email: personAccessToken.email, link: `${process.env.NEXTAUTH_URL}/app/folders/${personAccessToken.folderId}?share=${token}&t=p` }], user.name!, personAccessToken.folder.name)
+    await sendShareFolderEmail([{ email: personAccessToken.email, link: `${process.env.APP_URL}/app/folders/${personAccessToken.folderId}?share=${token}&t=p` }], user.name!, personAccessToken.folder.name)
 
     return { error: null }
 }

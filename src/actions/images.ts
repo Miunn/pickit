@@ -9,7 +9,8 @@ import { imageCreateManyAndUpdateSizes, imageDeleteAndUpdateSizes } from "@/lib/
 import { changeFolderCover } from "./folders";
 import { validateShareToken } from "@/lib/utils";
 import { getCurrentSession } from "@/lib/authUtils";
-import JSZip from "jszip";
+import JSZip, { folder } from "jszip";
+import { routing } from "@/i18n/routing";
 
 export async function getLightImages(): Promise<{
     error: string | null;
@@ -60,7 +61,7 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
             return { error: "You must be logged in to upload images" };
         }
 
-        const validateToken = await validateShareToken(shareToken, tokenType, parentFolderId, hashCode);
+        const validateToken = await validateShareToken(parentFolderId, shareToken, tokenType, hashCode);
 
         if (validateToken.error) {
             return { error: "You must have a valid share link to upload to this folder" };
@@ -229,39 +230,69 @@ export async function getImagesWithFolderFromFolder(folderId: string): Promise<{
     return { error: null, images: images };
 }
 
-export async function deleteImage(imageId: string) {
+export async function deleteImage(folderId: string, imageId: string, shareToken?: string, hashPin?: string, tokenType?: string) {
+    let validateToken = null;
+    if (shareToken) {
+        validateToken = await validateShareToken(folderId, shareToken, tokenType === "p" ? "personAccessToken" : "accessToken", hashPin);
+
+        if (validateToken.error) {
+            return { error: "You must have a valid share link to delete this image" };
+        }
+
+        if (validateToken.folder === null) {
+            return { error: "Folder not found" };
+        }
+
+        if (validateToken.permission === "READ") {
+            return { error: "You do not have permission to delete this image" };
+        }
+    }
+    
     const { user } = await getCurrentSession();
 
-    if (!user) {
+    if (!user && !validateToken) {
         return { error: "You must be logged in to delete images" };
     }
 
     // Check if user is authorized to delete this image
     // (User was the creator of the folder containing the image)
 
-    const image = await prisma.image.findUnique({
-        where: {
-            id: imageId,
-            createdBy: {
-                id: user.id
-            }
-        },
-        include: {
-            folder: {
-                select: {
-                    id: true,
-                    createdBy: true
+    let image = null;
+
+    if (user) {
+        image = await prisma.image.findUnique({
+            where: {
+                id: imageId,
+                createdBy: { id: user.id }
+            },
+            include: {
+                folder: {
+                    select: {
+                        id: true,
+                        createdBy: true
+                    }
                 }
             }
-        }
-    });
+        });
+    } else if (validateToken) {
+        image = await prisma.image.findUnique({
+            where: {
+                id: imageId,
+                createdBy: { id: validateToken.folder?.createdById }
+            },
+            include: {
+                folder: {
+                    select: {
+                        id: true,
+                        createdBy: true
+                    }
+                }
+            }
+        });
+    }
 
     if (!image) {
         return { error: "Image not found" };
-    }
-
-    if (image.folder.createdBy.id !== user.id) {
-        return { error: "You are not authorized to delete this image" };
     }
 
     fs.unlink(process.cwd() + "/" + image.path, (err) => {
@@ -270,16 +301,20 @@ export async function deleteImage(imageId: string) {
         }
     });
 
-    await imageDeleteAndUpdateSizes(imageId, user.id);
+    if (user) {
+        await imageDeleteAndUpdateSizes(imageId, user.id);
+    } else if (validateToken?.folder) {
+        await imageDeleteAndUpdateSizes(imageId, validateToken.folder.createdById);
+    }
 
-    revalidatePath("/app/folders/" + image.folder.id);
-    revalidatePath("/app");
+    revalidatePath(`/app/folders/${image.folder.id}`);
+    revalidatePath(`/app/folders`);
     return { error: null };
 }
 
 export async function deleteImages(imageIds: string[]) {
     for (const imageId of imageIds) {
-        await deleteImage(imageId);
+        await deleteImage("", imageId);
     }
     return { error: null };
 }

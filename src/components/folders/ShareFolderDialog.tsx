@@ -146,7 +146,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                 }</Label>
                                 <Input placeholder={t('links.link.placeholder')} disabled={true}
                                     value={`${typeof window !== 'undefined' ? window.location.origin : ''}/app/folders/${folder.id}?share=${token.token}`} />
-                                <Button onClick={() => copyToClipboard(token.token)} className="text-start">
+                                <Button onClick={() => copyToClipboard(`${typeof window !== 'undefined' ? window.location.origin : ''}/app/folders/${folder.id}?share=${token.token}`)} className="text-start">
                                     {t('links.link.copy')}
                                 </Button>
                             </Fragment>)

@@ -479,12 +479,14 @@
         "actions": {
           "copy": {
             "trigger": "Copier",
+            "copying": "Copie...",
             "copied": "Copiée",
             "title": "Image copiée",
             "description": "L'image a été copiée dans votre presse-papiers"
           },
           "download": {
             "trigger": "Télécharger",
+            "downloading": "Téléchargement...",
             "title": "Image téléchargée",
             "description": "L'image a été téléchargée avec succès"
           },

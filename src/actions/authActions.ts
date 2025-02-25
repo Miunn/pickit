@@ -12,7 +12,7 @@ export async function SignIn(email: string, password: string): Promise<{
 } | null> {
     try {
         if (!email || !password) {
-            return null;
+            return { error: "invalid-credentials" };
         }
 
         const user = await prisma.user.findUnique({
@@ -29,13 +29,13 @@ export async function SignIn(email: string, password: string): Promise<{
         });
 
         if (!user) {
-            return null;
+            return { error: "invalid-credentials" };
         }
 
         const match = bcrypt.compareSync(password as string, user.password as string);
 
         if (!match) {
-            return null;
+            return { error: "invalid-credentials" };
         }
 
         const token = generateSessionToken();

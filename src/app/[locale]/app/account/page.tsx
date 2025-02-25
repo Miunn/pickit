@@ -4,16 +4,21 @@ import getMe from "@/actions/user";
 import ReviewFolders from "@/components/account/reviewFolders";
 import { prisma } from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
+import { redirect } from "@/i18n/routing";
 
 export default async function AccountPage({ params }: { params: { locale: string } }) {
 
-    const t = await getTranslations("pages.account");
     const user = (await getMe()).user;
+
+    if (!user) {
+        return redirect(`/${params.locale}/signin`);
+    }
+
+    const t = await getTranslations("pages.account");
+
     const folders = await prisma.folder.findMany({
         where: {
-            createdBy: {
-                id: user?.id
-            }
+            createdBy: { id: user.id }
         },
         select: {
             id: true,

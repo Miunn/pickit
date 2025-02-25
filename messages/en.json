@@ -480,12 +480,14 @@
         "actions": {
           "copy": {
             "trigger": "Copy",
+            "copying": "Copying",
             "copied": "Copied",
             "title": "Copied",
             "description": "The image has been copied to your clipboard"
           },
           "download": {
             "trigger": "Download",
+            "downloading": "Downloading",
             "title": "Downloaded",
             "description": "The image has been downloaded successfully"
           },

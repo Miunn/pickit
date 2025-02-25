@@ -8,80 +8,29 @@ import { ImagesGrid } from "@/components/images/ImagesGrid";
 import { toast } from "@/hooks/use-toast";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
 import { FolderWithAccessToken, FolderWithImagesWithFolder } from "@/lib/definitions";
-import UnlockTokenPrompt from "./UnlockTokenPrompt";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { downloadFolder, getFolderFull } from "@/actions/folders";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import * as bcrypt from "bcryptjs";
 import { FolderTokenPermission } from "@prisma/client";
 import SortImages from "./SortImages";
 import saveAs from "file-saver";
-import { ToastAction } from "../ui/toast";
 import { Progress } from "../ui/progress";
 
 
 export interface FolderContentProps {
-    folderId: string;
-    folder?: FolderWithImagesWithFolder & FolderWithAccessToken | null;
+    folder: FolderWithImagesWithFolder & FolderWithAccessToken;
     isGuest?: boolean;
-    locale: string;
 }
 
-export const FolderContent = ({ folderId, folder, isGuest, locale }: FolderContentProps) => {
+export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
     const searchParams = useSearchParams();
 
     const t = useTranslations("folders");
-    const unlockTranslations = useTranslations("components.accessTokens.unlock");
-    const [folderContent, setFolderContent] = useState<(FolderWithImagesWithFolder & FolderWithAccessToken) | null | undefined>(folder);
-    const [hashPin, setHashPin] = useState<string | undefined>(undefined);
-    const [unlockLoading, setUnlockLoading] = useState(false);
     const [permission, setPermission] = useState<FolderTokenPermission>(isGuest ? "READ" : "WRITE");
     const [sortState, setSortState] = useState<"name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc">("date-desc");
     const [downloadProgress, setDownloadProgress] = useState<number>(0);
-    const downloadRef = useRef(null);
-
-    useCallback(() => {
-        setFolderContent(folder);
-    }, [folder]);
-
-    async function loadFolder(pin?: string) {
-        setUnlockLoading(true);
-        let hashedPin;
-        if (pin) {
-            const salt = await bcrypt.genSalt(10)
-            hashedPin = await bcrypt.hash(pin, salt);
-            setHashPin(hashedPin);
-        }
-        const r = await getFolderFull(folderId, searchParams.get("share") || undefined, searchParams.get("t") === "p" ? "personAccessToken" : "accessToken", hashedPin);
-        setUnlockLoading(false);
-
-        if (r.error === "unauthorized") {
-            toast({
-                title: unlockTranslations("errors.unauthorized.title"),
-                description: unlockTranslations("errors.unauthorized.description"),
-                variant: "destructive"
-            });
-            return;
-        }
-
-        if (r.error === "code-needed") {
-            toast({
-                title: unlockTranslations("errors.codeNeeded.title"),
-                description: unlockTranslations("errors.codeNeeded.description"),
-                variant: "destructive"
-            });
-            return;
-        }
-
-        if (r.folder) {
-            setFolderContent(r.folder);
-        }
-
-        setPermission(r.permission || "READ");
-    }
 
     async function downloadCallback() {
-        if (!folderContent) return;
+        if (!folder) return;
 
         toast({
             title: "Download started",
@@ -90,7 +39,7 @@ export const FolderContent = ({ folderId, folder, isGuest, locale }: FolderConte
             className: "flex-col items-start space-x-0",
         });
 
-        const r = await fetch(`/api/folders/${folderContent.id}/download`);
+        const r = await fetch(`/api/folders/${folder.id}/download`);
 
         if (r.status === 404) {
             toast({
@@ -111,12 +60,12 @@ export const FolderContent = ({ folderId, folder, isGuest, locale }: FolderConte
 
         setDownloadProgress(50);
 
-        saveAs(await r.blob(), `${folderContent.name}.zip`);
+        saveAs(await r.blob(), `${folder.name}.zip`);
 
         setDownloadProgress(100);
     }
 
-    useEffect(() => {
+    /*useEffect(() => {
         switch (sortState) {
             case "name-asc":
                 setFolderContent(prev => {
@@ -173,33 +122,28 @@ export const FolderContent = ({ folderId, folder, isGuest, locale }: FolderConte
                 });
                 break;
         }
-    }, [sortState]);
+    }, [sortState]);*/
 
     return (
-        <>
-            {folderContent
-                ? <div>
-                    <h3 className={"font-semibold mb-2 flex justify-between items-center"}>
-                        {folderContent.name}
+        <div>
+            <h3 className={"font-semibold mb-2 flex justify-between items-center"}>
+                {folder.name}
 
-                        <div className={"flex gap-4"}>
-                            <SortImages sortState={sortState} setSortState={setSortState} />
-                            {permission === "WRITE"
-                                ? <UploadImagesDialog folderId={folderContent.id} shareToken={searchParams.get("share")} tokenType={searchParams.get("t") === "p" ? "personAccessToken" : "accessToken"} hashCode={hashPin} />
-                                : null}
-                            {!!!isGuest ? <ShareFolderDialog folder={folderContent} /> : null}
-                            <Button variant="outline" onClick={downloadCallback}>
-                                <Download className={"mr-2"} /> {t('actions.download')}
-                            </Button>
-                        </div>
-                    </h3>
-
-                    <div className="flex-1 overflow-auto">
-                        <ImagesGrid folder={folderContent} shareToken={searchParams.get("share")} hashPin={hashPin} tokenType={searchParams.get('t') === "p" ? "personAccessToken" : "accessToken"} />
-                    </div>
+                <div className={"flex gap-4"}>
+                    <SortImages sortState={sortState} setSortState={setSortState} />
+                    {permission === "WRITE"
+                        ? <UploadImagesDialog folderId={folder.id} shareToken={searchParams.get("share")} tokenType={searchParams.get("t") === "p" ? "personAccessToken" : "accessToken"} hashCode={searchParams.get("h") || undefined} />
+                        : null}
+                    {!!!isGuest ? <ShareFolderDialog folder={folder} /> : null}
+                    <Button variant="outline" onClick={downloadCallback}>
+                        <Download className={"mr-2"} /> {t('actions.download')}
+                    </Button>
                 </div>
-                : <UnlockTokenPrompt unlockLoading={unlockLoading} submit={(data) => loadFolder(data.pin)} />
-            }
-        </>
+            </h3>
+
+            <div className="flex-1 overflow-auto">
+                <ImagesGrid folder={folder} shareToken={searchParams.get("share")} hashPin={searchParams.get("h") || undefined} tokenType={searchParams.get('t') === "p" ? "personAccessToken" : "accessToken"} />
+            </div>
+        </div>
     )
 }

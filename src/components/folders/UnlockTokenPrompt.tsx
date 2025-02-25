@@ -1,3 +1,5 @@
+"use client"
+
 import { LockFolderFormSchema } from "@/lib/definitions"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -8,11 +10,16 @@ import { z } from "zod"
 import { Button } from "../ui/button"
 import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
+import React from "react"
+import { redirect, useRouter } from "@/i18n/routing"
+import bcrypt from "bcryptjs";
 
-export default function UnlockTokenPrompt({ unlockLoading, submit }: { unlockLoading: boolean, submit: (data: z.infer<typeof LockFolderFormSchema>) => Promise<void> }) {
-    
+export default function UnlockTokenPrompt({ folderId, shareToken, tokenType }: { folderId: string, shareToken?: string, tokenType?: "a" | "p" }) {
+
     const t = useTranslations("components.accessTokens.unlock");
-    
+    const [unlockLoading, setUnlockLoading] = React.useState(false);
+    const router = useRouter();
+
     const form = useForm<z.infer<typeof LockFolderFormSchema>>({
         resolver: zodResolver(LockFolderFormSchema),
         defaultValues: {
@@ -20,9 +27,39 @@ export default function UnlockTokenPrompt({ unlockLoading, submit }: { unlockLoa
         }
     })
 
+    const onUnlock = async (data: z.infer<typeof LockFolderFormSchema>) => {
+        setUnlockLoading(true);
+
+        let hashedPin;
+        if (data.pin) {
+            const salt = await bcrypt.genSalt(10)
+            hashedPin = await bcrypt.hash(data.pin, salt);
+        }
+
+        router.push(`/app/folders/${folderId}?share=${shareToken}&t=${tokenType}&h=${hashedPin}`);
+
+        /*if (r.error === "unauthorized") {
+            toast({
+                title: unlockTranslations("errors.unauthorized.title"),
+                description: unlockTranslations("errors.unauthorized.description"),
+                variant: "destructive"
+            });
+            return;
+        }
+
+        if (r.error === "code-needed") {
+            toast({
+                title: unlockTranslations("errors.codeNeeded.title"),
+                description: unlockTranslations("errors.codeNeeded.description"),
+                variant: "destructive"
+            });
+            return;
+        }*/
+    }
+
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(submit)} className="w-fit h-full mx-auto flex flex-col justify-center gap-6">
+            <form onSubmit={form.handleSubmit(onUnlock)} className="w-fit h-full mx-auto flex flex-col justify-center gap-6">
                 <FormField
                     control={form.control}
                     name="pin"

@@ -41,7 +41,7 @@ export default async function middleware(req: NextRequest) {
     }
 
     if (req.nextUrl.searchParams.get("share") && await isValidShareLink(params(req.url).folderId, req.nextUrl.searchParams.get("share"), req.nextUrl.searchParams.get("t"))) {
-        await fetch(`${process.env.NEXTAUTH_URL}/api/tokens/increment?token=${req.nextUrl.searchParams.get("share")}`);
+        await fetch(`${process.env.APP_URL}/api/tokens/increment?token=${req.nextUrl.searchParams.get("share")}`);
     }
 
     if (req.method === "GET") {
