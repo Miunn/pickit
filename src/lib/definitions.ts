@@ -245,3 +245,9 @@ const personAccessTokenWithFolder = Prisma.validator<Prisma.PersonAccessTokenDef
 })
 
 export type PersonAccessTokenWithFolder = Prisma.PersonAccessTokenGetPayload<typeof personAccessTokenWithFolder>
+
+const personAccessTokenWithFolderWithCreatedBy = Prisma.validator<Prisma.PersonAccessTokenDefaultArgs>()({
+    include: { folder: { include: { createdBy: true } } },
+})
+
+export type PersonAccessTokenWithFolderWithCreatedBy = Prisma.PersonAccessTokenGetPayload<typeof personAccessTokenWithFolderWithCreatedBy>

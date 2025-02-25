@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import * as fs from "fs";
 import { revalidatePath } from "next/cache";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolder, LightFolder, LockFolderFormSchema } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolder, LightFolder, PersonAccessTokenWithFolderWithCreatedBy } from "@/lib/definitions";
 import { folderDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 import { FolderTokenPermission } from "@prisma/client";
 import { validateShareToken } from "@/lib/utils";
@@ -101,6 +101,24 @@ export async function getFolderFull(folderId: string, shareToken?: string, token
     });
 
     return { error: null, folder: folder };
+}
+
+export async function getSharedWithMeFolders(): Promise<{
+    accessTokens: PersonAccessTokenWithFolderWithCreatedBy[],
+    error?: string | null
+}> {
+    const { user } = await getCurrentSession();
+
+    if (!user) {
+        return { accessTokens: [], error: "unauthorized" };
+    }
+
+    const accessTokens = await prisma.personAccessToken.findMany({
+        where: { email: user.email },
+        include: { folder: { include: { createdBy: true } } }
+    });
+
+    return { accessTokens: accessTokens, error: null }
 }
 
 export async function createFolder(name: string): Promise<{

@@ -15,7 +15,8 @@
       "title": "Vos sauvegardes",
       "folders": "Dossiers",
       "images": "Images",
-      "links": "Liens"
+      "links": "Liens",
+      "sharedWithMe": "Partagés avec moi"
     },
     "secondary": {
       "used": "Espace utilisé"

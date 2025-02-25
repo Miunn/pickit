@@ -8,7 +8,7 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/s
 import { Separator } from "@/components/ui/separator";
 import { Folder, Image, Link } from "lucide-react";
 import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
-import { getLightFolders } from "@/actions/folders";
+import { getLightFolders, getSharedWithMeFolders } from "@/actions/folders";
 import { getLightImages } from "@/actions/images";
 import { getAccessTokens } from "@/actions/accessTokens";
 import getMe from "@/actions/user";
@@ -39,6 +39,7 @@ export default async function LocaleLayout({
     const images = (await getLightImages()).lightImages;
     const accessTokens = (await getAccessTokens()).accessTokens;
     const personsAccessTokens = (await getPersonsAccessTokens()).personAccessTokens;
+    const sharedWithMeFolders = (await getSharedWithMeFolders()).accessTokens;
 
     return (
         <>
@@ -82,6 +83,17 @@ export default async function LocaleLayout({
                                 title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
                                 url: `/${locale}/app/links?l=${accessToken.id}`
                             })))
+                        },
+                        {
+                            key: "shared-with-me",
+                            title: t('main.sharedWithMe'),
+                            icon: Folder,
+                            url: `/${locale}/app/shared-with-me`,
+                            items: sharedWithMeFolders.map((accessToken) => ({
+                                key: accessToken.folder.id,
+                                title: `${accessToken.folder.createdBy.name} - ${accessToken.folder.name}`,
+                                url: `/${locale}/app/folders/${accessToken.folder.id}?share=${accessToken.token}&t=p`
+                            })),
                         }
                     ],
                     navSecondaryItems: [

@@ -15,7 +15,8 @@
       "title": "Your saves",
       "folders": "Folders",
       "images": "Images",
-      "links": "Links"
+      "links": "Links",
+      "sharedWithMe": "Shared with me"
     },
     "secondary": {
       "used": "Used storage"
