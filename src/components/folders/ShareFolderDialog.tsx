@@ -145,8 +145,8 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                 : t('links.link.permissions.write')
                                 }</Label>
                                 <Input placeholder={t('links.link.placeholder')} disabled={true}
-                                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/app/folders/${folder.id}?share=${token.token}`} />
-                                <Button onClick={() => copyToClipboard(`${typeof window !== 'undefined' ? window.location.origin : ''}/app/folders/${folder.id}?share=${token.token}`)} className="text-start">
+                                    value={`${typeof window !== 'undefined' ? window.location.origin : process.env.APP_URL}/app/folders/${folder.id}?share=${token.token}`} />
+                                <Button onClick={() => copyToClipboard(`${typeof window !== 'undefined' ? window.location.origin : process.env.APP_URL}/app/folders/${folder.id}?share=${token.token}`)} className="text-start">
                                     {t('links.link.copy')}
                                 </Button>
                             </Fragment>)
