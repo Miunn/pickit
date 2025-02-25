@@ -12,7 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { AccessTokenWithFolder } from "@/lib/definitions"
 import { ColumnDef } from "@tanstack/react-table"
 import { count } from "console";
-import { ArrowUpDown, BadgeCheck, BadgeMinus, CircleHelp, Eye, Lock, LockOpen, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, BadgeCheck, BadgeMinus, CircleHelp, Eye, Lock, LockOpen, MoreHorizontal, Pencil, PencilOff } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
@@ -74,9 +74,9 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
             const t = useTranslations("dataTables.links.columns.permission")
             const permission: string = row.getValue("permission");
             if (permission === "READ") {
-                return <Badge className="capitalize bg-blue-600 hover:bg-blue-700">{t('read')}</Badge>
+                return <Badge className="capitalize bg-blue-600 hover:bg-blue-700 flex gap-2 w-fit"><PencilOff /> {t('read')}</Badge>
             } else if (permission === "WRITE") {
-                return <Badge className="capitalize bg-orange-600 hover:bg-orange-700">{t('write')}</Badge>
+                return <Badge className="capitalize bg-orange-600 hover:bg-orange-700 flex gap-2 w-fit"><Pencil />{t('write')}</Badge>
             }
         },
         size: 100
