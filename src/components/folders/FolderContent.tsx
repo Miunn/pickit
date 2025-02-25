@@ -10,12 +10,9 @@ import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
 import { FolderWithAccessToken, FolderWithImagesWithFolder } from "@/lib/definitions";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { FolderTokenPermission } from "@prisma/client";
 import SortImages from "./SortImages";
 import saveAs from "file-saver";
 import { Progress } from "../ui/progress";
-import { get } from "http";
-
 
 export interface FolderContentProps {
     folder: FolderWithImagesWithFolder & FolderWithAccessToken;
@@ -26,7 +23,6 @@ export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
     const searchParams = useSearchParams();
 
     const t = useTranslations("folders");
-    const [permission, setPermission] = useState<FolderTokenPermission>(isGuest ? "READ" : "WRITE");
     const [sortState, setSortState] = useState<"name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc" | null>(null);
     const [downloadProgress, setDownloadProgress] = useState<number>(0);
     const [folderContent, setFolderContent] = useState<FolderWithImagesWithFolder>(folder);
@@ -119,7 +115,7 @@ export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
 
                 <div className={"flex gap-4"}>
                     <SortImages sortState={sortState} setSortState={setSortState} />
-                    {permission === "WRITE"
+                    {!!!isGuest
                         ? <UploadImagesDialog folderId={folder.id} shareToken={searchParams.get("share")} tokenType={searchParams.get("t") === "p" ? "personAccessToken" : "accessToken"} hashCode={searchParams.get("h") || undefined} />
                         : null}
                     {!!!isGuest ? <ShareFolderDialog folder={folder} /> : null}
