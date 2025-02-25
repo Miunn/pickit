@@ -317,6 +317,27 @@
           "description": "The folder's cover has been changed successfully"
         }
       },
+      "properties": {
+        "title": "Folder properties",
+        "description": "Properties of {name}",
+        "name": "Name",
+        "imagesAmount": {
+          "label": "# Images",
+          "value": "{count, plural, one {# image} other {# images}}"
+        },
+        "size": "Size",
+        "createdAt": "Created at",
+        "updatedAt": "Updated at",
+        "actions": {
+          "download": {
+            "trigger": "Download",
+            "downloading": "Downloading",
+            "title": "Downloaded",
+            "description": "The image has been downloaded successfully"
+          },
+          "delete": "Delete"
+        }
+      },
       "create": {
         "trigger": "New folder",
         "title": "New folder",
@@ -886,6 +907,7 @@
       "upload": "Upload",
       "open": "Open",
       "manage": "Manage links",
+      "properties": "Properties",
       "download": "Download"
     },
     "empty": "No folders created"

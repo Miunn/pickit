@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Images } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { useEffect, useState } from "react";
 import RenameFolderDialog from "@/components/folders/RenameFolderDialog";
 import DeleteFolderDialog from "@/components/folders/DeleteFolderDialog";
@@ -17,6 +17,7 @@ import ChangeCoverFolderDialog from "./ChangeCoverFolderDialog";
 import { getImagesWithFolderFromFolder } from "@/actions/images";
 import saveAs from "file-saver";
 import { Progress } from "../ui/progress";
+import FolderPropertiesDialog from "./FolderPropertiesDialogs";
 
 export default function FolderPreviewClient({ folder, coverB64, locale }: {
     folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover,
@@ -31,6 +32,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
     const [openRename, setOpenRename] = useState<boolean>(false);
     const [openChangeCover, setOpenChangeCover] = useState<boolean>(false);
     const [openShare, setOpenShare] = useState<boolean>(false);
+    const [openProperties, setOpenProperties] = useState<boolean>(false);
     const [openDelete, setOpenDelete] = useState<boolean>(false);
 
     const [folderImages, setFolderImages] = useState<ImageWithFolder[]>([]);
@@ -128,6 +130,8 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                         saveAs(await r.blob(), `${folder.name}.zip`);
 
                     }} disabled={folderImages.length === 0}>{t('actions.download')}</ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenProperties(true)}>{t('actions.properties')}</ContextMenuItem>
+                    <ContextMenuSeparator />
                     <ContextMenuItem onClick={() => setOpenDelete(true)} className="text-red-600 focus:text-red-600 font-semibold">{dialogsTranslations('delete.trigger')}</ContextMenuItem>
                 </ContextMenuContent>
             </ContextMenu>
@@ -135,6 +139,7 @@ export default function FolderPreviewClient({ folder, coverB64, locale }: {
                 setOpenState={setOpenRename} />
             <ChangeCoverFolderDialog images={folderImages} folderId={folder.id} open={openChangeCover} setOpen={setOpenChangeCover} />
             <ShareFolderDialog folder={folder} open={openShare} setOpen={setOpenShare} />
+            <FolderPropertiesDialog folder={folder} open={openProperties} setOpen={setOpenProperties} />
             <DeleteFolderDialog folderId={folder.id} folderName={folder.name} openState={openDelete}
                 setOpenState={setOpenDelete} />
         </>

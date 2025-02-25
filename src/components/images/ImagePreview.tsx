@@ -8,7 +8,7 @@ import { formatBytes } from "@/lib/utils";
 import { downloadImage } from "@/actions/images";
 import saveAs from "file-saver";
 import { toast } from "@/hooks/use-toast";
-import ImagePropertiesDialog from "./PropertiesDialog";
+import ImagePropertiesDialog from "./ImagePropertiesDialog";
 import { DeleteImageDialog } from "./DeleteImageDialog";
 
 export interface ImagePreviewProps {

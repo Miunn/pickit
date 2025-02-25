@@ -443,6 +443,27 @@
           }
         }
       },
+      "properties": {
+        "title": "Propriétés du dossier",
+        "description": "Propriétés de {name}",
+        "name": "Nom",
+        "imagesAmount": {
+          "label": "Nombre d'images",
+          "value": "{count, plural, zero {Aucune image} one {# image} other {# images}}"
+        },
+        "size": "Taille",
+        "createdAt": "Created at",
+        "uploadedAt": "Uploaded at",
+        "actions": {
+          "download": {
+            "trigger": "Download",
+            "downloading": "Downloading",
+            "title": "Downloaded",
+            "description": "The image has been downloaded successfully"
+          },
+          "delete": "Delete"
+        }
+      },
       "delete": {
         "trigger": "Supprimer",
         "title": "Supprimer le dossier",
@@ -879,6 +900,7 @@
       "upload": "Upload",
       "open": "Open",
       "manage": "Manage links",
+      "properties": "Properties",
       "download": "Download as ZIP"
     },
     "dialog": {
