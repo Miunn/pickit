@@ -8,12 +8,13 @@ import { ImagesGrid } from "@/components/images/ImagesGrid";
 import { toast } from "@/hooks/use-toast";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
 import { FolderWithAccessToken, FolderWithImagesWithFolder } from "@/lib/definitions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { FolderTokenPermission } from "@prisma/client";
 import SortImages from "./SortImages";
 import saveAs from "file-saver";
 import { Progress } from "../ui/progress";
+import { get } from "http";
 
 
 export interface FolderContentProps {
@@ -26,8 +27,9 @@ export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
 
     const t = useTranslations("folders");
     const [permission, setPermission] = useState<FolderTokenPermission>(isGuest ? "READ" : "WRITE");
-    const [sortState, setSortState] = useState<"name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc">("date-desc");
+    const [sortState, setSortState] = useState<"name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc" | null>(null);
     const [downloadProgress, setDownloadProgress] = useState<number>(0);
+    const [folderContent, setFolderContent] = useState<FolderWithImagesWithFolder>(folder);
 
     async function downloadCallback() {
         if (!folder) return;
@@ -65,64 +67,50 @@ export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
         setDownloadProgress(100);
     }
 
-    /*useEffect(() => {
-        switch (sortState) {
+    function getSortedFolderContent(folderContent: FolderWithImagesWithFolder, sort: string): FolderWithImagesWithFolder {
+        switch (sort) {
             case "name-asc":
-                setFolderContent(prev => {
-                    if (!prev) return prev;
-                    return {
-                        ...prev,
-                        images: prev.images.sort((a, b) => a.name.localeCompare(b.name))
-                    }
-                });
-                break;
+                return {
+                    ...folderContent,
+                    images: folderContent.images.sort((a, b) => a.name.localeCompare(b.name))
+                }
             case "name-desc":
-                setFolderContent(prev => {
-                    if (!prev) return prev;
-                    return {
-                        ...prev,
-                        images: prev.images.sort((a, b) => b.name.localeCompare(a.name))
-                    }
-                });
-                break;
+                return {
+                    ...folderContent,
+                    images: folderContent.images.sort((a, b) => b.name.localeCompare(a.name))
+                }
             case "size-asc":
-                setFolderContent(prev => {
-                    if (!prev) return prev;
-                    return {
-                        ...prev,
-                        images: prev.images.sort((a, b) => a.size - b.size)
-                    }
-                });
-                break;
+                return {
+                    ...folderContent,
+                    images: folderContent.images.sort((a, b) => a.size - b.size)
+                }
             case "size-desc":
-                setFolderContent(prev => {
-                    if (!prev) return prev;
-                    return {
-                        ...prev,
-                        images: prev.images.sort((a, b) => b.size - a.size)
-                    }
-                });
-                break;
+                return {
+                    ...folderContent,
+                    images: folderContent.images.sort((a, b) => b.size - a.size)
+                }
             case "date-asc":
-                setFolderContent(prev => {
-                    if (!prev) return prev;
-                    return {
-                        ...prev,
-                        images: prev.images.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
-                    }
-                });
-                break;
+                return {
+                    ...folderContent,
+                    images: folderContent.images.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+                }
             case "date-desc":
-                setFolderContent(prev => {
-                    if (!prev) return prev;
-                    return {
-                        ...prev,
-                        images: prev.images.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-                    }
-                });
-                break;
+                return {
+                    ...folderContent,
+                    images: folderContent.images.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                }
+            default:
+                return folderContent;
         }
-    }, [sortState]);*/
+    }
+
+    useEffect(() => {
+        setFolderContent(getSortedFolderContent(folderContent, sortState));
+    }, [sortState]);
+
+    useEffect(() => {
+        setFolderContent(getSortedFolderContent(folder, sortState));
+    }, [folder]);
 
     return (
         <div>
@@ -142,7 +130,7 @@ export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
             </h3>
 
             <div className="flex-1 overflow-auto">
-                <ImagesGrid folder={folder} shareToken={searchParams.get("share")} hashPin={searchParams.get("h") || undefined} tokenType={searchParams.get('t') === "p" ? "personAccessToken" : "accessToken"} />
+                <ImagesGrid folder={folderContent} shareToken={searchParams.get("share")} hashPin={searchParams.get("h") || undefined} tokenType={searchParams.get('t') === "p" ? "personAccessToken" : "accessToken"} />
             </div>
         </div>
     )
