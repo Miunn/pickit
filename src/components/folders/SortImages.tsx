@@ -7,8 +7,8 @@ import { ArrowDown, ArrowDownWideNarrow, ArrowUp, ChevronDown } from "lucide-rea
 import React from "react";
 
 export interface SortImagesProps {
-    sortState: "name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc";
-    setSortState: React.Dispatch<React.SetStateAction<"name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc">>;
+    sortState: "name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc" | null;
+    setSortState: React.Dispatch<React.SetStateAction<"name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc" | null>>;
 }
 
 export default function SortImages({ sortState, setSortState }: SortImagesProps) {

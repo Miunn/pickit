@@ -67,7 +67,7 @@ export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
         setDownloadProgress(100);
     }
 
-    function getSortedFolderContent(folderContent: FolderWithImagesWithFolder, sort: string): FolderWithImagesWithFolder {
+    function getSortedFolderContent(folderContent: FolderWithImagesWithFolder, sort: "name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc" | null): FolderWithImagesWithFolder {
         switch (sort) {
             case "name-asc":
                 return {
