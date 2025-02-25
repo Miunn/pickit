@@ -11,7 +11,7 @@ import { Check, Loader2 } from "lucide-react";
 import saveAs from "file-saver";
 import { DeleteImageDialog } from "./DeleteImageDialog";
 
-export default function PropertiesDialog({ image, open, setOpen }: { image: ImageWithFolder, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ImagePropertiesDialog({ image, open, setOpen }: { image: ImageWithFolder, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const t = useTranslations("dialogs.images.properties");
     const formatter = useFormatter();

@@ -8,7 +8,7 @@ import { formatBytes } from "@/lib/utils";
 import { downloadImage } from "@/actions/images";
 import saveAs from "file-saver";
 import { toast } from "@/hooks/use-toast";
-import PropertiesDialog from "./PropertiesDialog";
+import ImagePropertiesDialog from "./PropertiesDialog";
 import { DeleteImageDialog } from "./DeleteImageDialog";
 
 export interface ImagePreviewProps {
@@ -113,7 +113,7 @@ export const ImagePreview = ({ image, selected, onClick, onSelect, shareToken, s
                 </ContextMenuContent>
             </ContextMenu>
             <DeleteImageDialog image={image} open={openDelete} setOpen={setOpenDelete} />
-            <PropertiesDialog image={image} open={openProperties} setOpen={setOpenProperties} />
+            <ImagePropertiesDialog image={image} open={openProperties} setOpen={setOpenProperties} />
         </>
     )
 }
