@@ -32,7 +32,7 @@ export default function FolderPropertiesDialog({ folder, open, setOpen }: { fold
 
                     <div>
                         <Label>{t('size')}</Label>
-                        <p>{/*formatBytes(folder.images.map(i => i.size).reduce((acc, size) => acc + size, 0))*/}</p>
+                        <p>{formatBytes(folder.size, { decimals: 2 })}</p>
                     </div>
 
                     <div>
