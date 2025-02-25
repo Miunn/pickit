@@ -66,7 +66,7 @@ export default function ImagePropertiesDialog({ image, open, setOpen }: { image:
 
                     <div>
                         <Label>{t('size')}</Label>
-                        <p>{formatBytes(image.size)}</p>
+                        <p>{formatBytes(image.size, { decimals: 2 })}</p>
                     </div>
 
                     <div>
