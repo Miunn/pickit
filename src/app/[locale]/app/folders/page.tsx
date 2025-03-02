@@ -1,5 +1,4 @@
 import {prisma} from "@/lib/prisma";
-import FoldersContent from "@/components/folders/FoldersContent";
 import { getCurrentSession } from "@/lib/authUtils";
 import { redirect } from "@/i18n/routing";
 import { FolderX } from "lucide-react";
