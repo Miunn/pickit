@@ -48,6 +48,9 @@
       "images": {
         "lastUploadedImages": "Last uploaded images",
         "empty": "No images uploaded"
+      },
+      "contextMenu": {
+        "createFolder": "New folder"
       }
     },
     "folders": {

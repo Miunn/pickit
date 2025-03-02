@@ -2,30 +2,30 @@
 
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription, DialogFooter,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {Loader2} from "lucide-react";
-import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
-import {zodResolver} from "@hookform/resolvers/zod"
-import {useForm} from "react-hook-form"
-import {z} from "zod"
-import {createFolder} from "@/actions/folders";
-import {useState} from "react";
-import {toast} from "@/hooks/use-toast";
-import {useTranslations} from "next-intl";
-import {CreateFolderFormSchema} from "@/lib/definitions";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { createFolder } from "@/actions/folders";
+import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
+import { useTranslations } from "next-intl";
+import { CreateFolderFormSchema } from "@/lib/definitions";
 
-export default function CreateFolderDialog({ children }: { children: React.ReactNode }) {
+export default function CreateFolderDialog({ children, open, setOpen }: { children?: React.ReactNode, open?: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const t = useTranslations("dialogs.folders.create");
 
-    const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const form = useForm<z.infer<typeof CreateFolderFormSchema>>({
@@ -55,38 +55,48 @@ export default function CreateFolderDialog({ children }: { children: React.React
                 description: t('success.description'),
             });
 
-            setOpen(false);
+            if (setOpen) {
+                setOpen(false);
+            }
         });
     }
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            { children }
+        <Dialog open={open} onOpenChange={() => {
+            form.reset();
+            if (setOpen) {
+                setOpen(false);
+            }
+        }}>
+            {children}
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{t('title')}</DialogTitle>
                     <DialogDescription>{t('description')}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
                         <FormField
                             control={form.control}
                             name="name"
-                            render={({field}) => (
+                            render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>{t('form.name.label')}</FormLabel>
                                     <FormControl>
                                         <Input placeholder={t('form.name.placeholder')} {...field} />
                                     </FormControl>
                                     <FormDescription>{t('form.name.description')}</FormDescription>
-                                    <FormMessage/>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
 
                         <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant={"outline"} type="button">{t('actions.cancel')}</Button>
+                            </DialogClose>
                             {loading
-                                ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"}/> {t('actions.submitting')}</Button>
+                                ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"} /> {t('actions.submitting')}</Button>
                                 : <Button type={"submit"}>{t('actions.submit')}</Button>
                             }
                         </DialogFooter>

@@ -1,27 +1,26 @@
+import FeatureCarouselPreview from "@/components/FeatureCarouselPreview";
 import Header from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Arrow } from "@radix-ui/react-tooltip";
 import { ArrowRight } from "lucide-react";
 
-// This page only renders when the app is built statically (output: 'export')
 export default function RootPage({ params }: { params: { locale: string } }) {
 
     return (
         <main>
-            <Header className="mb-11" locale={params.locale} />
+            <Header className="sticky top-0 z-50 bg-background/90 backdrop-blur mb-11" locale={params.locale} />
 
-            <div className="bg-black h-[600px] rounded-3xl mx-6 text-white flex flex-col justify-center gap-11">
-                <div className="w-full max-w-7xl mx-auto">
+            <div className="relative bg-black h-[600px] rounded-3xl mx-6 text-white flex flex-col justify-center gap-11">
+                <div className="relative w-full max-w-7xl mx-auto">
                     <h1 className="text-6xl mb-8">Save moments of life</h1>
 
                     <p className="text-xl mb-8">
-                        Save your memories and share them with your loved ones<br />
+                        Save your memories and share them to your loved ones<br />
                         with our secure and easy-to-use platform.
                     </p>
 
                     <div className="flex items-center gap-4">
-                        <Button className="p-7 rounded-3xl">
+                        <Button className="p-7 rounded-full">
                             Get started <ArrowRight />
                         </Button>
                         <Button variant={"link"} className="text-white">
@@ -40,8 +39,39 @@ export default function RootPage({ params }: { params: { locale: string } }) {
                             <p>Exemple stat</p>
                         </div>
                     </div>
+
+                </div>
+                <div className="absolute bottom-0 left-[296px] -translate-x-1/2 translate-y-1/2">
+                    <div className="absolute bottom-0 right-32 translate-y-1/2 w-32 h-32 bg-black">
+                        <div className="w-32 h-32 bg-white rounded-tr-lg "></div>
+                    </div>
+                    <div className="w-32 h-32 bg-black rounded-full"></div>
+                    <div className="absolute bottom-0 left-32 translate-y-1/2 w-32 h-32 bg-black">
+                        <div className="w-32 h-32 bg-white rounded-tl-lg "></div>
+                    </div>
+
+                    <div className="absolute left-1/2 -translate-x-1/2 w-24 h-24 rounded-full bg-black mt-8"></div>
+
+                    <div className="absolute left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-black mt-40"></div>
+
+                    <div className="absolute left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-black mt-64"></div>
                 </div>
             </div>
+
+            <div className="max-w-7xl mx-auto grid grid-cols-3 my-32">
+                <div className="col-start-2 col-span-2">
+                    <h3 className="text-5xl">Store & Share your photos easily</h3>
+
+                    <p>
+                        With Pickit, you can store and share your photos to your loved ones easily.
+                        Our platform is secure and easy to use, you can create albums and share them with your friends and family.
+                    </p>
+                </div>
+            </div>
+
+            <FeatureCarouselPreview />
+
+            <div className="mt-64"></div>
         </main>
     )
 }

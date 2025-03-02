@@ -48,6 +48,9 @@
       "images": {
         "lastUploadedImages": "Dernières images téléchargées",
         "empty": "Aucune image téléchargée"
+      },
+      "contextMenu": {
+        "createFolder": "New folder"
       }
     },
     "folders": {

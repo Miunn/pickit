@@ -71,9 +71,14 @@ const config: Config = {
 					"0%,70%,100%": { opacity: "1" },
 					"20%,50%": { opacity: "0" },
 				},
+				"progress": {
+					"0%": { width: "0%" },
+					"100%": { width: "100%" }
+				}
 			},
 			animation: {
 				"caret-blink": "caret-blink 1.25s ease-out infinite",
+				"progress": "progress 7s linear forwards"
 			},
 		}
 	},
