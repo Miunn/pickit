@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import * as fs from "fs";
 import sharp from "sharp";
 import { revalidatePath } from "next/cache";
-import { ImageLightWithFolderName, ImageWithFolder } from "@/lib/definitions";
+import { ImageLightWithFolderName, ImageWithComments, ImageWithFolder } from "@/lib/definitions";
 import { imageCreateManyAndUpdateSizes, imageDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 import { changeFolderCover } from "./folders";
 import { validateShareToken } from "@/lib/utils";
@@ -203,8 +203,8 @@ export async function downloadImage(imageId: string): Promise<ReadableStream<Uin
     return blob.stream();
 }
 
-export async function getImagesWithFolderFromFolder(folderId: string): Promise<{
-    images: ImageWithFolder[],
+export async function getImagesWithFolderAndCommentsFromFolder(folderId: string): Promise<{
+    images: (ImageWithFolder & ImageWithComments)[],
     error: string | null
 }> {
     const { user } = await getCurrentSession();
@@ -223,7 +223,8 @@ export async function getImagesWithFolderFromFolder(folderId: string): Promise<{
             }
         },
         include: {
-            folder: true
+            folder: true,
+            comments: true
         }
     });
 

@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import * as fs from "fs";
 import { revalidatePath } from "next/cache";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolder, LightFolder, PersonAccessTokenWithFolderWithCreatedBy } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolder, FolderWithImagesWithFolderAndComments, LightFolder, PersonAccessTokenWithFolderWithCreatedBy } from "@/lib/definitions";
 import { folderDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 import { FolderTokenPermission } from "@prisma/client";
 import { validateShareToken } from "@/lib/utils";
@@ -63,7 +63,7 @@ export async function getFolderName(id: string): Promise<{
 
 export async function getFolderFull(folderId: string, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashedPinCode?: string): Promise<{
     error: string | null,
-    folder: (FolderWithCreatedBy & FolderWithImagesWithFolder & FolderWithAccessToken) | null
+    folder: (FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithAccessToken) | null
     permission?: FolderTokenPermission
 }> {
     const { user } = await getCurrentSession();
@@ -93,6 +93,7 @@ export async function getFolderFull(folderId: string, shareToken?: string, token
             images: {
                 include: {
                     folder: true,
+                    comments: true
                 },
             },
             createdBy: true,

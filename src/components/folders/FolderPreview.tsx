@@ -1,7 +1,6 @@
 'use client'
 
-import { getImagesWithFolderFromFolder } from "@/actions/images";
-import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, ImageWithFolder } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, ImageWithComments, ImageWithFolder } from "@/lib/definitions";
 import { useFormatter, useTranslations } from "next-intl";
 import React from "react";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
@@ -18,6 +17,7 @@ import FolderPropertiesDialog from "./FolderPropertiesDialogs";
 import DeleteFolderDialog from "./DeleteFolderDialog";
 import saveAs from "file-saver";
 import { Progress } from "../ui/progress";
+import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/images";
 
 export default function FolderPreview({ folder, locale }: { folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover, locale: string }) {
     const t = useTranslations("folders");
@@ -30,12 +30,12 @@ export default function FolderPreview({ folder, locale }: { folder: FolderWithAc
     const [openProperties, setOpenProperties] = React.useState<boolean>(false);
     const [openDelete, setOpenDelete] = React.useState<boolean>(false);
 
-    const [folderImages, setFolderImages] = React.useState<ImageWithFolder[]>([]);
+    const [folderImages, setFolderImages] = React.useState<(ImageWithFolder & ImageWithComments)[]>([]);
 
     const [downloadProgress, setDownloadProgress] = React.useState<number>(0);
 
     async function loadImages() {
-        setFolderImages((await getImagesWithFolderFromFolder(folder.id)).images);
+        setFolderImages((await getImagesWithFolderAndCommentsFromFolder(folder.id)).images);
     }
 
     React.useEffect(() => {

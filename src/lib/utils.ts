@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { saveAs } from "file-saver";
 import { Folder, FolderTokenPermission } from "@prisma/client";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolder, UploadImagesFormSchema } from "./definitions";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolder, FolderWithImagesWithFolderAndComments, UploadImagesFormSchema } from "./definitions";
 import { z } from "zod";
 import { uploadImages } from "@/actions/images";
 import { toast } from "@/hooks/use-toast";
@@ -51,7 +51,7 @@ export const copyImageToClipboard = async (folderId: string, imageId: string, sh
 	return true;
 }
 
-export const validateShareToken = async (folderId: string, token: string, type: "accessToken" | "personAccessToken", hashedPinCode?: string | null): Promise<{ error: string | null, folder: (FolderWithCreatedBy & FolderWithImagesWithFolder & FolderWithAccessToken) | null, permission?: FolderTokenPermission }> => {
+export const validateShareToken = async (folderId: string, token: string, type: "accessToken" | "personAccessToken", hashedPinCode?: string | null): Promise<{ error: string | null, folder: (FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithAccessToken) | null, permission?: FolderTokenPermission }> => {
 	let accessToken;
 	if (type === "accessToken") {
 		accessToken = await prisma.accessToken.findUnique({
@@ -67,7 +67,8 @@ export const validateShareToken = async (folderId: string, token: string, type: 
 					include: {
 						images: {
 							include: {
-								folder: true
+								folder: true,
+								comments: true
 							}
 						},
 						createdBy: true
@@ -92,7 +93,8 @@ export const validateShareToken = async (folderId: string, token: string, type: 
 					include: {
 						images: {
 							include: {
-								folder: true
+								folder: true,
+								comments: true
 							}
 						},
 						createdBy: true

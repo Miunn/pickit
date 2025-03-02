@@ -2,15 +2,12 @@
 
 import { ImagePreview } from "@/components/images/ImagePreview";
 import React, { Fragment, useEffect, useState } from "react";
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { useTranslations } from "next-intl";
-import { DeleteImageDialog } from "@/components/images/DeleteImageDialog";
 import { Button } from "@/components/ui/button";
 import { Loader2, Trash2, X } from "lucide-react";
 import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
 import { CarouselDialog } from "@/components/images/CarouselDialog";
-import { Image } from "@prisma/client";
-import { FolderWithImagesWithFolder, ImageWithFolder, UploadImagesFormSchema } from "@/lib/definitions";
+import { FolderWithImagesWithFolderAndComments, ImageWithComments, ImageWithFolder, UploadImagesFormSchema } from "@/lib/definitions";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { FileUploader } from "../generic/FileUploader";
 import { useForm } from "react-hook-form";
@@ -18,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { formatBytes, handleImagesSubmission } from "@/lib/utils";
 
-export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder: FolderWithImagesWithFolder, shareToken?: string | null, hashPin?: string, tokenType?: "accessToken" | "personAccessToken" | null }) => {
+export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder: FolderWithImagesWithFolderAndComments, shareToken?: string | null, hashPin?: string, tokenType?: "accessToken" | "personAccessToken" | null }) => {
 
     const t = useTranslations("images");
     const deleteMultipleTranslations = useTranslations("dialogs.images.deleteMultiple");
@@ -110,7 +107,7 @@ export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder:
                             </form>
                         </Form>
                     </div>
-                    : folder.images.map((image: ImageWithFolder) => (
+                    : folder.images.map((image: ImageWithFolder & ImageWithComments) => (
                         <Fragment key={image.id}>
                             <ImagePreview
                                 image={image}

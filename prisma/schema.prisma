@@ -53,6 +53,19 @@ model Image {
   createdById String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  comments Comment[]
+}
+
+model Comment {
+  id          String   @id @default(cuid())
+  text        String
+  image       Image    @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  imageId     String
+  createdBy   User?    @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model AccessToken {
@@ -104,8 +117,9 @@ model User {
   verifiedEmailRequest VerifyEmailRequest?
   passwordResetRequest PasswordResetRequest?
 
-  folders Folder[] @relation("UserFolders")
-  images  Image[]  @relation("UserImages")
+  folders  Folder[]  @relation("UserFolders")
+  images   Image[]   @relation("UserImages")
+  comments Comment[]
 }
 
 model VerifyEmailRequest {

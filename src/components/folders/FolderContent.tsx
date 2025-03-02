@@ -7,7 +7,7 @@ import { UploadImagesDialog } from "@/components/images/UploadImagesDialog";
 import { ImagesGrid } from "@/components/images/ImagesGrid";
 import { toast } from "@/hooks/use-toast";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolder } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolder, FolderWithImagesWithFolderAndComments } from "@/lib/definitions";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import SortImages from "./SortImages";
@@ -15,7 +15,7 @@ import saveAs from "file-saver";
 import { Progress } from "../ui/progress";
 
 export interface FolderContentProps {
-    folder: FolderWithCreatedBy & FolderWithImagesWithFolder & FolderWithAccessToken;
+    folder: FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithAccessToken;
     isGuest?: boolean;
 }
 
@@ -25,7 +25,7 @@ export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
     const t = useTranslations("folders");
     const [sortState, setSortState] = useState<"name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc" | null>(null);
     const [downloadProgress, setDownloadProgress] = useState<number>(0);
-    const [folderContent, setFolderContent] = useState<FolderWithImagesWithFolder>(folder);
+    const [folderContent, setFolderContent] = useState<FolderWithImagesWithFolderAndComments>(folder);
 
     async function downloadCallback() {
         if (!folder) return;
@@ -63,7 +63,7 @@ export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
         setDownloadProgress(100);
     }
 
-    function getSortedFolderContent(folderContent: FolderWithImagesWithFolder, sort: "name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc" | null): FolderWithImagesWithFolder {
+    function getSortedFolderContent(folderContent: FolderWithImagesWithFolderAndComments, sort: "name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc" | null): FolderWithImagesWithFolderAndComments {
         switch (sort) {
             case "name-asc":
                 return {

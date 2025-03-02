@@ -74,6 +74,14 @@ export const UploadImagesFormSchema = z.object({
             })
 });
 
+export const CreateCommentFormSchema = z.object({
+    content: z.string().min(1, {
+        message: "Comment must be at least 1 character long"
+    }).max(255, {
+        message: "Comment must be at most 255 characters long"
+    })
+});
+
 export const LockFolderFormSchema = z.object({
     pin: z.string().min(8, {
         message: "PIN must be 6 characters long"
@@ -204,6 +212,12 @@ const folderWithImagesWithFolder = Prisma.validator<Prisma.FolderDefaultArgs>()(
 
 export type FolderWithImagesWithFolder = Prisma.FolderGetPayload<typeof folderWithImagesWithFolder>
 
+const folderWithImagesWithFolderAndComments = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { images: { include: { folder: true, comments: true } } },
+})
+
+export type FolderWithImagesWithFolderAndComments = Prisma.FolderGetPayload<typeof folderWithImagesWithFolderAndComments>
+
 const folderWithAccessToken = Prisma.validator<Prisma.FolderDefaultArgs>()({
     include: { AccessToken: true }
 })
@@ -233,6 +247,12 @@ const imageWithFolder = Prisma.validator<Prisma.ImageDefaultArgs>()({
 })
 
 export type ImageWithFolder = Prisma.ImageGetPayload<typeof imageWithFolder>
+
+const imageWithComments = Prisma.validator<Prisma.ImageDefaultArgs>()({
+    include: { comments: true },
+})
+
+export type ImageWithComments = Prisma.ImageGetPayload<typeof imageWithComments>
 
 const accessTokenWithFolder = Prisma.validator<Prisma.AccessTokenDefaultArgs>()({
     include: { folder: true },

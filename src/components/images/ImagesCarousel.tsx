@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
-import { ImageWithFolder } from "@/lib/definitions";
+import { ImageWithComments, ImageWithFolder } from "@/lib/definitions";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Check, Copy, ExternalLink } from "lucide-react";
@@ -8,8 +8,9 @@ import Link from "next/link";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
 import { copyImageToClipboard } from "@/lib/utils";
+import ImageCommentSection from "./ImageCommentSection";
 
-export default function ImagesCarousel({ images, startIndex, currentIndex, setCurrentIndex, shareToken, shareHashPin }: { images: ImageWithFolder[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>>, shareToken?: string | null, shareHashPin?: string | null }) {
+export default function ImagesCarousel({ images, startIndex, currentIndex, setCurrentIndex, shareToken, shareHashPin }: { images: (ImageWithFolder & ImageWithComments)[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>>, shareToken?: string | null, shareHashPin?: string | null }) {
 
     const t = useTranslations("components.images.carousel");
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
@@ -17,6 +18,8 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
     const [count, setCount] = useState(images.length);
 
     const [copied, setCopied] = useState<boolean>(false);
+
+    const [commentSectionOpen, setCommentSectionOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (!carouselApi) return;
@@ -47,15 +50,15 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                         await copyImageToClipboard(images.at(currentIndex - 1)?.folderId || '', images.at(currentIndex - 1)?.id || '', shareToken || '', shareHashPin || '');
 
                         setCopied(true);
-                            toast({
-                                title: t('actions.copy.title'),
-                                description: t('actions.copy.description'),
-                                duration: 2000
-                            });
-                        
-                            setTimeout(() => {
-                                setCopied(false);
-                            }, 2000);
+                        toast({
+                            title: t('actions.copy.title'),
+                            description: t('actions.copy.description'),
+                            duration: 2000
+                        });
+
+                        setTimeout(() => {
+                            setCopied(false);
+                        }, 2000);
                     }}>
                         {copied
                             ? <Check className="w-4 h-4" />
@@ -71,9 +74,9 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                 <CarouselContent className="h-fit">
                     {images.map((image, index) => (
                         <CarouselItem ref={imagesItemsRefs[index]} key={image.id} className="h-fit">
-                            <div className={"h-96 flex justify-center items-center p-2"}>
+                            <div className={`${commentSectionOpen ? "h-44" : "h-96"} flex justify-center items-center p-2 transition-all duration-300 ease-in-out`}>
                                 <Image src={`/api/folders/${image.folder.id}/images/${image.id}?share=${shareToken}&h=${shareHashPin}`}
-                                    alt={image.name} className={"h-96 max-h-96 object-contain rounded-md"} width={900} height={384} />
+                                    alt={image.name} className={`${commentSectionOpen ? "h-44" : "h-96"} max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out`} width={900} height={384} />
                             </div>
                         </CarouselItem>
                     ))}
@@ -92,9 +95,16 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                         currentIndex == 0
                             ? `${images[currentIndex]?.width}x${images[currentIndex]?.height}`
                             : `${images[currentIndex - 1]?.width}x${images[currentIndex - 1]?.height}`
-                    }</span> - <span>{t('slide', {current: currentIndex, total: count})}</span>
+                    }</span> - <span>{t('slide', { current: currentIndex, total: count })}</span>
                 </p>
             </div>
+
+            <ImageCommentSection
+                className="py-4 transition-all duration-1000 ease-in-out"
+                open={commentSectionOpen}
+                setOpen={setCommentSectionOpen}
+                image={images[currentIndex === 0 ? currentIndex : currentIndex-1]}
+            />
         </div>
     )
 }

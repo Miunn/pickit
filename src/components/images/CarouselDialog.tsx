@@ -1,11 +1,11 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import React, { useState } from "react";
 import ImagesCarousel from "./ImagesCarousel";
-import { ImageWithFolder } from "@/lib/definitions";
+import { ImageWithComments, ImageWithFolder } from "@/lib/definitions";
 import { useTranslations } from "next-intl";
 
 export const CarouselDialog = ({ images, title, carouselOpen, setCarouselOpen, startIndex, shareToken, shareHashPin }: {
-    images: ImageWithFolder[],
+    images: (ImageWithFolder & ImageWithComments)[],
     title: string,
     carouselOpen: any,
     setCarouselOpen: React.Dispatch<React.SetStateAction<boolean>>,

@@ -7,9 +7,9 @@ import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleIm
 import React, { Fragment, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { ImageWithFolder } from "@/lib/definitions";
+import { ImageWithComments, ImageWithFolder } from "@/lib/definitions";
 
-export const LastUploadedImages = ({ images, locale }: { images: ImageWithFolder[], locale: string }) => {
+export const LastUploadedImages = ({ images, locale }: { images: (ImageWithFolder & ImageWithComments)[], locale: string }) => {
     const t = useTranslations("pages.dashboard.images");
 
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);

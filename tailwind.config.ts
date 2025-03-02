@@ -74,11 +74,29 @@ const config: Config = {
 				"progress": {
 					"0%": { width: "0%" },
 					"100%": { width: "100%" }
+				},
+				"collapsibleSlideDown": {
+					from: {
+						height: "0"
+					},
+					to: {
+						height: "var(--radix-collapsible-content-height)"
+					}
+				},
+				"collapsibleSlideUp": {
+					from: {
+						height: "var(--radix-collapsible-content-height)"
+					},
+					to: {
+						height: "0"
+					}
 				}
 			},
 			animation: {
 				"caret-blink": "caret-blink 1.25s ease-out infinite",
-				"progress": "progress 7s linear forwards"
+				"progress": "progress 7s linear forwards",
+				"collapsibleEnter": "collapsibleSlideDown 300ms ease-in-out",
+				"collapsibleLeave": "collapsibleSlideUp 300ms ease-in-out"
 			},
 		}
 	},
