@@ -110,7 +110,7 @@ export default function ImageCommentSection({ image, className, open, setOpen }:
                                         <span className="font-light text-gray-500">{formatter.relativeTime(comment.createdAt, new Date())}</span>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <span>{formatter.dateTime(comment.createdAt, { weekday: "long", month: "long", year: "numeric", hour: "numeric", minute: "numeric", second: "numeric" })}</span>
+                                        <span className="capitalize">{formatter.dateTime(comment.createdAt, { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "numeric", second: "numeric" })}</span>
                                     </TooltipContent>
                                 </Tooltip>
                             </p>
