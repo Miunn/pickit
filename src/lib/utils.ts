@@ -1,8 +1,8 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { saveAs } from "file-saver";
-import { Folder, FolderTokenPermission } from "@prisma/client";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolder, FolderWithImagesWithFolderAndComments, UploadImagesFormSchema } from "./definitions";
+import { Folder, FolderTokenPermission, PersonAccessToken } from "@prisma/client";
+import { AccessTokenWithFolder, FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolder, FolderWithImagesWithFolderAndComments, PersonAccessTokenWithFolder, UploadImagesFormSchema } from "./definitions";
 import { z } from "zod";
 import { uploadImages } from "@/actions/images";
 import { toast } from "@/hooks/use-toast";
@@ -38,8 +38,8 @@ export const switchLocaleUrl = (url: string, locale: string): string => {
 	return `/${locale}/${url}`;
 }
 
-export const copyImageToClipboard = async (folderId: string, imageId: string, shareToken?: string, shareHashPin?: string): Promise<boolean> => {
-	let image = await (await fetch(`/api/folders/${folderId}/images/${imageId}?share=${shareToken}&h=${shareHashPin}`)).blob();
+export const copyImageToClipboard = async (folderId: string, imageId: string, shareToken?: string, shareHashPin?: string, tokenType?: "accessToken" | "personAccessToken" | null): Promise<boolean> => {
+	let image = await (await fetch(`/api/folders/${folderId}/images/${imageId}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`)).blob();
 	image = image.slice(0, image.size, "image/png")
 
 	navigator.clipboard.write([
@@ -68,7 +68,7 @@ export const validateShareToken = async (folderId: string, token: string, type: 
 						images: {
 							include: {
 								folder: true,
-								comments: true
+								comments: { include: { createdBy: true } }
 							}
 						},
 						createdBy: true
@@ -94,7 +94,7 @@ export const validateShareToken = async (folderId: string, token: string, type: 
 						images: {
 							include: {
 								folder: true,
-								comments: true
+								comments: { include: { createdBy: true } }
 							}
 						},
 						createdBy: true
@@ -130,6 +130,47 @@ export const validateShareToken = async (folderId: string, token: string, type: 
 	}
 
 	return { error: null, folder: { ...accessToken.folder, AccessToken: [] }, permission: accessToken.permission };
+}
+
+export const getFolderFullFromAccessToken = async (folderId: string, token: string, type: "accessToken" | "personAccessToken"):
+Promise<{ error: string | null, folder: (FolderWithImagesWithFolderAndComments & FolderWithCreatedBy) | null }> => {
+	let accessToken;
+
+	if (type === "accessToken") {
+		accessToken = await prisma.accessToken.findUnique({
+			where: {
+				token: token,
+				folderId: folderId,
+				expires: {
+					gte: new Date()
+				}
+			},
+			include: {
+				folder: { include: { images: { include: { folder: true, comments: { include: { createdBy: true } } } }, createdBy: true } }
+			}
+		});
+	} else if (type === "personAccessToken") {
+		accessToken = await prisma.personAccessToken.findUnique({
+			where: {
+				token: token,
+				folderId: folderId,
+				expires: {
+					gte: new Date()
+				}
+			},
+			include: {
+				folder: { include: { images: { include: { folder: true, comments: { include: { createdBy: true } } } }, createdBy: true } }
+			}
+		});
+	} else {
+		return { error: "invalid-token-type", folder: null };
+	}
+
+	if (!accessToken) {
+		return { error: "invalid-token", folder: null };
+	}
+
+	return { error: null, folder: accessToken.folder };
 }
 
 export const handleImagesSubmission = async (

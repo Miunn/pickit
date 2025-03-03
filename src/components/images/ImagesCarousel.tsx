@@ -10,7 +10,7 @@ import { useTranslations } from "next-intl";
 import { copyImageToClipboard } from "@/lib/utils";
 import ImageCommentSection from "./ImageCommentSection";
 
-export default function ImagesCarousel({ images, startIndex, currentIndex, setCurrentIndex, shareToken, shareHashPin }: { images: (ImageWithFolder & ImageWithComments)[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>>, shareToken?: string | null, shareHashPin?: string | null }) {
+export default function ImagesCarousel({ images, startIndex, currentIndex, setCurrentIndex, shareToken, shareHashPin, tokenType }: { images: (ImageWithFolder & ImageWithComments)[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>>, shareToken?: string | null, shareHashPin?: string | null, tokenType?: "accessToken" | "personAccessToken" | null }) {
 
     const t = useTranslations("components.images.carousel");
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
@@ -42,12 +42,12 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                 }</p>
                 <div className="flex gap-2">
                     <Button variant={"outline"} size={"icon"} type="button" asChild>
-                        <Link href={`/api/folders/${images.at(currentIndex - 1)?.folderId}/images/${images.at(currentIndex - 1)?.id}?share=${shareToken}&h=${shareHashPin}`} target="_blank">
+                        <Link href={`/api/folders/${images.at(currentIndex - 1)?.folderId}/images/${images.at(currentIndex - 1)?.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} target="_blank">
                             <ExternalLink className="w-4 h-4" />
                         </Link>
                     </Button>
                     <Button variant={"outline"} size={"icon"} type="button" onClick={async () => {
-                        await copyImageToClipboard(images.at(currentIndex - 1)?.folderId || '', images.at(currentIndex - 1)?.id || '', shareToken || '', shareHashPin || '');
+                        await copyImageToClipboard(images.at(currentIndex - 1)?.folderId || '', images.at(currentIndex - 1)?.id || '', shareToken || '', shareHashPin || '', tokenType);
 
                         setCopied(true);
                         toast({
@@ -75,7 +75,7 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                     {images.map((image, index) => (
                         <CarouselItem ref={imagesItemsRefs[index]} key={image.id} className="h-fit">
                             <div className={`${commentSectionOpen ? "h-44" : "h-96"} flex justify-center items-center p-2 transition-all duration-300 ease-in-out`}>
-                                <Image src={`/api/folders/${image.folder.id}/images/${image.id}?share=${shareToken}&h=${shareHashPin}`}
+                                <Image src={`/api/folders/${image.folder.id}/images/${image.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
                                     alt={image.name} className={`${commentSectionOpen ? "h-44" : "h-96"} max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out`} width={900} height={384} />
                             </div>
                         </CarouselItem>

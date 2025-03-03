@@ -144,7 +144,7 @@ export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder:
                     ))}
             </div>
 
-            <CarouselDialog images={folder.images} title={folder.name!} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} shareToken={shareToken} shareHashPin={hashPin} />
+            <CarouselDialog images={folder.images} title={folder.name!} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} shareToken={shareToken} shareHashPin={hashPin} tokenType={tokenType} />
             <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} setSelected={setSelected} setSelecting={setSelecting} />
         </div>
     )

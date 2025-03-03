@@ -213,7 +213,7 @@ const folderWithImagesWithFolder = Prisma.validator<Prisma.FolderDefaultArgs>()(
 export type FolderWithImagesWithFolder = Prisma.FolderGetPayload<typeof folderWithImagesWithFolder>
 
 const folderWithImagesWithFolderAndComments = Prisma.validator<Prisma.FolderDefaultArgs>()({
-    include: { images: { include: { folder: true, comments: true } } },
+    include: { images: { include: { folder: true, comments: { include: { createdBy: true } } } } },
 })
 
 export type FolderWithImagesWithFolderAndComments = Prisma.FolderGetPayload<typeof folderWithImagesWithFolderAndComments>
@@ -223,6 +223,12 @@ const folderWithAccessToken = Prisma.validator<Prisma.FolderDefaultArgs>()({
 })
 
 export type FolderWithAccessToken = Prisma.FolderGetPayload<typeof folderWithAccessToken>
+
+const folderWithPersonAccessToken = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { PersonAccessToken: true }
+})
+
+export type FolderWithPersonAccessToken = Prisma.FolderGetPayload<typeof folderWithPersonAccessToken>
 
 const folderWithImagesCount = Prisma.validator<Prisma.FolderDefaultArgs>()({
     include: { _count: { select: { images: true } } }
@@ -249,7 +255,7 @@ const imageWithFolder = Prisma.validator<Prisma.ImageDefaultArgs>()({
 export type ImageWithFolder = Prisma.ImageGetPayload<typeof imageWithFolder>
 
 const imageWithComments = Prisma.validator<Prisma.ImageDefaultArgs>()({
-    include: { comments: true },
+    include: { comments: { include: { createdBy: true } } },
 })
 
 export type ImageWithComments = Prisma.ImageGetPayload<typeof imageWithComments>
