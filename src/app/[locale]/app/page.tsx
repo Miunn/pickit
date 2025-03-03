@@ -36,7 +36,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
         orderBy: [
             { updatedAt: 'desc' },
         ] as any,
-        include: { folder: true },
+        include: { folder: true, comments: { include: { createdBy: true } } },
         take: 6,
     });
 

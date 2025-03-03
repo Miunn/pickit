@@ -5,11 +5,11 @@ import FolderPreview from "@/components/folders/FolderPreview";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { LastUploadedImages } from "@/components/images/LastUploadedImages";
-import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, ImageWithFolder } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, ImageWithComments, ImageWithFolder } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
 import CreateFolderDialog from "../folders/CreateFolderDialog";
 
-export default function DashboardContent({ lastFolders, lastImages, locale }: { lastFolders: (FolderWithAccessToken & FolderWithImagesCount & FolderWithCover)[], lastImages: ImageWithFolder[], locale: string }) {
+export default function DashboardContent({ lastFolders, lastImages, locale }: { lastFolders: (FolderWithAccessToken & FolderWithImagesCount & FolderWithCover)[], lastImages: (ImageWithFolder & ImageWithComments)[], locale: string }) {
 
     const t = useTranslations("pages.dashboard");
 
