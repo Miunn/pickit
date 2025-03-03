@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import "../../globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
@@ -11,14 +10,13 @@ import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
 import { getLightFolders, getSharedWithMeFolders } from "@/actions/folders";
 import { getLightImages } from "@/actions/images";
 import { getAccessTokens } from "@/actions/accessTokens";
-import getMe from "@/actions/user";
 import UnverifiedEmail from "@/components/layout/UnverifiedEmail";
 import { addDays } from "date-fns";
 import { getPersonsAccessTokens } from "@/actions/accessTokensPerson";
 import SwitchLocale from "@/components/generic/SwitchLocale";
 import { Role } from "@prisma/client";
 import { getCurrentSession } from "@/lib/authUtils";
-import { redirect } from "@/i18n/routing";
+import { CommandSearch } from "@/components/CommandSearch";
 
 export const metadata: Metadata = {
     title: "Pickit",
@@ -124,6 +122,7 @@ export default async function LocaleLayout({
                     </div>
                 </SidebarInset>
             </SidebarProvider>
+            <CommandSearch />
             <Toaster />
         </>
     );
