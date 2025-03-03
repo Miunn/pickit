@@ -15,6 +15,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { useFormatter } from "next-intl";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 import { useSearchParams } from "next/navigation";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export default function ImageCommentSection({ image, className, open, setOpen }: { image: ImageWithComments, className?: string, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
 
@@ -102,7 +103,17 @@ export default function ImageCommentSection({ image, className, open, setOpen }:
                         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                     }).map((comment) => (
                         <div key={comment.id}>
-                            <p className="text-sm font-semibold flex items-center gap-2">{comment.name} <span className="font-light text-gray-500">{formatter.relativeTime(comment.createdAt, new Date())}</span></p>
+                            <p className="text-sm font-semibold flex items-center gap-2">
+                                {comment.name}
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <span className="font-light text-gray-500">{formatter.relativeTime(comment.createdAt, new Date())}</span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <span>{formatter.dateTime(comment.createdAt, { weekday: "long", month: "long", year: "numeric", hour: "numeric", minute: "numeric", second: "numeric" })}</span>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </p>
                             <p className="text-sm">{comment.text}</p>
                         </div>
                     ))}
