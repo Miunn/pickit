@@ -72,7 +72,7 @@ export default function FolderPreview({ folder, locale }: { folder: FolderWithAc
                                         })}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p className={"opacity-60 capitalize"}>{format.dateTime(folder.createdAt, {
+                                        <p className={"capitalize"}>{format.dateTime(folder.createdAt, {
                                             weekday: "long",
                                             day: "numeric",
                                             month: "short",
