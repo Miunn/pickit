@@ -9,18 +9,41 @@ import { toast } from "@/hooks/use-toast";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
 import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolderAndComments } from "@/lib/definitions";
 import { useEffect, useState } from "react";
-import SortImages from "./SortImages";
+import SortImages, { ImagesSortMethod } from "./SortImages";
 import saveAs from "file-saver";
 import { Progress } from "../ui/progress";
+import { useQueryState } from 'nuqs'
 
 export interface FolderContentProps {
     folder: FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithAccessToken;
     isGuest?: boolean;
 }
 
+
+
 export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
     const t = useTranslations("folders");
-    const [sortState, setSortState] = useState<"name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc" | null>(null);
+    const [sortState, setSortState] = useQueryState<ImagesSortMethod>('sort', {
+        defaultValue: ImagesSortMethod.DateDesc,
+        parse: (v) => {
+            switch (v) {
+                case "name-asc":
+                    return ImagesSortMethod.NameAsc;
+                case "name-desc":
+                    return ImagesSortMethod.NameDesc;
+                case "size-asc":
+                    return ImagesSortMethod.SizeAsc;
+                case "size-desc":
+                    return ImagesSortMethod.SizeDesc;
+                case "date-asc":
+                    return ImagesSortMethod.DateAsc;
+                case "date-desc":
+                    return ImagesSortMethod.DateDesc;
+                default:
+                    return ImagesSortMethod.DateDesc;
+            }
+        }
+    });
     const [downloadProgress, setDownloadProgress] = useState<number>(0);
     const [folderContent, setFolderContent] = useState<FolderWithImagesWithFolderAndComments>(folder);
 
@@ -60,34 +83,34 @@ export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
         setDownloadProgress(100);
     }
 
-    function getSortedFolderContent(folderContent: FolderWithImagesWithFolderAndComments, sort: "name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc" | null): FolderWithImagesWithFolderAndComments {
+    function getSortedFolderContent(folderContent: FolderWithImagesWithFolderAndComments, sort: ImagesSortMethod): FolderWithImagesWithFolderAndComments {
         switch (sort) {
-            case "name-asc":
+            case ImagesSortMethod.NameAsc:
                 return {
                     ...folderContent,
                     images: folderContent.images.sort((a, b) => a.name.localeCompare(b.name))
                 }
-            case "name-desc":
+            case ImagesSortMethod.NameDesc:
                 return {
                     ...folderContent,
                     images: folderContent.images.sort((a, b) => b.name.localeCompare(a.name))
                 }
-            case "size-asc":
+            case ImagesSortMethod.SizeAsc:
                 return {
                     ...folderContent,
                     images: folderContent.images.sort((a, b) => a.size - b.size)
                 }
-            case "size-desc":
+            case ImagesSortMethod.SizeDesc:
                 return {
                     ...folderContent,
                     images: folderContent.images.sort((a, b) => b.size - a.size)
                 }
-            case "date-asc":
+            case ImagesSortMethod.DateAsc:
                 return {
                     ...folderContent,
                     images: folderContent.images.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
                 }
-            case "date-desc":
+            case ImagesSortMethod.DateDesc:
                 return {
                     ...folderContent,
                     images: folderContent.images.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())

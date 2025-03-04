@@ -6,9 +6,18 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { ArrowDown, ArrowDownWideNarrow, ArrowUp, ChevronDown } from "lucide-react";
 import React from "react";
 
+export enum ImagesSortMethod {
+    NameAsc = "name-asc",
+    NameDesc = "name-desc",
+    SizeAsc = "size-asc",
+    SizeDesc = "size-desc",
+    DateAsc = "date-asc",
+    DateDesc = "date-desc",
+}
+
 export interface SortImagesProps {
-    sortState: "name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc" | null;
-    setSortState: React.Dispatch<React.SetStateAction<"name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc" | null>>;
+    sortState: ImagesSortMethod;
+    setSortState: React.Dispatch<React.SetStateAction<ImagesSortMethod>>;
 }
 
 export default function SortImages({ sortState, setSortState }: SortImagesProps) {
@@ -31,54 +40,54 @@ export default function SortImages({ sortState, setSortState }: SortImagesProps)
             <DropdownMenuContent className="min-w-[--radix-dropdown-menu-trigger-width]">
                 <DropdownMenuItem className="flex justify-between items-center" onClick={(event) => {
                     event.preventDefault();
-                    if (sortState === "name-desc") {
-                        setSortState("name-asc");
+                    if (sortState === ImagesSortMethod.NameDesc) {
+                        setSortState(ImagesSortMethod.NameAsc);
                     } else {
-                        setSortState("name-desc")
+                        setSortState(ImagesSortMethod.NameDesc)
                     }
                 }}>
                     {t('options.name')}
-                    {sortState === "name-asc"
+                    {sortState === ImagesSortMethod.NameAsc
                         ? <ArrowUp className="w-4 h-4" />
                         : null
                     }
-                    {sortState === "name-desc"
+                    {sortState === ImagesSortMethod.NameDesc
                         ? <ArrowDown className="w-4 h-4" />
                         : null
                     }
                 </DropdownMenuItem>
                 <DropdownMenuItem className="flex justify-between items-center" onClick={(event) => {
                     event.preventDefault();
-                    if (sortState === "size-desc") {
-                        setSortState("size-asc");
+                    if (sortState === ImagesSortMethod.SizeDesc) {
+                        setSortState(ImagesSortMethod.SizeAsc);
                     } else {
-                        setSortState("size-desc")
+                        setSortState(ImagesSortMethod.SizeDesc)
                     }
                 }}>
                     {t('options.size')}
-                    {sortState === "size-asc"
+                    {sortState === ImagesSortMethod.SizeAsc
                         ? <ArrowUp className="w-4 h-4" />
                         : null
                     }
-                    {sortState === "size-desc"
+                    {sortState === ImagesSortMethod.SizeDesc
                         ? <ArrowDown className="w-4 h-4" />
                         : null
                     }
                 </DropdownMenuItem>
                 <DropdownMenuItem className="flex justify-between items-center" onClick={(event) => {
                     event.preventDefault();
-                    if (sortState === "date-desc") {
-                        setSortState("date-asc");
+                    if (sortState === ImagesSortMethod.DateDesc) {
+                        setSortState(ImagesSortMethod.DateAsc);
                     } else {
-                        setSortState("date-desc")
+                        setSortState(ImagesSortMethod.DateDesc)
                     }
                 }}>
                     {t('options.date')}
-                    {sortState === "date-asc"
+                    {sortState === ImagesSortMethod.DateAsc
                         ? <ArrowUp className="w-4 h-4" />
                         : null
                     }
-                    {sortState === "date-desc"
+                    {sortState === ImagesSortMethod.DateDesc
                         ? <ArrowDown className="w-4 h-4" />
                         : null
                     }

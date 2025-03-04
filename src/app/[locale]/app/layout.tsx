@@ -17,6 +17,7 @@ import SwitchLocale from "@/components/generic/SwitchLocale";
 import { Role } from "@prisma/client";
 import { getCurrentSession } from "@/lib/authUtils";
 import { CommandSearch } from "@/components/CommandSearch";
+import { NuqsAdapter } from 'nuqs/adapters/react'
 
 export const metadata: Metadata = {
     title: "Pickit",
@@ -40,7 +41,7 @@ export default async function LocaleLayout({
     const sharedWithMeFolders = (await getSharedWithMeFolders()).accessTokens;
 
     return (
-        <>
+        <NuqsAdapter>
             <SidebarProvider>
                 <AppSidebar locale={locale} user={me} items={{
                     navMainItems: [
@@ -124,6 +125,6 @@ export default async function LocaleLayout({
             </SidebarProvider>
             <CommandSearch />
             <Toaster />
-        </>
+        </NuqsAdapter>
     );
 }
