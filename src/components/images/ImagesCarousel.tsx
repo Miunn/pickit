@@ -3,13 +3,14 @@ import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, Car
 import { ImageWithComments, ImageWithFolder } from "@/lib/definitions";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { Check, Copy, ExternalLink } from "lucide-react";
+import { Braces, BracesIcon, Check, Copy, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
 import { copyImageToClipboard } from "@/lib/utils";
 import ImageCommentSection from "./ImageCommentSection";
 import { useSearchParams } from "next/navigation";
+import ImageExif from "./ImageExif";
 
 export default function ImagesCarousel({ images, startIndex, currentIndex, setCurrentIndex }: { images: (ImageWithFolder & ImageWithComments)[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>> }) {
     const searchParams = useSearchParams();
@@ -46,6 +47,11 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                         : images[currentIndex - 1]?.name
                 }</p>
                 <div className="flex gap-2">
+                    <ImageExif image={images[currentIndex === 0 ? currentIndex : currentIndex - 1]}>
+                        <Button variant={"outline"} size={"icon"} type="button">
+                            <Braces className="w-4 h-4" />
+                        </Button>
+                    </ImageExif>
                     <Button variant={"outline"} size={"icon"} type="button" asChild>
                         <Link href={`/api/folders/${images.at(currentIndex - 1)?.folderId}/images/${images.at(currentIndex - 1)?.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} target="_blank">
                             <ExternalLink className="w-4 h-4" />
@@ -108,7 +114,7 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                 className="py-4 transition-all duration-1000 ease-in-out"
                 open={commentSectionOpen}
                 setOpen={setCommentSectionOpen}
-                image={images[currentIndex === 0 ? currentIndex : currentIndex-1]}
+                image={images[currentIndex === 0 ? currentIndex : currentIndex - 1]}
             />
         </div>
     )

@@ -522,6 +522,70 @@
       "carousel": {
         "description": "Images"
       },
+      "exif": {
+        "title": "Image metadata",
+        "description": "Metadata of {name}",
+        "noData": "No data available",
+        "width": {
+          "label": "Width"
+        },
+        "height": {
+          "label": "Height"
+        },
+        "make": {
+          "label": "Make"
+        },
+        "model": {
+          "label": "Model"
+        },
+        "software": {
+          "label": "Software"
+        },
+        "orientation": {
+          "label": "Orientation"
+        },
+        "exposureTime": {
+          "label": "Exposure time"
+        },
+        "fNumber": {
+          "label": "F number"
+        },
+        "iso": {
+          "label": "ISO"
+        },
+        "takenAt": {
+          "label": "Taken at"
+        },
+        "modifiedAt": {
+          "label": "Modified at"
+        },
+        "flash": {
+          "label": "Flash"
+        },
+        "focalLength": {
+          "label": "Focal length"
+        },
+        "contrast": {
+          "label": "Contrast"
+        },
+        "saturation": {
+          "label": "Saturation"
+        },
+        "sharpness": {
+          "label": "Sharpness"
+        },
+        "whiteBalance": {
+          "label": "White balance"
+        },
+        "gps": {
+          "latitude": {
+            "label": "Latitude"
+          },
+          "longitude": {
+            "label": "Longitude"
+          }
+        }
+      },
       "properties": {
         "title": "Images properties",
         "description": "Properties {name}",

@@ -521,6 +521,70 @@
       "carousel": {
         "description": "Images"
       },
+      "exif": {
+        "title": "Données EXIF",
+        "description": "Données EXIF de {name}",
+        "noData": "Aucune donnée",
+        "width": {
+          "label": "Largeur"
+        },
+        "height": {
+          "label": "Hauteur"
+        },
+        "make": {
+          "label": "Marque"
+        },
+        "model": {
+          "label": "Modèle"
+        },
+        "software": {
+          "label": "Logiciel"
+        },
+        "orientation": {
+          "label": "Orientation"
+        },
+        "exposureTime": {
+          "label": "Temps d'exposition"
+        },
+        "fNumber": {
+          "label": "F/Number"
+        },
+        "iso": {
+          "label": "ISO"
+        },
+        "takenAt": {
+          "label": "Prise le"
+        },
+        "modifiedAt": {
+          "label": "Modifiée le"
+        },
+        "flash": {
+          "label": "Flash"
+        },
+        "focalLength": {
+          "label": "Focale"
+        },
+        "contrast": {
+          "label": "Contraste"
+        },
+        "saturation": {
+          "label": "Saturation"
+        },
+        "sharpness": {
+          "label": "Netteté"
+        },
+        "whiteBalance": {
+          "label": "Balance des blancs"
+        },
+        "gps": {
+          "latitude": {
+            "label": "Latitude"
+          },
+          "longitude": {
+            "label": "Longitude"
+          }
+        }
+      },
       "properties": {
         "title": "Propriétés de l'image",
         "description": "Propriétés de {name}",
