@@ -123,7 +123,7 @@ export default async function LocaleLayout({
                     </div>
                 </SidebarInset>
             </SidebarProvider>
-            <CommandSearch />
+            <CommandSearch folders={folders} images={images} />
             <Toaster />
         </NuqsAdapter>
     );

@@ -297,6 +297,34 @@
           }
         }
       }
+    },
+    "commandSearch": {
+      "placeholder": "Search something...",
+      "noResults": "No results found.",
+      "sections": {
+        "pages": "Pages",
+        "folders": "Folders",
+        "images": "Images",
+        "account": "Account"
+      },
+      "pages": {
+        "dashboard": "Dashboard",
+        "folders": "Folders",
+        "images": "Images",
+        "links": "Links",
+        "sharedWithMe": "Shared with me",
+        "account": "Account"
+      },
+      "actions": {
+        "folders": {
+          "create":"New folder"
+        },
+        "account": {
+          "changeEmail": "Change email",
+          "changePassword": "Change password",
+          "logout": "Logout"
+        }
+      }
     }
   },
   "dialogs": {

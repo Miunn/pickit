@@ -296,6 +296,34 @@
           }
         }
       }
+    },
+    "commandSearch": {
+      "placeholder": "Chercher une ressource...",
+      "noResults": "Aucun résultat.",
+      "sections": {
+        "pages": "Pages",
+        "folders": "Dossiers",
+        "images": "Images",
+        "account": "Compte"
+      },
+      "pages": {
+        "dashboard": "Tableau de bord",
+        "folders": "Dossiers",
+        "images": "Images",
+        "links": "Liens",
+        "sharedWithMe": "Partagés avec moi",
+        "account": "Compte"
+      },
+      "actions": {
+        "folders": {
+          "create":"Créer un dossier"
+        },
+        "account": {
+          "changeEmail": "Changer d'adresse mail",
+          "changePassword": "Changer de mot de passe",
+          "logout": "Se déconnecter"
+        }
+      }
     }
   },
   "dialogs": {
