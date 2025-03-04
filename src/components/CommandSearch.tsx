@@ -88,7 +88,7 @@ export function CommandSearch({ folders, images }: { folders: LightFolder[], ima
                 <CommandGroup heading={t('sections.folders')}>
                     <CommandItem>
                         <FolderPlus />
-                        <Link>{t('actions.folders.create')}</Link>
+                        <span>{t('actions.folders.create')}</span>
                     </CommandItem>
                     {folders.map((folder) => (
                         <CommandItem key={folder.id} onSelect={() => runCommand(() => router.push(`/app/folders/${folder.id}`))}>
