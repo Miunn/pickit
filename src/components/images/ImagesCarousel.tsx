@@ -7,7 +7,7 @@ import { Braces, BracesIcon, Check, Copy, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
-import { copyImageToClipboard } from "@/lib/utils";
+import { copyImageToClipboard, formatBytes } from "@/lib/utils";
 import ImageCommentSection from "./ImageCommentSection";
 import { useSearchParams } from "next/navigation";
 import ImageExif from "./ImageExif";
@@ -106,6 +106,10 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                         currentIndex == 0
                             ? `${images[currentIndex]?.width}x${images[currentIndex]?.height}`
                             : `${images[currentIndex - 1]?.width}x${images[currentIndex - 1]?.height}`
+                    }</span> - <span>{
+                        currentIndex == 0
+                            ? `${formatBytes(images[currentIndex]?.size, { decimals: 2 })}`
+                            : `${formatBytes(images[currentIndex - 1]?.size, { decimals: 2 })}`
                     }</span> - <span>{t('slide', { current: currentIndex, total: count })}</span>
                 </p>
             </div>
