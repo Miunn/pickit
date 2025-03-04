@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {useTranslations} from "next-intl";
 import {
@@ -19,8 +19,13 @@ import {UploadImagesFormSchema} from "@/lib/definitions";
 import {useState} from "react";
 import {FileUploader} from "@/components/generic/FileUploader";
 import { handleImagesSubmission } from "@/lib/utils";
+import { useSearchParams } from "next/navigation";
 
-export const UploadImagesDialog = ({folderId, shareToken, tokenType, hashCode}: { folderId: string, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashCode?: string }) => {
+export const UploadImagesDialog = ({folderId}: { folderId: string }) => {
+    const searchParams = useSearchParams();
+    const shareToken = searchParams.get("share");
+    const shareHashPin = searchParams.get("h");
+    const tokenType = searchParams.get("t") === "p" ? "personAccessToken" : "accessToken";
 
     const t = useTranslations("images.dialog.upload");
     const [open, setOpen] = useState(false);
@@ -34,7 +39,7 @@ export const UploadImagesDialog = ({folderId, shareToken, tokenType, hashCode}: 
     });
 
     async function submitImages(data: z.infer<typeof UploadImagesFormSchema>) {
-        const r = await handleImagesSubmission(setLoading, data, form, folderId, shareToken, tokenType, hashCode);
+        const r = await handleImagesSubmission(setLoading, data, form, folderId, shareToken, tokenType, shareHashPin);
 
         if (r) {
             setOpen(false);

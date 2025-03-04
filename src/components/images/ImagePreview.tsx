@@ -1,3 +1,5 @@
+'use client'
+
 import { useFormatter, useTranslations } from "next-intl";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import React from "react";
@@ -5,27 +7,28 @@ import Image from "next/image";
 import { ImageWithFolder } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
 import { formatBytes } from "@/lib/utils";
-import { downloadImage } from "@/actions/images";
 import saveAs from "file-saver";
 import { toast } from "@/hooks/use-toast";
 import ImagePropertiesDialog from "./ImagePropertiesDialog";
 import { DeleteImageDialog } from "./DeleteImageDialog";
+import { useSearchParams } from "next/navigation";
 
 export interface ImagePreviewProps {
     image: ImageWithFolder;
     selected: string[];
     onClick: () => void;
     onSelect: () => void;
-    shareToken?: string | null;
-    shareHashPin?: string | null;
-    tokenType?: "p" | null;
 }
 
-export const ImagePreview = ({ image, selected, onClick, onSelect, shareToken, shareHashPin, tokenType }: ImagePreviewProps) => {
+export const ImagePreview = ({ image, selected, onClick, onSelect }: ImagePreviewProps) => {
 
     const format = useFormatter();
     const t = useTranslations("images");
     const deleteTranslations = useTranslations("dialogs.images.delete");
+    const searchParams = useSearchParams();
+    const shareToken = searchParams.get("share");
+    const shareHashPin = searchParams.get("h");
+    const tokenType = searchParams.get("t");
 
     const [openProperties, setOpenProperties] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);

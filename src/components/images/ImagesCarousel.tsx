@@ -9,8 +9,13 @@ import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
 import { copyImageToClipboard } from "@/lib/utils";
 import ImageCommentSection from "./ImageCommentSection";
+import { useSearchParams } from "next/navigation";
 
-export default function ImagesCarousel({ images, startIndex, currentIndex, setCurrentIndex, shareToken, shareHashPin, tokenType }: { images: (ImageWithFolder & ImageWithComments)[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>>, shareToken?: string | null, shareHashPin?: string | null, tokenType?: "accessToken" | "personAccessToken" | null }) {
+export default function ImagesCarousel({ images, startIndex, currentIndex, setCurrentIndex }: { images: (ImageWithFolder & ImageWithComments)[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>> }) {
+    const searchParams = useSearchParams();
+    const shareToken = searchParams.get("share");
+    const shareHashPin = searchParams.get("h");
+    const tokenType = searchParams.get("t") === "p" ? "personAccessToken" : "accessToken";
 
     const t = useTranslations("components.images.carousel");
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();

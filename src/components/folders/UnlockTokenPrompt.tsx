@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { LockFolderFormSchema } from "@/lib/definitions"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -11,10 +11,14 @@ import { Button } from "../ui/button"
 import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import React from "react"
-import { redirect, useRouter } from "@/i18n/routing"
+import { useRouter } from "@/i18n/routing"
 import bcrypt from "bcryptjs";
+import { useSearchParams } from "next/navigation"
 
-export default function UnlockTokenPrompt({ folderId, shareToken, tokenType }: { folderId: string, shareToken?: string, tokenType?: "a" | "p" }) {
+export default function UnlockTokenPrompt({ folderId }: { folderId: string }) {
+    const searchParams = useSearchParams();
+    const shareToken = searchParams.get("share");
+    const tokenType = searchParams.get("t");
 
     const t = useTranslations("components.accessTokens.unlock");
     const [unlockLoading, setUnlockLoading] = React.useState(false);

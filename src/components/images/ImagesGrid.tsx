@@ -14,8 +14,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { formatBytes, handleImagesSubmission } from "@/lib/utils";
+import { useSearchParams } from "next/navigation";
 
-export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder: FolderWithImagesWithFolderAndComments, shareToken?: string | null, hashPin?: string, tokenType?: "accessToken" | "personAccessToken" | null }) => {
+export const ImagesGrid = ({ folder }: { folder: FolderWithImagesWithFolderAndComments }) => {
+    const searchParams = useSearchParams();
+    const shareToken = searchParams.get("share");
+    const shareHashPin = searchParams.get("h");
+    const tokenType = searchParams.get("t") === "p" ? "personAccessToken" : "accessToken";
 
     const t = useTranslations("images");
     const deleteMultipleTranslations = useTranslations("dialogs.images.deleteMultiple");
@@ -38,7 +43,7 @@ export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder:
     });
 
     function submitImages(data: z.infer<typeof UploadImagesFormSchema>) {
-        handleImagesSubmission(setUploading, data, uploadImageForm, folder.id, shareToken, tokenType, hashPin);
+        handleImagesSubmission(setUploading, data, uploadImageForm, folder.id, shareToken, tokenType, shareHashPin);
     }
 
     useEffect(() => {
@@ -136,15 +141,12 @@ export const ImagesGrid = ({ folder, shareToken, hashPin, tokenType }: { folder:
                                         setSizeSelected(sizeSelected + image.size);
                                     }
                                 }}
-                                shareToken={shareToken}
-                                shareHashPin={hashPin}
-                                tokenType={tokenType === "personAccessToken" ? "p" : null}
                             />
                         </Fragment>
                     ))}
             </div>
 
-            <CarouselDialog images={folder.images} title={folder.name!} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} shareToken={shareToken} shareHashPin={hashPin} tokenType={tokenType} />
+            <CarouselDialog images={folder.images} title={folder.name!} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} setSelected={setSelected} setSelecting={setSelecting} />
         </div>
     )

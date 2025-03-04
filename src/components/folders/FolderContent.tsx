@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
@@ -7,9 +7,8 @@ import { UploadImagesDialog } from "@/components/images/UploadImagesDialog";
 import { ImagesGrid } from "@/components/images/ImagesGrid";
 import { toast } from "@/hooks/use-toast";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolder, FolderWithImagesWithFolderAndComments } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolderAndComments } from "@/lib/definitions";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import SortImages from "./SortImages";
 import saveAs from "file-saver";
 import { Progress } from "../ui/progress";
@@ -20,8 +19,6 @@ export interface FolderContentProps {
 }
 
 export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
-    const searchParams = useSearchParams();
-
     const t = useTranslations("folders");
     const [sortState, setSortState] = useState<"name-asc" | "name-desc" | "size-asc" | "size-desc" | "date-asc" | "date-desc" | null>(null);
     const [downloadProgress, setDownloadProgress] = useState<number>(0);
@@ -120,7 +117,7 @@ export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
                 <div className={"flex gap-4"}>
                     <SortImages sortState={sortState} setSortState={setSortState} />
                     {!!!isGuest
-                        ? <UploadImagesDialog folderId={folder.id} shareToken={searchParams.get("share")} tokenType={searchParams.get("t") === "p" ? "personAccessToken" : "accessToken"} hashCode={searchParams.get("h") || undefined} />
+                        ? <UploadImagesDialog folderId={folder.id} />
                         : null}
                     {!!!isGuest ? <ShareFolderDialog folder={folder} /> : null}
                     <Button variant="outline" onClick={downloadCallback}>
@@ -130,7 +127,7 @@ export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
             </h3>
 
             <div className="flex-1 overflow-auto">
-                <ImagesGrid folder={folderContent} shareToken={searchParams.get("share")} hashPin={searchParams.get("h") || undefined} tokenType={searchParams.get('t') === "p" ? "personAccessToken" : "accessToken"} />
+                <ImagesGrid folder={folderContent} />
             </div>
         </div>
     )
