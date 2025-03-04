@@ -80,7 +80,7 @@ export const ImagePreview = ({ image, selected, onClick, onSelect }: ImagePrevie
                                                     })}</p>
                                                 </TooltipTrigger>
                                                 <TooltipContent>
-                                                    <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
+                                                    <p className={"text-sm capitalize truncate"}>{format.dateTime(image.createdAt, {
                                                         weekday: "long",
                                                         day: "numeric",
                                                         month: "short",
