@@ -7,6 +7,8 @@ import { addDays } from 'date-fns';
 import ResetPasswordTemplate from '@/components/emails/ResetPasswordTemplate';
 import ShareFolderTemplate from '@/components/emails/ShareFolderTemplate';
 import { getCurrentSession } from './authUtils';
+import { render } from '@react-email/components';
+import VerifyEmail from '../../emails/VerifyEmail';
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -38,6 +40,10 @@ export async function sendVerificationEmail(email: string): Promise<{
   }
 
   const token = crypto.randomUUID();
+  await prisma.verifyEmailRequest.deleteMany({
+    where: { userId: user.id }
+  });
+
   await prisma.verifyEmailRequest.create({
     data: {
       token: token,
@@ -50,15 +56,14 @@ export async function sendVerificationEmail(email: string): Promise<{
     }
   });
 
-  const ReactDOMServer = (await import('react-dom/server')).default;
-  const content = ReactDOMServer.renderToString(<VerifyTemplate name={user.name} token={token} />);
+  const emailHtml = await render(<VerifyEmail name={user.name} token={token} />);
+
 
   const mail = await transporter.sendMail({
     from: `"The Pickit Team" <${process.env.MAIL_SENDER}>`,
     to: email,
     subject: "Verify your email",
-    text: "Verify your email",
-    html: content,
+    html: emailHtml,
   })
 
   return { error: null, user };
