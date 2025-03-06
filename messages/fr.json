@@ -889,7 +889,17 @@
             }
           },
           "lock": "Vérouiller",
-          "unlock": "Dévérouiller",
+          "unlock": {
+            "label": "Dévérouiller",
+            "error": {
+              "title": "Impossible de dévérouiller l'accès",
+              "description": "Une erreur est survenue lors du dévérouillage de l'accès"
+            },
+            "success": {
+              "title": "Accès dévérouillé",
+              "description": "L'accès pour cette personne a été dévérouillé"
+            }
+          },
           "delete": {
             "label": "Supprimer",
             "success": {

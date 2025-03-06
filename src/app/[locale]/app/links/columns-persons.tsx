@@ -281,7 +281,23 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                                 }}>{t('setActive.label')}</DropdownMenuItem>
                             }
                             {accessToken.locked
-                                ? <DropdownMenuItem onClick={() => unlockPersonAccessToken(accessToken.id)}>{t('unlock')}</DropdownMenuItem>
+                                ? <DropdownMenuItem onClick={async () => {
+                                    const r = await unlockPersonAccessToken(accessToken.id)
+
+                                    if (r.error) {
+                                        toast({
+                                            title: t('unlock.error.title'),
+                                            description: t('unlock.error.description'),
+                                            variant: "destructive"
+                                        });
+                                        return;
+                                    }
+
+                                    toast({
+                                        title: t('unlock.success.title'),
+                                        description: t('unlock.success.description'),
+                                    });
+                                }}>{t('unlock.label')}</DropdownMenuItem>
                                 : <DropdownMenuItem onClick={() => setLockOpen(true)}>{t('lock')}</DropdownMenuItem>
                             }
                             <DropdownMenuSeparator />

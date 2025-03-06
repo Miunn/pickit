@@ -198,9 +198,9 @@ export async function unlockPersonAccessToken(tokenId: string): Promise<{
     }
 
     try {
-        const token = await prisma.accessToken.findFirst({
+        const token = await prisma.personAccessToken.findUnique({
             where: {
-                token: tokenId,
+                id: tokenId,
                 folder: {
                     createdBy: {
                         id: user.id
@@ -210,12 +210,13 @@ export async function unlockPersonAccessToken(tokenId: string): Promise<{
         });
 
         if (!token) {
-            return { error: "Token not found" }
+            console.log("Token not found")
+            return { error: "token-not-found" }
         }
 
-        await prisma.accessToken.update({
+        await prisma.personAccessToken.update({
             where: {
-                token: tokenId
+                id: tokenId
             },
             data: {
                 locked: false,
@@ -226,7 +227,8 @@ export async function unlockPersonAccessToken(tokenId: string): Promise<{
         revalidatePath("/app/links");
         return { error: null }
     } catch (e) {
-        return { error: "An unknown error happened when trying to unlock this token" }
+        console.log("Error", e)
+        return { error: "unknown-error" }
     }
 }
 
