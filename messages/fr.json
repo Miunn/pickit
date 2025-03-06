@@ -130,6 +130,10 @@
           "submitting": "Réinitialisation"
         },
         "errors": {
+          "invalid-data": {
+            "title": "Données invalides",
+            "description": "L'adresse mail fournie n'est pas valide"
+          },
           "recent-request": {
             "title": "Réinitialisation déjà demandée",
             "description": "Une demande de réinitialisation de mot de passe a déjà été effectuée pour cette adresse mail. Veuillez vérifier votre boîte de réception ou réessayer plus tard"

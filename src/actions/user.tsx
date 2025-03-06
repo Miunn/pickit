@@ -1,6 +1,6 @@
 "use server"
 
-import { UserLight } from "@/lib/definitions";
+import { RequestPasswordResetFormSchema, UserLight } from "@/lib/definitions";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import * as bcrypt from "bcryptjs";
@@ -11,6 +11,7 @@ import { getCurrentSession } from "@/lib/authUtils";
 import { render } from "@react-email/components";
 import VerifyEmail from "@/components/emails/VerifyEmail";
 import ResetPasswordTemplate from "@/components/emails/ResetPasswordTemplate";
+import { z } from "zod";
 
 export default async function getMe(): Promise<{
     error: string | null,
@@ -256,17 +257,30 @@ export async function verifyAccount(token: string): Promise<{
     return { error: null, user };
 }
 
-export async function requestPasswordReset(email: string): Promise<{
+export async function requestPasswordReset(data: z.infer<typeof RequestPasswordResetFormSchema>): Promise<{
     error: string | null,
 }> {
+
+    const parsedData = RequestPasswordResetFormSchema.safeParse(data);
+
+    if (!parsedData.success) {
+        return { error: "invalid-data" };
+    }
+
     const user = await prisma.user.findUnique({
-        where: {
-            email
-        }
+        where: { email: parsedData.data.email }
     });
 
     if (!user) {
         return { error: null }; // Don't leak if the email is registered or not
+    }
+
+    try {
+        await prisma.passwordResetRequest.deleteMany({
+            where: { userId: user.id }
+        });
+    } catch (e) {
+        console.error("Error deleting previous password reset requests", e);
     }
 
     const token = crypto.randomUUID();
@@ -274,11 +288,7 @@ export async function requestPasswordReset(email: string): Promise<{
       data: {
         token: token,
         expires: addDays(new Date(), 7),
-        user: {
-          connect: {
-            id: user.id
-          }
-        }
+        user: { connect: { id: user.id } }
       }
     });
   

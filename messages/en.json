@@ -130,6 +130,10 @@
           "submitting": "Requesting a password reset"
         },
         "errors": {
+          "invalid-data": {
+            "title": "Invalid email",
+            "description": "The provided email address is invalid"
+          },
           "recent-request": {
             "title": "Password reset already requested",
             "description": "A password reset has already been requested for this email. Please check your inbox or try again later."

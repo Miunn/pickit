@@ -28,21 +28,30 @@ export default function RequestPasswordReset({ locale, defaultEmail }: { locale:
         },
     });
 
-    const submit = (data: z.infer<typeof RequestPasswordResetFormSchema>) => {
+    const submit = async (data: z.infer<typeof RequestPasswordResetFormSchema>) => {
         setLoading(true);
         
-        // Just send the request, don't wait for a response since we don't want to leak information about the user
-        requestPasswordReset(data.email);
+        const r = await requestPasswordReset(data);
+
+        setLoading(false);
+        
+        if (r.error) {
+            toast({
+                title: t('errors.invalid-data.title'),
+                description: t('errors.invalid-data.description'),
+                variant: "destructive"
+            });
+            return;
+        }
 
         toast({
             title: t('success.title'),
             description: t('success.description'),
-            action: <ToastAction altText={t('success.action')}>
+            action: <ToastAction altText={t('success.action')} asChild>
                 <Button variant={"outline"}>{ t('success.action') }</Button>
             </ToastAction>
         })
 
-        setLoading(false);
     }
 
     return (
