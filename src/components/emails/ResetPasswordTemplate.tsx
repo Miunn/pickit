@@ -1,88 +1,136 @@
+import { Body, Button, Column, Font, Head, Html, Img, Link, Row, Section, Tailwind, Text } from "@react-email/components"
+
+const baseUrl = process.env.APP_URL
+    ? process.env.APP_URL
+    : 'http://localhost:3000';
+
 export default function ResetPasswordTemplate({ name, token }: { name: string, token: string }) {
     return (
-        <table style={{
-            fontFamily: "Arial, sans-serif",
-            margin: "0",
-            padding: "0",
-            backgroundColor: "#f9f9f9",
-            width: "100%",
-            height: "50vh"
-        }}>
-            <tbody>
-                <tr>
-                    <td style={{
-                        width: "33.33%",
-                        height: "100%"
-                    }} />
-                    <td style={{
-                        width: "400px",
-                        height: "100%"
+        <Html>
+            <Head>
+                <title>Folder shared</title>
+
+                <Font
+                    fontFamily="Inter"
+                    fallbackFontFamily="Helvetica"
+                    webFont={{
+                        url: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiA.woff2",
+                        format: "woff2",
+                    }}
+                    fontWeight={400}
+                    fontStyle="normal"
+                />
+            </Head>
+
+            <Tailwind>
+                <Body className="m-0 p-0 max-w-[600px] mx-auto mt-[30px]">
+                    <Section style={{
+                        border: "1px solid #e0e0e0",
+                        borderRadius: "5px"
                     }}>
-                        <table style={{
-                            width: "400px",
-                        }}>
-                            <tbody style={{
-                                width: "400px",
+                        <Row>
+                            <Column className="text-center bg-[#f4f4f4] p-4" align="center">
+                                <Section width="100%">
+                                    <tr>
+                                        <td align="center" valign="middle">
+                                            <Img src={`${baseUrl}/static/favicon.jpg`} alt={process.env.APP_NAME} className="inline-block max-w-[200px] max-h-[40px]" />
+                                            <Text className="inline-block text-[1.5rem] m-0 pl-[10px] font-semibold">{process.env.APP_NAME}</Text>
+                                        </td>
+                                    </tr>
+                                </Section>
+                            </Column>
+                        </Row>
+                        <Row>
+                            <Column style={{
+                                padding: "20px"
                             }}>
-                                <tr style={{
-                                    width: "400px",
-                                }}>
-                                    <td style={{
-                                        width: "400px",
-                                        height: "300px",
-                                        marginTop: "100px",
-                                        backgroundColor: "#fff",
-                                        padding: "2rem",
-                                        border: "1px solid #ddd",
-                                        borderRadius: "5px",
-                                    }}>
-                                        <h1 style={{
-                                            marginTop: "0",
-                                            fontSize: "1.5rem",
-                                            color: "#333",
-                                            textAlign: "center",
-                                        }}>Reset your password</h1>
-                                        <h2 style={{
-                                            fontSize: "1.2rem",
-                                            color: "#333",
-                                            textAlign: "start",
-                                            marginTop: "1.2rem",
-                                            marginBottom: "1.2rem",
-                                        }}>👋 {name},</h2>
-                                        <p style={{
-                                            fontSize: "1rem",
-                                            color: "#666"
-                                        }}>
-                                            You recently filled a reset password request for your Pickit's account.<br />
-                                            To set a new password, click the lick below<br />
-                                            <br />
-                                            If you didn't do this request, you can safely ignore this email.
-                                        </p>
-                                        <a href={`${process.env.APP_URL}/en/account/reset/${token}`} style={{
-                                            boxSizing: "border-box",
-                                            width: "100%",
-                                            backgroundColor: "#007bff",
-                                            color: "#fff",
-                                            padding: "0.5rem 1rem",
-                                            borderRadius: "5px",
-                                            textAlign: "center",
-                                            textDecoration: "none",
-                                            display: "inline-block",
-                                            marginTop: "1rem"
-                                        }}>
-                                            Reset your password
-                                        </a>
+                                <Text className="text-center text-xl tracking-wide">Réinitialisation de votre mot de passe</Text>
+
+                                <Text>Bonjour { name },</Text>
+
+                                <Text>Vous avez récemment demandé une réinitialisation de votre mot de passe associé à votre compte { process.env.APP_NAME }.</Text>
+
+                                <Text>Afin de créer un nouveau mot de passe et de récupérer l'accès à votre compte, cliquez sur le bouton ci-dessous :</Text>
+
+                                <div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
+                                    <Button href={`${process.env.APP_URL}/en/account/reset/${token}`} className="box-border w-full rounded-[8px] bg-indigo-600 px-[12px] py-[12px] text-center font-semibold text-white">
+                                        Réinitialiser votre mot de passe
+                                    </Button>
+                                </div>
+
+                                <Text>Ce lien de réinitialisation expirera après 15 minutes.</Text>
+
+                                <Text>Si vous n'avez pas soumis de demande de réinitialisation de mot de passe, vous pouvez simplement ignorer ce message.</Text>
+
+                                <Text>Cordialement,<br />
+                                    L'équipe <strong>{process.env.APP_NAME}</strong></Text>
+                            </Column>
+                        </Row>
+
+                        <Section className="text-center bg-[#f4f4f4] p-4">
+                            <table className="w-full">
+                                <tr className="w-full">
+                                    <td align="center">
+                                        <Img
+                                            alt="React Email logo"
+                                            height="42"
+                                            src="https://react.email/static/logo-without-background.png"
+                                        />
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                    <td style={{
-                        width: "33.33%",
-                        height: "100%"
-                    }} />
-                </tr>
-            </tbody>
-        </table>
+                                <tr className="w-full">
+                                    <td align="center">
+                                        <Text className="!my-[8px] !text-[16px] !font-semibold !leading-[24px] !text-gray-900">
+                                            {process.env.APP_NAME}
+                                        </Text>
+                                        <Text className="!mb-0 !mt-[4px] !text-[16px] !leading-[24px] !text-gray-500">
+                                            Upload and share your memories easily
+                                        </Text>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <Row className="table-cell !h-[44px] !w-[56px] !align-bottom">
+                                            <Column className="!pr-[8px]">
+                                                <Link href="#">
+                                                    <Img
+                                                        alt="Facebook"
+                                                        height="36"
+                                                        src="https://react.email/static/facebook-logo.png"
+                                                        width="36"
+                                                    />
+                                                </Link>
+                                            </Column>
+                                            <Column className="!pr-[8px]">
+                                                <Link href="#">
+                                                    <Img alt="X" height="36" src="https://react.email/static/x-logo.png" width="36" />
+                                                </Link>
+                                            </Column>
+                                            <Column>
+                                                <Link href="#">
+                                                    <Img
+                                                        alt="Instagram"
+                                                        height="36"
+                                                        src="https://react.email/static/instagram-logo.png"
+                                                        width="36"
+                                                    />
+                                                </Link>
+                                            </Column>
+                                        </Row>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <Text className="!mb-0 !mt-[4px] !text-[16px] !font-semibold !leading-[24px] !text-gray-500">
+                                            support@pickit.com
+                                        </Text>
+                                    </td>
+                                </tr>
+                            </table>
+                        </Section>
+                    </Section>
+                </Body>
+            </Tailwind>
+        </Html>
     )
 }

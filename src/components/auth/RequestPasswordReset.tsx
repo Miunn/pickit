@@ -30,11 +30,11 @@ export default function RequestPasswordReset({ locale, defaultEmail }: { locale:
 
     const submit = async (data: z.infer<typeof RequestPasswordResetFormSchema>) => {
         setLoading(true);
-        
+
         const r = await requestPasswordReset(data);
 
         setLoading(false);
-        
+
         if (r.error) {
             toast({
                 title: t('errors.invalid-data.title'),
@@ -48,7 +48,11 @@ export default function RequestPasswordReset({ locale, defaultEmail }: { locale:
             title: t('success.title'),
             description: t('success.description'),
             action: <ToastAction altText={t('success.action')} asChild>
-                <Button variant={"outline"}>{ t('success.action') }</Button>
+                <Button variant={"outline"}>
+                    <Link href={"/signin"}>
+                        {t('success.action')}
+                    </Link>
+                </Button>
             </ToastAction>
         })
 
@@ -78,13 +82,13 @@ export default function RequestPasswordReset({ locale, defaultEmail }: { locale:
                         />
 
                         <div className="w-full flex gap-2 self-end">
-                        <Button variant={"outline"} type="button" asChild>
-                            <Link href={`/${locale}/signin`}>{t('actions.backToLogin')}</Link>
-                        </Button>
-                        {loading
-                            ? <Button type="button" className="flex-1" disabled><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t('actions.submitting')}</Button>
-                            : <Button type="submit" className="flex-1">{t('actions.submit')}</Button>}
-                            </div>
+                            <Button variant={"outline"} type="button" asChild>
+                                <Link href={`/${locale}/signin`}>{t('actions.backToLogin')}</Link>
+                            </Button>
+                            {loading
+                                ? <Button type="button" className="flex-1" disabled><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t('actions.submitting')}</Button>
+                                : <Button type="submit" className="flex-1">{t('actions.submit')}</Button>}
+                        </div>
                     </form>
                 </Form>
             </CardContent>

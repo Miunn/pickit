@@ -126,7 +126,7 @@
         },
         "actions": {
           "backToLogin": "Retour à la connexion",
-          "submit": "Réinitialisation votre mot de passe",
+          "submit": "Réinitialiser votre mot de passe",
           "submitting": "Réinitialisation"
         },
         "errors": {
@@ -145,7 +145,7 @@
         },
         "success": {
           "title": "Email de réinitialisation envoyé",
-          "description": "Si <un compte existe avec l'adresse mail fournie, un email de réinitialisation de mot de passe a été envoyé",
+          "description": "Si un compte existe avec l'adresse mail fournie, un message de réinitialisation de mot de passe a été envoyé",
           "action": "Retour à la connexion"
         }
       },
