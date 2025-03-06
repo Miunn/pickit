@@ -5,6 +5,8 @@ import { Button } from "../ui/button";
 import { Command } from "lucide-react";
 import { cn } from "@/lib/utils";
 import React from "react";
+import SwitchLocale from "../generic/SwitchLocale";
+import { useLocale } from "next-intl";
 
 export default async function Header({ className, locale }: { className?: string, locale: string }) {
 
@@ -56,9 +58,12 @@ export default async function Header({ className, locale }: { className?: string
                     </ul>
                 </nav>
 
-                <Button className="w-fit place-self-end">
-                    <Link href={`/${locale}/signin`}>Login</Link>
-                </Button>
+                <div className="w-fit place-self-end flex gap-2">
+                    <Button>
+                        <Link href={`/${locale}/signin`}>Login</Link>
+                    </Button>
+                    <SwitchLocale locale={locale} />
+                </div>
             </div>
 
             <hr ref={headerRowRef} className="absolute w-full bottom-0 transition-opacity duration-300 ease-in-out opacity-0"></hr>
