@@ -1,6 +1,5 @@
 "use client"
 
-import { changeAccessTokenActiveState } from "@/actions/accessTokens";
 import { changePersonAccessTokenActiveState, sendAgainPersonAccessToken, unlockPersonAccessToken } from "@/actions/accessTokensPerson";
 import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessTokenDialog";
 import LockTokenDialog from "@/components/folders/LockTokenDialog";

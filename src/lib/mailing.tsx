@@ -1,5 +1,3 @@
-"use server"
-
 import * as nodemailer from 'nodemailer';
 
 export const transporter = nodemailer.createTransport({
