@@ -4,11 +4,11 @@ const baseUrl = process.env.APP_URL
     ? process.env.APP_URL
     : 'http://localhost:3000';
 
-export default function ResetPasswordTemplate({ name, folderName, link }: { name: string, folderName: string, link: string }) {
+export default function ShareFolderTemplate({ name, folderName, link, isLocked }: { name: string, folderName: string, link: string, isLocked: boolean }) {
     return (
         <Html>
             <Head>
-                <title>Verify your email</title>
+                <title>Folder shared</title>
 
                 <Font
                     fontFamily="Inter"
@@ -54,11 +54,17 @@ export default function ResetPasswordTemplate({ name, folderName, link }: { name
 
                                 <div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
                                     <Button href={link} className="box-border w-full rounded-[8px] bg-indigo-600 px-[12px] py-[12px] text-center font-semibold text-white">
-                                        { folderName }
+                                        {folderName}
                                     </Button>
                                 </div>
 
-                                <Text></Text>
+                                {isLocked
+                                    ? <Text>
+                                        {name} a vérouillé ce dossier par un code que vous devrez renseigner avant de pouvoir accéder à son contenu.
+                                        Si vous ne connaissez pas ce code, veuillez contacter {name} pour l'obtenir.
+                                    </Text>
+                                    : null
+                                }
 
                                 <Text>Cordialement,<br />
                                     L'équipe <strong>{process.env.APP_NAME}</strong></Text>

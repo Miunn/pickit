@@ -115,7 +115,7 @@ export async function createMultiplePersonAccessTokens(folderId: string, data: {
         }))
     });
 
-    await sendShareFolderEmail(data.map((d, i) => ({ email: d.email, link: `${process.env.APP_URL}/app/folders/${folderId}?share=${tokens[i]}&t=p` })), user.name!, folder.name)
+    await sendShareFolderEmail(data.map((d, i) => ({ email: d.email, link: `${process.env.APP_URL}/app/folders/${folderId}?share=${tokens[i]}&t=p`, locked: false })), user.name!, folder.name)
     return { error: null }
 }
 
@@ -287,16 +287,16 @@ export async function sendAgainPersonAccessToken(token: string) {
         return { error: "Token not found" }
     }
 
-    await sendShareFolderEmail([{ email: personAccessToken.email, link: `${process.env.APP_URL}/app/folders/${personAccessToken.folderId}?share=${token}&t=p` }], user.name!, personAccessToken.folder.name)
+    await sendShareFolderEmail([{ email: personAccessToken.email, link: `${process.env.APP_URL}/app/folders/${personAccessToken.folderId}?share=${token}&t=p`, locked: personAccessToken.locked }], user.name!, personAccessToken.folder.name)
 
     return { error: null }
 }
 
-async function sendShareFolderEmail(data: { email: string, link: string }[], name: string, folderName: string) {
+async function sendShareFolderEmail(data: { email: string, link: string, locked: boolean }[], name: string, folderName: string) {
     const ReactDOMServer = (await import('react-dom/server')).default;
 
     data.forEach(async (d) => {
-        const content = ReactDOMServer.renderToString(<ShareFolderTemplate name={name} folderName={folderName} link={d.link} />);
+        const content = ReactDOMServer.renderToString(<ShareFolderTemplate name={name} folderName={folderName} link={d.link} isLocked={d.locked} />);
 
         await transporter.sendMail({
             from: `"The Pickit Team" <${process.env.MAIL_SENDER}>`,
