@@ -12,13 +12,14 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { useFormatter } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 import { useSearchParams } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export default function ImageCommentSection({ image, className, open, setOpen }: { image: ImageWithComments, className?: string, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
 
+    const t = useTranslations("components.images.comments");
     const formatter = useFormatter();
     const createCommentForm = useForm<z.infer<typeof CreateCommentFormSchema>>({
         resolver: zodResolver(CreateCommentFormSchema),
@@ -38,16 +39,16 @@ export default function ImageCommentSection({ image, className, open, setOpen }:
 
         if (!r) {
             toast({
-                title: "Error",
-                description: "An error occurred while trying to post your comment",
+                title: t('errors.unknown.title'),
+                description: t('errors.unknown.description'),
                 variant: "destructive"
             });
             return;
         }
 
         toast({
-            title: "Comment posted",
-            description: "Your comment was posted successfully"
+            title: t('success.title'),
+            description: t('success.description')
         });
 
         createCommentForm.reset();
@@ -56,7 +57,7 @@ export default function ImageCommentSection({ image, className, open, setOpen }:
     return (
         <Collapsible className={cn("w-full", className)} open={open} onOpenChange={setOpen}>
             <CollapsibleTrigger className="w-full flex justify-between items-center gap-2 font-semibold cursor-pointer bg-background hover:bg-accent transition-colors px-2 py-1 rounded-md">
-                <span>{image.comments.length} Comments</span> <ArrowUpDown />
+                <span>{ t('trigger', { count: image.comments.length }) }</span> <ArrowUpDown />
             </CollapsibleTrigger>
             <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsibleLeave data-[state=open]:animate-collapsibleEnter">
                 <Form {...createCommentForm}>
@@ -66,9 +67,9 @@ export default function ImageCommentSection({ image, className, open, setOpen }:
                             control={createCommentForm.control}
                             render={({ field }) => (
                                 <FormItem className="w-full px-2">
-                                    <FormLabel>Leave a comment</FormLabel>
+                                    <FormLabel>{ t('form.text.label') }</FormLabel>
                                     <FormControl>
-                                        <Textarea placeholder="Add a comment..." className="resize-none" {...field} />
+                                        <Textarea placeholder={ t('form.text.placeholder') } className="resize-none" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -78,22 +79,16 @@ export default function ImageCommentSection({ image, className, open, setOpen }:
                             <HoverCard>
                                 <HoverCardTrigger>
                                     <FormDescription className="hover:underline cursor-pointer">
-                                        Comment sont traités vos commentaires ?
+                                        { t('privacy.trigger') }
                                     </FormDescription>
                                 </HoverCardTrigger>
                                 <HoverCardContent className="w-96">
-                                    <p className="text-xs">
-                                        Si vous êtes connecté, votre nom apparaitra au dessus de votre commentaire.<br />
-                                        Si vous n'êtes pas connecté mais que ce dossier vous a été partagé par e-mail, la première partie de votre adresse e-mail apparaitra au dessus de votre commentaire.<br />
-                                        Si vous n'êtes pas connecté et que ce dossier vous a été partagé par un lien, votre commentaire sera anonyme.<br />
-                                        <br />
-                                        Les commentaires ne sont partagés qu'aux personnes ayant accès au dossier.
-                                    </p>
+                                    <p className="text-xs" dangerouslySetInnerHTML={{ __html: t('privacy.content') }} />
                                 </HoverCardContent>
                             </HoverCard>
                             {loading
-                                ? <Button variant="secondary" className="px-6 rounded-full" disabled><Loader2 className="animate-spin w-4 h-4 mr-2" /> Post</Button>
-                                : <Button variant="secondary" className="px-6 rounded-full">Post</Button>
+                                ? <Button variant="secondary" className="px-6 rounded-full" disabled><Loader2 className="animate-spin w-4 h-4 mr-2" /> { t('actions.submitting') }</Button>
+                                : <Button variant="secondary" className="px-6 rounded-full">{ t('actions.submit') }</Button>
                             }
                         </div>
                     </form>

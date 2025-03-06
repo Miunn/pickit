@@ -272,6 +272,34 @@
             "description": "Image has been copied to your clipboard"
           }
         }
+      },
+      "comments": {
+        "trigger": "{count, plural, one {# Comment} other {# Comments}}",
+        "form": {
+          "text": {
+            "label": "Leave a comment",
+            "placeholder": "Write a comment..."
+          }
+        },
+        "actions": {
+          "submit": "Send",
+          "submitting": "Sending"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't send comment",
+            "description": "An unknown error happened while sending the comment"
+          }
+        },
+        "success": {
+          "title": "Comment sent",
+          "description": "Your comment has been posted successfully"
+        },
+        "empty": "No comments yet",
+        "privacy": {
+          "trigger": "How we handle your comments ?",
+          "content": "If you are logged in, your name will appear above your comment.<br />If you are not logged in but this folder has been shared with you by e-mail, the first part of your e-mail address will appear above your comment.<br />If you are not logged in and this file has been shared with you via a link, your comment will be anonymous.<br /><br />Comments are only shared with people who have access to the folder."
+        }
       }
     },
     "accessTokens": {
