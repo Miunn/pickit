@@ -1,4 +1,4 @@
-import { Body, Column, Font, Head, Html, Img, Link, Row, Section, Tailwind, Text } from "@react-email/components"
+import { Body, Button, Column, Font, Head, Html, Img, Link, Row, Section, Tailwind, Text } from "@react-email/components"
 
 const baseUrl = process.env.APP_URL
     ? process.env.APP_URL
@@ -50,21 +50,11 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
 
                                 <Text>Pour vérifier et continuer à utiliser votre compte, veuillez cliquer sur le bouton ci-dessous.</Text>
 
-                                <Text style={{ backgroundColor: "#f9f9f9", border: "1px dashed #cccccc", padding: "10px", textAlign: "center", margin: "15px 0" }}>
-                                    <a href={`${baseUrl}/en/account/verify-account/${token}`} style={{
-                                        boxSizing: "border-box",
-                                        width: "100%",
-                                        backgroundColor: "#007bff",
-                                        color: "#fff",
-                                        padding: "0.5rem 1rem",
-                                        borderRadius: "5px",
-                                        textAlign: "center",
-                                        textDecoration: "none",
-                                        display: "inline-block",
-                                    }}>
-                                        Verifier votre adresse
-                                    </a>
-                                </Text>
+                                <div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
+                                    <Button href={`${baseUrl}/en/account/verify-account/${token}`} className="box-border w-full rounded-[8px] bg-[#007bff] px-[12px] py-[12px] text-center font-semibold text-white">
+                                        Vérifier votre compte
+                                    </Button>
+                                </div>
 
                                 <Text>Si vous n'avez pas de compte Pickit ou que vous n'avez pas effectué de changement, vous pouvez ignorer ce message.</Text>
 
