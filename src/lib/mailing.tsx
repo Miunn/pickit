@@ -1,6 +1,5 @@
 "use server"
 
-import VerifyTemplate from '@/components/emails/VerifyTemplate';
 import * as nodemailer from 'nodemailer';
 import { prisma } from './prisma';
 import { addDays } from 'date-fns';
@@ -29,20 +28,38 @@ export async function sendVerificationEmail(email: string): Promise<{
     emailVerified: boolean
   } | null
 }> {
-  const { user } = await getCurrentSession();
+  const { user } = await getCurrentSession(); // THIS METHOD USES CACHE SO IF THE USER VERIFIED IT MAY NOT HAVE BEEN UPDATED YET
 
   if (!user) {
     return { error: "You must be logged in to fetch user info", user: null };
   }
 
-  if (user.emailVerified) {
-    return { error: "already-verified", user };
+  const currentUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      emailVerified: true
+    }
+  });
+
+  if (!currentUser) {
+    return { error: "user-not-found", user: null };
+  }
+
+  if (currentUser.emailVerified) {
+    return { error: "already-verified", user: currentUser };
   }
 
   const token = crypto.randomUUID();
-  await prisma.verifyEmailRequest.deleteMany({
-    where: { userId: user.id }
-  });
+  try {
+    await prisma.verifyEmailRequest.deleteMany({
+      where: { userId: currentUser.id }
+    });
+  } catch (e) {
+    console.error("Error deleting previous verification requests", e);
+  }
 
   await prisma.verifyEmailRequest.create({
     data: {
@@ -50,13 +67,13 @@ export async function sendVerificationEmail(email: string): Promise<{
       expires: addDays(new Date(), 7),
       user: {
         connect: {
-          id: user.id
+          id: currentUser.id
         }
       }
     }
   });
 
-  const emailHtml = await render(<VerifyEmail name={user.name} token={token} />);
+  const emailHtml = await render(<VerifyEmail name={currentUser.name} token={token} />);
 
 
   const mail = await transporter.sendMail({
@@ -66,7 +83,7 @@ export async function sendVerificationEmail(email: string): Promise<{
     html: emailHtml,
   })
 
-  return { error: null, user };
+  return { error: null, user: currentUser };
 }
 
 export async function sendPasswordResetRequest(userId: string) {

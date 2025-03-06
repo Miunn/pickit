@@ -186,30 +186,6 @@ export async function verifyAccount(token: string): Promise<{
     return { error: null, user };
 }
 
-export async function requestVerificationEmail(): Promise<{
-    error: string | null,
-    user: {
-        id: string,
-        name: string,
-        email: string,
-        emailVerified: boolean
-      } | null
-}> {
-    const { user } = await getCurrentSession();
-
-    if (!user) {
-        return { error: "unauthorized", user: null };
-    }
-
-    await prisma.verifyEmailRequest.delete({
-        where: {
-            userId: user?.id
-        }
-    });
-
-    return await sendVerificationEmail(user.email);
-}
-
 export async function requestPasswordReset(email: string): Promise<{
     error: string | null,
 }> {

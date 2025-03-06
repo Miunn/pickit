@@ -1,9 +1,8 @@
 "use client"
 
-import { changePassword, requestVerificationEmail, updateUser } from "@/actions/user"
+import { changePassword, updateUser } from "@/actions/user"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/hooks/use-toast"
@@ -15,8 +14,9 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import ChangeEmailConfirmationDialog from "./ChangeEmailConfirmationDialog"
+import { sendVerificationEmail } from "@/lib/mailing"
 
-export default function AccountForm({ user }: { user?: UserLight }) {
+export default function AccountForm({ user }: { user: UserLight }) {
 
     const t = useTranslations("components.account.accountForm");
     const [loadingInfos, setLoadingInfos] = useState<boolean>(false);
@@ -28,8 +28,8 @@ export default function AccountForm({ user }: { user?: UserLight }) {
     const accountFormSchema = useForm<z.infer<typeof AccountFormSchema>>({
         resolver: zodResolver(AccountFormSchema),
         defaultValues: {
-            name: user?.name || '',
-            email: user?.email || '',
+            name: user.name || '',
+            email: user.email || '',
         }
     })
 
@@ -45,7 +45,7 @@ export default function AccountForm({ user }: { user?: UserLight }) {
     async function submitAccount(data: z.infer<typeof AccountFormSchema>) {
         setLoadingInfos(true);
 
-        const r = await updateUser(user!.id, data.name, data.email);
+        const r = await updateUser(user.id, data.name, data.email);
 
         setLoadingInfos(false);
         if (!r) {
@@ -64,10 +64,28 @@ export default function AccountForm({ user }: { user?: UserLight }) {
 
     async function requestNewVerificationEmail() {
         setNewVerificationLoading(true);
-        const r = await requestVerificationEmail();
+        const r = await sendVerificationEmail(user.email);
         setNewVerificationLoading(false);
 
-        if (!r) {
+        if (r.error) {
+            if (r.error === "user-not-found") {
+                toast({
+                    title: "Error",
+                    description: "User not found",
+                    variant: "destructive"
+                });
+                return;
+            }
+
+            if (r.error === "already-verified") {
+                toast({
+                    title: "Error",
+                    description: "Your email is already verified. Refresh the page if status isn't updated",
+                    variant: "destructive"
+                });
+                return;
+            }
+
             toast({
                 title: "Error",
                 description: "An error occured while requesting a new verification email",
@@ -142,8 +160,8 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                             <FormItem className="flex items-center space-x-4 space-y-0">
                                 <FormControl>
                                     <Avatar className="h-24 w-24 rounded-lg cursor-pointer" onClick={() => console.log("Click avatar")} {...field}>
-                                        <AvatarImage src={user?.image || undefined} alt={user?.name || undefined} className="hover:bg-gray-500" />
-                                        <AvatarFallback className="rounded-lg transition-colors hover:bg-gray-200">{user?.name!.split(' ').map((token) => token[0]).join('').toUpperCase()}</AvatarFallback>
+                                        <AvatarImage src={user.image || undefined} alt={user.name} className="hover:bg-gray-500" />
+                                        <AvatarFallback className="rounded-lg transition-colors hover:bg-gray-200">{user.name.split(' ').map((token) => token[0]).join('').toUpperCase()}</AvatarFallback>
                                     </Avatar>
                                 </FormControl>
                                 <div>
@@ -179,7 +197,7 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                                 <FormLabel className="font-normal flex justify-between items-center">
                                     {t('form.email.label')}
 
-                                    {user?.emailVerified ?
+                                    {user.emailVerified ?
                                         <span className="text-green-600 flex items-center"><CircleCheck className="w-4 h-4 mr-1" /> {t('form.email.verified')}</span>
                                         : <span className="text-yellow-600 flex items-center"><CircleAlert className="w-4 h-4 mr-1" /> {t('form.email.unverified')}</span>}
                                 </FormLabel>
@@ -188,7 +206,7 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                                 </FormControl>
                                 <FormDescription className="flex justify-between gap-2">
                                     <span>{t('form.email.warning')}</span>
-                                    {!user?.emailVerified
+                                    {!user.emailVerified
                                         ? <>
                                             {newVerficiationLoading
                                                 ? <Button type="button" variant="link" className="text-muted-foreground p-0 h-fit text-[0.8rem] font-normal" disabled>
@@ -209,7 +227,7 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                         ? <Button type="button" disabled={true}><Loader2 className={"mr-2 animate-spin"} /> {t('form.actions.submitting')}</Button>
                         : <Button type="button" onClick={() => {
                             // If email has changed from default value, trigger the dialog
-                            if (accountFormSchema.getValues().email !== user?.email && user?.emailVerified === true) {
+                            if (accountFormSchema.getValues().email !== user.email && user.emailVerified === true) {
                                 setOpenEmailDialog(true);
                             } else {
                                 accountFormSchema.handleSubmit(submitAccount)();
@@ -280,7 +298,7 @@ export default function AccountForm({ user }: { user?: UserLight }) {
                 setOpen={setOpenEmailDialog}
                 onCancel={() => {
                     setOpenEmailDialog(false);
-                    accountFormSchema.setValue("email", user?.email);
+                    accountFormSchema.setValue("email", user.email);
                 }}
                 onSubmit={() => {
                     setOpenEmailDialog(false);

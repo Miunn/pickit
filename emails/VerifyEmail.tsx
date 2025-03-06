@@ -33,7 +33,7 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                                 <Section width="100%">
                                     <tr>
                                         <td align="center" valign="middle">
-                                            <Img src="/favicon.jpg" alt={process.env.APP_NAME} className="inline-block max-w-[200px] max-h-[40px]" />
+                                            <Img src={`${baseUrl}/static/favicon.jpg`} alt={process.env.APP_NAME} className="inline-block max-w-[200px] max-h-[40px]" />
                                             <Text className="inline-block text-[1.5rem] m-0 pl-[10px] font-semibold">{process.env.APP_NAME}</Text>
                                         </td>
                                     </tr>
