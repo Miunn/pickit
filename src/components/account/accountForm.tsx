@@ -1,6 +1,6 @@
 "use client"
 
-import { changePassword, updateUser } from "@/actions/user"
+import { changePassword, sendVerificationEmail, updateUser } from "@/actions/user"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -14,7 +14,6 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import ChangeEmailConfirmationDialog from "./ChangeEmailConfirmationDialog"
-import { sendVerificationEmail } from "@/lib/mailing"
 
 export default function AccountForm({ user }: { user: UserLight }) {
 

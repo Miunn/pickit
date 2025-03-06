@@ -4,10 +4,13 @@ import { UserLight } from "@/lib/definitions";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import * as bcrypt from "bcryptjs";
-import { sendPasswordResetRequest, sendVerificationEmail } from "@/lib/mailing";
+import { transporter } from "@/lib/mailing";
 import { VerifyEmailRequest } from "@prisma/client";
 import { addDays } from "date-fns";
 import { getCurrentSession } from "@/lib/authUtils";
+import { render } from "@react-email/components";
+import VerifyEmail from "@/components/emails/VerifyEmail";
+import ResetPasswordTemplate from "@/components/emails/ResetPasswordTemplate";
 
 export default async function getMe(): Promise<{
     error: string | null,
@@ -73,6 +76,73 @@ export async function updateUser(id: string, name?: string, email?: string) {
 
     revalidatePath("/app/account");
     return true;
+}
+
+export async function sendVerificationEmail(email: string): Promise<{
+    error: string | null,
+    user: {
+        id: string,
+        name: string,
+        email: string,
+        emailVerified: boolean
+    } | null
+}> {
+    const { user } = await getCurrentSession(); // THIS METHOD USES CACHE SO IF THE USER VERIFIED IT MAY NOT HAVE BEEN UPDATED YET
+
+    if (!user) {
+        return { error: "You must be logged in to fetch user info", user: null };
+    }
+
+    const currentUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            emailVerified: true
+        }
+    });
+
+    if (!currentUser) {
+        return { error: "user-not-found", user: null };
+    }
+
+    if (currentUser.emailVerified) {
+        return { error: "already-verified", user: currentUser };
+    }
+
+    const token = crypto.randomUUID();
+    try {
+        await prisma.verifyEmailRequest.deleteMany({
+            where: { userId: currentUser.id }
+        });
+    } catch (e) {
+        console.error("Error deleting previous verification requests", e);
+    }
+
+    await prisma.verifyEmailRequest.create({
+        data: {
+            token: token,
+            expires: addDays(new Date(), 7),
+            user: {
+                connect: {
+                    id: currentUser.id
+                }
+            }
+        }
+    });
+
+    const emailHtml = await render(<VerifyEmail name={currentUser.name} token={token} />);
+
+
+    const mail = await transporter.sendMail({
+        from: `"The Pickit Team" <${process.env.MAIL_SENDER}>`,
+        to: email,
+        subject: "Verify your email",
+        html: emailHtml,
+    })
+
+    return { error: null, user: currentUser };
 }
 
 export async function changePassword(id: string, oldPassword: string, newPassword: string): Promise<{
@@ -199,7 +269,29 @@ export async function requestPasswordReset(email: string): Promise<{
         return { error: null }; // Don't leak if the email is registered or not
     }
 
-    await sendPasswordResetRequest(user.id);
+    const token = crypto.randomUUID();
+    await prisma.passwordResetRequest.create({
+      data: {
+        token: token,
+        expires: addDays(new Date(), 7),
+        user: {
+          connect: {
+            id: user.id
+          }
+        }
+      }
+    });
+  
+    const ReactDOMServer = (await import('react-dom/server')).default;
+    const content = ReactDOMServer.renderToString(<ResetPasswordTemplate name={user.name} token={token} />);
+  
+    const mail = await transporter.sendMail({
+      from: `"The Pickit Team" <${process.env.MAIL_SENDER}>`,
+      to: user.email,
+      subject: "Reset your password",
+      text: "Reset your password",
+      html: content,
+    })
 
     return { error: null };
 }

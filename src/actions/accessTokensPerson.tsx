@@ -4,8 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { FolderTokenPermission, PersonAccessToken } from "@prisma/client";
 import { PersonAccessTokenWithFolder } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
-import { sendShareFolderEmail } from "@/lib/mailing";
+import { transporter } from "@/lib/mailing";
 import { getCurrentSession } from "@/lib/authUtils";
+import ShareFolderTemplate from "@/components/emails/ShareFolderTemplate";
 
 export async function getPersonsAccessTokens(): Promise<{
     error: string | null,
@@ -114,7 +115,7 @@ export async function createMultiplePersonAccessTokens(folderId: string, data: {
         }))
     });
 
-    await sendShareFolderEmail(data.map((d, i) => ({ email: d.email, link: `${process.env.APP_URL}/app/folders/${folderId}?share=${tokens[i]}&t=p`})), user.name!, folder.name)
+    await sendShareFolderEmail(data.map((d, i) => ({ email: d.email, link: `${process.env.APP_URL}/app/folders/${folderId}?share=${tokens[i]}&t=p` })), user.name!, folder.name)
     return { error: null }
 }
 
@@ -289,4 +290,20 @@ export async function sendAgainPersonAccessToken(token: string) {
     await sendShareFolderEmail([{ email: personAccessToken.email, link: `${process.env.APP_URL}/app/folders/${personAccessToken.folderId}?share=${token}&t=p` }], user.name!, personAccessToken.folder.name)
 
     return { error: null }
+}
+
+async function sendShareFolderEmail(data: { email: string, link: string }[], name: string, folderName: string) {
+    const ReactDOMServer = (await import('react-dom/server')).default;
+
+    data.forEach(async (d) => {
+        const content = ReactDOMServer.renderToString(<ShareFolderTemplate name={name} folderName={folderName} link={d.link} />);
+
+        await transporter.sendMail({
+            from: `"The Pickit Team" <${process.env.MAIL_SENDER}>`,
+            to: d.email,
+            subject: "You've been shared a folder",
+            text: "You've been shared a folder",
+            html: content,
+        })
+    });
 }

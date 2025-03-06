@@ -1,8 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { saveAs } from "file-saver";
-import { Folder, FolderTokenPermission, PersonAccessToken } from "@prisma/client";
-import { AccessTokenWithFolder, FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolder, FolderWithImagesWithFolderAndComments, PersonAccessTokenWithFolder, UploadImagesFormSchema } from "./definitions";
+import { FolderTokenPermission } from "@prisma/client";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolderAndComments, UploadImagesFormSchema } from "./definitions";
 import { z } from "zod";
 import { uploadImages } from "@/actions/images";
 import { toast } from "@/hooks/use-toast";
