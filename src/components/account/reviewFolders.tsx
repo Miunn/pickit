@@ -42,12 +42,12 @@ export default function ReviewFolders({ locale, folders }: { locale: string, fol
                                 <DropdownMenuContent align="end" className="min-w-40">
                                     <DropdownMenuLabel>{t('folder.dropdown.label')}</DropdownMenuLabel>
                                     <DropdownMenuItem asChild>
-                                        <Link href={`${process.env.APP_URL}/${locale}/app/folders/${folder.id}`} className="cursor-default">
+                                        <Link href={`/${locale}/app/folders/${folder.id}`} className="cursor-default">
                                             {t('folder.dropdown.openFolder')}
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
-                                        <Link href={`${process.env.APP_URL}/${locale}/app/links`} className="cursor-default">
+                                        <Link href={`/${locale}/app/links`} className="cursor-default">
                                             {t('folder.dropdown.manageAccesses')}
                                         </Link>
                                     </DropdownMenuItem>
