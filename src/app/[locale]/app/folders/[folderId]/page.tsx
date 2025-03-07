@@ -6,8 +6,11 @@ import { getCurrentSession } from "@/lib/authUtils";
 import UnlockTokenPrompt from "@/components/folders/UnlockTokenPrompt";
 import { ArrowRight, FolderSearch } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getSortedFolderContent } from "@/lib/utils";
+import { ImagesSortMethod } from "@/components/folders/SortImages";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolderAndComments } from "@/lib/definitions";
 
-export default async function FolderPage({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { share?: string, t?: string, h?: string } }) {
+export default async function FolderPage({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { sort?: ImagesSortMethod, share?: string, t?: string, h?: string } }) {
 
     const { session } = await getCurrentSession();
     const folderData = (await getFolderFull(params.folderId, searchParams.share, searchParams.t === "p" ? "personAccessToken" : "accessToken", searchParams.h));
@@ -15,7 +18,7 @@ export default async function FolderPage({ params, searchParams }: { params: { f
     return (
         <>
             {folderData.folder
-                ? <FolderContent folder={folderData.folder} isGuest={!session} />
+                ? <FolderContent folder={getSortedFolderContent(folderData.folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithAccessToken} isGuest={!session} />
                 : null
             }
             {folderData.error === "code-needed" || folderData.error === "unauthorized"

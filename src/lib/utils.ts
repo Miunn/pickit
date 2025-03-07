@@ -8,6 +8,7 @@ import { toast } from "@/hooks/use-toast";
 import { UseFormReturn } from "react-hook-form";
 import { prisma } from "./prisma";
 import * as bcrypt from "bcryptjs";
+import { ImagesSortMethod } from "@/components/folders/SortImages";
 
 export function formatBytes(
 	bytes: number,
@@ -48,6 +49,43 @@ export const copyImageToClipboard = async (folderId: string, imageId: string, sh
 	]);
 
 	return true;
+}
+
+export const getSortedFolderContent = (folderContent: FolderWithImagesWithFolderAndComments, sort: ImagesSortMethod): FolderWithImagesWithFolderAndComments => {
+	switch (sort) {
+		case ImagesSortMethod.NameAsc:
+			return {
+				...folderContent,
+				images: folderContent.images.sort((a, b) => a.name.localeCompare(b.name))
+			}
+		case ImagesSortMethod.NameDesc:
+			return {
+				...folderContent,
+				images: folderContent.images.sort((a, b) => b.name.localeCompare(a.name))
+			}
+		case ImagesSortMethod.SizeAsc:
+			return {
+				...folderContent,
+				images: folderContent.images.sort((a, b) => a.size - b.size)
+			}
+		case ImagesSortMethod.SizeDesc:
+			return {
+				...folderContent,
+				images: folderContent.images.sort((a, b) => b.size - a.size)
+			}
+		case ImagesSortMethod.DateAsc:
+			return {
+				...folderContent,
+				images: folderContent.images.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+			}
+		case ImagesSortMethod.DateDesc:
+			return {
+				...folderContent,
+				images: folderContent.images.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+			}
+		default:
+			return folderContent;
+	}
 }
 
 export const validateShareToken = async (folderId: string, token: string, type: "accessToken" | "personAccessToken", hashedPinCode?: string | null): Promise<{ error: string | null, folder: (FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithAccessToken) | null, permission?: FolderTokenPermission }> => {

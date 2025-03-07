@@ -13,13 +13,12 @@ import SortImages, { ImagesSortMethod } from "./SortImages";
 import saveAs from "file-saver";
 import { Progress } from "../ui/progress";
 import { useQueryState } from 'nuqs'
+import { getSortedFolderContent } from "@/lib/utils";
 
 export interface FolderContentProps {
     folder: FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithAccessToken;
     isGuest?: boolean;
 }
-
-
 
 export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
     const t = useTranslations("folders");
@@ -83,50 +82,9 @@ export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
         setDownloadProgress(100);
     }
 
-    function getSortedFolderContent(folderContent: FolderWithImagesWithFolderAndComments, sort: ImagesSortMethod): FolderWithImagesWithFolderAndComments {
-        switch (sort) {
-            case ImagesSortMethod.NameAsc:
-                return {
-                    ...folderContent,
-                    images: folderContent.images.sort((a, b) => a.name.localeCompare(b.name))
-                }
-            case ImagesSortMethod.NameDesc:
-                return {
-                    ...folderContent,
-                    images: folderContent.images.sort((a, b) => b.name.localeCompare(a.name))
-                }
-            case ImagesSortMethod.SizeAsc:
-                return {
-                    ...folderContent,
-                    images: folderContent.images.sort((a, b) => a.size - b.size)
-                }
-            case ImagesSortMethod.SizeDesc:
-                return {
-                    ...folderContent,
-                    images: folderContent.images.sort((a, b) => b.size - a.size)
-                }
-            case ImagesSortMethod.DateAsc:
-                return {
-                    ...folderContent,
-                    images: folderContent.images.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-                }
-            case ImagesSortMethod.DateDesc:
-                return {
-                    ...folderContent,
-                    images: folderContent.images.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-                }
-            default:
-                return folderContent;
-        }
-    }
-
     useEffect(() => {
         setFolderContent(getSortedFolderContent(folderContent, sortState));
     }, [sortState]);
-
-    useEffect(() => {
-        setFolderContent(getSortedFolderContent(folder, sortState));
-    }, [folder]);
 
     return (
         <div>
