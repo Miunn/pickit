@@ -82,7 +82,7 @@ export async function createNewPersonAccessToken(folderId: string, target: strin
     return { error: null, personAccessToken }
 }
 
-export async function createMultiplePersonAccessTokens(folderId: string, data: { email: string, permission: FolderTokenPermission, expiryDate: Date }[]): Promise<{
+export async function createMultiplePersonAccessTokens(folderId: string, data: { email: string, permission: FolderTokenPermission, expiryDate: Date, pinCode?: string }[]): Promise<{
     error: string | null
 }> {
     const { user } = await getCurrentSession();
@@ -111,7 +111,9 @@ export async function createMultiplePersonAccessTokens(folderId: string, data: {
             email: d.email,
             folderId,
             permission: d.permission,
-            expires: d.expiryDate
+            expires: d.expiryDate,
+            locked: d.pinCode ? true : false,
+            pinCode: d.pinCode
         }))
     });
 

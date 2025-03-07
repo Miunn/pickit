@@ -40,7 +40,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
     const locale = useLocale();
     const t = useTranslations("dialogs.folders.share");
     const [loadingShare, setLoadingShare] = useState(false);
-    const [tokenList, setTokenList] = useState<{ email: string, permission: FolderTokenPermission, expiryDate: Date }[]>([]);
+    const [tokenList, setTokenList] = useState<{ email: string, permission: FolderTokenPermission, expiryDate: Date, pinCode?: string }[]>([]);
     const emailScroll = useRef<HTMLDivElement>(null);
     const validTokens = folder.AccessToken.filter((token) => token.expires > new Date() && token.isActive);
 
@@ -74,7 +74,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
         });
     }
 
-    const addEmail = ({ email, permission, expiresAt }: z.infer<typeof CreatePersonAccessTokenFormSchema>) => {
+    const addEmail = ({ email, permission, expiresAt, pinCode }: z.infer<typeof CreatePersonAccessTokenFormSchema>) => {
         const emailSchema = z.string().email();
         if (!email || email.length === 0 || tokenList.map((t) => t.email).includes(email) || !emailSchema.safeParse(email).success) {
             toast({
@@ -87,7 +87,11 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
 
         // Reset email field
         sharePersonAccessTokenForm.setValue("email", "");
-        setTokenList([...tokenList, { email, permission, expiryDate: expiresAt }]);
+        sharePersonAccessTokenForm.setValue("expiresAt", addMonths(new Date(), 3));
+        sharePersonAccessTokenForm.setValue("permission", FolderTokenPermission.READ);
+        sharePersonAccessTokenForm.setValue("pinCode", "");
+        setShowPersonAccessTokenLock(false);
+        setTokenList([...tokenList, { email, permission, expiryDate: expiresAt, pinCode }]);
     }
 
     const submitSharePersonTokens = async () => {
@@ -268,7 +272,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                         </FormItem>
                                     )}
                                 />
-                                <Button variant={"outline"} size={"icon"} onClick={() => setShowPersonAccessTokenLock(!showPersonAccessTokenLock)}>{showPersonAccessTokenLock
+                                <Button variant={"outline"} size={"icon"} onClick={() => setShowPersonAccessTokenLock(!showPersonAccessTokenLock)} type="button">{showPersonAccessTokenLock
                                     ? <X className="w-4 h-4" />
                                     : <Unlock className="w-4 h-4" />
                                 }
@@ -304,6 +308,10 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                         {format(token.expiryDate, "PPP")}
                                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                     </Button>
+                                    {token.pinCode
+                                        ? <Button variant={"outline"} size={"icon"} disabled><Lock className="w-4 h-4" /></Button>
+                                        : null
+                                    }
                                 </div>
                             ))}
                         </div>
