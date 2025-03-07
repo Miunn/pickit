@@ -465,6 +465,14 @@
               "label": "Adresse mail",
               "placeholder": "Adresse mail",
               "description": "Entrez l'adresse mail de la personne à inviter"
+            },
+            "expiryDate": {
+              "label": "Date d'expiration",
+              "description": "Le lien de partage deviendra invalide après cette date"
+            },
+            "pinCode": {
+              "label": "Code PIN",
+              "description": "Ce code PIN sera nécessaire pour accéder au dossier"
             }
           }
         },

@@ -488,6 +488,14 @@
               "label": "Email",
               "placeholder": "Email address",
               "description": "Send this link to an email"
+            },
+            "expiryDate": {
+              "label": "Expiry date",
+              "description": "Link will be invalid after this date"
+            },
+            "pinCode": {
+              "label": "PIN Code",
+              "description": "Protect this link with a PIN code"
             }
           }
         },

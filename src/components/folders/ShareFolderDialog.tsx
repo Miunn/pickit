@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useLocale, useTranslations } from "next-intl";
-import { CalendarIcon, Loader2, Share2, X } from "lucide-react";
+import { CalendarIcon, Loader2, Lock, Share2, Unlock, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -22,7 +22,7 @@ import { CreatePersonAccessTokenFormSchema, FolderWithAccessToken } from "@/lib/
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FolderTokenPermission } from "@prisma/client";
+import { AccessToken, FolderTokenPermission, PersonAccessToken } from "@prisma/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { addMonths, format, set } from "date-fns";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
@@ -30,6 +30,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
 import { createMultiplePersonAccessTokens } from "@/actions/accessTokensPerson";
+import { unlockAccessToken } from "@/actions/accessTokens";
+import LockTokenDialog from "./LockTokenDialog";
+import { REGEXP_ONLY_DIGITS } from "input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "../ui/input-otp";
 
 export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWithAccessToken, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
@@ -39,6 +43,12 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
     const [tokenList, setTokenList] = useState<{ email: string, permission: FolderTokenPermission, expiryDate: Date }[]>([]);
     const emailScroll = useRef<HTMLDivElement>(null);
     const validTokens = folder.AccessToken.filter((token) => token.expires > new Date() && token.isActive);
+
+    const [openLockToken, setOpenLockToken] = useState(false);
+    const [lockToken, setLockToken] = useState<AccessToken | PersonAccessToken | null>(null);
+    const [lockTokenType, setLockTokenType] = useState<"accessToken" | "personAccessToken">("accessToken");
+
+    const [showPersonAccessTokenLock, setShowPersonAccessTokenLock] = useState(false);
 
     const sharePersonAccessTokenForm = useForm<z.infer<typeof CreatePersonAccessTokenFormSchema>>({
         resolver: zodResolver(CreatePersonAccessTokenFormSchema),
@@ -122,7 +132,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                         <Share2 className="mr-2" /> {t('trigger')}
                     </Button>
                 </DialogTrigger> : null}
-                <DialogContent className="max-w-3xl">
+                <DialogContent className={`${showPersonAccessTokenLock ? "w-[66rem]" : "w-[48rem]"} max-w-max transition-all overflow-hidden`}>
                     <DialogHeader>
                         <DialogTitle>{t('title')}</DialogTitle>
                         <DialogDescription>{t('description')}</DialogDescription>
@@ -134,18 +144,24 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                             <Link href={`/${locale}/app/links`}>{t('manageAccesses')}</Link>
                         </Button>
                     </div>
-                    <div className={"grid gap-3 w-full items-center"} style={{
-                        gridTemplateColumns: "0.3fr 1fr auto"
-                    }}>
+                    <div className={"grid grid-cols-[0.3fr_1fr_auto_auto] gap-3 items-center"}>
                         {validTokens.length > 0
                             ? validTokens.sort((a, b) => a.permission.localeCompare(b.permission)).map((token) => <Fragment key={token.token}>
                                 <Label className="capitalize">{
-                                token.permission === FolderTokenPermission.READ
-                                ? t('links.link.permissions.read')
-                                : t('links.link.permissions.write')
+                                    token.permission === FolderTokenPermission.READ
+                                        ? t('links.link.permissions.read')
+                                        : t('links.link.permissions.write')
                                 }</Label>
                                 <Input placeholder={t('links.link.placeholder')} disabled={true}
                                     value={`${typeof window !== 'undefined' ? window.location.origin : process.env.APP_URL}/app/folders/${folder.id}?share=${token.token}`} />
+                                {token.locked
+                                    ? <Button variant={"outline"} size={"icon"} onClick={() => unlockAccessToken(token.id)}><Lock className="w-4 h-4" /></Button>
+                                    : <Button variant={"outline"} size={"icon"} onClick={() => {
+                                        setLockToken(token);
+                                        setLockTokenType("accessToken");
+                                        setOpenLockToken(true);
+                                    }}><Unlock className="w-4 h-4" /></Button>
+                                }
                                 <Button onClick={() => copyToClipboard(`${typeof window !== 'undefined' ? window.location.origin : process.env.APP_URL}/app/folders/${folder.id}?share=${token.token}`)} className="text-start">
                                     {t('links.link.copy')}
                                 </Button>
@@ -181,7 +197,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                 control={sharePersonAccessTokenForm.control}
                                 name={"email"}
                                 render={({ field }) => (
-                                    <FormItem className="flex-1 flex flex-col">
+                                    <FormItem className="flex-1 flex flex-col min-w-52">
                                         <FormLabel>{t('people.form.email.label')}</FormLabel>
                                         <FormControl>
                                             <Input placeholder={t('people.form.email.placeholder')} {...field} />
@@ -194,7 +210,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                 name="expiresAt"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col w-52">
-                                        <FormLabel>Expiry date</FormLabel>
+                                        <FormLabel>{t('people.form.expiryDate.label')}</FormLabel>
                                         <Popover>
                                             <PopoverTrigger asChild>
                                                 <FormControl>
@@ -227,6 +243,38 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                     </FormItem>
                                 )}
                             />
+
+                            <div className="flex items-end">
+                                <FormField
+                                    control={sharePersonAccessTokenForm.control}
+                                    name="pinCode"
+                                    render={({ field }) => (
+                                        <FormItem className={`flex flex-col transition-all ${showPersonAccessTokenLock ? "w-72 mr-2" : "overflow-hidden w-0 mr-0"}`}>
+                                            <FormLabel className="text-nowrap">{t('people.form.pinCode.label')}</FormLabel>
+                                            <FormControl>
+                                                <InputOTP maxLength={8} pattern={REGEXP_ONLY_DIGITS} {...field}>
+                                                    <InputOTPGroup>
+                                                        <InputOTPSlot index={0} />
+                                                        <InputOTPSlot index={1} />
+                                                        <InputOTPSlot index={2} />
+                                                        <InputOTPSlot index={3} />
+                                                        <InputOTPSlot index={4} />
+                                                        <InputOTPSlot index={5} />
+                                                        <InputOTPSlot index={6} />
+                                                        <InputOTPSlot index={7} />
+                                                    </InputOTPGroup>
+                                                </InputOTP>
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button variant={"outline"} size={"icon"} onClick={() => setShowPersonAccessTokenLock(!showPersonAccessTokenLock)}>{showPersonAccessTokenLock
+                                    ? <X className="w-4 h-4" />
+                                    : <Unlock className="w-4 h-4" />
+                                }
+                                </Button>
+                            </div>
+
 
                             <Button type="submit">{t('buttons.emailAdd')}</Button>
                         </form>
@@ -271,6 +319,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+            <LockTokenDialog tokenId={lockToken?.id || ""} tokenType={lockTokenType} openState={openLockToken} setOpenState={setOpenLockToken} />
         </>
     )
 }
