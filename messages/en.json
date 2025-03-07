@@ -901,7 +901,7 @@
           "lock": "Lock",
           "unlock": {
             "label": "Unlock",
-            "error": {
+            "errors": {
               "title": "Can't unlock access",
               "description": "An error occurred while unlocking the access"
             },

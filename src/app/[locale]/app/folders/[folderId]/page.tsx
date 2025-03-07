@@ -1,5 +1,3 @@
-"use server"
-
 import { FolderContent } from "@/components/folders/FolderContent";
 import { getFolderFull } from "@/actions/folders";
 import { getCurrentSession } from "@/lib/authUtils";
@@ -9,11 +7,19 @@ import { Button } from "@/components/ui/button";
 import { getSortedFolderContent } from "@/lib/utils";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
 import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolderAndComments } from "@/lib/definitions";
+import { redirect } from "@/i18n/routing";
+import { getTranslations } from "next-intl/server";
 
 export default async function FolderPage({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { sort?: ImagesSortMethod, share?: string, t?: string, h?: string } }) {
 
     const { session } = await getCurrentSession();
     const folderData = (await getFolderFull(params.folderId, searchParams.share, searchParams.t === "p" ? "personAccessToken" : "accessToken", searchParams.h));
+
+    const t = await getTranslations("components.accessTokens.unlock.errors");
+
+    if (folderData.error === "unauthorized") {
+        return redirect("/signin");
+    }
 
     return (
         <>
@@ -21,8 +27,8 @@ export default async function FolderPage({ params, searchParams }: { params: { f
                 ? <FolderContent folder={getSortedFolderContent(folderData.folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithAccessToken} isGuest={!session} />
                 : null
             }
-            {folderData.error === "code-needed" || folderData.error === "unauthorized"
-                ? <UnlockTokenPrompt folderId={params.folderId} />
+            {folderData.error === "code-needed" || folderData.error === "wrong-pin"
+                ? <UnlockTokenPrompt folderId={params.folderId} wrongPin={folderData.error === "wrong-pin"} />
                 : null
             }
             {folderData.error === "invalid-token"

@@ -156,13 +156,13 @@ export const validateShareToken = async (folderId: string, token: string, type: 
 
 	if (accessToken.locked) {
 		if (!hashedPinCode) {
-			return { error: "unauthorized", folder: null };
+			return { error: "wrong-pin", folder: null };
 		}
 
 		const match = bcrypt.compareSync(accessToken.pinCode as string, hashedPinCode);
 
 		if (!match) {
-			return { error: "unauthorized", folder: null };
+			return { error: "wrong-pin", folder: null };
 		}
 	}
 

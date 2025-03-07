@@ -3,19 +3,19 @@
 import { LockFolderFormSchema } from "@/lib/definitions"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "../ui/form"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "../ui/input-otp"
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { z } from "zod"
 import { Button } from "../ui/button"
 import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import React from "react"
+import React, { useEffect } from "react"
 import { useRouter } from "@/i18n/routing"
 import bcrypt from "bcryptjs";
 import { useSearchParams } from "next/navigation"
 
-export default function UnlockTokenPrompt({ folderId }: { folderId: string }) {
+export default function UnlockTokenPrompt({ folderId, wrongPin }: { folderId: string, wrongPin?: boolean }) {
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const tokenType = searchParams.get("t");
@@ -90,14 +90,23 @@ export default function UnlockTokenPrompt({ folderId }: { folderId: string }) {
                                 </InputOTP>
                             </FormControl>
                             <FormDescription>{t('form.pin.description')}</FormDescription>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
 
 
-                {unlockLoading
-                    ? <Button type={"button"} className="self-end" disabled><Loader2 className={"w-4 h-4 mr-2 animate-spin"} /> {t('actions.submitting')}</Button>
-                    : <Button type={"submit"} className="self-end">{t('actions.submit')}</Button>}
+                <div className="flex justify-between items-center">
+                    <p className="text-destructive text-sm font-semibold">
+                        {wrongPin
+                            ? t('errors.unauthorized.description')
+                            : null
+                        }
+                    </p>
+                    {unlockLoading
+                        ? <Button type={"button"} className="self-end" disabled><Loader2 className={"w-4 h-4 mr-2 animate-spin"} /> {t('actions.submitting')}</Button>
+                        : <Button type={"submit"} className="self-end">{t('actions.submit')}</Button>}
+                </div>
             </form>
         </Form>
     )
