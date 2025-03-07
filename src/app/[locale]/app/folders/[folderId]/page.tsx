@@ -19,7 +19,7 @@ export default async function FolderPage({ params, searchParams }: { params: { f
                 : null
             }
             {folderData.error === "code-needed" || folderData.error === "unauthorized"
-                ? <UnlockTokenPrompt folderId={params.folderId} shareToken={searchParams.share} tokenType={searchParams.t === "p" ? "p" : "a"} />
+                ? <UnlockTokenPrompt folderId={params.folderId} />
                 : null
             }
             {folderData.error === "invalid-token"
