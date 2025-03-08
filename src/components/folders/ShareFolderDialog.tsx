@@ -48,6 +48,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
     const [lockToken, setLockToken] = useState<AccessToken | PersonAccessToken | null>(null);
     const [lockTokenType, setLockTokenType] = useState<"accessToken" | "personAccessToken">("accessToken");
 
+    const [openExpiryDatePopover, setOpenExpiryDatePopover] = useState(false);
     const [showPersonAccessTokenLock, setShowPersonAccessTokenLock] = useState(false);
 
     const sharePersonAccessTokenForm = useForm<z.infer<typeof CreatePersonAccessTokenFormSchema>>({
@@ -136,7 +137,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                         <Share2 className="mr-2" /> {t('trigger')}
                     </Button>
                 </DialogTrigger> : null}
-                <DialogContent className={`${showPersonAccessTokenLock ? "w-[66rem]" : "w-[48rem]"} max-w-max transition-all overflow-hidden`}>
+                <DialogContent className={`${showPersonAccessTokenLock ? "w-[66rem]" : "w-[48rem]"} max-w-max transition-all overflow-hidden`} onPointerDownOutside={(e) => openExpiryDatePopover && e.preventDefault()}>
                     <DialogHeader>
                         <DialogTitle>{t('title')}</DialogTitle>
                         <DialogDescription>{t('description')}</DialogDescription>
@@ -215,7 +216,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col w-52">
                                         <FormLabel>{t('people.form.expiryDate.label')}</FormLabel>
-                                        <Popover>
+                                        <Popover open={openExpiryDatePopover} onOpenChange={setOpenExpiryDatePopover} modal={true}>
                                             <PopoverTrigger asChild>
                                                 <FormControl>
                                                     <Button
