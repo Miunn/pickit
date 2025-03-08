@@ -74,6 +74,12 @@ export const UploadImagesFormSchema = z.object({
             })
 });
 
+export const RenameImageFormSchema = z.object({
+    name: z.string().min(2, {
+        message: "The image name must be at least 2 characters",
+    }).max(255),
+});
+
 export const CreateCommentFormSchema = z.object({
     content: z.string().min(1, {
         message: "Comment must be at least 1 character long"

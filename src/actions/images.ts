@@ -4,13 +4,14 @@ import { prisma } from "@/lib/prisma";
 import * as fs from "fs";
 import sharp from "sharp";
 import { revalidatePath } from "next/cache";
-import { ImageLightWithFolderName, ImageWithComments, ImageWithFolder } from "@/lib/definitions";
+import { ImageLightWithFolderName, ImageWithComments, ImageWithFolder, RenameImageFormSchema } from "@/lib/definitions";
 import { imageCreateManyAndUpdateSizes, imageDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 import { changeFolderCover } from "./folders";
 import { validateShareToken } from "@/lib/utils";
 import { getCurrentSession } from "@/lib/authUtils";
 import JSZip, { folder } from "jszip";
 import { routing } from "@/i18n/routing";
+import { z } from "zod";
 
 export async function getLightImages(): Promise<{
     error: string | null;
@@ -224,11 +225,48 @@ export async function getImagesWithFolderAndCommentsFromFolder(folderId: string)
         },
         include: {
             folder: true,
-            comments: true
+            comments: { include: { createdBy: true }}
         }
     });
 
     return { error: null, images: images };
+}
+
+export async function renameImage(imageId: string, data: z.infer<typeof RenameImageFormSchema>): Promise<{ error: string | null }> {
+    const { user } = await getCurrentSession();
+
+    if (!user) {
+        return { error: "You must be logged in to rename images" };
+    }
+
+    const parsedData = RenameImageFormSchema.safeParse(data);
+
+    if (!parsedData.success) {
+        return { error: "invalid-data" };
+    }
+
+    const image = await prisma.image.findUnique({
+        where: {
+            id: imageId,
+            createdBy: {
+                id: user.id
+            }
+        },
+        include: { folder: true }
+    });
+
+    if (!image) {
+        return { error: "Image not found" };
+    }
+
+    await prisma.image.update({
+        where: { id: imageId },
+        data: { name: parsedData.data.name }
+    });
+
+    revalidatePath(`/app/folders/${image.folder.id}`);
+    revalidatePath("/app");
+    return { error: null };
 }
 
 export async function deleteImage(folderId: string, imageId: string, shareToken?: string, hashPin?: string, tokenType?: string) {

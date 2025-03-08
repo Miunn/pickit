@@ -1,43 +1,44 @@
-"use client";
+'use client'
 
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription, DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger
 } from "@/components/ui/dialog";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {Loader2} from "lucide-react";
-import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
-import {zodResolver} from "@hookform/resolvers/zod"
-import {useForm} from "react-hook-form"
-import {z} from "zod"
-import {renameFolder} from "@/actions/folders";
-import {useState} from "react";
-import {toast} from "@/hooks/use-toast";
-import {useTranslations} from "next-intl";
-import {RenameFolderFormSchema} from "@/lib/definitions";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
+import { useTranslations } from "next-intl";
+import { CreateFolderFormSchema } from "@/lib/definitions";
+import { Image } from "@prisma/client";
+import { renameImage } from "@/actions/images";
 
-export default function RenameFolderDialog({openState, setOpenState, folderId, folderName}: { openState: boolean, setOpenState: any, folderId: string, folderName: string }) {
+export default function RenameImageDialog({ openState, setOpenState, image }: { openState: boolean, setOpenState: any, image: Image }) {
 
-    const t = useTranslations("dialogs.folders.rename");
+    const t = useTranslations("dialogs.images.rename");
 
     const [loading, setLoading] = useState(false);
 
-    const form = useForm<z.infer<typeof RenameFolderFormSchema>>({
-        resolver: zodResolver(RenameFolderFormSchema),
+    const form = useForm<z.infer<typeof CreateFolderFormSchema>>({
+        resolver: zodResolver(CreateFolderFormSchema),
         defaultValues: {
             name: "",
         }
     });
 
-    function onSubmit(data: z.infer<typeof RenameFolderFormSchema>) {
+    function onSubmit(data: z.infer<typeof CreateFolderFormSchema>) {
         setLoading(true);
-        renameFolder(folderId, data.name).then(d => {
+        renameImage(image.id, data).then(d => {
             setLoading(false);
 
             if (d.error) {
@@ -70,29 +71,31 @@ export default function RenameFolderDialog({openState, setOpenState, folderId, f
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{t('title')}</DialogTitle>
-                    <DialogDescription>{t('description', {folder: folderName})}</DialogDescription>
+                    <DialogDescription>{t('description', { name: image.name })}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <FormField
                             control={form.control}
                             name="name"
-                            render={({field}) => (
+                            render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>{t('form.name.label')}</FormLabel>
                                     <FormControl>
                                         <Input placeholder={t('form.name.placeholder')} {...field} />
                                     </FormControl>
-                                    <FormDescription>{t('form.name.description', {folder: folderName})}</FormDescription>
-                                    <FormMessage/>
+                                    <FormDescription>{t('form.name.description', { name: image.name })}</FormDescription>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
 
                         <DialogFooter>
-                            <Button type={"button"} onClick={() => setOpenState(false)} variant="outline">{t('actions.cancel')}</Button>
+                            <DialogClose asChild>
+                                <Button type={"button"} variant="outline">{t('actions.cancel')}</Button>
+                            </DialogClose>
                             {loading
-                                ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"}/> {t('actions.submitting')}</Button>
+                                ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"} /> {t('actions.submitting')}</Button>
                                 : <Button type={"submit"}>{t('actions.submit')}</Button>
                             }
                         </DialogFooter>

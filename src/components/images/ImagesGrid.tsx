@@ -15,6 +15,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { formatBytes, handleImagesSubmission } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
+import RenameImageDialog from "./RenameImageDialog";
+import { DeleteImageDialog } from "./DeleteImageDialog";
+import ImagePropertiesDialog from "./ImagePropertiesDialog";
+import { Image } from "@prisma/client";
 
 export const ImagesGrid = ({ folder }: { folder: FolderWithImagesWithFolderAndComments }) => {
     const searchParams = useSearchParams();
@@ -34,6 +38,10 @@ export const ImagesGrid = ({ folder }: { folder: FolderWithImagesWithFolderAndCo
     const [selecting, setSelecting] = useState<boolean>(false);
     const [selected, setSelected] = useState<string[]>([]);
     const [sizeSelected, setSizeSelected] = useState<number>(0);
+
+    const [renameImage, setRenameImage] = React.useState<{open: boolean, image: Image | null}>({ open: false, image: null });
+    const [propertiesImage, setPropertiesImage] = React.useState<{open: boolean, image: ImageWithFolder | null}>({ open: false, image: null });
+    const [deleteImage, setDeleteImage] = React.useState<{open: boolean, image: ImageWithFolder | null}>({ open: false, image: null });
 
     const uploadImageForm = useForm<z.infer<typeof UploadImagesFormSchema>>({
         resolver: zodResolver(UploadImagesFormSchema),
@@ -146,7 +154,7 @@ export const ImagesGrid = ({ folder }: { folder: FolderWithImagesWithFolderAndCo
                     ))}
             </div>
 
-            <CarouselDialog images={folder.images} title={folder.name!} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
+            <CarouselDialog images={folder.images} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} setSelected={setSelected} setSelecting={setSelecting} />
         </div>
     )

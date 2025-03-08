@@ -624,6 +624,32 @@
           }
         }
       },
+      "rename": {
+        "title": "Renommer l'image",
+        "description": "Entrez le nouveau nom pour {name}",
+        "form": {
+          "name": {
+            "label": "Nom de l'image",
+            "placeholder": "Todirostre tacheté",
+            "description": "Cela sera le nouveau nom pour {name}"
+          }
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Renommer",
+          "submitting": "Renommage"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de renommer l'image",
+            "description": "Une erreur inconnue est survenue lors du renommage de l'image"
+          }
+        },
+        "success": {
+          "title": "Image renommée",
+          "description": "L'image a été renommée avec succès"
+        }
+      },
       "properties": {
         "title": "Propriétés de l'image",
         "description": "Propriétés de {name}",
@@ -1124,6 +1150,7 @@
       "view": "Ouvrir",
       "select": "Sélectionner",
       "download": "Télécharger",
+      "rename": "Renommer",
       "properties": "Propriétés",
       "upload": "Upload",
       "delete": "Supprimer",

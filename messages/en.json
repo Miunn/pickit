@@ -626,6 +626,33 @@
           }
         }
       },
+      "rename": {
+        "trigger": "Rename",
+        "title": "Rename image",
+        "description": "Enter the new name for {name}",
+        "form": {
+          "name": {
+            "label": "Image's name",
+            "placeholder": "Todirostrum maculatum",
+            "description": "The new name for {name}"
+          }
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Rename",
+          "submitting": "Renaming"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't rename image",
+            "description": "An unknown error happened while renaming the image"
+          }
+        },
+        "success": {
+          "title": "Image renamed",
+          "description": "The image has been renamed successfully"
+        }
+      },
       "properties": {
         "title": "Images properties",
         "description": "Properties {name}",
@@ -1071,6 +1098,7 @@
       "view": "Open",
       "select": "Select",
       "download": "Download",
+      "rename": "Rename",
       "properties": "Properties",
       "upload": "Upload",
       "delete": "Delete",

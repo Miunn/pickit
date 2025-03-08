@@ -12,6 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import ImagePropertiesDialog from "./ImagePropertiesDialog";
 import { DeleteImageDialog } from "./DeleteImageDialog";
 import { useSearchParams } from "next/navigation";
+import RenameImageDialog from "./RenameImageDialog";
 
 export interface ImagePreviewProps {
     image: ImageWithFolder;
@@ -21,7 +22,6 @@ export interface ImagePreviewProps {
 }
 
 export const ImagePreview = ({ image, selected, onClick, onSelect }: ImagePreviewProps) => {
-
     const format = useFormatter();
     const t = useTranslations("images");
     const deleteTranslations = useTranslations("dialogs.images.delete");
@@ -30,6 +30,7 @@ export const ImagePreview = ({ image, selected, onClick, onSelect }: ImagePrevie
     const shareHashPin = searchParams.get("h");
     const tokenType = searchParams.get("t");
 
+    const [openRename, setOpenRename] = React.useState(false);
     const [openProperties, setOpenProperties] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);
 
@@ -57,8 +58,8 @@ export const ImagePreview = ({ image, selected, onClick, onSelect }: ImagePrevie
     }
 
     return (
-        <>
-            <ContextMenu key={image.id}>
+        <div>
+            <ContextMenu key={image.id} modal={false}>
                 <ContextMenuTrigger asChild>
                     <button onClick={onClick} style={{ all: "unset", cursor: "pointer" }}>
                         <div className={`inline-block w-64 rounded-2xl ${selected.includes(image.id) ? "bg-blue-100" : ""}`}>
@@ -108,6 +109,9 @@ export const ImagePreview = ({ image, selected, onClick, onSelect }: ImagePrevie
                     <ContextMenuItem onClick={downloadImageHandler}>
                         {t('actions.download')}
                     </ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenRename(true)}>
+                        {t('actions.rename')}
+                    </ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenProperties(true)}>
                         {t('actions.properties')}
                     </ContextMenuItem>
@@ -117,8 +121,9 @@ export const ImagePreview = ({ image, selected, onClick, onSelect }: ImagePrevie
                     </ContextMenuItem>
                 </ContextMenuContent>
             </ContextMenu>
+            <RenameImageDialog image={image} openState={openRename} setOpenState={setOpenRename} />
             <DeleteImageDialog image={image} open={openDelete} setOpen={setOpenDelete} />
             <ImagePropertiesDialog image={image} open={openProperties} setOpen={setOpenProperties} />
-        </>
+        </div>
     )
 }
