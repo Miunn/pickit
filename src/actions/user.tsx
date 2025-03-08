@@ -292,15 +292,14 @@ export async function requestPasswordReset(data: z.infer<typeof RequestPasswordR
       }
     });
   
-    const ReactDOMServer = (await import('react-dom/server')).default;
-    const content = ReactDOMServer.renderToString(<ResetPasswordTemplate name={user.name} token={token} />);
+    const emailHtml = await render(<ResetPasswordTemplate name={user.name} token={token} />);
   
     const mail = await transporter.sendMail({
       from: `"The Pickit Team" <${process.env.MAIL_SENDER}>`,
       to: user.email,
       subject: "Reset your password",
       text: "Reset your password",
-      html: content,
+      html: emailHtml,
     })
 
     return { error: null };
