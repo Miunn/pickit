@@ -255,6 +255,13 @@
       "description": "You can upload {count, plural, one {a file} other {multiple file}} up to {maxSize} {count, plural, one {} other {each}}",
       "remove": "Remove file"
     },
+    "viewSelector": {
+      "placeholder": "Select a view",
+      "options": {
+        "grid": "Grid",
+        "list": "List"
+      }
+    },
     "images": {
       "sort": {
         "trigger": "Sort by",
@@ -1103,6 +1110,30 @@
       "upload": "Upload",
       "delete": "Delete",
       "share": "Share"
+    },
+    "views": {
+      "list": {
+        "header": {
+          "name": "Name",
+          "size": "Size",
+          "folder": "Folder",
+          "comments": "Comments",
+          "uploadedAt": "Uploaded at"
+        },
+        "columns": {
+          "comments": "{count, plural, one {# comment} other {# comments}}",
+          "actions": {
+            "label": "Actions",
+            "view": "Open",
+            "select": "Select",
+            "download": "Download",
+            "rename": "Rename",
+            "properties": "Properties",
+            "delete": "Delete"
+          }
+        },
+        "empty":"No images uploaded"
+      }
     },
     "dialog": {
       "upload": {

@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { ImagePreview } from "@/components/images/ImagePreview";
+import { ImagePreviewGrid } from "@/components/images/ImagePreviewGrid";
 import React, { Fragment, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -15,10 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { formatBytes, handleImagesSubmission } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
-import RenameImageDialog from "./RenameImageDialog";
-import { DeleteImageDialog } from "./DeleteImageDialog";
-import ImagePropertiesDialog from "./ImagePropertiesDialog";
-import { Image } from "@prisma/client";
+import { ViewState } from "../folders/ViewSelector";
 
 export const ImagesGrid = ({ folder }: { folder: FolderWithImagesWithFolderAndComments }) => {
     const searchParams = useSearchParams();
@@ -38,10 +35,6 @@ export const ImagesGrid = ({ folder }: { folder: FolderWithImagesWithFolderAndCo
     const [selecting, setSelecting] = useState<boolean>(false);
     const [selected, setSelected] = useState<string[]>([]);
     const [sizeSelected, setSizeSelected] = useState<number>(0);
-
-    const [renameImage, setRenameImage] = React.useState<{open: boolean, image: Image | null}>({ open: false, image: null });
-    const [propertiesImage, setPropertiesImage] = React.useState<{open: boolean, image: ImageWithFolder | null}>({ open: false, image: null });
-    const [deleteImage, setDeleteImage] = React.useState<{open: boolean, image: ImageWithFolder | null}>({ open: false, image: null });
 
     const uploadImageForm = useForm<z.infer<typeof UploadImagesFormSchema>>({
         resolver: zodResolver(UploadImagesFormSchema),
@@ -122,7 +115,7 @@ export const ImagesGrid = ({ folder }: { folder: FolderWithImagesWithFolderAndCo
                     </div>
                     : folder.images.map((image: ImageWithFolder & ImageWithComments) => (
                         <Fragment key={image.id}>
-                            <ImagePreview
+                            <ImagePreviewGrid
                                 image={image}
                                 selected={selected}
                                 onClick={() => {

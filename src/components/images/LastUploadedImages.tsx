@@ -1,7 +1,7 @@
 "use client";
 
 import { ImageOff, Trash2, X } from "lucide-react";
-import { ImagePreview } from "@/components/images/ImagePreview";
+import { ImagePreviewGrid } from "@/components/images/ImagePreviewGrid";
 import { CarouselDialog } from "@/components/images/CarouselDialog";
 import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
 import React, { Fragment, useEffect, useState } from "react";
@@ -56,7 +56,7 @@ export const LastUploadedImages = ({ images, locale }: { images: (ImageWithFolde
                     </div>
                     : images.map((image, index) => (
                         <Fragment key={image.id}>
-                        <ImagePreview
+                        <ImagePreviewGrid
                             image={image}
                             selected={selected}
                             onClick={() => {

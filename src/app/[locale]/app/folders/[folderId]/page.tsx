@@ -2,29 +2,31 @@ import { FolderContent } from "@/components/folders/FolderContent";
 import { getFolderFull } from "@/actions/folders";
 import { getCurrentSession } from "@/lib/authUtils";
 import UnlockTokenPrompt from "@/components/folders/UnlockTokenPrompt";
-import { ArrowRight, FolderSearch } from "lucide-react";
+import { ArrowRight, FolderSearch, View } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getSortedFolderContent } from "@/lib/utils";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
 import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolderAndComments } from "@/lib/definitions";
 import { redirect } from "@/i18n/routing";
-import { getTranslations } from "next-intl/server";
+import { ViewState } from "@/components/folders/ViewSelector";
 
-export default async function FolderPage({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { sort?: ImagesSortMethod, share?: string, t?: string, h?: string } }) {
+export default async function FolderPage({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { sort?: ImagesSortMethod, view?: ViewState, share?: string, t?: string, h?: string } }) {
 
     const { session } = await getCurrentSession();
     const folderData = (await getFolderFull(params.folderId, searchParams.share, searchParams.t === "p" ? "personAccessToken" : "accessToken", searchParams.h));
-
-    const t = await getTranslations("components.accessTokens.unlock.errors");
 
     if (folderData.error === "unauthorized") {
         return redirect("/signin");
     }
 
     return (
-        <>
+        <div>
             {folderData.folder
-                ? <FolderContent folder={getSortedFolderContent(folderData.folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithAccessToken} isGuest={!session} />
+                ? <FolderContent
+                    folder={getSortedFolderContent(folderData.folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithAccessToken}
+                    defaultView={searchParams.view}
+                    isGuest={!session}
+                />
                 : null
             }
             {folderData.error === "code-needed" || folderData.error === "wrong-pin"
@@ -40,6 +42,6 @@ export default async function FolderPage({ params, searchParams }: { params: { f
                 </div>
                 : null
             }
-        </>
+        </div>
     )
 }

@@ -21,7 +21,7 @@ export interface ImagePreviewProps {
     onSelect: () => void;
 }
 
-export const ImagePreview = ({ image, selected, onClick, onSelect }: ImagePreviewProps) => {
+export const ImagePreviewGrid = ({ image, selected, onClick, onSelect }: ImagePreviewProps) => {
     const format = useFormatter();
     const t = useTranslations("images");
     const deleteTranslations = useTranslations("dialogs.images.delete");
@@ -58,7 +58,7 @@ export const ImagePreview = ({ image, selected, onClick, onSelect }: ImagePrevie
     }
 
     return (
-        <div>
+        <>
             <ContextMenu key={image.id} modal={false}>
                 <ContextMenuTrigger asChild>
                     <button onClick={onClick} style={{ all: "unset", cursor: "pointer" }}>
@@ -124,6 +124,6 @@ export const ImagePreview = ({ image, selected, onClick, onSelect }: ImagePrevie
             <RenameImageDialog image={image} openState={openRename} setOpenState={setOpenRename} />
             <DeleteImageDialog image={image} open={openDelete} setOpen={setOpenDelete} />
             <ImagePropertiesDialog image={image} open={openProperties} setOpen={setOpenProperties} />
-        </div>
+        </>
     )
 }

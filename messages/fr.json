@@ -254,6 +254,10 @@
       "description": "Vous pouvez télécharger {count, plural, one {un fichier} other {vos images}} jusqu'à {max} {count, plural, one {} other {chacune}}",
       "remove": "Supprimer"
     },
+    "viewSelector": {
+      "grid": "Grille",
+      "list": "Liste"
+    },
     "images": {
       "sort": {
         "trigger": "Trier par",
@@ -1155,6 +1159,30 @@
       "upload": "Upload",
       "delete": "Supprimer",
       "share": "Partager"
+    },
+    "views": {
+      "list": {
+        "header": {
+          "name": "Nom",
+          "size": "Taille",
+          "folder": "Dossier",
+          "comments": "Commentaires",
+          "uploadedAt": "Téléchargée le"
+        },
+        "columns": {
+          "comments": "{count, plural, zero {Aucun commentaire} one {# Commentaire} other {# Commentaires}}",
+          "actions": {
+            "label": "Actions",
+            "view": "Ouvrir",
+            "select": "Sélectionner",
+            "download": "Télécharger",
+            "rename": "Renommer",
+            "properties": "Propriétés",
+            "delete": "Supprimer"
+          }
+        },
+        "empty": "Aucune image téléchargée"
+      }
     },
     "dialog": {
       "upload": {

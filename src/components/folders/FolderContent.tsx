@@ -14,14 +14,30 @@ import saveAs from "file-saver";
 import { Progress } from "../ui/progress";
 import { useQueryState } from 'nuqs'
 import { getSortedFolderContent } from "@/lib/utils";
+import ViewSelector, { ViewState } from "./ViewSelector";
+import ImagesList from "../images/ImagesList";
 
 export interface FolderContentProps {
     folder: FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithAccessToken;
+    defaultView?: ViewState;
     isGuest?: boolean;
 }
 
-export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
+export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentProps) => {
     const t = useTranslations("folders");
+    const [viewState, setViewState] = useQueryState<ViewState>('view', {
+        defaultValue: defaultView || ViewState.Grid,
+        parse: (v) => {
+            switch (v) {
+                case "grid":
+                    return ViewState.Grid;
+                case "list":
+                    return ViewState.List;
+                default:
+                    return ViewState.Grid;
+            }
+        }
+    });
     const [sortState, setSortState] = useQueryState<ImagesSortMethod>('sort', {
         defaultValue: ImagesSortMethod.DateDesc,
         parse: (v) => {
@@ -91,12 +107,16 @@ export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
             <h3 className={"mb-2 flex justify-between items-center"}>
                 <p className="font-semibold">{folder.name} {
                     isGuest
-                    ? <span className="font-normal text-sm">- Shared by {folder.createdBy.name}</span>
-                    : null
+                        ? <span className="font-normal text-sm">- Shared by {folder.createdBy.name}</span>
+                        : null
                 }</p>
 
                 <div className={"flex gap-4"}>
-                    <SortImages sortState={sortState} setSortState={setSortState} />
+                    <ViewSelector viewState={viewState} setViewState={setViewState} />
+                    {viewState === ViewState.Grid
+                        ? <SortImages sortState={sortState} setSortState={setSortState} />
+                        : null
+                    }
                     {!!!isGuest
                         ? <UploadImagesDialog folderId={folder.id} />
                         : null}
@@ -108,7 +128,10 @@ export const FolderContent = ({ folder, isGuest }: FolderContentProps) => {
             </h3>
 
             <div className="flex-1 overflow-auto">
-                <ImagesGrid folder={folderContent} />
+                {viewState === ViewState.List
+                    ? <ImagesList folder={folderContent} />
+                    : <ImagesGrid folder={folderContent} />
+                }
             </div>
         </div>
     )
