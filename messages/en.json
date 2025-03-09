@@ -1115,7 +1115,8 @@
       "list": {
         "table": {
           "selection":"{count, plural, one {# image selected} other {# images selected}}",
-          "deleteSelected": "Delete selected images"
+          "deleteSelected": "Delete selected images",
+          "empty":"No images uploaded"
         },
         "header": {
           "name": "Name",
@@ -1135,8 +1136,7 @@
             "properties": "Properties",
             "delete": "Delete"
           }
-        },
-        "empty":"No images uploaded"
+        }
       }
     },
     "dialog": {

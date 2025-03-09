@@ -251,12 +251,15 @@
     "fileUploader": {
       "title": "Déplacer et déposer vos fichiers ici ou cliquez pour les télécharger",
       "dragActiveTitle": "Déposez vos fichiers ici",
-      "description": "Vous pouvez télécharger {count, plural, one {un fichier} other {vos images}} jusqu'à {max} {count, plural, one {} other {chacune}}",
+      "description": "Vous pouvez télécharger {count, plural, one {un fichier} other {vos images}} jusqu'à {maxSize} {count, plural, one {} other {chacune}}",
       "remove": "Supprimer"
     },
     "viewSelector": {
-      "grid": "Grille",
-      "list": "Liste"
+      "placeholder": "Sélectionnez une vue",
+      "options": {
+        "grid": "Grille",
+        "list": "Liste"
+      }
     },
     "images": {
       "sort": {
@@ -1148,7 +1151,7 @@
     "page": {
       "title": "{folder} images",
       "subtitle": "{folder} uploaded images",
-      "startUpload": "Upload your first images"
+      "startUpload": "Téléchargez vos premières images"
     },
     "actions": {
       "view": "Ouvrir",
@@ -1164,7 +1167,8 @@
       "list": {
         "table": {
           "selection": "{count, plural, one {# image sélectionnée} other {# images sélectionnées}} ",
-          "delecteSelected": "Supprimer les images sélectionnées"
+          "delecteSelected": "Supprimer les images sélectionnées",
+          "empty": "Aucune image téléchargée"
         },
         "header": {
           "name": "Nom",
@@ -1184,8 +1188,7 @@
             "properties": "Propriétés",
             "delete": "Supprimer"
           }
-        },
-        "empty": "Aucune image téléchargée"
+        }
       }
     },
     "dialog": {

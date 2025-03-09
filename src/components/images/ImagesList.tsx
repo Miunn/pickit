@@ -142,7 +142,7 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
                     ) : (
                         <TableRow>
                             <TableCell colSpan={imagesListViewColumns.length} className="h-24 text-center">
-                                No results.
+                                { t('empty') }
                             </TableCell>
                         </TableRow>
                     )}

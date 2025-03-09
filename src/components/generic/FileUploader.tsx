@@ -112,7 +112,7 @@ export const FileUploader = (props: FileUploaderProps) => {
     const [files, setFiles] = useControllableState({
         prop: valueProp,
         onChange: onValueChange,
-    } as any)
+    })
 
     const onDrop = React.useCallback(
         (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
@@ -225,7 +225,7 @@ export const FileUploader = (props: FileUploaderProps) => {
                                         {t('title')}
                                     </p>
                                     <p className="text-sm text-muted-foreground/70">
-                                        {t('description', {count: maxFileCount, max: formatBytes(maxSize)})}
+                                        {t('description', {count: maxFileCount, maxSize: formatBytes(maxSize)})}
                                     </p>
                                 </div>
                             </div>
