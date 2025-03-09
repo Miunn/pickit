@@ -83,9 +83,11 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
     },
     {
         id: "actions",
-        cell: ({ row }) => {
+        cell: ({ row, table }) => {
             const t = useTranslations("images.views.list.columns.actions");
-            const locale = useLocale();
+
+            const setCarouselOpen = table.options.meta?.imagesListActions?.setCarouselOpen;
+            const setStartIndex = table.options.meta?.imagesListActions?.setStartIndex;
 
             const [openRename, setOpenRename] = useState<boolean>(false);
             const [openProperties, setOpenProperties] = useState<boolean>(false);
@@ -102,7 +104,12 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
                     <DropdownMenuContent align="end" className="min-w-40">
                         <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>{t('view')}</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {
+                            if (setCarouselOpen && setStartIndex) {
+                                setStartIndex(row.index);
+                                setCarouselOpen(true);
+                            }
+                        }}>{t('view')}</DropdownMenuItem>
                         <DropdownMenuItem>{t('select')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => downloadClientImageHandler(row.original)}>{t('download')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenRename(true)}>{t('rename')}</DropdownMenuItem>
