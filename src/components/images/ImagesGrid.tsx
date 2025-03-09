@@ -147,7 +147,10 @@ export const ImagesGrid = ({ folder }: { folder: FolderWithImagesWithFolderAndCo
             </div>
 
             <CarouselDialog images={folder.images} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
-            <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} setSelected={setSelected} setSelecting={setSelecting} />
+            <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
+                setSelected([]);
+                setSelecting(false);
+            }} />
         </div>
     )
 }

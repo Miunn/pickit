@@ -1113,6 +1113,10 @@
     },
     "views": {
       "list": {
+        "table": {
+          "selection":"{count, plural, one {# image selected} other {# images selected}}",
+          "deleteSelected": "Delete selected images"
+        },
         "header": {
           "name": "Name",
           "size": "Size",

@@ -1162,6 +1162,10 @@
     },
     "views": {
       "list": {
+        "table": {
+          "selection": "{count, plural, one {# image sélectionnée} other {# images sélectionnées}} ",
+          "delecteSelected": "Supprimer les images sélectionnées"
+        },
         "header": {
           "name": "Nom",
           "size": "Taille",

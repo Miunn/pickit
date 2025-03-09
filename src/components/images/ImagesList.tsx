@@ -4,16 +4,22 @@ import { FolderWithImagesWithFolderAndComments } from "@/lib/definitions";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import { imagesListViewColumns } from "./views/list/columns";
-import React from "react";
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import React, { use, useEffect } from "react";
+import { ChevronDownIcon, ChevronUpIcon, Trash2, X } from "lucide-react";
+import { cn, formatBytes } from "@/lib/utils";
 import { CarouselDialog } from "./CarouselDialog";
+import { Button } from "../ui/button";
+import { useTranslations } from "next-intl";
+import { DeleteMultipleImagesDialog } from "./DeleteMultipleImagesDialog";
 
 export default function ImagesList({ folder }: { folder: FolderWithImagesWithFolderAndComments }) {
 
+    const t = useTranslations("images.views.list.table");
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);
     const [startIndex, setStartIndex] = React.useState<number>(0);
+    const [openDeleteSelection, setOpenDeleteSelection] = React.useState<boolean>(false);
     const [sorting, setSorting] = React.useState<SortingState>([]);
+    const [rowSelection, setRowSelection] = React.useState({})
 
     const table = useReactTable({
         data: folder.images,
@@ -21,8 +27,10 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         onSortingChange: setSorting,
+        onRowSelectionChange: setRowSelection,
         state: {
             sorting,
+            rowSelection,
         },
         enableSortingRemoval: false,
         meta: {
@@ -30,11 +38,31 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
                 setCarouselOpen,
                 setStartIndex,
             }
-        }
+        },
+        getRowId: (row) => row.id,
     });
+
+    useEffect(() => {
+        console.log(rowSelection);
+    }, [rowSelection])
 
     return (
         <>
+            {Object.keys(rowSelection).length > 0
+                ? <div className={"flex justify-between items-center mb-5 bg-gray-50 rounded-2xl w-full p-2"}>
+                    <div className={"flex gap-2 items-center"}>
+                        <Button variant="ghost" onClick={() => { setRowSelection({}) }} size="icon"><X className={"w-4 h-4"} /></Button>
+                        <h2><span className={"font-semibold"}>{t('selection', { count: Object.keys(rowSelection).length })}</span> - {formatBytes(folder.images.filter((i) => Object.keys(rowSelection).includes(i.id)).reduce((a, b) => a + b.size, 0), { decimals: 2, sizeType: "normal" })}</h2>
+                    </div>
+
+                    <Button variant="outline" onClick={() => {
+                        setOpenDeleteSelection(true);
+                    }}>
+                        <Trash2 className={"mr-2"} /> {t('deleteSelected')}
+                    </Button>
+                </div>
+                : null
+            }
             <Table className="w-full">
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
@@ -121,6 +149,9 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
                 </TableBody>
             </Table>
             <CarouselDialog images={folder.images} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
+            <DeleteMultipleImagesDialog images={Object.keys(rowSelection)} open={openDeleteSelection} setOpen={setOpenDeleteSelection} onDelete={() => {
+                setRowSelection({});
+            }} />
         </>
     )
 }
