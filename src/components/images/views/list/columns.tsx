@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
 import { ImageWithComments, ImageWithFolder } from "@/lib/definitions";
-import { formatBytes } from "@/lib/utils";
+import { downloadClientImageHandler, formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
@@ -104,7 +104,7 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>{t('view')}</DropdownMenuItem>
                         <DropdownMenuItem>{t('select')}</DropdownMenuItem>
-                        <DropdownMenuItem>{t('download')}</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => downloadClientImageHandler(row.original)}>{t('download')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenRename(true)}>{t('rename')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenProperties(true)}>{t('properties')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-destructive focus:text-destructive font-semibold">{t('delete')}</DropdownMenuItem>

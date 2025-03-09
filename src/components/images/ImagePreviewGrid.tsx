@@ -6,7 +6,7 @@ import React from "react";
 import Image from "next/image";
 import { ImageWithFolder } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
-import { formatBytes } from "@/lib/utils";
+import { downloadClientImageHandler, formatBytes } from "@/lib/utils";
 import saveAs from "file-saver";
 import { toast } from "@/hooks/use-toast";
 import ImagePropertiesDialog from "./ImagePropertiesDialog";
@@ -33,29 +33,6 @@ export const ImagePreviewGrid = ({ image, selected, onClick, onSelect }: ImagePr
     const [openRename, setOpenRename] = React.useState(false);
     const [openProperties, setOpenProperties] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);
-
-    const downloadImageHandler = async () => {
-        const r = await fetch(`/api/folders/${image.folder.id}/images/${image.id}/download`);
-
-        if (r.status === 404) {
-            toast({
-                title: "No images found",
-                description: "There are no images in this folder to download"
-            });
-            return;
-        }
-
-        if (r.status !== 200) {
-            toast({
-                title: "Error",
-                description: "An error occurred while trying to download this folder",
-                variant: "destructive"
-            });
-            return;
-        }
-
-        saveAs(await r.blob(), `${image.name}.${image.extension}`);
-    }
 
     return (
         <>
@@ -106,7 +83,7 @@ export const ImagePreviewGrid = ({ image, selected, onClick, onSelect }: ImagePr
                     <ContextMenuItem onClick={onSelect}>
                         {t('actions.select')}
                     </ContextMenuItem>
-                    <ContextMenuItem onClick={downloadImageHandler}>
+                    <ContextMenuItem onClick={() => downloadClientImageHandler(image)}>
                         {t('actions.download')}
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenRename(true)}>

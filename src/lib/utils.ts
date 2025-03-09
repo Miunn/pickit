@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { FolderTokenPermission } from "@prisma/client";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolderAndComments, UploadImagesFormSchema } from "./definitions";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolderAndComments, ImageWithFolder, UploadImagesFormSchema } from "./definitions";
 import { z } from "zod";
 import { uploadImages } from "@/actions/images";
 import { toast } from "@/hooks/use-toast";
@@ -9,6 +9,7 @@ import { UseFormReturn } from "react-hook-form";
 import { prisma } from "./prisma";
 import * as bcrypt from "bcryptjs";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
+import saveAs from "file-saver";
 
 export function formatBytes(
 	bytes: number,
@@ -49,6 +50,29 @@ export const copyImageToClipboard = async (folderId: string, imageId: string, sh
 	]);
 
 	return true;
+}
+
+export const downloadClientImageHandler = async (image: ImageWithFolder) => {
+	const r = await fetch(`/api/folders/${image.folder.id}/images/${image.id}/download`);
+
+	if (r.status === 404) {
+		toast({
+			title: "No images found",
+			description: "There are no images in this folder to download"
+		});
+		return;
+	}
+
+	if (r.status !== 200) {
+		toast({
+			title: "Error",
+			description: "An error occurred while trying to download this folder",
+			variant: "destructive"
+		});
+		return;
+	}
+
+	saveAs(await r.blob(), `${image.name}.${image.extension}`);
 }
 
 export const getSortedFolderContent = (folderContent: FolderWithImagesWithFolderAndComments, sort: ImagesSortMethod): FolderWithImagesWithFolderAndComments => {

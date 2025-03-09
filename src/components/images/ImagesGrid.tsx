@@ -15,7 +15,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { formatBytes, handleImagesSubmission } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
-import { ViewState } from "../folders/ViewSelector";
 
 export const ImagesGrid = ({ folder }: { folder: FolderWithImagesWithFolderAndComments }) => {
     const searchParams = useSearchParams();
