@@ -32,7 +32,7 @@ export default function RenameImageDialog({ openState, setOpenState, image }: { 
     const form = useForm<z.infer<typeof CreateFolderFormSchema>>({
         resolver: zodResolver(CreateFolderFormSchema),
         defaultValues: {
-            name: "",
+            name: image.name,
         }
     });
 

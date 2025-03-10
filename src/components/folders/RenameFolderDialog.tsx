@@ -31,7 +31,7 @@ export default function RenameFolderDialog({openState, setOpenState, folderId, f
     const form = useForm<z.infer<typeof RenameFolderFormSchema>>({
         resolver: zodResolver(RenameFolderFormSchema),
         defaultValues: {
-            name: "",
+            name: folderName,
         }
     });
 
