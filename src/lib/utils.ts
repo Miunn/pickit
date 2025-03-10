@@ -108,32 +108,32 @@ export const getSortedFolderContent = (folderContent: FolderWithImagesWithFolder
 		case ImagesSortMethod.NameAsc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => a.name.localeCompare(b.name))
+				images: folderContent.images.sort((a, b) => a.name.localeCompare(b.name) || a.createdAt.getTime() - b.createdAt.getTime())
 			}
 		case ImagesSortMethod.NameDesc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => b.name.localeCompare(a.name))
+				images: folderContent.images.sort((a, b) => b.name.localeCompare(a.name) || a.createdAt.getTime() - b.createdAt.getTime())
 			}
 		case ImagesSortMethod.SizeAsc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => a.size - b.size)
+				images: folderContent.images.sort((a, b) => a.size - b.size || a.name.localeCompare(b.name))
 			}
 		case ImagesSortMethod.SizeDesc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => b.size - a.size)
+				images: folderContent.images.sort((a, b) => b.size - a.size || a.name.localeCompare(b.name))
 			}
 		case ImagesSortMethod.DateAsc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+				images: folderContent.images.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime() || a.name.localeCompare(b.name))
 			}
 		case ImagesSortMethod.DateDesc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+				images: folderContent.images.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime() || a.name.localeCompare(b.name))
 			}
 		default:
 			return folderContent;

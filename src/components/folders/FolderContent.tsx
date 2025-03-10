@@ -5,13 +5,9 @@ import { Download } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { UploadImagesDialog } from "@/components/images/UploadImagesDialog";
 import { ImagesGrid } from "@/components/images/ImagesGrid";
-import { toast } from "@/hooks/use-toast";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
 import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolderAndComments } from "@/lib/definitions";
-import { useEffect, useState } from "react";
 import SortImages, { ImagesSortMethod } from "./SortImages";
-import saveAs from "file-saver";
-import { Progress } from "../ui/progress";
 import { useQueryState } from 'nuqs'
 import { downloadClientFolder, getSortedFolderContent } from "@/lib/utils";
 import ViewSelector, { ViewState } from "./ViewSelector";
@@ -59,11 +55,6 @@ export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentPro
             }
         }
     });
-    const [folderContent, setFolderContent] = useState<FolderWithImagesWithFolderAndComments>(folder);
-
-    useEffect(() => {
-        setFolderContent(getSortedFolderContent(folderContent, sortState));
-    }, [sortState]);
 
     return (
         <div>
@@ -92,8 +83,8 @@ export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentPro
 
             <div className="flex-1 overflow-auto">
                 {viewState === ViewState.List
-                    ? <ImagesList folder={folderContent} />
-                    : <ImagesGrid folder={folderContent} />
+                    ? <ImagesList folder={folder} />
+                    : <ImagesGrid folder={folder} sortState={sortState} />
                 }
             </div>
         </div>

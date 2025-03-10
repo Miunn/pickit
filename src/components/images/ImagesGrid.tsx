@@ -13,10 +13,11 @@ import { FileUploader } from "../generic/FileUploader";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { formatBytes, handleImagesSubmission } from "@/lib/utils";
+import { formatBytes, getSortedFolderContent, handleImagesSubmission } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
+import { ImagesSortMethod } from "../folders/SortImages";
 
-export const ImagesGrid = ({ folder }: { folder: FolderWithImagesWithFolderAndComments }) => {
+export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWithFolderAndComments, sortState: ImagesSortMethod }) => {
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
@@ -112,7 +113,7 @@ export const ImagesGrid = ({ folder }: { folder: FolderWithImagesWithFolderAndCo
                             </form>
                         </Form>
                     </div>
-                    : folder.images.map((image: ImageWithFolder & ImageWithComments) => (
+                    : getSortedFolderContent(folder, sortState).images.map((image: ImageWithFolder & ImageWithComments) => (
                         <Fragment key={image.id}>
                             <ImagePreviewGrid
                                 image={image}
