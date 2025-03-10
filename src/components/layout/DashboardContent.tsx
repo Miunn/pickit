@@ -1,7 +1,7 @@
 'use client'
 
 import { FolderX } from "lucide-react";
-import FolderPreview from "@/components/folders/FolderPreview";
+import FolderPreviewGrid from "@/components/folders/FolderPreviewGrid";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { LastUploadedImages } from "@/components/images/LastUploadedImages";
@@ -28,7 +28,7 @@ export default function DashboardContent({ lastFolders, lastImages, locale }: { 
                             <p>{t('folders.empty')}</p>
                         </div>
                         : lastFolders.map(folder => (
-                            <FolderPreview key={folder.id} folder={folder} locale={locale} />
+                            <FolderPreviewGrid key={folder.id} folder={folder} locale={locale} />
                         ))
                     }
                 </div>

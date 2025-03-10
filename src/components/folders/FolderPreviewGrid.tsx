@@ -1,7 +1,7 @@
 'use client'
 
 import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, ImageWithComments, ImageWithFolder } from "@/lib/definitions";
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import React from "react";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
 import Link from "next/link";
@@ -19,10 +19,11 @@ import saveAs from "file-saver";
 import { Progress } from "../ui/progress";
 import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/images";
 
-export default function FolderPreview({ folder, locale }: { folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover, locale: string }) {
+export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover }) {
     const t = useTranslations("folders");
     const dialogsTranslations = useTranslations("dialogs.folders");
     const format = useFormatter();
+    const locale = useLocale();
 
     const [openRename, setOpenRename] = React.useState<boolean>(false);
     const [openChangeCover, setOpenChangeCover] = React.useState<boolean>(false);

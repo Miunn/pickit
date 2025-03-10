@@ -55,7 +55,8 @@
     },
     "folders": {
       "title": "Pickit - Folders",
-      "headline": "Your created folders"
+      "headline": "Your created folders",
+      "empty": "No folders created"
     },
     "links": {
       "title": "Pickit - Links",
@@ -1081,6 +1082,32 @@
     "page": {
       "title": "Folders",
       "subtitle": "Your created folders"
+    },
+    "views": {
+      "list": {
+        "table": {
+          "selection":"{count, plural, one {# folder selected} other {# folders selected}}",
+          "deleteSelected": "Delete selected folders",
+          "empty":"No folders created"
+        },
+        "header": {
+          "name": "Name",
+          "size": "Size",
+          "createdAt": "Created at",
+          "updatedAt": "Updated at"
+        },
+        "columns": {
+          "actions": {
+            "label": "Actions",
+            "open": "Open",
+            "select": "Select",
+            "download": "Download",
+            "rename": "Rename",
+            "properties": "Properties",
+            "delete": "Delete"
+          }
+        }
+      }
     },
     "actions": {
       "create": "New folder",

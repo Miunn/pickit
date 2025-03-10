@@ -55,7 +55,8 @@
     },
     "folders": {
       "title": "Pickit - Dosseris",
-      "headline": "Vos dossiers créés"
+      "headline": "Vos dossiers créés",
+      "empty": "Aucun dossier créé"
     },
     "links": {
       "title": "Pickit - Links",
@@ -1072,6 +1073,32 @@
     "page": {
       "title": "Folders",
       "subtitle": "Your created folders"
+    },
+    "views": {
+      "list": {
+        "table": {
+          "selection": "{count, plural, one {# dossier sélectionnée} other {# dossiers sélectionnées}} ",
+          "delecteSelected": "Supprimer les dossiers sélectionnées",
+          "empty": "Aucun dossier créé"
+        },
+        "header": {
+          "name": "Nom",
+          "size": "Taille",
+          "createdAt": "Créé le",
+          "updatedAt": "Mis à jour le"
+        },
+        "columns": {
+          "actions": {
+            "label": "Actions",
+            "open": "Ouvrir",
+            "select": "Sélectionner",
+            "download": "Télécharger",
+            "rename": "Renommer",
+            "properties": "Propriétés",
+            "delete": "Supprimer"
+          }
+        }
+      }
     },
     "actions": {
       "create": "New folder",
