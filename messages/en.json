@@ -471,7 +471,7 @@
         "manageAccesses": "Manage accesses",
         "links": {
           "label": "Share folder with a link",
-          "empty": "No sharing links created",
+          "empty": "No sharing links created yet",
           "link": {
             "permissions": {
               "read": "View",
@@ -1101,6 +1101,8 @@
             "label": "Actions",
             "open": "Open",
             "select": "Select",
+            "deselect": "Deselect",
+            "share": "Share",
             "download": "Download",
             "rename": "Rename",
             "properties": "Properties",
@@ -1158,6 +1160,7 @@
             "label": "Actions",
             "view": "Open",
             "select": "Select",
+            "deselect": "Deselect",
             "download": "Download",
             "rename": "Rename",
             "properties": "Properties",

@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { FolderTokenPermission } from "@prisma/client";
+import { Folder, FolderTokenPermission } from "@prisma/client";
 import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolderAndComments, ImageWithFolder, UploadImagesFormSchema } from "./definitions";
 import { z } from "zod";
 import { uploadImages } from "@/actions/images";
@@ -73,6 +73,34 @@ export const downloadClientImageHandler = async (image: ImageWithFolder) => {
 	}
 
 	saveAs(await r.blob(), `${image.name}.${image.extension}`);
+}
+
+export const downloadClientFolder = async (folder: Folder) => {
+	toast({
+		title: "Download started",
+		description: "Your download will start shortly",
+	});
+
+	const r = await fetch(`/api/folders/${folder.id}/download`);
+
+	if (r.status === 404) {
+		toast({
+			title: "No images found",
+			description: "There are no images in this folder to download"
+		});
+		return;
+	}
+
+	if (r.status !== 200) {
+		toast({
+			title: "Error",
+			description: "An error occurred while trying to download this folder",
+			variant: "destructive"
+		});
+		return;
+	}
+
+	saveAs(await r.blob(), `${folder.name}.zip`);
 }
 
 export const getSortedFolderContent = (folderContent: FolderWithImagesWithFolderAndComments, sort: ImagesSortMethod): FolderWithImagesWithFolderAndComments => {

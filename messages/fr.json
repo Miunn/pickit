@@ -448,7 +448,7 @@
         "manageAccesses": "Gérer les accès",
         "links": {
           "label": "Liens de partage",
-          "empty": "Aucun lien de partage créé",
+          "empty": "Aucun lien de partage créé pour le moment",
           "link": {
             "permissions": {
               "read": "Lecture",
@@ -1092,6 +1092,8 @@
             "label": "Actions",
             "open": "Ouvrir",
             "select": "Sélectionner",
+            "unselect": "Désélectionner",
+            "share": "Partager",
             "download": "Télécharger",
             "rename": "Renommer",
             "properties": "Propriétés",
@@ -1183,6 +1185,7 @@
     "actions": {
       "view": "Ouvrir",
       "select": "Sélectionner",
+      "unselect": "Désélectionner",
       "download": "Télécharger",
       "rename": "Renommer",
       "properties": "Propriétés",

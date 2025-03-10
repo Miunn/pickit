@@ -13,7 +13,7 @@ import SortImages, { ImagesSortMethod } from "./SortImages";
 import saveAs from "file-saver";
 import { Progress } from "../ui/progress";
 import { useQueryState } from 'nuqs'
-import { getSortedFolderContent } from "@/lib/utils";
+import { downloadClientFolder, getSortedFolderContent } from "@/lib/utils";
 import ViewSelector, { ViewState } from "./ViewSelector";
 import ImagesList from "../images/ImagesList";
 
@@ -59,44 +59,7 @@ export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentPro
             }
         }
     });
-    const [downloadProgress, setDownloadProgress] = useState<number>(0);
     const [folderContent, setFolderContent] = useState<FolderWithImagesWithFolderAndComments>(folder);
-
-    async function downloadCallback() {
-        if (!folder) return;
-
-        toast({
-            title: "Download started",
-            description: "Your download will start shortly",
-            action: <Progress value={downloadProgress} className="mt-2 w-full" />,
-            className: "flex-col items-start space-x-0",
-        });
-
-        const r = await fetch(`/api/folders/${folder.id}/download`);
-
-        if (r.status === 404) {
-            toast({
-                title: "No images found",
-                description: "There are no images in this folder to download"
-            });
-            return;
-        }
-
-        if (r.status !== 200) {
-            toast({
-                title: "Error",
-                description: "An error occurred while trying to download this folder",
-                variant: "destructive"
-            });
-            return;
-        }
-
-        setDownloadProgress(50);
-
-        saveAs(await r.blob(), `${folder.name}.zip`);
-
-        setDownloadProgress(100);
-    }
 
     useEffect(() => {
         setFolderContent(getSortedFolderContent(folderContent, sortState));
@@ -121,7 +84,7 @@ export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentPro
                         ? <UploadImagesDialog folderId={folder.id} />
                         : null}
                     {!!!isGuest ? <ShareFolderDialog folder={folder} /> : null}
-                    <Button variant="outline" onClick={downloadCallback}>
+                    <Button variant="outline" onClick={() => downloadClientFolder(folder)}>
                         <Download className={"mr-2"} /> {t('actions.download')}
                     </Button>
                 </div>

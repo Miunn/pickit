@@ -133,7 +133,12 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
                                 setCarouselOpen(true);
                             }
                         }}>{t('view')}</DropdownMenuItem>
-                        <DropdownMenuItem>{t('select')}</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => row.toggleSelected(!row.getIsSelected())}>
+                            {row.getIsSelected()
+                                ? t('deselect')
+                                : t('select')
+                            }
+                            </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => downloadClientImageHandler(row.original)}>{t('download')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenRename(true)}>{t('rename')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenProperties(true)}>{t('properties')}</DropdownMenuItem>

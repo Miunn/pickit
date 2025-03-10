@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { FolderWithImagesCount } from "@/lib/definitions";
-import { formatBytes } from "@/lib/utils";
+import { FolderWithAccessToken, FolderWithImagesCount } from "@/lib/definitions";
+import { downloadClientFolder, formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Images, MoreHorizontal } from "lucide-react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
@@ -12,8 +12,9 @@ import RenameFolderDialog from "@/components/folders/RenameFolderDialog";
 import DeleteFolderDialog from "@/components/folders/DeleteFolderDialog";
 import FolderPropertiesDialog from "@/components/folders/FolderPropertiesDialogs";
 import Link from "next/link";
+import { ShareFolderDialog } from "../../ShareFolderDialog";
 
-export const foldersListViewColumns: ColumnDef<FolderWithImagesCount>[] = [
+export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWithImagesCount>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -48,7 +49,7 @@ export const foldersListViewColumns: ColumnDef<FolderWithImagesCount>[] = [
                 </div>
             }
 
-            <p>{row.getValue("name")}</p>
+            <Link href={`/app/folders/${row.original.id}`} className="hover:underline">{row.getValue("name")}</Link>
         </div>,
         sortUndefined: "last",
         sortDescFirst: false,
@@ -109,9 +110,10 @@ export const foldersListViewColumns: ColumnDef<FolderWithImagesCount>[] = [
     },
     {
         id: "actions",
-        cell: ({ row, table }) => {
+        cell: ({ row }) => {
             const t = useTranslations("folders.views.list.columns.actions");
 
+            const [openShare, setOpenShare] = useState<boolean>(false);
             const [openRename, setOpenRename] = useState<boolean>(false);
             const [openProperties, setOpenProperties] = useState<boolean>(false);
             const [openDelete, setOpenDelete] = useState<boolean>(false);
@@ -130,13 +132,20 @@ export const foldersListViewColumns: ColumnDef<FolderWithImagesCount>[] = [
                         <DropdownMenuItem asChild>
                             <Link href={`/app/folders/${row.original.id}`}>{t('open')}</Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>{t('select')}</DropdownMenuItem>
-                        <DropdownMenuItem /*onClick={() => downloadFolder(row.original)}*/>{t('download')}</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => row.toggleSelected(!row.getIsSelected())}>
+                            {row.getIsSelected()
+                                ? t('deselect')
+                                : t('select')
+                            }
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => downloadClientFolder(row.original)}>{t('download')}</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setOpenShare(true)}>{t('share')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenRename(true)}>{t('rename')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenProperties(true)}>{t('properties')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-destructive focus:text-destructive font-semibold">{t('delete')}</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
+                <ShareFolderDialog folder={row.original} open={openShare} setOpen={setOpenShare} />
                 <RenameFolderDialog folderId={row.original.id} folderName={row.original.name} openState={openRename} setOpenState={setOpenRename} />
                 <DeleteFolderDialog folderId={row.original.id} folderName={row.original.name} openState={openDelete} setOpenState={setOpenDelete} />
                 <FolderPropertiesDialog folder={row.original} open={openProperties} setOpen={setOpenProperties} />
