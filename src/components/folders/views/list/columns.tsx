@@ -112,9 +112,6 @@ export const foldersListViewColumns: ColumnDef<FolderWithImagesCount>[] = [
         cell: ({ row, table }) => {
             const t = useTranslations("folders.views.list.columns.actions");
 
-            const setCarouselOpen = table.options.meta?.imagesListActions?.setCarouselOpen;
-            const setStartIndex = table.options.meta?.imagesListActions?.setStartIndex;
-
             const [openRename, setOpenRename] = useState<boolean>(false);
             const [openProperties, setOpenProperties] = useState<boolean>(false);
             const [openDelete, setOpenDelete] = useState<boolean>(false);
