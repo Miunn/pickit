@@ -40,10 +40,21 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
     {
         header: "Name",
         accessorKey: "name",
-        cell: ({ row }) => <div className="truncate font-medium flex items-center gap-2">
-            <Image src={`/api/folders/${row.original.folder.id}/images/${row.original.id}`} width={40} height={40} alt={row.getValue("name")} className="w-[40px] h-[40px] object-cover rounded-xl" />
-            <p>{`${row.getValue("name")}.${row.original.extension}`}</p>
-        </div>,
+        cell: ({ row, table }) => {
+
+            const setCarouselOpen = table.options.meta?.imagesListActions?.setCarouselOpen;
+            const setStartIndex = table.options.meta?.imagesListActions?.setStartIndex;
+
+            return <div className="truncate font-medium flex items-center gap-2">
+                <Image src={`/api/folders/${row.original.folder.id}/images/${row.original.id}`} width={40} height={40} alt={row.getValue("name")} className="w-[40px] h-[40px] object-cover rounded-xl" />
+                <p onClick={() => {
+                    if (setCarouselOpen && setStartIndex) {
+                        setStartIndex(row.index);
+                        setCarouselOpen(true);
+                    }
+                }} className="hover:underline cursor-pointer">{`${row.getValue("name")}.${row.original.extension}`}</p>
+            </div>
+        },
         sortUndefined: "last",
         sortDescFirst: false,
     },
@@ -138,7 +149,7 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
                                 ? t('deselect')
                                 : t('select')
                             }
-                            </DropdownMenuItem>
+                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => downloadClientImageHandler(row.original)}>{t('download')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenRename(true)}>{t('rename')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenProperties(true)}>{t('properties')}</DropdownMenuItem>
