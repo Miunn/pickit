@@ -17,7 +17,7 @@ export default function DashboardContent({ lastFolders, lastImages, locale }: { 
 
     return (
         <>
-        <ContextMenu>
+        <ContextMenu modal={false}>
             <ContextMenuTrigger className="flex flex-col flex-grow">
                 <h2 className={"font-semibold mb-5"}>{t('folders.lastUpdatedFolders')}</h2>
 

@@ -30,7 +30,7 @@ export default function FoldersContent({ defaultView, folders }: { defaultView?:
 
     return (
         <>
-        <ContextMenu>
+        <ContextMenu modal={false}>
             <ContextMenuTrigger className="flex flex-col flex-grow">
             <h3 className={"font-semibold mb-5 flex justify-between items-center"}>
                 {t('headline')}
