@@ -6,8 +6,10 @@ import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount } from "@
 import { useTranslations } from "next-intl";
 import { FolderX } from "lucide-react";
 import FolderPreviewGrid from "./FolderPreviewGrid";
-import { folder } from "jszip";
 import FoldersList from "./views/list/FoldersList";
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
+import CreateFolderDialog from "./CreateFolderDialog";
+import { useState } from "react";
 
 export default function FoldersContent({ defaultView, folders }: { defaultView?: ViewState, folders: (FolderWithAccessToken & FolderWithImagesCount & FolderWithCover)[] }) {
     const t = useTranslations("pages.folders");
@@ -24,9 +26,12 @@ export default function FoldersContent({ defaultView, folders }: { defaultView?:
             }
         }
     });
+    const [openCreateFolder, setOpenCreateFolder] = useState(false);
 
     return (
         <>
+        <ContextMenu>
+            <ContextMenuTrigger className="flex flex-col flex-grow">
             <h3 className={"font-semibold mb-5 flex justify-between items-center"}>
                 {t('headline')}
                 <ViewSelector viewState={viewState} setViewState={setViewState} />
@@ -53,6 +58,12 @@ export default function FoldersContent({ defaultView, folders }: { defaultView?:
                     : null
                 }
             </div>
+            </ContextMenuTrigger>
+            <ContextMenuContent>
+                <ContextMenuItem onClick={() => setOpenCreateFolder(true)}>{t('contextMenu.createFolder')}</ContextMenuItem>
+            </ContextMenuContent>
+        </ContextMenu>
+        <CreateFolderDialog open={openCreateFolder} setOpen={setOpenCreateFolder} />
         </>
     )
 }

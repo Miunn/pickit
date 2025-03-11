@@ -5,12 +5,13 @@ import { ImagePreviewGrid } from "@/components/images/ImagePreviewGrid";
 import { CarouselDialog } from "@/components/images/CarouselDialog";
 import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
 import React, { Fragment, useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { ImageWithComments, ImageWithFolder } from "@/lib/definitions";
 
-export const LastUploadedImages = ({ images, locale }: { images: (ImageWithFolder & ImageWithComments)[], locale: string }) => {
+export const LastUploadedImages = ({ images }: { images: (ImageWithFolder & ImageWithComments)[] }) => {
     const t = useTranslations("pages.dashboard.images");
+    const locale = useLocale();
 
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);
     const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
@@ -81,8 +82,11 @@ export const LastUploadedImages = ({ images, locale }: { images: (ImageWithFolde
 
             <CarouselDialog images={images} title={"Last uploaded images"} carouselOpen={carouselOpen}
                 setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
-            <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple}
-                setSelected={setSelected} setSelecting={setSelecting} />
+            <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
+                setSelected([]);
+                setSizeSelected(0);
+                setSelecting(false);
+            }} />
         </>
     )
 }

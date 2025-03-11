@@ -28,12 +28,12 @@ export default function DashboardContent({ lastFolders, lastImages, locale }: { 
                             <p>{t('folders.empty')}</p>
                         </div>
                         : lastFolders.map(folder => (
-                            <FolderPreviewGrid key={folder.id} folder={folder} locale={locale} />
+                            <FolderPreviewGrid key={folder.id} folder={folder} />
                         ))
                     }
                 </div>
 
-                <LastUploadedImages images={lastImages} locale={locale} />
+                <LastUploadedImages images={lastImages} />
             </ContextMenuTrigger>
             <ContextMenuContent>
                 <ContextMenuItem onClick={() => setOpenCreateFolder(true)}>{t('contextMenu.createFolder')}</ContextMenuItem>

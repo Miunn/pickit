@@ -50,13 +50,16 @@
         "empty": "Aucune image téléchargée"
       },
       "contextMenu": {
-        "createFolder": "New folder"
+        "createFolder": "Nouveau dossier"
       }
     },
     "folders": {
       "title": "Pickit - Dosseris",
       "headline": "Vos dossiers créés",
-      "empty": "Aucun dossier créé"
+      "empty": "Aucun dossier créé",
+      "contextMenu": {
+        "createFolder": "Nouveau dossier"
+      }
     },
     "links": {
       "title": "Pickit - Links",

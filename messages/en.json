@@ -56,7 +56,10 @@
     "folders": {
       "title": "Pickit - Folders",
       "headline": "Your created folders",
-      "empty": "No folders created"
+      "empty": "No folders created",
+      "contextMenu": {
+        "createFolder": "New folder"
+      }
     },
     "links": {
       "title": "Pickit - Links",
