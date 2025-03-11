@@ -1139,6 +1139,17 @@
       "select": "Select",
       "download": "Download",
       "rename": "Rename",
+      "setAsCover": {
+        "label": "Set as cover",
+        "error": {
+          "title": "Can't set as cover",
+          "description": "An unknown error happened while setting the image as cover"
+        },
+        "success": {
+          "title": "Cover set",
+          "description": "The image has been set as cover successfully"
+        }
+      },
       "properties": "Properties",
       "upload": "Upload",
       "delete": "Delete",

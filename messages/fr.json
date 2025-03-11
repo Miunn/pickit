@@ -1192,6 +1192,17 @@
       "unselect": "Désélectionner",
       "download": "Télécharger",
       "rename": "Renommer",
+      "setAsCover": {
+        "label": "Définir comme couverture",
+        "error": {
+          "title": "Impossible de définir la couverture",
+          "description": "Une erreur est survenue lors de la définition de la couverture"
+        },
+        "success": {
+          "title": "Couverture définie",
+          "description": "La couverture du dossier a été définie avec succès"
+        }
+      },
       "properties": "Propriétés",
       "upload": "Upload",
       "delete": "Supprimer",

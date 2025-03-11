@@ -13,6 +13,7 @@ import ImagePropertiesDialog from "./ImagePropertiesDialog";
 import { DeleteImageDialog } from "./DeleteImageDialog";
 import { useSearchParams } from "next/navigation";
 import RenameImageDialog from "./RenameImageDialog";
+import { changeFolderCover } from "@/actions/folders";
 
 export interface ImagePreviewProps {
     image: ImageWithFolder;
@@ -89,6 +90,23 @@ export const ImagePreviewGrid = ({ image, selected, onClick, onSelect }: ImagePr
                     <ContextMenuItem onClick={() => setOpenRename(true)}>
                         {t('actions.rename')}
                     </ContextMenuItem>
+                    <ContextMenuItem onClick={async () => {
+                        const r = await changeFolderCover(image.folderId, image.id);
+
+                        if (r.error) {
+                            toast({
+                                title: t('actions.setAsCover.error.title'),
+                                description: t('actions.setAsCover.error.description'),
+                                variant: "destructive"
+                            });
+                            return;
+                        }
+
+                        toast({
+                            title: t('actions.setAsCover.success.title'),
+                            description: t('actions.setAsCover.success.description')
+                        });
+                    }}>{t('actions.setAsCover.label')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenProperties(true)}>
                         {t('actions.properties')}
                     </ContextMenuItem>
