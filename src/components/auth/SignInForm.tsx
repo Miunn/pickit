@@ -11,14 +11,15 @@ import { SignIn } from "@/actions/authActions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
-import { redirect } from "@/i18n/routing";
+import { FcGoogle } from "react-icons/fc";
 
 export default function SignInForm({ locale }: { locale: string }) {
 
     const t = useTranslations("components.auth.signIn");
+    const searchParams = useSearchParams();
     const [loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
 
@@ -36,8 +37,6 @@ export default function SignInForm({ locale }: { locale: string }) {
         const r = await SignIn(data.email, data.password);
 
         setLoading(false);
-
-        console.log("r", r);
         
         if (r && r.error) {
             toast({
@@ -50,6 +49,20 @@ export default function SignInForm({ locale }: { locale: string }) {
 
         router.push(`/${locale}/app`);
     };
+
+    const displayParamsErrorToast = useCallback(() => {
+        if (searchParams.get("error")) {
+            toast({
+                title: t(`errors.${searchParams.get("error")}.title`),
+                description: t(`errors.${searchParams.get("error")}.description`),
+                variant: "destructive"
+            });
+        }
+    }, [searchParams]);
+
+    useEffect(() => {
+        displayParamsErrorToast();
+    }, [displayParamsErrorToast]);
 
     return (
         <Card className={"w-96"}>
@@ -94,11 +107,17 @@ export default function SignInForm({ locale }: { locale: string }) {
                         />
 
                         {loading
-                            ? <Button className={"ml-auto mr-0 flex"} type="submit" disabled><Loader2 className="animate-spin mr-2" /> {t('form.submitting')}</Button>
-                            : <Button className={"block ml-auto mr-0"} type="submit"> {t('form.submit')}</Button>
+                            ? <Button className={"w-full flex"} type="submit" disabled><Loader2 className="animate-spin mr-2" /> {t('form.submitting')}</Button>
+                            : <Button className={"w-full block"} type="submit"> {t('form.submit')}</Button>
                         }
                     </form>
                 </Form>
+                <div className="relative text-center text-sm my-4 after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+                    <span className="relative z-10 bg-background px-2 text-muted-foreground">{ t('or') }</span>
+                </div>
+                <Button variant={"outline"} className="w-full" asChild>
+                    <Link href={`/api/oauth/login/google`}><FcGoogle className={"mr-2"} /> {t('google')}</Link>
+                </Button>
             </CardContent>
         </Card>
     )

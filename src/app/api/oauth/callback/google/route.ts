@@ -66,7 +66,7 @@ export async function GET(request: Request): Promise<Response> {
         return new Response(null, {
             status: 302,
             headers: {
-                Location: "/signin?error=google-provider-email-exists",
+                Location: "/signin?error=provider-google-email-exists",
             }
         });
     }

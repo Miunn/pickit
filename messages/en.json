@@ -94,6 +94,14 @@
             "title": "Login error",
             "message": "Invalid email or password"
           }
+        },
+        "or": "Or",
+        "google": "Login with Google",
+        "errors": {
+          "provider-google-email-exists": {
+            "title": "Email already exists",
+            "description": "An account with this email appears to already exist. Please login with your email and password."
+          }
         }
       },
       "signUp": {

@@ -1,12 +1,11 @@
 import SignInForm from "@/components/auth/SignInForm";
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SignupForm from "@/components/auth/SignupForm";
-import {useTranslations} from "next-intl";
 import { getCurrentSession } from "@/lib/session";
 import { redirect } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
 
-export default async function LoginPage({ params, searchParams }: { params: { locale: string }, searchParams: { side?: string } }) {
+export default async function LoginPage({ params, searchParams }: { params: { locale: string }, searchParams: { side?: string, error?: string } }) {
 
     const { user } = await getCurrentSession();
     if (user) {

@@ -94,6 +94,14 @@
             "title": "Echec de connexion",
             "message": "Adresse mail ou mot de passe invalide"
           }
+        },
+        "or": "Ou",
+        "google": "Se connecter avec Google",
+        "errors": {
+          "provider-google-email-exists": {
+            "title": "Adresse mail déjà utilisée",
+            "description": "Un compte existe déjà avec cette adresse mail. Veuillez vous connecter avec votre adresse mail et mot de passe"
+          }
         }
       },
       "signUp": {
