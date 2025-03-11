@@ -1,6 +1,6 @@
 import {prisma} from "@/lib/prisma";
 import DashboardContent from "@/components/layout/DashboardContent";
-import { getCurrentSession } from "@/lib/authUtils";
+import { getCurrentSession } from "@/lib/session";
 import { redirect } from "@/i18n/routing";
 
 export default async function Home({ params }: { params: { locale: string } }) {

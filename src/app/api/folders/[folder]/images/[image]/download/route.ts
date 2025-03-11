@@ -2,7 +2,7 @@ import {NextRequest, NextResponse} from "next/server";
 import {prisma} from "@/lib/prisma";
 import JSZip from "jszip";
 import fs from "fs";
-import { getCurrentSession } from "@/lib/authUtils";
+import { getCurrentSession } from "@/lib/session";
 
 export async function GET(req: NextRequest, { params }: { params: {folder: string, image: string} }) {
     const { user } = await getCurrentSession();

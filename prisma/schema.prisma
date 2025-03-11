@@ -109,8 +109,10 @@ model User {
   image                     String?
   usedStorage               Int       @default(0)
   role                      Role[]    @default([USER])
-  password                  String
+  password                  String?
   sessions                  Session[]
+
+  googleId String? @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

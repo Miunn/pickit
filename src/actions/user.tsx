@@ -7,7 +7,7 @@ import * as bcrypt from "bcryptjs";
 import { transporter } from "@/lib/mailing";
 import { VerifyEmailRequest } from "@prisma/client";
 import { addDays } from "date-fns";
-import { getCurrentSession } from "@/lib/authUtils";
+import { getCurrentSession } from "@/lib/session";
 import { render } from "@react-email/components";
 import VerifyEmail from "@/components/emails/VerifyEmail";
 import ResetPasswordTemplate from "@/components/emails/ResetPasswordTemplate";

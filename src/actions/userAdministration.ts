@@ -1,6 +1,6 @@
 "use server"
 
-import { getCurrentSession, invalidateAllSessions } from "@/lib/authUtils";
+import { getCurrentSession, invalidateAllSessions } from "@/lib/session";
 import { UserAdministration } from "@/lib/definitions";
 import { prisma } from "@/lib/prisma";
 import { Role } from "@prisma/client";

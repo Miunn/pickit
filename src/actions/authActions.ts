@@ -1,10 +1,9 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { CredentialsSignin } from "next-auth";
 import { redirect } from "next/navigation";
 import * as bcrypt from "bcryptjs";
-import { createSession, deleteSessionTokenCookie, generateSessionToken, getCurrentSession, invalidateAllSessions, setSessionTokenCookie } from "@/lib/authUtils";
+import { createSession, deleteSessionTokenCookie, generateSessionToken, getCurrentSession, invalidateAllSessions, setSessionTokenCookie } from "@/lib/session";
 import { getLocale } from "next-intl/server";
 
 export async function SignIn(email: string, password: string): Promise<{
@@ -43,10 +42,6 @@ export async function SignIn(email: string, password: string): Promise<{
         setSessionTokenCookie(token, session.expiresAt);
         return null;
     } catch (e) {
-        if (e instanceof CredentialsSignin) {
-            return { error: "invalid-credentials" };
-        }
-
         return { error: "unknown-error" };
     }
 }

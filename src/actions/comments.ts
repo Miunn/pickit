@@ -1,7 +1,7 @@
 'use server'
 
 import { CreateCommentFormSchema, FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolderAndComments, FolderWithPersonAccessToken } from "@/lib/definitions";
-import { getCurrentSession } from "@/lib/authUtils";
+import { getCurrentSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";

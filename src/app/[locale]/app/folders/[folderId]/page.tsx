@@ -1,6 +1,6 @@
 import { FolderContent } from "@/components/folders/FolderContent";
 import { getFolderFull } from "@/actions/folders";
-import { getCurrentSession } from "@/lib/authUtils";
+import { getCurrentSession } from "@/lib/session";
 import UnlockTokenPrompt from "@/components/folders/UnlockTokenPrompt";
 import { ArrowRight, FolderSearch, View } from "lucide-react";
 import { Button } from "@/components/ui/button";

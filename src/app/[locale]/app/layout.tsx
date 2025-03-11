@@ -15,7 +15,7 @@ import { addDays } from "date-fns";
 import { getPersonsAccessTokens } from "@/actions/accessTokensPerson";
 import SwitchLocale from "@/components/generic/SwitchLocale";
 import { Role } from "@prisma/client";
-import { getCurrentSession } from "@/lib/authUtils";
+import { getCurrentSession } from "@/lib/session";
 import { CommandSearch } from "@/components/CommandSearch";
 import { NuqsAdapter } from 'nuqs/adapters/react'
 

@@ -5,7 +5,7 @@ import { AccessTokenWithFolder, CreateAccessTokenFormSchema, ImageLightWithFolde
 import { revalidatePath } from "next/cache";
 import { AccessToken, FolderTokenPermission } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { getCurrentSession } from "@/lib/authUtils";
+import { getCurrentSession } from "@/lib/session";
 
 export async function getAccessTokens(): Promise<{
     error: string | null,

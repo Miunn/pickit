@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { getCurrentSession } from "@/lib/authUtils";
+import { getCurrentSession } from "@/lib/session";
 import { redirect } from "@/i18n/routing";
 import { ViewState } from "@/components/folders/ViewSelector";
 import FoldersContent from "@/components/folders/FoldersContent";

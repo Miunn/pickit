@@ -8,7 +8,7 @@ import { ImageLightWithFolderName, ImageWithComments, ImageWithFolder, RenameIma
 import { imageCreateManyAndUpdateSizes, imageDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 import { changeFolderCover } from "./folders";
 import { validateShareToken } from "@/lib/utils";
-import { getCurrentSession } from "@/lib/authUtils";
+import { getCurrentSession } from "@/lib/session";
 import JSZip, { folder } from "jszip";
 import { routing } from "@/i18n/routing";
 import { z } from "zod";

@@ -5,7 +5,7 @@ import { FolderTokenPermission, PersonAccessToken } from "@prisma/client";
 import { PersonAccessTokenWithFolder } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { transporter } from "@/lib/mailing";
-import { getCurrentSession } from "@/lib/authUtils";
+import { getCurrentSession } from "@/lib/session";
 import ShareFolderTemplate from "@/components/emails/ShareFolderTemplate";
 
 export async function getPersonsAccessTokens(): Promise<{

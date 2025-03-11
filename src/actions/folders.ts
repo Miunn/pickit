@@ -7,7 +7,7 @@ import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolder,
 import { folderDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 import { FolderTokenPermission } from "@prisma/client";
 import { validateShareToken } from "@/lib/utils";
-import { getCurrentSession } from "@/lib/authUtils";
+import { getCurrentSession } from "@/lib/session";
 import JSZip from "jszip";
 
 export async function getLightFolders(): Promise<{
