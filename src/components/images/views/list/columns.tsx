@@ -12,6 +12,7 @@ import { DeleteImageDialog } from "../../DeleteImageDialog";
 import ImagePropertiesDialog from "../../ImagePropertiesDialog";
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { changeFolderCover } from "@/actions/folders";
 
 export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComments>[] = [
     {
@@ -152,6 +153,23 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => downloadClientImageHandler(row.original)}>{t('download')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenRename(true)}>{t('rename')}</DropdownMenuItem>
+                        <DropdownMenuItem onClick={async () => {
+                            const r = await changeFolderCover(row.original.folderId, row.original.id);
+
+                            if (r.error) {
+                                toast({
+                                    title: t('setAsCover.error.title'),
+                                    description: t('setAsCover.error.description'),
+                                    variant: "destructive"
+                                });
+                                return;
+                            }
+
+                            toast({
+                                title: t('setAsCover.success.title'),
+                                description: t('setAsCover.success.description')
+                            });
+                        }}>{t('setAsCover.label')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenProperties(true)}>{t('properties')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-destructive focus:text-destructive font-semibold">{t('delete')}</DropdownMenuItem>
                     </DropdownMenuContent>
