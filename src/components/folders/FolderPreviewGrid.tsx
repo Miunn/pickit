@@ -9,15 +9,13 @@ import Image from "next/image";
 import { Images } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-import { toast } from "@/hooks/use-toast";
 import RenameFolderDialog from "./RenameFolderDialog";
 import ChangeCoverFolderDialog from "./ChangeCoverFolderDialog";
 import { ShareFolderDialog } from "./ShareFolderDialog";
 import FolderPropertiesDialog from "./FolderPropertiesDialogs";
 import DeleteFolderDialog from "./DeleteFolderDialog";
-import saveAs from "file-saver";
-import { Progress } from "../ui/progress";
 import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/images";
+import { downloadClientFolder } from "@/lib/utils";
 
 export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover }) {
     const t = useTranslations("folders");
@@ -32,8 +30,6 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
     const [openDelete, setOpenDelete] = React.useState<boolean>(false);
 
     const [folderImages, setFolderImages] = React.useState<(ImageWithFolder & ImageWithComments)[]>([]);
-
-    const [downloadProgress, setDownloadProgress] = React.useState<number>(0);
 
     async function loadImages() {
         setFolderImages((await getImagesWithFolderAndCommentsFromFolder(folder.id)).images);
@@ -96,36 +92,7 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
                     <ContextMenuItem onClick={() => setOpenRename(true)}>{dialogsTranslations('rename.trigger')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenChangeCover(true)} disabled={folderImages.length === 0}>{dialogsTranslations('changeCover.trigger')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenShare(true)}>{dialogsTranslations('share.trigger')}</ContextMenuItem>
-                    <ContextMenuItem onClick={async () => {
-                        const r = await fetch(`/api/folders/${folder.id}/download`);
-
-                        if (r.status === 404) {
-                            toast({
-                                title: "No images found",
-                                description: "There are no images in this folder to download"
-                            });
-                            return;
-                        }
-
-                        if (r.status !== 200) {
-                            toast({
-                                title: "Error",
-                                description: "An error occurred while trying to download this folder",
-                                variant: "destructive"
-                            });
-                            return;
-                        }
-
-                        toast({
-                            title: "Download started",
-                            description: "Your download will start shortly",
-                            action: <Progress value={downloadProgress} className="mt-2 w-full" />,
-                            className: "flex-col items-start space-x-0",
-                        });
-
-                        saveAs(await r.blob(), `${folder.name}.zip`);
-
-                    }} disabled={folderImages.length === 0}>{t('actions.download')}</ContextMenuItem>
+                    <ContextMenuItem onClick={() => downloadClientFolder(folder)} disabled={folderImages.length === 0}>{t('actions.download')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenProperties(true)}>{t('actions.properties')}</ContextMenuItem>
                     <ContextMenuSeparator />
                     <ContextMenuItem onClick={() => setOpenDelete(true)} className="text-red-600 focus:text-red-600 font-semibold">{dialogsTranslations('delete.trigger')}</ContextMenuItem>

@@ -1,18 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { FolderWithAccessToken, FolderWithImagesCount } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithImages, FolderWithImagesCount, FolderWithImagesWithFolderAndComments, ImageWithComments, ImageWithFolder } from "@/lib/definitions";
 import { downloadClientFolder, formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Images, MoreHorizontal } from "lucide-react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import RenameFolderDialog from "@/components/folders/RenameFolderDialog";
 import DeleteFolderDialog from "@/components/folders/DeleteFolderDialog";
 import FolderPropertiesDialog from "@/components/folders/FolderPropertiesDialogs";
 import Link from "next/link";
 import { ShareFolderDialog } from "../../ShareFolderDialog";
+import ChangeCoverFolderDialog from "../../ChangeCoverFolderDialog";
+import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/images";
 
 export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWithImagesCount>[] = [
     {
@@ -113,7 +115,18 @@ export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWit
         cell: ({ row }) => {
             const t = useTranslations("folders.views.list.columns.actions");
 
+            const [folderImages, setFolderImages] = useState<(ImageWithFolder & ImageWithComments)[]>([]);
+
+            async function loadImages() {
+                setFolderImages((await getImagesWithFolderAndCommentsFromFolder(row.original.id)).images);
+            }
+
+            useEffect(() => {
+                loadImages();
+            }, [row.original.id]);
+
             const [openShare, setOpenShare] = useState<boolean>(false);
+            const [openChangeCover, setOpenChangeCover] = useState<boolean>(false);
             const [openRename, setOpenRename] = useState<boolean>(false);
             const [openProperties, setOpenProperties] = useState<boolean>(false);
             const [openDelete, setOpenDelete] = useState<boolean>(false);
@@ -140,12 +153,14 @@ export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWit
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => downloadClientFolder(row.original)}>{t('download')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenShare(true)}>{t('share')}</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setOpenChangeCover(true)}>{t('changeCover')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenRename(true)}>{t('rename')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenProperties(true)}>{t('properties')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-destructive focus:text-destructive font-semibold">{t('delete')}</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
                 <ShareFolderDialog folder={row.original} open={openShare} setOpen={setOpenShare} />
+                <ChangeCoverFolderDialog folderId={row.original.id} images={folderImages} open={openChangeCover} setOpen={setOpenChangeCover} />
                 <RenameFolderDialog folderId={row.original.id} folderName={row.original.name} openState={openRename} setOpenState={setOpenRename} />
                 <DeleteFolderDialog folderId={row.original.id} folderName={row.original.name} openState={openDelete} setOpenState={setOpenDelete} />
                 <FolderPropertiesDialog folder={row.original} open={openProperties} setOpen={setOpenProperties} />

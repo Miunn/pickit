@@ -1106,6 +1106,7 @@
             "select": "Select",
             "deselect": "Deselect",
             "share": "Share",
+            "changeCover": "Change cover",
             "download": "Download",
             "rename": "Rename",
             "properties": "Properties",
