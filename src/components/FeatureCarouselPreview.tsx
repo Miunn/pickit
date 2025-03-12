@@ -26,7 +26,7 @@ export default function FeatureCarouselPreview() {
                     <CardHeader>
                         <CardTitle className={`flex items-center gap-2 ${expandedIndex === 0 ? "text-primary" : "text-gray-500"}`} onClick={() => setExpandedIndex(0)}>
                             <kbd className={expandedIndex === 0
-                                ? "inline-flex items-center justify-center text-white h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-black ring-1 ring-inset ring-black"
+                                ? "inline-flex items-center justify-center text-primary-foreground h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-primary ring-1 ring-inset ring-primary"
                                 : "inline-flex items-center justify-center text-gray-700 h-5 w-5 text-[11px] px-1 rounded font-medium bg-gray-100 ring-1 ring-inset ring-gray-300"
                             }>1</kbd>
                             Create your album
@@ -46,7 +46,7 @@ export default function FeatureCarouselPreview() {
                     <CardHeader>
                         <CardTitle className={`flex items-center gap-2 ${expandedIndex === 1 ? "text-primary" : "text-gray-500"}`}>
                             <kbd className={expandedIndex === 1
-                                ? "inline-flex items-center justify-center text-white h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-black ring-1 ring-inset ring-black"
+                                ? "inline-flex items-center justify-center text-primary-foreground h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-primary ring-1 ring-inset ring-primary"
                                 : "inline-flex items-center justify-center text-gray-700 h-5 w-5 text-[11px] px-1 rounded font-medium bg-gray-100 ring-1 ring-inset ring-gray-300"
                             }>2</kbd>
                             Upload your photos
@@ -63,7 +63,7 @@ export default function FeatureCarouselPreview() {
                     <CardHeader>
                         <CardTitle className={`flex items-center gap-2 ${expandedIndex === 2 ? "text-primary" : "text-gray-500"}`}>
                             <kbd className={expandedIndex === 2
-                                ? "inline-flex items-center justify-center text-white h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-black ring-1 ring-inset ring-black"
+                                ? "inline-flex items-center justify-center text-primary-foreground h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-primary ring-1 ring-inset ring-primary"
                                 : "inline-flex items-center justify-center text-gray-700 h-5 w-5 text-[11px] px-1 rounded font-medium bg-gray-100 ring-1 ring-inset ring-gray-300"
                             }>3</kbd>
                             Create diaporamas
@@ -79,7 +79,7 @@ export default function FeatureCarouselPreview() {
                     <CardHeader>
                         <CardTitle className={`flex items-center gap-2 ${expandedIndex === 3 ? "text-primary" : "text-gray-500"}`}>
                             <kbd className={expandedIndex === 3
-                                ? "inline-flex items-center justify-center text-white h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-black ring-1 ring-inset ring-black"
+                                ? "inline-flex items-center justify-center text-primary-foreground h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-primary ring-1 ring-inset ring-primary"
                                 : "inline-flex items-center justify-center text-gray-700 h-5 w-5 text-[11px] px-1 rounded font-medium bg-gray-100 ring-1 ring-inset ring-gray-300"
                             }>4</kbd>
                             Share with your contacts
