@@ -378,6 +378,48 @@
         }
       }
     },
+    "featuresCarousel": {
+      "section1": {
+        "title": "Create your album",
+        "description": "To organize your photos, you first need to create an album. You can create one from the sidebar, using the '<kbd>'Ctrl'</kbd>' + '<kbd>'K'</kbd>' palette or simply by right-clicking anywhere in the app."
+      },
+      "section2": {
+        "title": "Upload your photos",
+        "description": "Once your album is created, you can directly upload your photos inside it by drag and drop them inside your album or by clicking on the upload button."
+      },
+      "section3": {
+        "title": "Talk with your memories",
+        "description": "Chat with an assitant to remember your memories. You can also add comments to your photos to remember the context of the moment."
+      },
+      "section4": {
+        "title": "Share your memories",
+        "description": "Share your album with your friends and family. You can share it with a link or by adding their email address."
+      }
+    },
+    "faq": {
+      "titleMini": "FAQ",
+      "title": "Frequently asked questions",
+      "question1": {
+        "title": "How to create a new folder ?",
+        "answer": "You can create a new folder by clicking on the 'New folder' button in the sidebar, by using the '<kbd>'Ctrl'</kbd>' + '<kbd>'K'</kbd>' palette or by right-clicking anywhere in the app."
+      },
+      "question2": {
+        "title": "How to upload images ?",
+        "answer": "You can upload images by dragging and dropping them inside your folder or by clicking on the upload button."
+      },
+      "question3": {
+        "title": "I don't want to share an album anymore, how to do ?",
+        "answer": "You can manage all your sharing links under your links management page where you'll find two tables: one for the sharing links and one for the people you shared your album with. You can edit links properties or delete them at anytime."
+      },
+      "question4": {
+        "title": "Can I change my email address ?",
+        "answer": "Yes ! You can change your email address in the account settings page. You will need to verify your new email address."
+      },
+      "question5": {
+        "title": "Hows are my photos stored ?",
+        "answer": "Your photos are stored on our servers in a secure way. We use the latest technologies to ensure the security of your data."
+      }
+    },
     "footer": {
       "about": {
         "title": "About",

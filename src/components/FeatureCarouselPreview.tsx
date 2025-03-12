@@ -1,17 +1,19 @@
 'use client'
 
 import React, { useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { useTranslations } from "next-intl";
 
 export default function FeatureCarouselPreview() {
 
-    
+    const t = useTranslations("components.featuresCarousel");
+
     const [expandedIndex, setExpandedIndex] = React.useState<number>(0);
     const progressRefs = [React.useRef<HTMLDivElement>(null), React.useRef<HTMLDivElement>(null), React.useRef<HTMLDivElement>(null), React.useRef<HTMLDivElement>(null)];
 
     useEffect(() => {
         progressRefs[expandedIndex].current?.classList.add("animate-progress");
-        
+
         progressRefs.forEach((ref, index) => {
             if (index !== expandedIndex) {
                 ref.current?.classList.remove("animate-progress");
@@ -20,7 +22,7 @@ export default function FeatureCarouselPreview() {
     }, [expandedIndex]);
 
     return (
-        <div className="mt-64 grid grid-cols-2 gap-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-2 gap-6 min-h-[444px]">
             <div className="flex flex-col gap-3">
                 <Card className={`group cursor-pointer transition-all duration-500 ease-in-out overflow-hidden ${expandedIndex === 0 ? "max-h-64" : "max-h-18"}`} onClick={() => setExpandedIndex(0)}>
                     <CardHeader>
@@ -29,14 +31,11 @@ export default function FeatureCarouselPreview() {
                                 ? "inline-flex items-center justify-center text-primary-foreground h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-primary ring-1 ring-inset ring-primary"
                                 : "inline-flex items-center justify-center text-gray-700 h-5 w-5 text-[11px] px-1 rounded font-medium bg-gray-100 ring-1 ring-inset ring-gray-300"
                             }>1</kbd>
-                            Create your album
+                            {t('section1.title')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className={`transition-all duration-500 ease-in-out ${expandedIndex === 0 ? "max-h-32 opacity-100" : "max-h-0 opacity-0 py-0"}`}>
-                        <p className="text-sm text-gray-800 mb-4">
-                            To organize your photos, you first need to create an album.
-                            You can create as many albums as you want.
-                        </p>
+                        <p className="text-sm text-gray-800 mb-4" dangerouslySetInnerHTML={{ __html: t('section1.description') }} />
                         <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20">
                             <div ref={progressRefs[0]} className="group-hover:[animation-play-state:paused] h-full w-0 flex-1 bg-primary" onAnimationEndCapture={() => setExpandedIndex((expandedIndex + 1) % 4)}></div>
                         </div>
@@ -49,11 +48,11 @@ export default function FeatureCarouselPreview() {
                                 ? "inline-flex items-center justify-center text-primary-foreground h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-primary ring-1 ring-inset ring-primary"
                                 : "inline-flex items-center justify-center text-gray-700 h-5 w-5 text-[11px] px-1 rounded font-medium bg-gray-100 ring-1 ring-inset ring-gray-300"
                             }>2</kbd>
-                            Upload your photos
+                            {t('section2.title')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className={`transition-all duration-500 ease-in-out ${expandedIndex === 1 ? "max-h-32 opacity-100" : "max-h-0 opacity-0 py-0"}`}>
-                        <p className="text-sm text-gray-800 mb-4">Once your album is created, you can directly upload your photos inside it.</p>
+                        <p className="text-sm text-gray-800 mb-4">{t('section2.description')}</p>
                         <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20">
                             <div ref={progressRefs[1]} className="group-hover:[animation-play-state:paused] h-full w-0 flex-1 bg-primary" onAnimationEndCapture={() => setExpandedIndex((expandedIndex + 1) % 4)}></div>
                         </div>
@@ -66,11 +65,14 @@ export default function FeatureCarouselPreview() {
                                 ? "inline-flex items-center justify-center text-primary-foreground h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-primary ring-1 ring-inset ring-primary"
                                 : "inline-flex items-center justify-center text-gray-700 h-5 w-5 text-[11px] px-1 rounded font-medium bg-gray-100 ring-1 ring-inset ring-gray-300"
                             }>3</kbd>
-                            Create diaporamas
+                            {t('section3.title')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className={`transition-all duration-500 ease-in-out ${expandedIndex === 2 ? "max-h-32 opacity-100" : "max-h-0 opacity-0 py-0"}`}>
-                    <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20">
+                        <p className="text-sm text-gray-800 mb-4">
+                            {t('section3.description')}
+                        </p>
+                        <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20">
                             <div ref={progressRefs[2]} className="group-hover:[animation-play-state:paused] h-full w-0 flex-1 bg-primary" onAnimationEndCapture={() => setExpandedIndex((expandedIndex + 1) % 4)}></div>
                         </div>
                     </CardContent>
@@ -82,13 +84,12 @@ export default function FeatureCarouselPreview() {
                                 ? "inline-flex items-center justify-center text-primary-foreground h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-primary ring-1 ring-inset ring-primary"
                                 : "inline-flex items-center justify-center text-gray-700 h-5 w-5 text-[11px] px-1 rounded font-medium bg-gray-100 ring-1 ring-inset ring-gray-300"
                             }>4</kbd>
-                            Share with your contacts
+                            {t('section4.title')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className={`transition-all duration-500 ease-in-out ${expandedIndex === 3 ? "max-h-32 opacity-100" : "max-h-0 opacity-0 py-0"}`}>
                         <p className="text-sm text-gray-800 mb-4">
-                            You can share your albums with your contacts by automatically sending them an email or by sharing them an unique link.
-                            You can manage authorization associated with each link and contact and also lock them with a code.
+                            {t('section4.description')}
                         </p>
                         <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20">
                             <div ref={progressRefs[3]} className="group-hover:[animation-play-state:paused] h-full w-0 flex-1 bg-primary" onAnimationEndCapture={() => setExpandedIndex((expandedIndex + 1) % 4)}></div>

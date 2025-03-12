@@ -376,6 +376,48 @@
         }
       }
     },
+    "featuresCarousel": {
+      "section1": {
+        "title": "Créer votre album",
+        "description": "Créez un album pour organiser vos photos. Vous pouvez en créer un depuis la barre latérale, en utilisant la palette de commande ou en faisant un clic droit depuis presque n'importe où dans l'application."
+      },
+      "section2": {
+        "title": "Télécharger vos photos",
+        "description": "Une fois votre album créé, vous pouvez directement télécharger vos photos dedans en les glissant-déposant dans votre album ou en cliquant sur le bouton de téléchargement."
+      },
+      "section3": {
+        "title": "Discutez avec vos souvenirs", 
+        "description": "Discutez avec un assistant pour vous remémorer vos souvenirs. Vous pouvez également ajouter des commentaires à vos photos pour vous souvenir du contexte du moment."
+      },
+      "section4": {
+        "title": "Partagez vos souvenirs",
+        "description": "Partagez vos albums avec vos amis et votre famille. Vous pouvez partager un album avec un lien ou en renseignant leur adresse mail."
+      }
+    },
+    "faq": {
+      "titleMini": "FAQ",
+      "title": "Question fréquentes",
+      "question1": {
+        "title": "Comment créer un nouveau dossier ?",
+        "answer": "Vous pouvez créer un nouveau dossier en cliquant sur le bouton 'Nouveau dossier' dans la barre latérale, en utilisant la palette de commande '<kbd>'Ctrl'</kbd>' + '<kbd>'K'</kbd>' ou en faisant un clic droit n'importe où dans l'application."
+      },
+      "question2": {
+        "title": "Comment télécharger des images ?",
+        "answer": "Vous pouvez télécharger des images en les glissant-déposant dans votre dossier ou en cliquant sur le bouton de téléchargement."
+      },
+      "question3": {
+        "title": "Je ne veux plus partager un album, comment faire ?",
+        "answer": "Vous pouvez gérer tous vos liens de partage depuis la page de gestion des liens où vous trouverez deux tableaux : un pour les liens de partage et un pour les personnes avec qui vous avez partagé votre album. Vous pouvez modifier les propriétés des liens ou les supprimer à tout moment."
+      },
+      "question4": {
+        "title": "Puis-je changer mon adresse mail ?",
+        "answer": "Oui ! Vous pouvez changer votre adresse mail dans les paramètres de votre compte. Vous devrez vérifier votre nouvelle adresse mail."
+      },
+      "question5": {
+        "title": "Comment sont stockées mes photos ?",
+        "answer": "Vos photos sont stockées sur nos serveurs de manière sécurisée. Nous utilisons les dernières technologies pour assurer la sécurité de vos données."
+      }
+    },
     "footer": {
       "about": {
         "title": "A propos",

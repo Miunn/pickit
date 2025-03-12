@@ -1,15 +1,14 @@
+import FaqAccordion from "@/components/FaqAccordion";
 import FeatureCarouselPreview from "@/components/FeatureCarouselPreview";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { ArrowRight } from "lucide-react";
 
 export default function RootPage({ params }: { params: { locale: string } }) {
-
     return (
         <>
-            <main>
+            <main className="mb-32">
                 <Header className="sticky top-0 z-50 bg-background/90 backdrop-blur mb-11" locale={params.locale} />
 
                 <div className="relative bg-primary h-[600px] rounded-3xl mx-6 text-white flex flex-col justify-center gap-11">
@@ -58,10 +57,12 @@ export default function RootPage({ params }: { params: { locale: string } }) {
                     </div>
                 </div>
 
-                <FeatureCarouselPreview />
+                <div className="mt-64 max-w-7xl mx-auto">
+                    <h2 className="text-2xl font-semibold mb-2">Don't just upload photos,<br />Capture memories and share them with others</h2>
+                    <FeatureCarouselPreview />
+                </div>
 
-                <div className="mt-64"></div>
-
+                <FaqAccordion />
             </main>
             <Footer />
         </>
