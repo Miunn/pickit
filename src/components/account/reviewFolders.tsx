@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatBytes } from "@/lib/utils";
-import { MoreHorizontal } from "lucide-react";
+import { FolderX, MoreHorizontal } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
@@ -23,6 +23,13 @@ export default function ReviewFolders({ locale, folders }: { locale: string, fol
             <h3 className="font-semibold">{t('title')}</h3>
 
             <ScrollArea className="mt-6 h-full overflow-y-auto">
+                {folders.length === 0
+                    ? <div className={"flex flex-col justify-center items-center"}>
+                        <FolderX className={"w-32 h-32 opacity-20"} />
+                        <p>{t('empty')}</p>
+                    </div>
+                    : null
+                }
                 {folders.map((folder) => (
                     <div key={folder.id} className="flex items-center justify-between py-2 border-b border-gray-200 pr-px">
                         <div>
@@ -30,7 +37,7 @@ export default function ReviewFolders({ locale, folders }: { locale: string, fol
                             <p className="text-sm text-muted-foreground capitalize">{intlFormatter.dateTime(folder.createdAt, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
                         </div>
                         <div className="flex items-center gap-3">
-                            <p className="text-sm text-muted-foreground">{t('folder.images', {count: folder._count.images})}</p>
+                            <p className="text-sm text-muted-foreground">{t('folder.images', { count: folder._count.images })}</p>
                             <p className="text-sm text-muted-foreground">{formatBytes(folder.size)}</p>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>

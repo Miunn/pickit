@@ -250,6 +250,7 @@
       },
       "reviewFolders": {
         "title": "Review your folders",
+        "empty": "No folders created",
         "folder": {
           "images": "{count, plural, one {# image} other {# images}}",
           "dropdown": {

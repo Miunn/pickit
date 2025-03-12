@@ -249,6 +249,7 @@
       },
       "reviewFolders": {
         "title": "Passez en revue vos dossiers",
+        "empty": "Aucun dossier à passer en revue",
         "folder": {
           "images": "{count, plural, one {# image} other {# images}}",
           "dropdown": {
