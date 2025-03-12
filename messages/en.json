@@ -377,6 +377,27 @@
           "logout": "Logout"
         }
       }
+    },
+    "footer": {
+      "about": {
+        "title": "About",
+        "features": "Features",
+        "pricing": "Pricing",
+        "contact": "Contact"
+      },
+      "documentation": {
+        "title": "Documentation",
+        "faq": "FAQ",
+        "support": "Support"
+      },
+      "legal": {
+        "title": "Legal",
+        "terms": "Terms of service",
+        "privacy": "Privacy policy"
+      },
+      "copyright": {
+        "text": "© 2025 Pickit. All rights reserved."
+      }
     }
   },
   "dialogs": {
