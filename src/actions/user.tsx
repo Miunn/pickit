@@ -174,7 +174,7 @@ export async function changePassword(id: string, oldPassword: string, newPasswor
     }
 
 
-    if (!bcrypt.compareSync(oldPassword, userPassword.password)) {
+    if (!bcrypt.compareSync(oldPassword, userPassword.password || "")) {
         return { error: "invalid-old" };
     }
 
@@ -271,7 +271,7 @@ export async function requestPasswordReset(data: z.infer<typeof RequestPasswordR
         where: { email: parsedData.data.email }
     });
 
-    if (!user) {
+    if (!user || !user.password) {
         return { error: null }; // Don't leak if the email is registered or not
     }
 
