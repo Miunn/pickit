@@ -378,15 +378,15 @@
     },
     "featuresCarousel": {
       "section1": {
-        "title": "Créer votre album",
+        "title": "Créez votre album",
         "description": "Créez un album pour organiser vos photos. Vous pouvez en créer un depuis la barre latérale, en utilisant la palette de commande ou en faisant un clic droit depuis presque n'importe où dans l'application."
       },
       "section2": {
-        "title": "Télécharger vos photos",
+        "title": "Enregistrez vos photos",
         "description": "Une fois votre album créé, vous pouvez directement télécharger vos photos dedans en les glissant-déposant dans votre album ou en cliquant sur le bouton de téléchargement."
       },
       "section3": {
-        "title": "Discutez avec vos souvenirs", 
+        "title": "Discutez avec vos albums", 
         "description": "Discutez avec un assistant pour vous remémorer vos souvenirs. Vous pouvez également ajouter des commentaires à vos photos pour vous souvenir du contexte du moment."
       },
       "section4": {
