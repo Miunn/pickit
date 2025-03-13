@@ -30,7 +30,7 @@ export function formatBytes(
 
 export const switchLocaleUrl = (url: string, locale: string): string => {
 	// Remove the locale from the url
-	url = url.replace(/\/[a-z]{2}\//, "/");
+	url = url.replace(/\/[a-z]{2}\/?/, "/");
 
 	if (url.startsWith("/")) {
 		return `/${locale}${url}`;
