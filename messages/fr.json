@@ -164,9 +164,9 @@
           }
         },
         "success": {
-          "title": "Email de réinitialisation envoyé",
+          "title": "Demande de réinitialisation prise en compte",
           "description": "Si un compte existe avec l'adresse mail fournie, un message de réinitialisation de mot de passe a été envoyé",
-          "action": "Retour à la connexion"
+          "action": "Connexion"
         }
       },
       "resetPasswordForm": {

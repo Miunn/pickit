@@ -48,7 +48,7 @@ export default function RequestPasswordReset({ locale, defaultEmail }: { locale:
             title: t('success.title'),
             description: t('success.description'),
             action: <ToastAction altText={t('success.action')} asChild>
-                <Button variant={"outline"}>
+                <Button variant={"outline"} asChild>
                     <Link href={"/signin"}>
                         {t('success.action')}
                     </Link>
