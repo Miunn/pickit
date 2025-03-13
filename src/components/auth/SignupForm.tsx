@@ -15,6 +15,7 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { ToastAction } from "../ui/toast";
 import Link from "next/link";
+import { FcGoogle } from "react-icons/fc";
 
 export default function SignupForm({ locale }: { locale: string }) {
 
@@ -120,11 +121,17 @@ export default function SignupForm({ locale }: { locale: string }) {
                         />
 
                         {loading
-                            ? <Button className={"ml-auto mr-0 flex"} type="button" disabled><Loader2 className="animate-spin mr-2" /> {t('form.submitting')}</Button>
-                            : <Button className={"block ml-auto mr-0"} type="submit">{t('form.submit')}</Button>
+                            ? <Button className={"w-full flex"} type="button" disabled><Loader2 className="animate-spin mr-2" /> {t('form.submitting')}</Button>
+                            : <Button className={"w-full block"} type="submit">{t('form.submit')}</Button>
                         }
                     </form>
                 </Form>
+                <div className="relative text-center text-sm my-4 after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+                    <span className="relative z-10 bg-background px-2 text-muted-foreground">{ t('or') }</span>
+                </div>
+                <Button variant={"outline"} className="w-full" asChild>
+                    <Link href={`/api/oauth/login/google`}><FcGoogle className={"mr-2"} /> {t('google')}</Link>
+                </Button>
             </CardContent>
         </Card>
     )
