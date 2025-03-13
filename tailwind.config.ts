@@ -114,6 +114,24 @@ const config: Config = {
     				to: {
     					height: '0'
     				}
+    			},
+				'fade-in': {
+    				from: {
+    					opacity: '0',
+    					transform: 'translateY(-10px)'
+    				},
+    				to: {
+    					opacity: '1',
+    					transform: 'none'
+    				}
+    			},
+    			'shiny-text': {
+    				'0%, 90%, 100%': {
+    					'background-position': 'calc(-100% - var(--shiny-width)) 0'
+    				},
+    				'30%, 60%': {
+    					'background-position': 'calc(100% + var(--shiny-width)) 0'
+    				}
     			}
     		},
     		animation: {
@@ -122,7 +140,9 @@ const config: Config = {
     			collapsibleEnter: 'collapsibleSlideDown 300ms ease-in-out',
     			collapsibleLeave: 'collapsibleSlideUp 300ms ease-in-out',
     			'accordion-down': 'accordion-down 0.2s ease-out',
-    			'accordion-up': 'accordion-up 0.2s ease-out'
+    			'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 1s var(--animation-delay,0ms) ease forwards',
+    			'shiny-text': 'shiny-text 8s infinite'
     		}
     	}
     },

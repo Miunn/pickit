@@ -6,9 +6,11 @@ import { Command } from "lucide-react";
 import { cn } from "@/lib/utils";
 import React from "react";
 import SwitchLocale from "../generic/SwitchLocale";
+import { useTranslations } from "next-intl";
 
 export default function Header({ className, locale }: { className?: string, locale: string }) {
 
+    const t = useTranslations("components.header");
     const headerRowRef = React.useRef<HTMLHRElement>(null);
     const scrollState = {
         top: true,
@@ -44,22 +46,22 @@ export default function Header({ className, locale }: { className?: string, loca
                 </Link>
 
                 <nav className="place-self-center">
-                    <ul className="flex items-center gap-10 font-semibold text-sm">
+                    <ul className="grid grid-cols-3 place-items-center gap-10 font-semibold text-sm">
                         <li>
-                            <Link href={`/${locale}/pricing`}>Pricing</Link>
+                            <Link href={`/${locale}/pricing`}>{ t('nav.features') }</Link>
                         </li>
                         <li>
-                            <Link href={`/${locale}/signin`}>Login</Link>
+                            <Link href={`/${locale}/signin`}>{ t('nav.pricing') }</Link>
                         </li>
                         <li>
-                            <Link href={`/${locale}/signin`}>Contact</Link>
+                            <Link href={`/${locale}/signin`}>{ t('nav.contact') }</Link>
                         </li>
                     </ul>
                 </nav>
 
                 <div className="w-fit place-self-end flex gap-2">
                     <Button>
-                        <Link href={`/${locale}/signin`}>Login</Link>
+                        <Link href={`/${locale}/signin`}>{ t('nav.login') }</Link>
                     </Button>
                     <SwitchLocale locale={locale} />
                 </div>
