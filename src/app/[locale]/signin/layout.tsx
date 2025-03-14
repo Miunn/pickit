@@ -9,7 +9,7 @@ export default async function LocaleLayout({
 }>) {
     return (
         <div className={"min-h-screen"}>
-            <Header locale={locale} />
+            <Header />
             {children}
         </div>
     );

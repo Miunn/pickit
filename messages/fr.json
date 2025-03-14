@@ -48,6 +48,11 @@
       },
       "featuresTitle": "Ne sauvegardez pas juste des photos,<br />Capturez des souvenirs et partagez-les avec d'autres"
     },
+    "contact": {
+      "title": "Entrons en contact",
+      "titleMini": "Contact",
+      "description": "Vous avez une question, une suggestion ou besoin d'aide ? N'hésitez pas à nous contacter. Nous serons ravis de vous aider."
+    },
     "dashboard": {
       "title": "Pickit - Dashboard",
       "folders": {
@@ -441,6 +446,36 @@
       "question5": {
         "title": "Comment sont stockées mes photos ?",
         "answer": "Vos photos sont stockées sur nos serveurs de manière sécurisée. Nous utilisons les dernières technologies pour assurer la sécurité de vos données."
+      }
+    },
+    "contactForm": {
+      "fields": {
+        "name": {
+          "label": "Nom",
+          "placeholder": "John Doe"
+        },
+        "email": {
+          "label": "Adresse mail",
+          "description": "Nous vous répondrons à cette adresse mail"
+        },
+        "message": {
+          "label": "Votre message",
+          "placeholder": "J'aimerais que vous ajoutiez cette fonctionnalité..."
+        }
+      },
+      "actions": {
+        "submit": "Envoyer",
+        "submitting": "Envoi"
+      },
+      "errors": {
+        "unknown": {
+          "title": "Impossible d'envoyer votre message",
+          "description": "Une erreur inconnue est survenue lors de l'envoi de votre message"
+        }
+      },
+      "success": {
+        "title": "Message envoyé",
+        "description": "Votre message a été envoyé avec succès"
       }
     },
     "footer": {

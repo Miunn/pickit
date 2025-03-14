@@ -48,6 +48,11 @@
       },
       "featuresTitle": "Don't just upload photos,<br />Captures memories and share them with ohers"
     },
+    "contact": {
+      "title": "Get in touch",
+      "titleMini": "Contact",
+      "description": "If you have any questions, suggestions or need help, feel free to contact us. We will be happy to help you."
+    },
     "dashboard": {
       "title": "Pickit - Dashboard",
       "folders": {
@@ -443,6 +448,36 @@
       "question5": {
         "title": "Hows are my photos stored ?",
         "answer": "Your photos are stored on our servers in a secure way. We use the latest technologies to ensure the security of your data."
+      }
+    },
+    "contactForm": {
+      "fields": {
+        "name": {
+          "label": "Name",
+          "placeholder": "John Doe"
+        },
+        "email": {
+          "label": "Email",
+          "description": "We will use this email to contact you back"
+        },
+        "message": {
+          "label": "Message",
+          "placeholder": "I would like to..."
+        }
+      },
+      "actions": {
+        "submit": "Send",
+        "submitting": "Sending"
+      },
+      "errors": {
+        "unknown": {
+          "title": "Can't send your message",
+          "description": "An unknown error happened while sending your message"
+        }
+      },
+      "success": {
+        "title": "Message sent",
+        "description": "Your message has been sent successfully"
       }
     },
     "footer": {

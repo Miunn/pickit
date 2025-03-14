@@ -12,6 +12,12 @@ export type ActionResult = {
     message?: string;
 }
 
+export const ContactFormSchema = z.object({
+    name: z.string().min(3, { message: 'Be at least 3 characters long' }).trim(),
+    email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
+    message: z.string().min(1, { message: 'Be at least 1 character long' }).trim(),
+});
+
 export const SignupFormSchema = z.object({
     name: z.string().min(3, { message: 'Be at least 3 characters long' }).trim(),
     email: z.string().email({ message: 'Please enter a valid email.' }).trim(),

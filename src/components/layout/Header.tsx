@@ -6,11 +6,12 @@ import { Command } from "lucide-react";
 import { cn } from "@/lib/utils";
 import React from "react";
 import SwitchLocale from "../generic/SwitchLocale";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
-export default function Header({ className, locale }: { className?: string, locale: string }) {
+export default function Header({ className }: { className?: string  }) {
 
     const t = useTranslations("components.header");
+    const locale = useLocale();
     const headerRowRef = React.useRef<HTMLHRElement>(null);
     const scrollState = {
         top: true,
