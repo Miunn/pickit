@@ -49,13 +49,13 @@ export default function Header({ className }: { className?: string  }) {
                 <nav className="place-self-center">
                     <ul className="grid grid-cols-3 place-items-center gap-10 font-semibold text-sm">
                         <li>
-                            <Link href={`/${locale}/pricing`}>{ t('nav.features') }</Link>
+                            <Link href={`/${locale}/features`}>{ t('nav.features') }</Link>
                         </li>
                         <li>
-                            <Link href={`/${locale}/signin`}>{ t('nav.pricing') }</Link>
+                            <Link href={`/${locale}/pricing`}>{ t('nav.pricing') }</Link>
                         </li>
                         <li>
-                            <Link href={`/${locale}/signin`}>{ t('nav.contact') }</Link>
+                            <Link href={`/${locale}/contact`}>{ t('nav.contact') }</Link>
                         </li>
                     </ul>
                 </nav>
