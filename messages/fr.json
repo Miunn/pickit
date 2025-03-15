@@ -296,7 +296,21 @@
       "title": "Déplacer et déposer vos fichiers ici ou cliquez pour les télécharger",
       "dragActiveTitle": "Déposez vos fichiers ici",
       "description": "Vous pouvez télécharger {count, plural, one {un fichier} other {vos images}} jusqu'à {maxSize} {count, plural, one {} other {chacune}}",
-      "remove": "Supprimer"
+      "remove": "Supprimer",
+      "errors": {
+        "fileSize": {
+          "title": "Fichier trop volumineux",
+          "description": "{name} est trop volumineux. La taille maximale autorisée est {maxSize}"
+        },
+        "fileType": {
+          "title": "Invalid file type",
+          "description": "Le fichier {name} n'est pas autorisé. Les types de fichiers autorisés sont {allowedTypes}"
+        },
+        "unknown": {
+          "title": "Impossible de télécharger le fichier",
+          "description": "Une erreur inconnue est survenue lors du téléchargement du fichier"
+        }
+      }
     },
     "viewSelector": {
       "placeholder": "Sélectionnez une vue",

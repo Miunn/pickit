@@ -145,13 +145,13 @@ export const FileUploader = (props: FileUploaderProps) => {
             setFiles(updatedFiles)
 
             if (rejectedFiles.length > 0) {
-                /*rejectedFiles.forEach(({ file }) => {
+                rejectedFiles.forEach(({ file }) => {
                     toast({
-                        title: "Error",
-                        description: `${file.name} is not a valid file`,
+                        title: t('errors.fileType.title'),
+                        description: t('errors.fileType.description', { name: file.name, allowedTypes: Object.keys(accept).join(", ") }),
                         variant: "destructive",
                     })
-                });*/
+                });
             }
         },
 
@@ -181,7 +181,7 @@ export const FileUploader = (props: FileUploaderProps) => {
     const isDisabled = disabled || (files?.length ?? 0) >= maxFileCount
 
     return (
-        <div className={"relative flex flex-col gap-6 overflow-hidden"}>
+        <div className={"relative w-full flex flex-col gap-6 overflow-hidden"}>
             <Dropzone
                 onDrop={onDrop}
                 accept={accept}

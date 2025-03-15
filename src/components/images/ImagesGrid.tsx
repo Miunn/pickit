@@ -84,7 +84,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                                     control={uploadImageForm.control}
                                     name="images"
                                     render={({ field: { value, onChange, ...fieldProps } }) => (
-                                        <FormItem>
+                                        <FormItem className="w-[443px]">
                                             <FormLabel>{t('page.startUpload')}</FormLabel>
                                             <FormControl>
                                                 <FileUploader

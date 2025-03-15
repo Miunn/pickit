@@ -297,7 +297,21 @@
       "title": "Drag 'n' drop your files here or click to select files",
       "dragActiveTitle": "Drop your files here",
       "description": "You can upload {count, plural, one {a file} other {multiple file}} up to {maxSize} {count, plural, one {} other {each}}",
-      "remove": "Remove file"
+      "remove": "Remove file",
+      "errors": {
+        "fileSize": {
+          "title": "File too big",
+          "description": "The file is too big. Maximum size is {maxSize}"
+        },
+        "fileType": {
+          "title": "Invalid file type",
+          "description": "{name} file type is not allowed. Allowed types are {allowedTypes}"
+        },
+        "unknown": {
+          "title": "Can't upload file",
+          "description": "An unknown error happened while uploading the file"
+        }
+      }
     },
     "viewSelector": {
       "placeholder": "Select a view",
