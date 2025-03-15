@@ -9,8 +9,8 @@ import { imageCreateManyAndUpdateSizes, imageDeleteAndUpdateSizes } from "@/lib/
 import { changeFolderCover } from "./folders";
 import { validateShareToken } from "@/lib/utils";
 import { getCurrentSession } from "@/lib/session";
-import JSZip, { folder } from "jszip";
-import { routing } from "@/i18n/routing";
+import JSZip from "jszip";
+import { fileTypeFromBuffer } from 'file-type';
 import { z } from "zod";
 
 export async function getLightImages(): Promise<{
@@ -54,7 +54,7 @@ export async function getLightImages(): Promise<{
     return { error: null, lightImages: images }
 }
 
-export async function uploadImages(parentFolderId: string, formData: FormData, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashCode?: string | null): Promise<{ error: string | null }> {
+export async function uploadImages(parentFolderId: string, formData: FormData, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashCode?: string | null): Promise<{ error: string | null, rejectedFiles?: string[] }> {
     const { user } = await getCurrentSession();
 
     if (!user) {
@@ -93,9 +93,18 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
     }
 
     const files = Array.from(formData.values()) as File[];
+    const rejectedFiles: string[] = [];
     const imagesDb = await Promise.all(files.map(async (file) => {
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
+
+        const typeFromBuffer = await fileTypeFromBuffer(buffer);
+        console.log("Type from buffer", typeFromBuffer);
+        if (!typeFromBuffer || !typeFromBuffer.mime.startsWith("image")) {
+            console.log("Rejected file", file.name);
+            rejectedFiles.push(file.name);
+            return undefined;
+        }
 
         const nameWithoutExtension = file.name.replace(/\.[^/.]+$/, "");
         const slug = `${file.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}-${Date.now()}`;
@@ -122,7 +131,7 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
         return imageData;
     }));
 
-    await imageCreateManyAndUpdateSizes(imagesDb, parentFolderId, user?.id ? user.id : folder.createdById);
+    await imageCreateManyAndUpdateSizes(imagesDb.filter((i) => i !== undefined), parentFolderId, user?.id ? user.id : folder.createdById);
 
     if (folder.coverId === null) {
         const cover = await prisma.image.findFirst({
@@ -138,7 +147,8 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
     revalidatePath("/app/folders");
     revalidatePath("/app");
 
-    return { error: null };
+    console.log("End of upload, rejected are", rejectedFiles);
+    return { error: null, rejectedFiles: rejectedFiles.length > 0 ? rejectedFiles : undefined };
 }
 
 export async function downloadImages(imageIds: string[]): Promise<ReadableStream<Uint8Array> | null> {

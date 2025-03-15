@@ -283,7 +283,7 @@ export const handleImagesSubmission = async (
 	}
 
 	const r = await uploadImages(folderId, formData, shareToken, tokenType, pinCode);
-
+	console.log("Upload result client side", r);
 	setUploading(false);
 
 	if (r.error) {
@@ -296,11 +296,19 @@ export const handleImagesSubmission = async (
 	}
 
 	uploadForm.reset();
-	toast({
-		title: "Images uploaded",
-		description: "The images were uploaded successfully."
-	});
 
+	if (r.rejectedFiles && r.rejectedFiles.length > 0) {
+		toast({
+			title: "Some images were rejected",
+			description: r.rejectedFiles.join(", "),
+			variant: "destructive"
+		});
+	} else {
+		toast({
+			title: "Images uploaded",
+			description: "The images were uploaded successfully."
+		});
+	}
 	return true;
 }
 
