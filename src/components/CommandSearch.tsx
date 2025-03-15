@@ -101,15 +101,20 @@ export function CommandSearch({ folders, images }: { folders: LightFolder[], ima
                             </CommandItem>
                         ))}
                     </CommandGroup>
-                    <CommandSeparator />
-                    <CommandGroup heading={t('sections.images')}>
-                        {images.map((image) => (
-                            <CommandItem key={image.id} value={image.id} onSelect={() => runCommand(() => router.push(`/app/folders/${image.folder.id}`))}>
-                                <Image />
-                                <span>{image.folder.name} - {image.name}</span>
-                            </CommandItem>
-                        ))}
-                    </CommandGroup>
+                    {images.length > 0
+                        ? <>
+                            <CommandSeparator />
+                            <CommandGroup heading={t('sections.images')}>
+                                {images.map((image) => (
+                                    <CommandItem key={image.id} value={image.id} onSelect={() => runCommand(() => router.push(`/app/folders/${image.folder.id}`))}>
+                                        <Image />
+                                        <span>{image.folder.name} - {image.name}</span>
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                        </>
+                        : null
+                    }
                     <CommandSeparator />
                     <CommandGroup heading={t('sections.account')}>
                         <CommandItem onSelect={() => runCommand(() => router.push("/app/account?focus=email"))}>
