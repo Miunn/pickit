@@ -10,13 +10,15 @@ import { AccountFormSchema, ChangePasswordSchema, UserLight } from "@/lib/defini
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CircleAlert, CircleCheck, Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import ChangeEmailConfirmationDialog from "./ChangeEmailConfirmationDialog"
+import { useSearchParams } from "next/navigation"
 
 export default function AccountForm({ user }: { user: UserLight }) {
 
+    const searchParams = useSearchParams();
     const t = useTranslations("components.account.accountForm");
     const [loadingInfos, setLoadingInfos] = useState<boolean>(false);
     const [newVerficiationLoading, setNewVerificationLoading] = useState<boolean>(false);
@@ -147,6 +149,17 @@ export default function AccountForm({ user }: { user: UserLight }) {
             description: "Your password has been updated successfully",
         });
     }
+
+    useEffect(() => {
+        if (searchParams.has("focus")) {
+            const focus = searchParams.get("focus");
+            if (focus === "email") {
+                accountFormSchema.setFocus("email", { shouldSelect: true });
+            } else if (focus === "password") {
+                passwordFormSchema.setFocus("oldPassword");
+            }
+        }
+    });
 
     return (
         <div>

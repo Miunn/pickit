@@ -112,11 +112,11 @@ export function CommandSearch({ folders, images }: { folders: LightFolder[], ima
                     </CommandGroup>
                     <CommandSeparator />
                     <CommandGroup heading={t('sections.account')}>
-                        <CommandItem onSelect={() => runCommand(() => router.push("/app/account"))}>
+                        <CommandItem onSelect={() => runCommand(() => router.push("/app/account?focus=email"))}>
                             <Mails />
                             <span>{t('actions.account.changeEmail')}</span>
                         </CommandItem>
-                        <CommandItem onSelect={() => runCommand(() => router.push("/app/account"))}>
+                        <CommandItem onSelect={() => runCommand(() => router.push("/app/account?focus=password"))}>
                             <RectangleEllipsis />
                             <span>{t('actions.account.changePassword')}</span>
                         </CommandItem>
