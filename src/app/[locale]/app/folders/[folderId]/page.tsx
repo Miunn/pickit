@@ -20,7 +20,7 @@ export default async function FolderPage({ params, searchParams }: { params: { f
     }
 
     return (
-        <div>
+        <>
             {folderData.folder
                 ? <FolderContent
                     folder={getSortedFolderContent(folderData.folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithAccessToken}
@@ -42,6 +42,6 @@ export default async function FolderPage({ params, searchParams }: { params: { f
                 </div>
                 : null
             }
-        </div>
+        </>
     )
 }

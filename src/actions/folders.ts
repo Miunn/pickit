@@ -74,8 +74,8 @@ export async function getFolderFull(folderId: string, shareToken?: string, token
 
     if (shareToken) {
         const dataFromToken = await validateShareToken(folderId, shareToken, tokenType as "accessToken" | "personAccessToken", hashedPinCode);
-
-        if (!dataFromToken.error || !user) {
+        
+        if (!dataFromToken.error || dataFromToken.error !== "invalid-token" || !user) {
             return dataFromToken;
         }
     }

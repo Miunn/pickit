@@ -9,26 +9,7 @@ export async function GET(req: NextRequest, { params }: { params: { image: strin
     const accessKey = req.nextUrl.searchParams.get("h");
     const tokenType = req.nextUrl.searchParams.get("t");
     const { user } = await getCurrentSession();
-    if (user) {
-        const image = await prisma.image.findUnique({
-            where: {
-                id: params.image,
-                createdBy: {
-                    id: user.id as string
-                }
-            }
-        });
-
-        if (!image) {
-            return NextResponse.json({ error: "Image not found" });
-        }
-
-        const buffer = await fs.promises.readFile(image.path);
-        const res = new NextResponse(buffer);
-        res.headers.set('Content-Disposition', 'inline');
-        res.headers.set('Content-Type', `image/${image.extension}`);
-        return res;
-    } else if (shareToken && shareToken !== "undefined") {
+    if (shareToken && shareToken !== "undefined") {
         let access;
         if (tokenType === "p") {
             access = await prisma.personAccessToken.findUnique({
@@ -85,6 +66,25 @@ export async function GET(req: NextRequest, { params }: { params: { image: strin
                 id: params.image,
                 folder: {
                     id: access.folder.id as string
+                }
+            }
+        });
+
+        if (!image) {
+            return NextResponse.json({ error: "Image not found" });
+        }
+
+        const buffer = await fs.promises.readFile(image.path);
+        const res = new NextResponse(buffer);
+        res.headers.set('Content-Disposition', 'inline');
+        res.headers.set('Content-Type', `image/${image.extension}`);
+        return res;
+    } else if (user) {
+        const image = await prisma.image.findUnique({
+            where: {
+                id: params.image,
+                createdBy: {
+                    id: user.id as string
                 }
             }
         });
