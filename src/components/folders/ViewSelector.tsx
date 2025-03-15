@@ -24,7 +24,7 @@ export default function ViewSelector({ viewState, setViewState }: { viewState: V
                     break;
             }
         }} value={viewState}>
-            <SelectTrigger className="w-28 font-medium">
+            <SelectTrigger className="w-28 font-medium hover:bg-accent hover:text-accent-foreground">
                 <SelectValue placeholder={t('placeholder')} />
             </SelectTrigger>
             <SelectContent>
