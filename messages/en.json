@@ -51,7 +51,8 @@
     "contact": {
       "title": "Get in touch",
       "titleMini": "Contact",
-      "description": "If you have any questions, suggestions or need help, feel free to contact us. We will be happy to help you."
+      "description": "If you have any questions, suggestions or need help, feel free to contact us. We will be happy to help you.",
+      "sendEmail": "Send us an email instead"
     },
     "dashboard": {
       "title": "Pickit - Dashboard",

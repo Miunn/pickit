@@ -7,7 +7,7 @@ export default function Footer() {
     const t = useTranslations("components.footer");
 
     return (
-        <footer className="border-t">
+        <footer className="border-t border-primary">
             <div className="max-w-7xl mx-auto py-12">
                 <div className="flex justify-between">
                     <h1 className="text-7xl tracking-wider">Pickit</h1>

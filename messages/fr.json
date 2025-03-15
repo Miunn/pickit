@@ -51,7 +51,8 @@
     "contact": {
       "title": "Entrons en contact",
       "titleMini": "Contact",
-      "description": "Vous avez une question, une suggestion ou besoin d'aide ? N'hésitez pas à nous contacter. Nous serons ravis de vous aider."
+      "description": "Vous avez une question, une suggestion ou besoin d'aide ? N'hésitez pas à nous contacter. Nous serons ravis de vous aider.",
+      "sendEmail": "Envoyer un email"
     },
     "dashboard": {
       "title": "Pickit - Dashboard",
@@ -460,7 +461,7 @@
         },
         "message": {
           "label": "Votre message",
-          "placeholder": "J'aimerais que vous ajoutiez cette fonctionnalité..."
+          "placeholder": "J'aimerais que vous ajoutiez la possibilité de..."
         }
       },
       "actions": {
