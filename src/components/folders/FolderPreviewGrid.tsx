@@ -48,7 +48,7 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
                         {folder.cover
                             ? <div className={`relative h-36 mb-4 flex justify-center items-center`}>
                                 <Image src={`/api/folders/${folder.id}/images/${folder.coverId}`} alt={folder.cover.name}
-                                    className={"relative border border-black rounded-xl object-cover"} sizes="33vw" fill />
+                                    className={"relative border border-primary rounded-xl object-cover"} sizes="33vw" fill />
                             </div>
                             : <div
                                 className={"border rounded-2xl bg-gray-100 h-36 mb-4 flex justify-center items-center"}>
