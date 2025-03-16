@@ -37,7 +37,7 @@ export default function Header({ className }: { className?: string  }) {
     });
 
     return (
-        <header className={cn("flex items-center justify-between py-4", className)}>
+        <header className={cn("flex items-center justify-between py-4", "sticky top-0 z-50 bg-background/90 backdrop-blur", className)}>
             <div className={"w-full grid grid-cols-3 items-center max-w-7xl mx-auto"}>
                 <Link href={`/${locale}`} className="w-fit flex items-center gap-2">
                     <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">

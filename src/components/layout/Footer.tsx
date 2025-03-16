@@ -18,7 +18,7 @@ export default function Footer() {
                             <Label>{t('about.title')}</Label>
 
                             <div className="flex flex-col gap-2">
-                                <Link href="#" className="text-sm font-medium text-gray-600">{t("about.features")}</Link>
+                                <Link href={`/${locale}/features`} className="text-sm font-medium text-gray-600">{t("about.features")}</Link>
                                 <Link href="#" className="text-sm font-medium text-gray-600">{t("about.pricing")}</Link>
                                 <Link href={`/${locale}/contact`} className="text-sm font-medium text-gray-600">{t("about.contact")}</Link>
 
