@@ -8,6 +8,7 @@ import { getTranslations } from "next-intl/server";
 import { AnimatedShinyText } from "@/components/magicui/animated-shiny-text";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function RootPage({ params }: { params: { locale: string } }) {
 
@@ -108,8 +109,10 @@ export default async function RootPage({ params }: { params: { locale: string } 
                             </p>
 
                             <div className="flex items-center gap-4">
-                                <Button className="p-7 rounded-full" variant={"secondary"}>
-                                    {t('hero.getStarted')} <ArrowRight />
+                                <Button className="p-7 rounded-full" variant={"secondary"} asChild>
+                                    <Link href={"/signin?side=register"}>
+                                        {t('hero.getStarted')} <ArrowRight />
+                                    </Link>
                                 </Button>
                                 <Button variant={"link"} className="text-white">
                                     {t('hero.seeMore')}
@@ -158,7 +161,9 @@ export default async function RootPage({ params }: { params: { locale: string } 
                     <FeatureCarouselPreview />
                 </div>
 
-                <FaqAccordion />
+                <div id="faq">
+                    <FaqAccordion />
+                </div>
             </main>
             <Footer />
         </>

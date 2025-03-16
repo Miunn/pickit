@@ -1,10 +1,11 @@
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Label } from "../ui/label";
 import Link from "next/link";
 
 export default function Footer() {
 
     const t = useTranslations("components.footer");
+    const locale = useLocale();
 
     return (
         <footer className="border-t border-primary">
@@ -19,7 +20,7 @@ export default function Footer() {
                             <div className="flex flex-col gap-2">
                                 <Link href="#" className="text-sm font-medium text-gray-600">{t("about.features")}</Link>
                                 <Link href="#" className="text-sm font-medium text-gray-600">{t("about.pricing")}</Link>
-                                <Link href="#" className="text-sm font-medium text-gray-600">{t("about.contact")}</Link>
+                                <Link href={`/${locale}/contact`} className="text-sm font-medium text-gray-600">{t("about.contact")}</Link>
 
                             </div>
                         </div>
@@ -28,7 +29,7 @@ export default function Footer() {
                             <Label>{t('documentation.title')}</Label>
 
                             <div className="flex flex-col gap-2">
-                                <Link href="#" className="text-sm font-medium text-gray-600">{t("documentation.faq")}</Link>
+                                <Link href={`/${locale}#faq`} className="text-sm font-medium text-gray-600">{t("documentation.faq")}</Link>
                                 <Link href="#" className="text-sm font-medium text-gray-600">{t("documentation.support")}</Link>
                             </div>
                         </div>
