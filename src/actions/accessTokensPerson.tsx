@@ -303,7 +303,7 @@ async function sendShareFolderEmail(data: { email: string, link: string, locked:
         const content = ReactDOMServer.renderToString(<ShareFolderTemplate name={name} folderName={folderName} link={d.link} isLocked={d.locked} />);
 
         await transporter.sendMail({
-            from: `"The Pickit Team" <${process.env.MAIL_SENDER}>`,
+            from: `"The Echomori Team" <${process.env.MAIL_SENDER}>`,
             to: d.email,
             subject: "You've been shared a folder",
             text: "You've been shared a folder",

@@ -122,7 +122,7 @@ export default function ResetPasswordTemplate({ name, token }: { name: string, t
                                 <tr>
                                     <td align="center">
                                         <Text className="!mb-0 !mt-[4px] !text-[16px] !font-semibold !leading-[24px] !text-gray-500">
-                                            support@pickit.com
+                                            support@echomori.fr
                                         </Text>
                                     </td>
                                 </tr>

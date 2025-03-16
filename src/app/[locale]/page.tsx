@@ -150,7 +150,7 @@ export default async function RootPage({ params }: { params: { locale: string } 
                         <h3 className="text-5xl">Store & Share your photos easily</h3>
 
                         <p>
-                            With Pickit, you can store and share your photos to your loved ones easily.
+                            With Echomori, you can store and share your photos to your loved ones easily.
                             Our platform is secure and easy to use, you can create albums and share them with your friends and family.
                         </p>
                     </div>

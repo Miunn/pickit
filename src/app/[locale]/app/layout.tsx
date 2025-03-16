@@ -18,9 +18,10 @@ import { Role } from "@prisma/client";
 import { getCurrentSession } from "@/lib/session";
 import { CommandSearch } from "@/components/CommandSearch";
 import { NuqsAdapter } from 'nuqs/adapters/react'
+import { SwitchTheme } from "@/components/generic/SwitchTheme";
 
 export const metadata: Metadata = {
-    title: "Pickit",
+    title: "Echomori",
     description: "Upload and share images with ease.",
 };
 
@@ -111,7 +112,10 @@ export default async function LocaleLayout({
                                 <Separator orientation="vertical" className="mr-2 h-4" />
                                 <HeaderBreadcumb />
                             </div>
-                            <SwitchLocale locale={locale} className="text-xs" />
+                            <div>
+                                <SwitchLocale locale={locale} className="text-xs" />
+                                <SwitchTheme />
+                            </div>
                         </div>
                     </header>
                     {me?.emailVerified === false ? (

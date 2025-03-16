@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import React from "react";
 import SwitchLocale from "../generic/SwitchLocale";
 import { useLocale, useTranslations } from "next-intl";
+import { SwitchTheme } from "../generic/SwitchTheme";
 
 export default function Header({ className }: { className?: string  }) {
 
@@ -43,7 +44,7 @@ export default function Header({ className }: { className?: string  }) {
                     <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                         <Command className="size-4" />
                     </div>
-                    <h1 className="text-xl font-bold">Pickit</h1>
+                    <h1 className="text-xl font-bold">Echomori</h1>
                 </Link>
 
                 <nav className="place-self-center">
@@ -65,6 +66,7 @@ export default function Header({ className }: { className?: string  }) {
                         <Link href={`/${locale}/signin`}>{ t('nav.login') }</Link>
                     </Button>
                     <SwitchLocale locale={locale} />
+                    <SwitchTheme />
                 </div>
             </div>
 

@@ -56,7 +56,7 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                                     </Button>
                                 </div>
 
-                                <Text>Si vous n'avez pas de compte Pickit ou que vous n'avez pas effectué de changement, vous pouvez ignorer ce message.</Text>
+                                <Text>Si vous n'avez pas de compte Echomori ou que vous n'avez pas effectué de changement, vous pouvez ignorer ce message.</Text>
 
                                 <Text>Cordialement,<br />
                                     L'équipe <strong>{process.env.APP_NAME}</strong></Text>
@@ -118,7 +118,7 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                                 <tr>
                                     <td align="center">
                                         <Text className="!mb-0 !mt-[4px] !text-[16px] !font-semibold !leading-[24px] !text-gray-500">
-                                            support@pickit.com
+                                            support@echomori.fr
                                         </Text>
                                     </td>
                                 </tr>

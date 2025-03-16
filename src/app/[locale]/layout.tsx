@@ -4,11 +4,12 @@ import { NextIntlClientProvider } from 'next-intl';
 import { Toaster } from '@/components/ui/toaster';
 import { getMessages } from 'next-intl/server';
 import { Metadata } from 'next';
+import { ThemeProvider } from 'next-themes';
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Pickit",
+    title: "Echomori",
     description: "Upload and share images with ease.",
 };
 
@@ -26,10 +27,16 @@ export default async function LocaleLayout({ children, params }: Props) {
     return (
         <html lang={params.locale}>
             <body className={inter.className}>
+                <ThemeProvider
+                    attribute="class"
+                    defaultTheme="system"
+                    enableSystem={true}
+                    disableTransitionOnChange={true}>
                 <NextIntlClientProvider messages={messages}>
                     {children}
                     <Toaster />
                 </NextIntlClientProvider>
+                </ThemeProvider>
             </body>
         </html>
     );

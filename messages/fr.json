@@ -9,7 +9,7 @@
     "signUpTab": "Créer un compte"
   },
   "sidebar": {
-    "title": "Pickit",
+    "title": "Echomori",
     "message": "Save moments of life",
     "main": {
       "title": "Vos sauvegardes",
@@ -55,7 +55,7 @@
       "sendEmail": "Envoyer un email"
     },
     "dashboard": {
-      "title": "Pickit - Dashboard",
+      "title": "Echomori - Dashboard",
       "folders": {
         "lastUpdatedFolders": "Derniers dossiers mis à jour",
         "empty": "Aucun dossier créé"
@@ -69,7 +69,7 @@
       }
     },
     "folders": {
-      "title": "Pickit - Dosseris",
+      "title": "Echomori - Dosseris",
       "headline": "Vos dossiers créés",
       "empty": "Aucun dossier créé",
       "contextMenu": {
@@ -77,7 +77,7 @@
       }
     },
     "links": {
-      "title": "Pickit - Links",
+      "title": "Echomori - Links",
       "persons": {
         "title": "Gestion des partage aux personnes"
       },
@@ -86,7 +86,7 @@
       }
     },
     "account": {
-      "title": "Pickit - Compte",
+      "title": "Echomori - Compte",
       "headline": "Votre compte",
       "subtitle": "Gérer les paramètres de votre compte"
     }
@@ -106,7 +106,7 @@
     "auth": {
       "signIn": {
         "title": "Connexion",
-        "description": "Connectez-vous à votre compte Pickit",
+        "description": "Connectez-vous à votre compte Echomori",
         "form": {
           "email": "Adresse mail",
           "password": "Mot de passe",
@@ -129,7 +129,7 @@
       },
       "signUp": {
         "title": "Créer un compte",
-        "description": "Créez votre compte Pickit",
+        "description": "Créez votre compte Echomori",
         "form": {
           "name": "Nom",
           "email": "Adresse mail",
@@ -511,7 +511,7 @@
         "privacy": "Politique de confidentialité"
       },
       "copyright": {
-        "text": "© 2025 Pickit. Tous droits réservés."
+        "text": "© 2025 Echomori. Tous droits réservés."
       }
     }
   },

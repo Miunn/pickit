@@ -137,7 +137,7 @@ export async function sendVerificationEmail(email: string): Promise<{
 
 
     const mail = await transporter.sendMail({
-        from: `"The Pickit Team" <${process.env.MAIL_SENDER}>`,
+        from: `"The Echomori Team" <${process.env.MAIL_SENDER}>`,
         to: email,
         subject: "Verify your email",
         html: emailHtml,
@@ -295,7 +295,7 @@ export async function requestPasswordReset(data: z.infer<typeof RequestPasswordR
     const emailHtml = await render(<ResetPasswordTemplate name={user.name} token={token} />);
   
     const mail = await transporter.sendMail({
-      from: `"The Pickit Team" <${process.env.MAIL_SENDER}>`,
+      from: `"The Echomori Team" <${process.env.MAIL_SENDER}>`,
       to: user.email,
       subject: "Reset your password",
       text: "Reset your password",
