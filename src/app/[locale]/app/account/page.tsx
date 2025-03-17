@@ -38,7 +38,7 @@ export default async function AccountPage({ params }: { params: { locale: string
 
             <Separator orientation="horizontal" className="my-6" />
 
-             <div className="flex-1 grid gap-24" style={{ gridTemplateColumns: "0.7fr 1fr" }}>
+             <div className="flex-1 grid grid-cols-1 lg:grid-cols-[0.7fr_1fr] gap-24">
                 <AccountForm user={user} />
                 <ReviewFolders locale={params.locale} folders={folders || []} />
             </div>
