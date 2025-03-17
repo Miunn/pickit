@@ -6,20 +6,18 @@ import { prisma } from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/routing";
 
-export default async function AccountPage({ params }: { params: { locale: string } }) {
+export default async function AccountPage() {
 
     const user = (await getMe()).user;
 
     if (!user) {
-        return redirect(`/${params.locale}/signin`);
+        return redirect(`/signin`);
     }
 
     const t = await getTranslations("pages.account");
 
     const folders = await prisma.folder.findMany({
-        where: {
-            createdBy: { id: user.id }
-        },
+        where: { createdBy: { id: user.id } },
         select: {
             id: true,
             name: true,
@@ -40,7 +38,7 @@ export default async function AccountPage({ params }: { params: { locale: string
 
              <div className="flex-1 grid grid-cols-1 lg:grid-cols-[0.7fr_1fr] gap-24">
                 <AccountForm user={user} />
-                <ReviewFolders locale={params.locale} folders={folders || []} />
+                <ReviewFolders folders={folders || []} />
             </div>
         </div>
     )

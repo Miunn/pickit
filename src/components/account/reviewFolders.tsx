@@ -6,14 +6,15 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatBytes } from "@/lib/utils";
 import { FolderX, MoreHorizontal } from "lucide-react";
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function ReviewFolders({ locale, folders }: { locale: string, folders: { id: string, name: string, size: number, createdAt: Date, _count: { images: number } }[] }) {
+export default function ReviewFolders({ folders }: { folders: { id: string, name: string, size: number, createdAt: Date, _count: { images: number } }[] }) {
 
     const intlFormatter = useFormatter();
     const t = useTranslations("components.account.reviewFolders");
+    const locale = useLocale();
     const deleteFolderTranslations = useTranslations("dialogs.folders.delete");
     const [openDeleteFolderDialog, setOpenDeleteFolderDialog] = useState<boolean>(false);
     const [selectedFolder, setSelectedFolder] = useState<{ id: string, name: string } | null>(null);
