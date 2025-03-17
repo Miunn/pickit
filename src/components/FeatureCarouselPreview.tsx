@@ -29,13 +29,13 @@ export default function FeatureCarouselPreview() {
                         <CardTitle className={`flex items-center gap-2 ${expandedIndex === 0 ? "text-primary" : "text-gray-500"}`} onClick={() => setExpandedIndex(0)}>
                             <kbd className={expandedIndex === 0
                                 ? "inline-flex items-center justify-center text-primary-foreground h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-primary ring-1 ring-inset ring-primary"
-                                : "inline-flex items-center justify-center text-gray-700 h-5 w-5 text-[11px] px-1 rounded font-medium bg-gray-100 ring-1 ring-inset ring-gray-300"
+                                : "inline-flex items-center justify-center text-muted-foreground h-5 w-5 text-[11px] px-1 rounded font-medium bg-muted ring-1 ring-inset ring-muted"
                             }>1</kbd>
                             {t('section1.title')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className={`transition-all duration-500 ease-in-out ${expandedIndex === 0 ? "max-h-32 opacity-100" : "max-h-0 opacity-0 py-0"}`}>
-                        <p className="text-sm text-gray-800 mb-4" dangerouslySetInnerHTML={{ __html: t('section1.description') }} />
+                        <p className="text-sm text-foreground mb-4" dangerouslySetInnerHTML={{ __html: t('section1.description') }} />
                         <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20">
                             <div ref={progressRefs[0]} className="group-hover:[animation-play-state:paused] h-full w-0 flex-1 bg-primary" onAnimationEndCapture={() => setExpandedIndex((expandedIndex + 1) % 4)}></div>
                         </div>
@@ -46,13 +46,13 @@ export default function FeatureCarouselPreview() {
                         <CardTitle className={`flex items-center gap-2 ${expandedIndex === 1 ? "text-primary" : "text-gray-500"}`}>
                             <kbd className={expandedIndex === 1
                                 ? "inline-flex items-center justify-center text-primary-foreground h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-primary ring-1 ring-inset ring-primary"
-                                : "inline-flex items-center justify-center text-gray-700 h-5 w-5 text-[11px] px-1 rounded font-medium bg-gray-100 ring-1 ring-inset ring-gray-300"
+                                : "inline-flex items-center justify-center text-muted-foreground h-5 w-5 text-[11px] px-1 rounded font-medium bg-muted ring-1 ring-inset ring-muted"
                             }>2</kbd>
                             {t('section2.title')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className={`transition-all duration-500 ease-in-out ${expandedIndex === 1 ? "max-h-32 opacity-100" : "max-h-0 opacity-0 py-0"}`}>
-                        <p className="text-sm text-gray-800 mb-4">{t('section2.description')}</p>
+                        <p className="text-sm text-foreground mb-4">{t('section2.description')}</p>
                         <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20">
                             <div ref={progressRefs[1]} className="group-hover:[animation-play-state:paused] h-full w-0 flex-1 bg-primary" onAnimationEndCapture={() => setExpandedIndex((expandedIndex + 1) % 4)}></div>
                         </div>
@@ -63,13 +63,13 @@ export default function FeatureCarouselPreview() {
                         <CardTitle className={`flex items-center gap-2 ${expandedIndex === 2 ? "text-primary" : "text-gray-500"}`}>
                             <kbd className={expandedIndex === 2
                                 ? "inline-flex items-center justify-center text-primary-foreground h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-primary ring-1 ring-inset ring-primary"
-                                : "inline-flex items-center justify-center text-gray-700 h-5 w-5 text-[11px] px-1 rounded font-medium bg-gray-100 ring-1 ring-inset ring-gray-300"
+                                : "inline-flex items-center justify-center text-muted-foreground h-5 w-5 text-[11px] px-1 rounded font-medium bg-muted ring-1 ring-inset ring-muted"
                             }>3</kbd>
                             {t('section3.title')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className={`transition-all duration-500 ease-in-out ${expandedIndex === 2 ? "max-h-32 opacity-100" : "max-h-0 opacity-0 py-0"}`}>
-                        <p className="text-sm text-gray-800 mb-4">
+                        <p className="text-sm text-foreground mb-4">
                             {t('section3.description')}
                         </p>
                         <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20">
@@ -82,13 +82,13 @@ export default function FeatureCarouselPreview() {
                         <CardTitle className={`flex items-center gap-2 ${expandedIndex === 3 ? "text-primary" : "text-gray-500"}`}>
                             <kbd className={expandedIndex === 3
                                 ? "inline-flex items-center justify-center text-primary-foreground h-5 min-w-[20px] text-[11px] px-1 rounded font-medium font-sans bg-primary ring-1 ring-inset ring-primary"
-                                : "inline-flex items-center justify-center text-gray-700 h-5 w-5 text-[11px] px-1 rounded font-medium bg-gray-100 ring-1 ring-inset ring-gray-300"
+                                : "inline-flex items-center justify-center text-muted-foreground h-5 w-5 text-[11px] px-1 rounded font-medium bg-muted ring-1 ring-inset ring-muted"
                             }>4</kbd>
                             {t('section4.title')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className={`transition-all duration-500 ease-in-out ${expandedIndex === 3 ? "max-h-32 opacity-100" : "max-h-0 opacity-0 py-0"}`}>
-                        <p className="text-sm text-gray-800 mb-4">
+                        <p className="text-sm text-foreground mb-4">
                             {t('section4.description')}
                         </p>
                         <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20">
