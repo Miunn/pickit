@@ -15,12 +15,7 @@ export default async function LoginPage({ params, searchParams }: { params: { lo
     const t = await getTranslations('auth');
 
     return (
-        <main style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-        }}>
+        <main className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <Tabs defaultValue={searchParams.side === "register" ? "register" : "login"}>
                 <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="login">{t("signInTab")}</TabsTrigger>
