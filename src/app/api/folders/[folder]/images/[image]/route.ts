@@ -9,7 +9,7 @@ export async function GET(req: NextRequest, { params }: { params: { image: strin
     const accessKey = req.nextUrl.searchParams.get("h");
     const tokenType = req.nextUrl.searchParams.get("t");
     const { user } = await getCurrentSession();
-    if (shareToken && shareToken !== "undefined") {
+    if (shareToken && shareToken !== "undefined" && shareToken !== "null") {
         let access;
         if (tokenType === "p") {
             access = await prisma.personAccessToken.findUnique({
