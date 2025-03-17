@@ -51,7 +51,7 @@ export default function SignupForm({ locale }: { locale: string }) {
         toast({
             title: t('form.success.title'),
             description: t('form.success.description'),
-            action: <ToastAction altText="Login"><Link href={"/signin"}>{t('form.success.action')}</Link></ToastAction>
+            action: <ToastAction altText="Login"><Link href={`/${locale}/signin?side=login`}>{t('form.success.action')}</Link></ToastAction>
         });
     }
 
