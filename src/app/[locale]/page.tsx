@@ -121,20 +121,20 @@ export default async function RootPage({ params }: { params: { locale: string } 
                         </div>
 
                         <div className="relative h-full">
-                            <Image className="rounded-xl absolute left-1/2 top-1/3 -translate-x-2/3 -translate-y-1/2" src={"/beach.jpg"} alt="beach" objectFit="cover" width={320} height={213} />
-                            <Image className="rounded-xl absolute right-1/4 bottom-1/3 translate-x-1/2 translate-y-1/2" src={"/bridge.jpg"} alt="beach" objectFit="cover" width={300} height={200} />
-                            <Image className="rounded-xl absolute left-2/3 top-1/3 translate-x-1/3 -translate-y-1/2" src={"/parrot.jpg"} alt="beach" objectFit="cover" width={170} height={256} />
+                            <Image className="rounded-xl absolute left-1/2 top-1/3 -translate-x-2/3 -translate-y-1/2 object-cover" src={"/beach.jpg"} alt="beach" width={320} height={213} />
+                            <Image className="rounded-xl absolute right-1/4 bottom-1/3 translate-x-1/2 translate-y-1/2 object-cover" src={"/bridge.jpg"} alt="beach" width={300} height={200} />
+                            <Image className="rounded-xl absolute left-2/3 top-1/3 translate-x-1/3 -translate-y-1/2 object-cover" src={"/parrot.jpg"} alt="beach" width={170} height={256} />
                         </div>
                     </div>
 
 
                     <div className="absolute bottom-0 left-[296px] -translate-x-1/2 translate-y-1/2">
                         <div className="absolute bottom-0 right-32 translate-y-1/2 w-32 h-32 bg-primary">
-                            <div className="w-32 h-32 bg-white rounded-tr-lg "></div>
+                            <div className="w-32 h-32 bg-background rounded-tr-lg "></div>
                         </div>
                         <div className="w-32 h-32 bg-primary rounded-full"></div>
                         <div className="absolute bottom-0 left-32 translate-y-1/2 w-32 h-32 bg-primary">
-                            <div className="w-32 h-32 bg-white rounded-tl-lg "></div>
+                            <div className="w-32 h-32 bg-background rounded-tl-lg "></div>
                         </div>
 
                         <div className="absolute left-1/2 -translate-x-1/2 w-24 h-24 rounded-full bg-primary mt-8"></div>

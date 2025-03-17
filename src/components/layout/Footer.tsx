@@ -18,9 +18,9 @@ export default function Footer() {
                             <Label>{t('about.title')}</Label>
 
                             <div className="flex flex-col gap-2">
-                                <Link href={`/${locale}/features`} className="text-sm font-medium text-gray-600">{t("about.features")}</Link>
-                                <Link href="#" className="text-sm font-medium text-gray-600">{t("about.pricing")}</Link>
-                                <Link href={`/${locale}/contact`} className="text-sm font-medium text-gray-600">{t("about.contact")}</Link>
+                                <Link href={`/${locale}/features`} className="text-sm font-medium text-foreground/60">{t("about.features")}</Link>
+                                <Link href="#" className="text-sm font-medium text-foreground/60">{t("about.pricing")}</Link>
+                                <Link href={`/${locale}/contact`} className="text-sm font-medium text-foreground/60">{t("about.contact")}</Link>
 
                             </div>
                         </div>
@@ -29,8 +29,8 @@ export default function Footer() {
                             <Label>{t('documentation.title')}</Label>
 
                             <div className="flex flex-col gap-2">
-                                <Link href={`/${locale}#faq`} className="text-sm font-medium text-gray-600">{t("documentation.faq")}</Link>
-                                <Link href="#" className="text-sm font-medium text-gray-600">{t("documentation.support")}</Link>
+                                <Link href={`/${locale}#faq`} className="text-sm font-medium text-foreground/60">{t("documentation.faq")}</Link>
+                                <Link href="#" className="text-sm font-medium text-foreground/60">{t("documentation.support")}</Link>
                             </div>
                         </div>
 
@@ -38,14 +38,14 @@ export default function Footer() {
                             <Label>{t('legal.title')}</Label>
 
                             <div className="flex flex-col gap-2">
-                                <Link href="#" className="text-sm font-medium text-gray-600">{t("legal.terms")}</Link>
-                                <Link href="#" className="text-sm font-medium text-gray-600">{t("legal.privacy")}</Link>
+                                <Link href="#" className="text-sm font-medium text-foreground/60">{t("legal.terms")}</Link>
+                                <Link href="#" className="text-sm font-medium text-foreground/60">{t("legal.privacy")}</Link>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <p className="w-fit ml-auto text-sm text-gray-600 mt-11">{t('copyright.text')}</p>
+                <p className="w-fit ml-auto text-sm text-foreground/60 mt-11">{t('copyright.text')}</p>
             </div>
         </footer>
     )
