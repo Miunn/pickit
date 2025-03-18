@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { transporter } from "@/lib/mailing";
 import { getCurrentSession } from "@/lib/session";
 import ShareFolderTemplate from "@/components/emails/ShareFolderTemplate";
+import { render } from "@react-email/components";
 
 export async function getPersonsAccessTokens(): Promise<{
     error: string | null,
@@ -297,10 +298,8 @@ export async function sendAgainPersonAccessToken(token: string) {
 }
 
 async function sendShareFolderEmail(data: { email: string, link: string, locked: boolean }[], name: string, folderName: string) {
-    const ReactDOMServer = (await import('react-dom/server')).default;
-
     data.forEach(async (d) => {
-        const content = ReactDOMServer.renderToString(<ShareFolderTemplate name={name} folderName={folderName} link={d.link} isLocked={d.locked} />);
+        const content = await render(<ShareFolderTemplate name={name} folderName={folderName} link={d.link} isLocked={d.locked} />);
 
         await transporter.sendMail({
             from: `"The Echomori Team" <${process.env.MAIL_SENDER}>`,
