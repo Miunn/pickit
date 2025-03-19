@@ -12,6 +12,7 @@ import { getCurrentSession } from "@/lib/session";
 import JSZip from "jszip";
 import { fileTypeFromBuffer } from 'file-type';
 import { z } from "zod";
+import { GoogleBucket } from "@/lib/bucket";
 
 export async function getLightImages(): Promise<{
     error: string | null;
@@ -100,11 +101,11 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
 
         const typeFromBuffer = await fileTypeFromBuffer(buffer);
         console.log("Type from buffer", typeFromBuffer);
-        if (!typeFromBuffer || !typeFromBuffer.mime.startsWith("image")) {
+        /*if (!typeFromBuffer || !typeFromBuffer.mime.startsWith("image")) {
             console.log("Rejected file", file.name);
             rejectedFiles.push(file.name);
             return undefined;
-        }
+        }*/
 
         const nameWithoutExtension = file.name.replace(/\.[^/.]+$/, "");
         const slug = `${file.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}-${Date.now()}`;
@@ -115,6 +116,7 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
         const imageData = {
             name: nameWithoutExtension,
             slug,
+            path: `${user?.id}/${parentFolderId}/${slug}.${metadata.format || "png"}`,
             extension: metadata.format || "png",
             size: file.size,
             width: metadata.width || 0,
@@ -122,7 +124,7 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
         };
 
         try {
-            await fs.promises.writeFile(`${folderPath}/${slug}.${imageData.extension}`, buffer);
+            await GoogleBucket.file(`${user?.id}/${parentFolderId}/${slug}.${imageData.extension}`).save(buffer);
         } catch (err) {
             console.error("Error writing file:", err);
             throw new Error("File upload failed");

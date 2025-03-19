@@ -1,11 +1,11 @@
 import { prisma } from "./prisma"
 
-export async function imageCreateManyAndUpdateSizes(data: { name: string, slug: string, extension: string, size: number, width: number, height: number }[], folderId: string, userId: string) {
+export async function imageCreateManyAndUpdateSizes(data: { name: string, slug: string, path: string, extension: string, size: number, width: number, height: number }[], folderId: string, userId: string) {
     await prisma.image.createMany({
-        data: data.map(({ name, slug, extension, size, width, height }) => ({
+        data: data.map(({ name, path, extension, size, width, height }) => ({
             name: name,
+            path,
             extension,
-            path: `drive/${folderId}/${slug}.${extension}`,
             createdById: userId,
             folderId: folderId,
             size,

@@ -41,7 +41,7 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
 
     return (
         <>
-            <ContextMenu>
+            <ContextMenu modal={false}>
                 <ContextMenuTrigger asChild>
                     <Link href={`/${locale}/app/folders/${folder.id}`} locale={locale}
                         className={"inline-block w-64"}>

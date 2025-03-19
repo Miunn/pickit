@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.15.2",
     "@hookform/resolvers": "^3.9.0",
     "@mapbox/node-pre-gyp": "^1.0.11",
     "@oslojs/crypto": "^1.0.1",

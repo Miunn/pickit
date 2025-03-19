@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import * as bcrypt from "bcryptjs";
 import fs from "fs";
 import { getCurrentSession } from "@/lib/session";
+import { GoogleBucket } from "@/lib/bucket";
 
 export async function GET(req: NextRequest, { params }: { params: { image: string }, }): Promise<NextResponse> {
     const shareToken = req.nextUrl.searchParams.get("share");
@@ -74,7 +75,8 @@ export async function GET(req: NextRequest, { params }: { params: { image: strin
             return NextResponse.json({ error: "Image not found" });
         }
 
-        const buffer = await fs.promises.readFile(image.path);
+        const file = GoogleBucket.file(image.path);
+        const [buffer] = await file.download();
         const res = new NextResponse(buffer);
         res.headers.set('Content-Disposition', 'inline');
         res.headers.set('Content-Type', `image/${image.extension}`);
@@ -93,7 +95,8 @@ export async function GET(req: NextRequest, { params }: { params: { image: strin
             return NextResponse.json({ error: "Image not found" });
         }
 
-        const buffer = await fs.promises.readFile(image.path);
+        const file = GoogleBucket.file(image.path);
+        const [buffer] = await file.download();
         const res = new NextResponse(buffer);
         res.headers.set('Content-Disposition', 'inline');
         res.headers.set('Content-Type', `image/${image.extension}`);
