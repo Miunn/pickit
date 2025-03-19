@@ -1,10 +1,10 @@
 import { prisma } from "./prisma"
 
-export async function imageCreateManyAndUpdateSizes(data: { name: string, slug: string, path: string, extension: string, size: number, width: number, height: number }[], folderId: string, userId: string) {
+export async function imageCreateManyAndUpdateSizes(data: { id?: string, name: string, slug: string, extension: string, size: number, width: number, height: number }[], folderId: string, userId: string) {
     await prisma.image.createMany({
-        data: data.map(({ name, path, extension, size, width, height }) => ({
-            name: name,
-            path,
+        data: data.map(({ id, name, extension, size, width, height }) => ({
+            id,
+            name,
             extension,
             createdById: userId,
             folderId: folderId,
@@ -27,47 +27,6 @@ export async function imageCreateManyAndUpdateSizes(data: { name: string, slug: 
     await prisma.user.update({
         where: { id: userId },
         data: { usedStorage: { increment: data.reduce((acc, { size }) => acc + size, 0) } }
-    })
-}
-
-export async function imageCreateAndUpdateSizes(name: string, folderId: string, slug: string, extension: string, size: number, width: number, height: number, userId: string) {
-    await prisma.image.create({
-        data: {
-            name: name,
-            extension,
-            path: `drive/${folderId}/${slug}.${extension}`,
-            size,
-            width,
-            height,
-            createdBy: {
-                connect: {
-                    id: userId
-                }
-            },
-            folder: {
-                connect: {
-                    id: folderId
-                }
-            }
-        }
-    })
-
-    await prisma.folder.update({
-        where: {
-            id: folderId,
-            createdBy: {
-                id: userId
-            }
-        },
-        data: {
-            updatedAt: new Date().toISOString(),
-            size: { increment: size }
-        }
-    })
-
-    await prisma.user.update({
-        where: { id: userId },
-        data: { usedStorage: { increment: size } }
     })
 }
 

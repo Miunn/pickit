@@ -13,6 +13,7 @@ import JSZip from "jszip";
 import { fileTypeFromBuffer } from 'file-type';
 import { z } from "zod";
 import { GoogleBucket } from "@/lib/bucket";
+import { randomUUID } from "crypto";
 
 export async function getLightImages(): Promise<{
     error: string | null;
@@ -101,11 +102,11 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
 
         const typeFromBuffer = await fileTypeFromBuffer(buffer);
         console.log("Type from buffer", typeFromBuffer);
-        /*if (!typeFromBuffer || !typeFromBuffer.mime.startsWith("image")) {
+        if (!typeFromBuffer || !typeFromBuffer.mime.startsWith("image")) {
             console.log("Rejected file", file.name);
             rejectedFiles.push(file.name);
             return undefined;
-        }*/
+        }
 
         const nameWithoutExtension = file.name.replace(/\.[^/.]+$/, "");
         const slug = `${file.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}-${Date.now()}`;
@@ -114,9 +115,9 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
         const metadata = await image.metadata();
 
         const imageData = {
+            id: randomUUID().toString(),
             name: nameWithoutExtension,
             slug,
-            path: `${user?.id}/${parentFolderId}/${slug}.${metadata.format || "png"}`,
             extension: metadata.format || "png",
             size: file.size,
             width: metadata.width || 0,
@@ -124,7 +125,7 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
         };
 
         try {
-            await GoogleBucket.file(`${user?.id}/${parentFolderId}/${slug}.${imageData.extension}`).save(buffer);
+            await GoogleBucket.file(`${user!.id}/${parentFolderId}/${imageData.id}`).save(buffer);
         } catch (err) {
             console.error("Error writing file:", err);
             throw new Error("File upload failed");
@@ -151,69 +152,6 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
 
     console.log("End of upload, rejected are", rejectedFiles);
     return { error: null, rejectedFiles: rejectedFiles.length > 0 ? rejectedFiles : undefined };
-}
-
-export async function downloadImages(imageIds: string[]): Promise<ReadableStream<Uint8Array> | null> {
-    const { user } = await getCurrentSession();
-
-    if (!user) {
-        return null;
-    }
-
-    const images = await prisma.image.findMany({
-        where: {
-            id: {
-                in: imageIds
-            },
-            createdBy: {
-                id: user.id
-            }
-        }
-    });
-
-
-    if (images.length === 0) {
-        return null;
-    }
-
-    const zip = new JSZip();
-
-    for (const image of images) {
-        const file = fs.readFileSync(process.cwd() + "/" + image.path);
-        const nameFromPath = image.path.split("/").pop() as string;
-        zip.file(nameFromPath, file);
-    }
-
-    const zipData = await zip.generateAsync({ type: "blob" });
-
-    return zipData.stream();
-}
-
-export async function downloadImage(imageId: string): Promise<ReadableStream<Uint8Array> | null> {
-    const { user } = await getCurrentSession();
-
-    if (!user) {
-        return null;
-    }
-
-    const image = await prisma.image.findUnique({
-        where: {
-            id: imageId,
-            createdBy: {
-                id: user.id
-            }
-        }
-    });
-
-    if (!image) {
-        return null;
-    }
-
-    const file = fs.readFileSync(process.cwd() + "/" + image.path);
-
-    const blob = new Blob([file], { type: "image/" + image.extension });
-
-    return blob.stream();
 }
 
 export async function getImagesWithFolderAndCommentsFromFolder(folderId: string): Promise<{
@@ -346,11 +284,11 @@ export async function deleteImage(folderId: string, imageId: string, shareToken?
         return { error: "Image not found" };
     }
 
-    fs.unlink(process.cwd() + "/" + image.path, (err) => {
-        if (err) {
-            console.error("Error deleting file", err);
-        }
-    });
+    try {
+        const r = await GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`).delete();        
+    } catch (err) {
+        console.error("Error deleting file:", err);
+    }
 
     if (user) {
         await imageDeleteAndUpdateSizes(imageId, user.id);

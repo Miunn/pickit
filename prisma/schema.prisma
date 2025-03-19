@@ -41,7 +41,6 @@ model Folder {
 model Image {
   id          String   @id @default(cuid())
   name        String
-  path        String
   size        Int
   extension   String
   width       Int

@@ -3,6 +3,7 @@ import {prisma} from "@/lib/prisma";
 import JSZip from "jszip";
 import fs from "fs";
 import { getCurrentSession } from "@/lib/session";
+import { GoogleBucket } from "@/lib/bucket";
 
 export async function GET(req: NextRequest, { params }: { params: {folder: string, image: string} }) {
     const { user } = await getCurrentSession();
@@ -26,10 +27,9 @@ export async function GET(req: NextRequest, { params }: { params: {folder: strin
     }
 
 
-    const file = fs.readFileSync(process.cwd() + "/" + image.path);
-
-    const blob = new Blob([file], { type: "image/" + image.extension });
-    const res = new NextResponse(blob.stream());
+    const file = GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`);
+    const [buffer] = await file.download();
+    const res = new NextResponse(buffer);
     res.headers.set('Content-Type', 'image/' + image.extension);
     res.headers.set('Content-Disposition', `attachment; filename=${image.name}.${image.extension}`);
     return res;

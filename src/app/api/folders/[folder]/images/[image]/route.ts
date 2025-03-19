@@ -75,7 +75,7 @@ export async function GET(req: NextRequest, { params }: { params: { image: strin
             return NextResponse.json({ error: "Image not found" });
         }
 
-        const file = GoogleBucket.file(image.path);
+        const file = GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`);
         const [buffer] = await file.download();
         const res = new NextResponse(buffer);
         res.headers.set('Content-Disposition', 'inline');
@@ -95,7 +95,7 @@ export async function GET(req: NextRequest, { params }: { params: { image: strin
             return NextResponse.json({ error: "Image not found" });
         }
 
-        const file = GoogleBucket.file(image.path);
+        const file = GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`);
         const [buffer] = await file.download();
         const res = new NextResponse(buffer);
         res.headers.set('Content-Disposition', 'inline');
