@@ -262,56 +262,6 @@ Promise<{ error: string | null, folder: (FolderWithImagesWithFolderAndComments &
 	return { error: null, folder: accessToken.folder };
 }
 
-export const handleImagesSubmission = async (
-	setUploading: React.Dispatch<React.SetStateAction<boolean>>,
-	data: z.infer<typeof UploadImagesFormSchema>,
-	uploadForm: UseFormReturn<{ images?: any; }, any, undefined>,
-	folderId: string,
-	shareToken?: string | null,
-	tokenType?: "accessToken" | "personAccessToken" | null,
-	pinCode?: string | null): Promise<boolean> => {
-	setUploading(true);
-
-	if (!data.images || data.images!.length === 0) {
-		return false;
-	}
-
-	const formData = new FormData();
-
-	for (let i = 0; i < data.images!.length; i++) {
-		formData.append(`image-${i}`, data.images![i]);
-	}
-
-	const r = await uploadImages(folderId, formData, shareToken, tokenType, pinCode);
-	console.log("Upload result client side", r);
-	setUploading(false);
-
-	if (r.error) {
-		toast({
-			title: "Error",
-			description: r.error,
-			variant: "destructive"
-		})
-		return false;
-	}
-
-	uploadForm.reset();
-
-	if (r.rejectedFiles && r.rejectedFiles.length > 0) {
-		toast({
-			title: "Some images were rejected",
-			description: r.rejectedFiles.join(", "),
-			variant: "destructive"
-		});
-	} else {
-		toast({
-			title: "Images uploaded",
-			description: "The images were uploaded successfully."
-		});
-	}
-	return true;
-}
-
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }

@@ -89,11 +89,6 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
         return { error: "You are not authorized to upload images to this folder" };
     }
 
-    const folderPath = `drive/${parentFolderId}`;
-    if (!fs.existsSync(folderPath)) {
-        fs.mkdirSync(folderPath, { recursive: true });
-    }
-
     const files = Array.from(formData.values()) as File[];
     const rejectedFiles: string[] = [];
     const imagesDb = await Promise.all(files.map(async (file) => {

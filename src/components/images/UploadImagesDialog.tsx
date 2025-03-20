@@ -4,47 +4,19 @@ import {useTranslations} from "next-intl";
 import {
     Dialog,
     DialogContent,
-    DialogDescription, DialogFooter,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog";
 import {Button} from "@/components/ui/button";
-import {ImageUp, Loader2} from "lucide-react";
-import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
-import {useForm} from "react-hook-form";
-import {z} from "zod";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {UploadImagesFormSchema} from "@/lib/definitions";
+import {ImageUp} from "lucide-react";
 import {useState} from "react";
-import {FileUploader} from "@/components/generic/FileUploader";
-import { handleImagesSubmission } from "@/lib/utils";
-import { useSearchParams } from "next/navigation";
+import UploadImagesForm from "./UploadImagesForm";
 
 export const UploadImagesDialog = ({folderId}: { folderId: string }) => {
-    const searchParams = useSearchParams();
-    const shareToken = searchParams.get("share");
-    const shareHashPin = searchParams.get("h");
-    const tokenType = searchParams.get("t") === "p" ? "personAccessToken" : "accessToken";
-
     const t = useTranslations("images.dialog.upload");
     const [open, setOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-
-    const form = useForm<z.infer<typeof UploadImagesFormSchema>>({
-        resolver: zodResolver(UploadImagesFormSchema),
-        defaultValues: {
-            images: []
-        }
-    });
-
-    async function submitImages(data: z.infer<typeof UploadImagesFormSchema>) {
-        const r = await handleImagesSubmission(setLoading, data, form, folderId, shareToken, tokenType, shareHashPin);
-
-        if (r) {
-            setOpen(false);
-        }
-    }
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -58,7 +30,8 @@ export const UploadImagesDialog = ({folderId}: { folderId: string }) => {
                     <DialogTitle>{t('title')}</DialogTitle>
                     <DialogDescription>{t('description')}</DialogDescription>
                 </DialogHeader>
-                <Form {...form}>
+                <UploadImagesForm folderId={folderId} onUpload={() => setOpen(false)} />
+                {/* <Form {...form}>
                     <form onSubmit={form.handleSubmit(submitImages)} className="space-y-8">
                         <FormField
                             control={form.control}
@@ -95,7 +68,7 @@ export const UploadImagesDialog = ({folderId}: { folderId: string }) => {
                             }
                         </DialogFooter>
                     </form>
-                </Form>
+                </Form> */}
             </DialogContent>
         </Dialog>
     )

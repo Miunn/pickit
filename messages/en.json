@@ -365,6 +365,13 @@
           "trigger": "How we handle your comments ?",
           "content": "If you are logged in, your name will appear above your comment.<br />If you are not logged in but this folder has been shared with you by e-mail, the first part of your e-mail address will appear above your comment.<br />If you are not logged in and this file has been shared with you via a link, your comment will be anonymous.<br /><br />Comments are only shared with people who have access to the folder."
         }
+      },
+      "uploadImagesForm": {
+        "label": "Upload images",
+        "actions": {
+          "submit": "Upload",
+          "submitting": "Uploading"
+        }
       }
     },
     "accessTokens": {

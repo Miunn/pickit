@@ -7,22 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Trash2, X } from "lucide-react";
 import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
 import { CarouselDialog } from "@/components/images/CarouselDialog";
-import { FolderWithImagesWithFolderAndComments, ImageWithComments, ImageWithFolder, UploadImagesFormSchema } from "@/lib/definitions";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { FileUploader } from "../generic/FileUploader";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { formatBytes, getSortedFolderContent, handleImagesSubmission } from "@/lib/utils";
-import { useSearchParams } from "next/navigation";
+import { FolderWithImagesWithFolderAndComments, ImageWithComments, ImageWithFolder } from "@/lib/definitions";
+import { formatBytes, getSortedFolderContent } from "@/lib/utils";
 import { ImagesSortMethod } from "../folders/SortImages";
+import UploadImagesForm from "./UploadImagesForm";
 
 export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWithFolderAndComments, sortState: ImagesSortMethod }) => {
-    const searchParams = useSearchParams();
-    const shareToken = searchParams.get("share");
-    const shareHashPin = searchParams.get("h");
-    const tokenType = searchParams.get("t") === "p" ? "personAccessToken" : "accessToken";
-
     const t = useTranslations("images");
     const deleteMultipleTranslations = useTranslations("dialogs.images.deleteMultiple");
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
@@ -36,16 +26,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
     const [selected, setSelected] = useState<string[]>([]);
     const [sizeSelected, setSizeSelected] = useState<number>(0);
 
-    const uploadImageForm = useForm<z.infer<typeof UploadImagesFormSchema>>({
-        resolver: zodResolver(UploadImagesFormSchema),
-        defaultValues: {
-            images: []
-        }
-    });
 
-    function submitImages(data: z.infer<typeof UploadImagesFormSchema>) {
-        handleImagesSubmission(setUploading, data, uploadImageForm, folder.id, shareToken, tokenType, shareHashPin);
-    }
 
     useEffect(() => {
         if (selected.length === 0) {
@@ -78,40 +59,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
             <div className={"flex flex-wrap gap-3"}>
                 {folder.images.length == 0
                     ? <div className={"mx-auto flex flex-col justify-center items-center max-w-lg"}>
-                        <Form {...uploadImageForm}>
-                            <form onSubmit={uploadImageForm.handleSubmit(submitImages)} className="space-y-8">
-                                <FormField
-                                    control={uploadImageForm.control}
-                                    name="images"
-                                    render={({ field: { value, onChange, ...fieldProps } }) => (
-                                        <FormItem className="w-[443px]">
-                                            <FormLabel>{t('page.startUpload')}</FormLabel>
-                                            <FormControl>
-                                                <FileUploader
-                                                    multiple={true}
-                                                    maxSize={1024 * 1024 * 5}
-                                                    maxFileCount={999}
-                                                    accept={{
-                                                        'image/png': ['.png'],
-                                                        'image/jpeg': ['.jpg', '.jpeg'],
-                                                        'image/gif': ['.gif'],
-                                                        'image/webp': ['.webp'],
-                                                    }}
-                                                    onValueChange={(files) => onChange(files)}
-                                                    {...fieldProps}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                {uploading
-                                    ? <Button className="ml-auto flex" type="button" disabled><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Uploading</Button>
-                                    : <Button className="ml-auto flex" type="submit">Upload</Button>
-                                }
-                            </form>
-                        </Form>
+                        <UploadImagesForm folderId={folder.id} />
                     </div>
                     : getSortedFolderContent(folder, sortState).images.map((image: ImageWithFolder & ImageWithComments) => (
                         <Fragment key={image.id}>

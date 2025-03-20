@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { Toaster } from '@/components/ui/toaster';
+import { Toaster as SonnerToaster } from "@/components/ui/sonner"
 import { getMessages } from 'next-intl/server';
 import { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
@@ -35,6 +36,7 @@ export default async function LocaleLayout({ children, params }: Props) {
                 <NextIntlClientProvider messages={messages}>
                     {children}
                     <Toaster />
+                    <SonnerToaster />
                 </NextIntlClientProvider>
                 </ThemeProvider>
             </body>
