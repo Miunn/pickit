@@ -12,8 +12,6 @@ import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner"
 import { uploadImages } from "@/actions/images";
-import { ToastAction } from "../ui/toast";
-import { useState } from "react";
 import { Progress } from "../ui/progress";
 
 export default function UploadImagesForm({ folderId, onUpload }: { folderId: string, onUpload?: () => void }) {

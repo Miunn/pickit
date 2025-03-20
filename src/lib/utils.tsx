@@ -5,11 +5,15 @@ import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWit
 import { z } from "zod";
 import { uploadImages } from "@/actions/images";
 import { toast } from "@/hooks/use-toast";
+import { toast as sonnerToast } from "sonner"
 import { UseFormReturn } from "react-hook-form";
 import { prisma } from "./prisma";
 import * as bcrypt from "bcryptjs";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
 import saveAs from "file-saver";
+import JSZip from "jszip";
+import { Progress } from "@/components/ui/progress";
+import { getFolderFull } from "@/actions/folders";
 
 export function formatBytes(
 	bytes: number,
@@ -75,32 +79,95 @@ export const downloadClientImageHandler = async (image: ImageWithFolder) => {
 	saveAs(await r.blob(), `${image.name}.${image.extension}`);
 }
 
-export const downloadClientFolder = async (folder: Folder) => {
-	toast({
-		title: "Download started",
-		description: "Your download will start shortly",
-	});
+export const downloadClientFolder = async (folder: Folder | FolderWithImages, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashPinCode?: string) => {
+	let folderWithImages: FolderWithImages;
+	if (!('images' in folder)) {
+		const r = await getFolderFull(folder.id, shareToken, tokenType, hashPinCode);
 
-	const r = await fetch(`/api/folders/${folder.id}/download`);
+		if (r.error || !r.folder) {
+			toast({
+				title: "Error",
+				description: r.error,
+				variant: "destructive"
+			});
+			return;
+		}
 
-	if (r.status === 404) {
-		toast({
-			title: "No images found",
-			description: "There are no images in this folder to download"
-		});
-		return;
+		folderWithImages = r.folder;
+	} else {
+		folderWithImages = folder as FolderWithImages;
 	}
 
-	if (r.status !== 200) {
-		toast({
-			title: "Error",
-			description: "An error occurred while trying to download this folder",
-			variant: "destructive"
-		});
-		return;
+	sonnerToast(
+		<div className="w-full" >
+			Download started
+		</div>,
+		{
+			id: "download-progress-toast",
+			duration: Infinity,
+			classNames: {
+				content: "w-full",
+				title: "w-full"
+			},
+			description: <div className="w-full">
+				Your folder is being downloaded. Please wait while we prepare the files for you.
+				<Progress value={0} className="w-full mt-2" />
+			</div>
+		}
+	)
+
+	const zip = new JSZip();
+
+	for (let i = 0; i < folderWithImages.images.length; i++) {
+		const image = folderWithImages.images[i];
+		const r = await fetch(`/api/folders/${folder.id}/images/${image.id}/download`);
+
+		const buffer = await r.arrayBuffer();
+
+		zip.file(`${image.name}-${image.createdAt.getTime()}.${image.extension}`, buffer);
+
+		sonnerToast(
+			<div className="w-full" >
+				Download started
+			</div>,
+			{
+				id: "download-progress-toast",
+				description: <div className="w-full">
+					Your folder is being downloaded. Please wait while we prepare the files for you.
+					<Progress value={(i + 1) / folderWithImages.images.length * 100} className="w-full mt-2" />
+				</div>
+			}
+		)
 	}
 
-	saveAs(await r.blob(), `${folder.name}.zip`);
+	const zipData = await zip.generateAsync({ type: "blob" });
+
+	setTimeout(() => {
+		sonnerToast.dismiss("download-progress-toast");
+	}, 1000);
+
+	sonnerToast.success(`${folder.name} downloaded successfully`)
+
+	//const r = await fetch(`/api/folders/${folder.id}/download`);
+
+	// if (r.status === 404) {
+	// 	toast({
+	// 		title: "No images found",
+	// 		description: "There are no images in this folder to download"
+	// 	});
+	// 	return;
+	// }
+
+	// if (r.status !== 200) {
+	// 	toast({
+	// 		title: "Error",
+	// 		description: "An error occurred while trying to download this folder",
+	// 		variant: "destructive"
+	// 	});
+	// 	return;
+	// }
+
+	saveAs(zipData, `${folder.name}.zip`);
 }
 
 export const getSortedFolderContent = (folderContent: FolderWithImagesWithFolderAndComments, sort: ImagesSortMethod): FolderWithImagesWithFolderAndComments => {
@@ -222,7 +289,7 @@ export const validateShareToken = async (folderId: string, token: string, type: 
 }
 
 export const getFolderFullFromAccessToken = async (folderId: string, token: string, type: "accessToken" | "personAccessToken"):
-Promise<{ error: string | null, folder: (FolderWithImagesWithFolderAndComments & FolderWithCreatedBy) | null }> => {
+	Promise<{ error: string | null, folder: (FolderWithImagesWithFolderAndComments & FolderWithCreatedBy) | null }> => {
 	let accessToken;
 
 	if (type === "accessToken") {

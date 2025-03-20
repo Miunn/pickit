@@ -1,7 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
 import {prisma} from "@/lib/prisma";
-import JSZip from "jszip";
-import fs from "fs";
 import { getCurrentSession } from "@/lib/session";
 import { GoogleBucket } from "@/lib/bucket";
 

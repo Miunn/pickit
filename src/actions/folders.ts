@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import * as fs from "fs";
 import { revalidatePath } from "next/cache";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolder, FolderWithImagesWithFolderAndComments, LightFolder, PersonAccessTokenWithFolderWithCreatedBy } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolder, FolderWithImagesWithFolderAndComments, LightFolder, PersonAccessTokenWithFolderWithCreatedBy } from "@/lib/definitions";
 import { folderDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 import { FolderTokenPermission } from "@prisma/client";
 import { validateShareToken } from "@/lib/utils";
@@ -63,7 +63,7 @@ export async function getFolderName(id: string): Promise<{
 
 export async function getFolderFull(folderId: string, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashedPinCode?: string): Promise<{
     error: string | null,
-    folder: (FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithAccessToken) | null
+    folder: (FolderWithCreatedBy & FolderWithImages & FolderWithImagesWithFolderAndComments & FolderWithAccessToken) | null
     permission?: FolderTokenPermission
 }> {
     const { user } = await getCurrentSession();
@@ -255,37 +255,4 @@ export async function deleteFolder(folderId: string): Promise<any> {
     revalidatePath("/app/folders");
     revalidatePath("/app");
     return { error: null };
-}
-
-export async function downloadFolder(folderId: string): Promise<ReadableStream<Uint8Array> | null> {
-    const { user } = await getCurrentSession();
-
-    if (!user) {
-        return null;
-    }
-
-    const images = await prisma.image.findMany({
-        where: {
-            folderId: folderId,
-            createdBy: {
-                id: user.id as string
-            }
-        }
-    });
-
-    if (images.length === 0) {
-        return null;
-    }
-
-    const zip = new JSZip();
-
-    for (const image of images) {
-        const file = fs.readFileSync(process.cwd() + "/" + image.path);
-        const nameFromPath = image.path.split("/").pop() as string;
-        zip.file(nameFromPath, file);
-    }
-
-    const zipData = await zip.generateAsync({type: "blob"});
-
-    return zipData.stream();
 }

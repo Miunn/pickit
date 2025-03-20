@@ -1,7 +1,6 @@
 import {NextRequest, NextResponse} from "next/server";
 import {prisma} from "@/lib/prisma";
 import JSZip from "jszip";
-import fs from "fs";
 import { getCurrentSession } from "@/lib/session";
 import { GoogleBucket } from "@/lib/bucket";
 
@@ -30,7 +29,7 @@ export async function GET(req: NextRequest, { params }: { params: {folder: strin
     for (const image of images) {
         const file = GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`);
         const [buffer] = await file.download();
-        zip.file(image.name + '.' + image.extension, buffer);
+        zip.file(`${image.name}-${image.createdAt.getTime()}.${image.extension}`, buffer);
     }
 
     const zipData = await zip.generateAsync({type: "blob"});
