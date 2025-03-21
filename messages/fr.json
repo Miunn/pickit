@@ -1262,11 +1262,11 @@
     },
     "actions": {
       "create": "New folder",
-      "upload": "Upload",
+      "upload": "Importer",
       "open": "Open",
       "manage": "Manage links",
       "properties": "Properties",
-      "download": "Download as ZIP"
+      "download": "Télécharger"
     },
     "dialog": {
       "rename": {
@@ -1358,7 +1358,7 @@
         }
       },
       "properties": "Propriétés",
-      "upload": "Upload",
+      "upload": "Importer",
       "delete": "Supprimer",
       "share": "Partager"
     },
@@ -1403,42 +1403,42 @@
     },
     "dialog": {
       "upload": {
-        "trigger": "Upload",
-        "title": "Upload images",
-        "description": "Select images to upload",
+        "trigger": "Importer",
+        "title": "Importer des images",
+        "description": "Sélectionnez des images à ajouter à votre album",
         "fields": {
           "images": {
             "label": "Images",
-            "description": "Each image should be less than 5MB"
+            "description": "Chaque image doit avoir une taille inférieure à 5MB"
           }
         },
-        "submit": "Upload",
-        "submitting": "Uploading..."
+        "submit": "Importer",
+        "submitting": "Importation..."
       },
       "delete": {
-        "trigger": "Delete",
-        "title": "Delete image",
-        "description": "Are you sure you want to delete {image} ? This action cannot be undone.",
-        "submit": "Delete",
-        "submitting": "Deleting...",
-        "cancel": "Cancel"
+        "trigger": "Supprimer",
+        "title": "Supprimer l'image",
+        "description": "Êtes-vous sûr de vouloir supprimer l'image {image} ? Cette actions est irréversible.",
+        "submit": "Supprimer",
+        "submitting": "Suppression...",
+        "cancel": "Annuler"
       },
       "deleteMultiple": {
-        "trigger": "Delete",
-        "title": "Delete images",
-        "description": "Are you sure you want to delete {n} images ? This action cannot be undone.",
-        "submit": "Delete",
-        "submitting": "Deleting...",
-        "cancel": "Cancel"
+        "trigger": "Supprimer",
+        "title": "Supprimer les images",
+        "description": "Êtes-vous sûr de vouloir supprimer {n} images ? Cette actions est irréversible.",
+        "submit": "Supprimer",
+        "submitting": "Suppression...",
+        "cancel": "Annuler"
       }
     }
   },
   "links": {
     "page": {
-      "title": "Manage your access links"
+      "title": "Gérer les liens d'accès"
     }
   },
   "NotFoundPage": {
-    "description": "This page could not be found"
+    "description": "La page que vous cherchez n'existe pas ou a été déplacée."
   }
 }
