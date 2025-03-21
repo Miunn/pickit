@@ -36,7 +36,7 @@ export default async function LocaleLayout({ children, params }: Props) {
                 <NextIntlClientProvider messages={messages}>
                     {children}
                     <Toaster />
-                    <SonnerToaster />
+                    <SonnerToaster richColors />
                 </NextIntlClientProvider>
                 </ThemeProvider>
             </body>
