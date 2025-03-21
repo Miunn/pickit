@@ -82,7 +82,7 @@ export async function folderDeleteAndUpdateSizes(folderId: string, userId: strin
     await prisma.folder.delete({
         where: { id: folderId }
     })
-    prisma.user.update({
+    await prisma.user.update({
         where: { id: folder.createdById },
         data: { usedStorage: { decrement: folder.size } }
     })

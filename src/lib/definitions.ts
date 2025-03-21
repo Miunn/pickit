@@ -196,7 +196,7 @@ const userAdministration = Prisma.validator<Prisma.UserDefaultArgs>()({
 export type UserAdministration = Prisma.UserGetPayload<typeof userAdministration>
 
 const userLight = Prisma.validator<Prisma.UserDefaultArgs>()({
-    select: { id: true, name: true, email: true, emailVerified: true, emailVerificationDeadline: true, role: true, image: true, usedStorage: true, createdAt: true, updatedAt: true }
+    select: { id: true, name: true, email: true, emailVerified: true, emailVerificationDeadline: true, role: true, image: true, usedStorage: true, maxStorage: true, createdAt: true, updatedAt: true }
 })
 
 export type UserLight = Prisma.UserGetPayload<typeof userLight>

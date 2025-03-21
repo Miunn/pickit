@@ -9,6 +9,7 @@ import { FolderTokenPermission } from "@prisma/client";
 import { validateShareToken } from "@/lib/utils";
 import { getCurrentSession } from "@/lib/session";
 import JSZip from "jszip";
+import { GoogleBucket } from "@/lib/bucket";
 
 export async function getLightFolders(): Promise<{
     lightFolders: LightFolder[],
@@ -244,11 +245,11 @@ export async function deleteFolder(folderId: string): Promise<any> {
         return { error: "folder-not-found" };
     }
 
-    fs.rm(process.cwd() + "/drive/" + folderId, { recursive: true, force: true }, (err: any) => {
-        if (err) {
-            console.error("Error deleting folder", err);
-        }
-    });
+    try {
+        await GoogleBucket.deleteFiles({ prefix: `${user.id}/${folderId}/`,  });
+    } catch (e) {
+        console.error("Error deleting folder from bucket", e);
+    }
 
     await folderDeleteAndUpdateSizes(folderId, user.id as string);
 

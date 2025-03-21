@@ -22,11 +22,14 @@ import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
 import { CreateFolderFormSchema } from "@/lib/definitions";
 
-export default function CreateFolderDialog({ children, open, setOpen }: { children?: React.ReactNode, open?: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function CreateFolderDialog({ children, open, setOpen }: { children?: React.ReactNode, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const t = useTranslations("dialogs.folders.create");
 
     const [loading, setLoading] = useState(false);
+    const [internalOpen, setInternalOpen] = useState(false);
+    const openState = open ?? internalOpen;
+    const setOpenState = setOpen ?? setInternalOpen;
 
     const form = useForm<z.infer<typeof CreateFolderFormSchema>>({
         resolver: zodResolver(CreateFolderFormSchema),
@@ -55,18 +58,14 @@ export default function CreateFolderDialog({ children, open, setOpen }: { childr
                 description: t('success.description'),
             });
 
-            if (setOpen) {
-                setOpen(false);
-            }
+            setOpenState(false);
         });
     }
 
     return (
-        <Dialog open={open} onOpenChange={() => {
+        <Dialog open={openState} onOpenChange={(open) => {
             form.reset();
-            if (setOpen) {
-                setOpen(false);
-            }
+            setOpenState(open);
         }}>
             {children}
             <DialogContent>

@@ -26,7 +26,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     const messages = await getMessages();
 
     return (
-        <html lang={params.locale}>
+        <html lang={params.locale} suppressHydrationWarning>
             <body className={inter.className}>
                 <ThemeProvider
                     attribute="class"

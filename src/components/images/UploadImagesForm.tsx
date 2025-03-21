@@ -48,6 +48,8 @@ export default function UploadImagesForm({ folderId, onUpload }: { folderId: str
             }
         )
 
+        let error = false;
+        let notUploadedAmount = 0;
         const formData = new FormData();
         for (let i = 0; i < data.images!.length; i++) {
             formData.set("image", new File([data.images![i]], data.images![i].name, { type: data.images![i].type }));
@@ -76,6 +78,14 @@ export default function UploadImagesForm({ folderId, onUpload }: { folderId: str
             //     });
             // }
 
+            if (r.error) {
+                error = true;
+                if (r.error === "not-enough-storage") {
+                    notUploadedAmount++;
+                    toast.error(`Not enough space to upload ${data.images![i].name}`);
+                }
+            }
+
             toast(
                 <div className="w-full">
                     Upload in progress
@@ -89,9 +99,11 @@ export default function UploadImagesForm({ folderId, onUpload }: { folderId: str
 
         setTimeout(() => {
             toast.dismiss("progress-toast");
-        }, 1000);
+        }, 2000);
 
-        toast.success(`${data.images!.length} images uploaded successfully`);
+        if (data.images!.length - notUploadedAmount > 0) {
+            toast.success(`${data.images!.length - notUploadedAmount} images uploaded successfully`);
+        }
 
         uploadImageForm.reset();
 

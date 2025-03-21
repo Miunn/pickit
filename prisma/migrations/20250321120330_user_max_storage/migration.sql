@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "usedStorage" SET DATA TYPE BIGINT;

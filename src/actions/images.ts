@@ -80,9 +80,8 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
     }
 
     const folder = await prisma.folder.findUnique({
-        where: {
-            id: parentFolderId,
-        }
+        where: { id: parentFolderId },
+        include: { createdBy: true }
     });
 
     if (!folder) {
@@ -93,6 +92,10 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
     const fileName = formData.get("name") as string;
     if (!file || !fileName) {
         return { error: "No file found" };
+    }
+
+    if (file.size > folder.createdBy.maxStorage - folder.createdBy.usedStorage) {
+        return { error: "not-enough-storage" };
     }
 
     const arrayBuffer = await file.arrayBuffer();

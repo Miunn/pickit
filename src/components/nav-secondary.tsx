@@ -23,9 +23,10 @@ export type NavSecondaryItems = {
 export function NavSecondary({
   locale,
   userUsedStorage,
+  userMaxStorage,
   items,
   ...props
-}: { locale: string, userUsedStorage: number, items: NavSecondaryItems & React.ComponentPropsWithoutRef<typeof SidebarGroup> }) {
+}: { locale: string, userUsedStorage: bigint, userMaxStorage: bigint, items: NavSecondaryItems & React.ComponentPropsWithoutRef<typeof SidebarGroup> }) {
   
   const t = useTranslations('sidebar.secondary');
   
@@ -48,8 +49,8 @@ export function NavSecondary({
               <Link href={`/app/account`} className="h-auto flex flex-col items-start gap-1">
                 <p className="text-start">{ t('used') }</p>
                 <div className="w-full flex items-center gap-2">
-                  <Progress value={userUsedStorage / 10000000 * 100} className="w-full" />
-                  <span className="text-nowrap">{formatBytes(userUsedStorage)} / {formatBytes(10000000)}</span>
+                  <Progress value={Number(userUsedStorage) / Number(userMaxStorage) * 100} className="w-full" />
+                  <span className="text-nowrap">{formatBytes(Number(userUsedStorage))} / {formatBytes(Number(userMaxStorage))}</span>
                 </div>
               </Link>
             </SidebarMenuButton>
