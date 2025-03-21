@@ -89,47 +89,44 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
         return { error: "You are not authorized to upload images to this folder" };
     }
 
-    const files = Array.from(formData.values()) as File[];
-    const rejectedFiles: string[] = [];
-    const imagesDb = await Promise.all(files.map(async (file) => {
-        const arrayBuffer = await file.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
+    const file = formData.get("image") as File;
+    const fileName = formData.get("name") as string;
+    if (!file || !fileName) {
+        return { error: "No file found" };
+    }
 
-        const typeFromBuffer = await fileTypeFromBuffer(buffer);
-        console.log("Type from buffer", typeFromBuffer);
-        if (!typeFromBuffer || !typeFromBuffer.mime.startsWith("image")) {
-            console.log("Rejected file", file.name);
-            rejectedFiles.push(file.name);
-            return undefined;
-        }
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
 
-        const nameWithoutExtension = file.name.replace(/\.[^/.]+$/, "");
-        const slug = `${file.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}-${Date.now()}`;
+    const typeFromBuffer = await fileTypeFromBuffer(buffer);
+    if (!typeFromBuffer || !typeFromBuffer.mime.startsWith("image")) {
+        return { error: null, rejectedFiles: [fileName] };
+    }
 
-        const image = sharp(buffer);
-        const metadata = await image.metadata();
+    const nameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
+    const slug = `${fileName.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}-${Date.now()}`;
 
-        const imageData = {
-            id: randomUUID().toString(),
-            name: nameWithoutExtension,
-            slug,
-            extension: metadata.format || "png",
-            size: file.size,
-            width: metadata.width || 0,
-            height: metadata.height || 0
-        };
+    const image = sharp(buffer);
+    const metadata = await image.metadata();
 
-        try {
-            await GoogleBucket.file(`${user!.id}/${parentFolderId}/${imageData.id}`).save(buffer);
-        } catch (err) {
-            console.error("Error writing file:", err);
-            throw new Error("File upload failed");
-        }
+    const imageData = {
+        id: randomUUID().toString(),
+        name: nameWithoutExtension,
+        slug,
+        extension: metadata.format || "png",
+        size: file.size,
+        width: metadata.width || 0,
+        height: metadata.height || 0
+    };
 
-        return imageData;
-    }));
+    try {
+        await GoogleBucket.file(`${user!.id}/${parentFolderId}/${imageData.id}`).save(buffer);
+    } catch (err) {
+        console.error("Error writing file:", err);
+        throw new Error("File upload failed");
+    }
 
-    await imageCreateManyAndUpdateSizes(imagesDb.filter((i) => i !== undefined), parentFolderId, user?.id ? user.id : folder.createdById);
+    await imageCreateManyAndUpdateSizes([imageData], parentFolderId, user?.id ? user.id : folder.createdById);
 
     if (folder.coverId === null) {
         const cover = await prisma.image.findFirst({
@@ -145,8 +142,7 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
     revalidatePath("/app/folders");
     revalidatePath("/app");
 
-    console.log("End of upload, rejected are", rejectedFiles);
-    return { error: null, rejectedFiles: rejectedFiles.length > 0 ? rejectedFiles : undefined };
+    return { error: null };
 }
 
 export async function getImagesWithFolderAndCommentsFromFolder(folderId: string): Promise<{

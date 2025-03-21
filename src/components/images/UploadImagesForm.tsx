@@ -50,7 +50,8 @@ export default function UploadImagesForm({ folderId, onUpload }: { folderId: str
 
         const formData = new FormData();
         for (let i = 0; i < data.images!.length; i++) {
-            formData.set("image", data.images![i]);
+            formData.set("image", new File([data.images![i]], data.images![i].name, { type: data.images![i].type }));
+            formData.set("name", data.images![i].name);
             const r = await uploadImages(folderId, formData, shareToken, tokenType, shareHashPin);
 
             // if (r.error) {
