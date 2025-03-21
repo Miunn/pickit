@@ -56,28 +56,6 @@ export default function UploadImagesForm({ folderId, onUpload }: { folderId: str
             formData.set("name", data.images![i].name);
             const r = await uploadImages(folderId, formData, shareToken, tokenType, shareHashPin);
 
-            // if (r.error) {
-            //     toast({
-            //         title: "Error",
-            //         description: r.error,
-            //         variant: "destructive"
-            //     })
-            //     return false;
-            // }
-
-            // if (r.rejectedFiles && r.rejectedFiles.length > 0) {
-            //     toast({
-            //         title: "An image was rejected",
-            //         description: r.rejectedFiles.join(", "),
-            //         variant: "destructive"
-            //     });
-            // } else {
-            //     toast({
-            //         title: "Image uploaded",
-            //         description: "The image was uploaded successfully"
-            //     });
-            // }
-
             if (r.error) {
                 error = true;
                 if (r.error === "not-enough-storage") {
