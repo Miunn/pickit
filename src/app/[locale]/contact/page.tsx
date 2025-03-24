@@ -22,7 +22,7 @@ export default function ContactPage() {
                         <div className="z-10">
                             <Label className="text-primary font-semibold">{t('titleMini')}</Label>
                             <h1 className="text-6xl">{t('title')}</h1>
-                            <p className="mt-6 max-w-md">
+                            <p className="mt-6 max-w-lg">
                                 {t('description')}
                             </p>
 

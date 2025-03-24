@@ -204,7 +204,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                         <DropdownMenuContent align="end" className="min-w-40">
                             <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
                             <DropdownMenuItem asChild>
-                                <Link href={`${process.env.APP_URL}/${locale}/app/folders/${accessToken.folder.id}`} className="cursor-default">
+                                <Link href={`/${locale}/app/folders/${accessToken.folder.id}`} className="cursor-default">
                                     {t('open')}
                                 </Link>
                             </DropdownMenuItem>

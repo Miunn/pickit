@@ -1,14 +1,12 @@
 import { getAccessTokens } from "@/actions/accessTokens";
 import { getLightFolders } from "@/actions/folders";
-import LinksDataTable from "./links-data-table";
-import PersonDataTable from "./person-data-table";
 import { getPersonsAccessTokens } from "@/actions/accessTokensPerson";
 import { getTranslations } from "next-intl/server";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getCurrentSession } from "@/lib/session";
 import { redirect } from "@/i18n/routing";
+import LinksContent from "./LinksContent";
 
-export default async function LinksPage({ searchParams }: { searchParams: { s?: string, l?: string } }) {
+export default async function LinksPage({ searchParams }: { searchParams: { s?: "links" | "contacts", l?: string } }) {
 
     const { user } = await getCurrentSession();
     if (!user) {
@@ -21,22 +19,17 @@ export default async function LinksPage({ searchParams }: { searchParams: { s?: 
 
     const lightFolders = (await getLightFolders()).lightFolders
 
-    const side = searchParams.s === "links" ? "links" : "persons";
     const defaultSelectedAccessTokenIndex = accessTokens.map((act) => act.id).indexOf(searchParams.l || "");
     const defaultSelectedPersonAccessTokenIndex = personsAccessTokens.map((act) => act.id).indexOf(searchParams.l || "");
 
     return (
-        <Tabs defaultValue={side}>
-            <TabsList>
-                <TabsTrigger value="persons">{t('persons.title')}</TabsTrigger>
-                <TabsTrigger value="links">{t('links.title')}</TabsTrigger>
-            </TabsList>
-            <TabsContent value="persons">
-                <PersonDataTable personsAccessTokens={personsAccessTokens} defaultTokenIndex={defaultSelectedPersonAccessTokenIndex} lightFolders={lightFolders} />
-            </TabsContent>
-            <TabsContent value="links">
-                <LinksDataTable accessTokens={accessTokens} defaultTokenIndex={defaultSelectedAccessTokenIndex} lightFolders={lightFolders} />
-            </TabsContent>
-        </Tabs>
+        <LinksContent
+            side={searchParams.s || "contacts"}
+            accessTokens={accessTokens}
+            personsAccessTokens={personsAccessTokens}
+            lightFolders={lightFolders}
+            defaultSelectedAccessTokenIndex={defaultSelectedAccessTokenIndex}
+            defaultSelectedPersonAccessTokenIndex={defaultSelectedPersonAccessTokenIndex}
+        />
     )
 }

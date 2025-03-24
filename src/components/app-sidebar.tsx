@@ -44,7 +44,7 @@ export function AppSidebar({ locale, user, items, ...props }: {
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{ t('title') }</span>
-                  <span className="truncate text-xs">{ t('message') }</span>
+                  <span className="truncate text-xs" title={t('message')}>{ t('message') }</span>
                 </div>
               </Link>
             </SidebarMenuButton>

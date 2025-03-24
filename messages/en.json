@@ -48,6 +48,53 @@
       },
       "featuresTitle": "Don't just upload photos,<br />Captures memories and share them with ohers"
     },
+    "features": {
+      "title": "List of all features",
+      "description": "Here's a list of all features you can find inside Echomori",
+      "albums": {
+        "label": "Albums",
+        "feature1": "Create unlimited albums",
+        "feature2": "Upload photos to your albums",
+        "feature3": "Set alumb cover",
+        "feature4": "Download your albums",
+        "feature5": "Share your albums",
+        "feature6": "And so much more (Rename, Configure views, Sort your photos, ...)"
+      },
+      "images": {
+        "label": "Photos",
+        "feature1": "Comment on your photos",
+        "feature2": "Download pic-by-pic",
+        "feature3": "Check your photos details",
+        "feature4": "Access to their metadata (ISO, Focal length, Contrast, Exposure, GPS Data, ...)",
+        "feature5": "Copy to clipboard",
+        "feature6": "And so much more (Rename, Full-screen visualisation, ...)"
+      },
+      "sharing": {
+        "label": "Sharing",
+        "feature1": "Create sharing links",
+        "feature2": "Manage all your links in one place",
+        "feature3": "Set password protection",
+        "feature4": "Set expiration date",
+        "feature5": "Set associated permissions",
+        "feature6": "Directly share to your contacts using their email address",
+        "feature7": "Track uses of your links",
+        "feature8": "Share on social medias",
+        "feature9": "And much more (Delete, Change permission, ...)"
+      },
+      "search": {
+        "label": "Search",
+        "feature1": "Command palette",
+        "feature2": "Search through your albums",
+        "feature3": "Search through your photos",
+        "feature4": "Search through your links",
+        "feature5": "Search for settings"
+      },
+      "footer": {
+        "title": "Ready to save your memories ?",
+        "description": "Get started with Echomori today and prevent your memories from fading away right now",
+        "cta": "Get started"
+      }
+    },
     "contact": {
       "title": "Get in touch",
       "titleMini": "Contact",
@@ -79,7 +126,7 @@
     "links": {
       "title": "Echomori - Links",
       "persons": {
-        "title": "Manage persons"
+        "title": "Manage contacts"
       },
       "links": {
         "title": "Manage links"
@@ -1186,6 +1233,13 @@
             }
           }
         }
+      },
+      "actions": {
+        "search": {
+          "placeholder": "Search a link"
+        },
+        "create": "New link",
+        "deleteSelected": "Delete selected links"
       }
     },
     "users": {

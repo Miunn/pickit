@@ -10,7 +10,7 @@
   },
   "sidebar": {
     "title": "Echomori",
-    "message": "Save moments of life",
+    "message": "Sauvegardez des moments de vie",
     "main": {
       "title": "Vos sauvegardes",
       "folders": "Dossiers",
@@ -48,10 +48,57 @@
       },
       "featuresTitle": "Ne sauvegardez pas juste des photos,<br />Capturez des souvenirs et partagez-les avec d'autres"
     },
+    "features": {
+      "title": "Liste des fonctionnalités",
+      "description": "Ici sont listées les fonctionnalités que vous pourrez retrouver au sein d'Echomori",
+      "albums": {
+        "label": "Albums",
+        "feature1": "Créez un nombre ilimité d'albums",
+        "feature2": "Importez vos photos",
+        "feature3": "Configurez des photos de couverture",
+        "feature4": "Téléchargez vos albums",
+        "feature5": "Partagez vos albums",
+        "feature6": "Et bien d'autres (Renommez, Gérez l'affichage, Triez vos photos, ...)"
+      },
+      "images": {
+        "label": "Photos",
+        "feature1": "Commentez sur vos photos",
+        "feature2": "Téléchargez à la carte",
+        "feature3": "Accédez aux détails de vos photos",
+        "feature4": "Accédez aux métadonnées (ISO, Focale, Contraste, Exposition, Données GPS, ...)",
+        "feature5": "Copiez vers le presse-papier",
+        "feature6": "Et bien d'autres (Renommez, Visualisez en plein-écran, ...)"
+      },
+      "sharing": {
+        "label": "Partage",
+        "feature1": "Créez des liens de partage",
+        "feature2": "Gérez tous vos liens en un endroit",
+        "feature3": "Paramétrez des mots de passe sur vos liens",
+        "feature4": "Configurez des dates d'expiration",
+        "feature5": "Configurez les permissions associées",
+        "feature6": "Partagez directement à vos contacts en entrant leurs adresses mail",
+        "feature7": "Suivez le nombre d'utilisations de vos liens",
+        "feature8": "Partagez sur vos réseaux sociaux",
+        "feature9": "Et d'autres (Suppression, Modification des permissions, ...)"
+      },
+      "search": {
+        "label": "Recherche",
+        "feature1": "Palette de commande",
+        "feature2": "Cherchez parmi vos albums",
+        "feature3": "Cherchez parmi vos images",
+        "feature4": "Cherchez parmi vos liens",
+        "feature5": "Cherchez des réglages"
+      },
+      "footer": {
+        "title": "Prêt à sauvegardez vos souvenirs ?",
+        "description": "Commencez avec Echomori et prévenez l'oubli de vos souvenirs dès maintenant !",
+        "cta": "Commencez"
+      }
+    },
     "contact": {
       "title": "Entrons en contact",
       "titleMini": "Contact",
-      "description": "Vous avez une question, une suggestion ou besoin d'aide ? N'hésitez pas à nous contacter. Nous serons ravis de vous aider.",
+      "description": "Vous avez une question, une suggestion ou besoin d'aide ? N'hésitez pas à nous contacter en remplissant le formulaire ci-contre ou en nous envoyant un email. Nous serons ravis de vous aider.",
       "sendEmail": "Envoyer un email"
     },
     "dashboard": {
@@ -79,7 +126,7 @@
     "links": {
       "title": "Echomori - Links",
       "persons": {
-        "title": "Gestion des partage aux personnes"
+        "title": "Gestion des partage aux contacts"
       },
       "links": {
         "title": "Gestion des liens"
@@ -448,7 +495,7 @@
     },
     "faq": {
       "titleMini": "FAQ",
-      "title": "Question fréquentes",
+      "title": "Questions fréquentes",
       "question1": {
         "title": "Comment créer un nouveau dossier ?",
         "answer": "Vous pouvez créer un nouveau dossier en cliquant sur le bouton 'Nouveau dossier' dans la barre latérale, en utilisant la palette de commande '<kbd>'Ctrl'</kbd>' + '<kbd>'K'</kbd>' ou en faisant un clic droit n'importe où dans l'application."
@@ -1177,6 +1224,13 @@
           "unlock": "Dévérouiller",
           "delete": "Supprimer"
         }
+      },
+      "actions": {
+        "search": {
+          "placeholder": "Rechercher un lien..."
+        },
+        "create": "Nouveau lien",
+        "deleteSelected": "Supprimer les liens sélectionnés"
       }
     },
     "users": {
