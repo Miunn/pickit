@@ -79,7 +79,7 @@ export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWit
         cell: ({ row }) => {
             const formatter = useFormatter();
 
-            return <p>{formatter.dateTime(row.original.createdAt, {
+            return <p className="capitalize">{formatter.dateTime(row.original.createdAt, {
                 weekday: "long",
                 day: "numeric",
                 month: "short",
@@ -100,7 +100,7 @@ export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWit
         cell: ({ row }) => {
             const formatter = useFormatter();
 
-            return <p>{formatter.dateTime(row.original.createdAt, {
+            return <p className="capitalize">{formatter.dateTime(row.original.createdAt, {
                 weekday: "long",
                 day: "numeric",
                 month: "short",
@@ -114,7 +114,7 @@ export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWit
         id: "actions",
         cell: ({ row }) => {
             const t = useTranslations("folders.views.list.columns.actions");
-
+            const downloadT = useTranslations("folders.download");
             const [folderImages, setFolderImages] = useState<(ImageWithFolder & ImageWithComments)[]>([]);
 
             async function loadImages() {
@@ -151,7 +151,7 @@ export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWit
                                 : t('select')
                             }
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => downloadClientFolder(row.original)}>{t('download')}</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => downloadClientFolder(row.original, downloadT)}>{t('download')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenShare(true)}>{t('share')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenChangeCover(true)}>{t('changeCover')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenRename(true)}>{t('rename')}</DropdownMenuItem>

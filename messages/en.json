@@ -1331,6 +1331,14 @@
       "properties": "Properties",
       "download": "Download"
     },
+    "download": {
+      "ongoing": {
+        "title": "Download started",
+        "description": "Your folder is being downloaded. Please wait while we prepare the files for you."
+      },
+      "success": "{name} downloaded successfully",
+      "empty": "There is no images in this folder to download"
+    },
     "empty": "No folders created"
   },
   "images": {

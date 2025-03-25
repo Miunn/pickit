@@ -14,6 +14,7 @@ import saveAs from "file-saver";
 import JSZip from "jszip";
 import { Progress } from "@/components/ui/progress";
 import { getFolderFull } from "@/actions/folders";
+import { useTranslations } from "next-intl";
 
 export function formatBytes(
 	bytes: number,
@@ -78,7 +79,7 @@ export const downloadClientImageHandler = async (image: ImageWithFolder) => {
 	saveAs(await r.blob(), `${image.name}.${image.extension}`);
 }
 
-export const downloadClientFolder = async (folder: Folder | FolderWithImages, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashPinCode?: string) => {
+export const downloadClientFolder = async (folder: Folder | FolderWithImages, t: any, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashPinCode?: string) => {
 	let folderWithImages: FolderWithImages;
 	if (!('images' in folder)) {
 		const r = await getFolderFull(folder.id, shareToken, tokenType, hashPinCode);
@@ -98,9 +99,7 @@ export const downloadClientFolder = async (folder: Folder | FolderWithImages, sh
 	}
 
 	sonnerToast(
-		<div className="w-full" >
-			Download started
-		</div>,
+		<div className="w-full">{ t('ongoing.title') }</div>,
 		{
 			id: "download-progress-toast",
 			duration: Infinity,
@@ -109,9 +108,10 @@ export const downloadClientFolder = async (folder: Folder | FolderWithImages, sh
 				title: "w-full"
 			},
 			description: <div className="w-full">
-				Your folder is being downloaded. Please wait while we prepare the files for you.
+				{ t('ongoing.description') }
 				<Progress value={0} className="w-full mt-2" />
-			</div>
+			</div>,
+			dismissible: false
 		}
 	)
 
@@ -126,13 +126,11 @@ export const downloadClientFolder = async (folder: Folder | FolderWithImages, sh
 		zip.file(`${image.name}-${image.createdAt.getTime()}.${image.extension}`, buffer);
 
 		sonnerToast(
-			<div className="w-full" >
-				Download started
-			</div>,
+			<div className="w-full">{ t('ongoing.title') }</div>,
 			{
 				id: "download-progress-toast",
 				description: <div className="w-full">
-					Your folder is being downloaded. Please wait while we prepare the files for you.
+					{ t('ongoing.description') }
 					<Progress value={(i + 1) / folderWithImages.images.length * 100} className="w-full mt-2" />
 				</div>
 			}
@@ -145,26 +143,7 @@ export const downloadClientFolder = async (folder: Folder | FolderWithImages, sh
 		sonnerToast.dismiss("download-progress-toast");
 	}, 1000);
 
-	sonnerToast.success(`${folder.name} downloaded successfully`)
-
-	//const r = await fetch(`/api/folders/${folder.id}/download`);
-
-	// if (r.status === 404) {
-	// 	toast({
-	// 		title: "No images found",
-	// 		description: "There are no images in this folder to download"
-	// 	});
-	// 	return;
-	// }
-
-	// if (r.status !== 200) {
-	// 	toast({
-	// 		title: "Error",
-	// 		description: "An error occurred while trying to download this folder",
-	// 		variant: "destructive"
-	// 	});
-	// 	return;
-	// }
+	sonnerToast.success(t('success', { name: folder.name }));
 
 	saveAs(zipData, `${folder.name}.zip`);
 }

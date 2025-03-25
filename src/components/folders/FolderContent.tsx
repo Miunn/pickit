@@ -56,6 +56,8 @@ export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentPro
         }
     });
 
+    const downloadT = useTranslations("folders.download");
+
     return (
         <div>
             <h3 className={"mb-2 flex justify-between items-center"}>
@@ -75,7 +77,7 @@ export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentPro
                         ? <UploadImagesDialog folderId={folder.id} />
                         : null}
                     {!!!isGuest ? <ShareFolderDialog folder={folder} /> : null}
-                    <Button variant="outline" onClick={() => downloadClientFolder(folder)}>
+                    <Button variant="outline" onClick={() => downloadClientFolder(folder, downloadT)}>
                         <Download className={"mr-2"} /> {t('actions.download')}
                     </Button>
                 </div>

@@ -20,6 +20,7 @@ import { downloadClientFolder } from "@/lib/utils";
 export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover }) {
     const t = useTranslations("folders");
     const dialogsTranslations = useTranslations("dialogs.folders");
+    const downloadT = useTranslations("folders.download");
     const format = useFormatter();
     const locale = useLocale();
 
@@ -92,7 +93,7 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
                     <ContextMenuItem onClick={() => setOpenRename(true)}>{dialogsTranslations('rename.trigger')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenChangeCover(true)} disabled={folderImages.length === 0}>{dialogsTranslations('changeCover.trigger')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenShare(true)}>{dialogsTranslations('share.trigger')}</ContextMenuItem>
-                    <ContextMenuItem onClick={() => downloadClientFolder(folder)} disabled={folderImages.length === 0}>{t('actions.download')}</ContextMenuItem>
+                    <ContextMenuItem onClick={() => downloadClientFolder(folder, downloadT)} disabled={folderImages.length === 0}>{t('actions.download')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenProperties(true)}>{t('actions.properties')}</ContextMenuItem>
                     <ContextMenuSeparator />
                     <ContextMenuItem onClick={() => setOpenDelete(true)} className="text-red-600 focus:text-red-600 font-semibold">{dialogsTranslations('delete.trigger')}</ContextMenuItem>

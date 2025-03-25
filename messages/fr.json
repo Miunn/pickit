@@ -1315,7 +1315,7 @@
       }
     },
     "actions": {
-      "create": "New folder",
+      "create": "Nouveau dossier",
       "upload": "Importer",
       "open": "Open",
       "manage": "Manage links",
@@ -1383,7 +1383,15 @@
         "cancel": "Cancel"
       }
     },
-    "empty": "No folders created"
+    "download": {
+      "ongoing": {
+        "title": "Téléchargement en cours",
+        "description": "Votre dossier est en train d'être téléchargé. Patientez quelques instants pendant que nous préparons votre archive."
+      },
+      "success": "{name} a été téléchargé avec succès",
+      "empty": "Ce dossier ne contient aucune image a télécharger"
+    },
+    "empty": "Aucun dossier créé"
   },
   "images": {
     "lastUploadedImages": "Last uploaded images",
