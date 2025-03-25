@@ -59,7 +59,7 @@ export function CommandSearch({ folders, images }: { folders: LightFolder[], ima
     return (
         <>
             <CommandDialog open={open} onOpenChange={setOpen} modal={true}>
-                <CommandInput placeholder="Type a command or search..." />
+                <CommandInput placeholder={t('placeholder')} />
                 <CommandList>
                     <CommandEmpty>{t('noResults')}</CommandEmpty>
                     <CommandGroup heading={t('sections.pages')}>
@@ -95,7 +95,7 @@ export function CommandSearch({ folders, images }: { folders: LightFolder[], ima
                             <span>{t('actions.folders.create')}</span>
                         </CommandItem>
                         {folders.map((folder) => (
-                            <CommandItem key={folder.id} onSelect={() => runCommand(() => router.push(`/app/folders/${folder.id}`))}>
+                            <CommandItem key={folder.id} value={`${folder.name} - ${folder.id}`} onSelect={() => runCommand(() => router.push(`/app/folders/${folder.id}`))}>
                                 <Folder />
                                 <span>{folder.name}</span>
                             </CommandItem>
@@ -106,7 +106,7 @@ export function CommandSearch({ folders, images }: { folders: LightFolder[], ima
                             <CommandSeparator />
                             <CommandGroup heading={t('sections.images')}>
                                 {images.map((image) => (
-                                    <CommandItem key={image.id} value={image.id} onSelect={() => runCommand(() => router.push(`/app/folders/${image.folder.id}`))}>
+                                    <CommandItem key={image.id} value={`${image.name} - ${image.id}`} onSelect={() => runCommand(() => router.push(`/app/folders/${image.folder.id}`))}>
                                         <Image />
                                         <span>{image.folder.name} - {image.name}</span>
                                     </CommandItem>

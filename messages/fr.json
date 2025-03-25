@@ -475,6 +475,11 @@
         }
       }
     },
+    "switchTheme": {
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système"
+    },
     "featuresCarousel": {
       "section1": {
         "title": "Créez votre album",

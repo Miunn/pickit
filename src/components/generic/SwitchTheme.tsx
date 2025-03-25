@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Moon, Sun } from "lucide-react"
+import { Moon, Sun, SunMoon } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
@@ -11,8 +11,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useTranslations } from "next-intl"
 
 export function SwitchTheme() {
+  const t = useTranslations("components.switchTheme");
   const { setTheme } = useTheme()
 
   return (
@@ -25,15 +27,9 @@ export function SwitchTheme() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("light")}><Sun className="w-4 h-4 mr-2" /> { t('light') }</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("dark")}><Moon className="w-4 h-4 mr-2" /> { t('dark') }</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("system")}><SunMoon className="w-4 h-4 mr-2" /> { t('system') }</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
