@@ -735,16 +735,16 @@
           "value": "{count, plural, zero {Aucune image} one {# image} other {# images}}"
         },
         "size": "Taille",
-        "createdAt": "Created at",
-        "uploadedAt": "Uploaded at",
+        "createdAt": "Créé le",
+        "updatedAt": "Mis à jour le",
         "actions": {
           "download": {
-            "trigger": "Download",
-            "downloading": "Downloading",
-            "title": "Downloaded",
-            "description": "The image has been downloaded successfully"
+            "trigger": "Télécharger",
+            "downloading": "Téléchargement",
+            "title": "Dossier téléchargé",
+            "description": "Le dossier a été téléchargé avec succès"
           },
-          "delete": "Delete"
+          "delete": "Supprimer"
         }
       },
       "delete": {
@@ -1420,7 +1420,7 @@
       "list": {
         "table": {
           "selection": "{count, plural, one {# image sélectionnée} other {# images sélectionnées}} ",
-          "delecteSelected": "Supprimer les images sélectionnées",
+          "deleteSelected": "Supprimer les images sélectionnées",
           "empty": "Aucune image téléchargée"
         },
         "header": {
@@ -1428,10 +1428,10 @@
           "size": "Taille",
           "folder": "Dossier",
           "comments": "Commentaires",
-          "uploadedAt": "Téléchargée le"
+          "uploadedAt": "Importée le"
         },
         "columns": {
-          "comments": "{count, plural, zero {Aucun commentaire} one {# Commentaire} other {# Commentaires}}",
+          "comments": "{count, plural, =0 {Aucun commentaire} =1 {# Commentaire} other {# Commentaires}}",
           "actions": {
             "label": "Actions",
             "view": "Ouvrir",

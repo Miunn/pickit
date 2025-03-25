@@ -106,7 +106,7 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
         cell: ({ row }) => {
             const formatter = useFormatter();
 
-            return <p>{formatter.dateTime(row.original.createdAt, {
+            return <p className="capitalize">{formatter.dateTime(row.original.createdAt, {
                 weekday: "long",
                 day: "numeric",
                 month: "short",
