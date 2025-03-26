@@ -45,7 +45,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                             setSizeSelected(0);
                             setSelecting(false);
                         }} size="icon"><X className={"w-4 h-4"} /></Button>
-                        <h2><span className={"font-semibold"}>{selected.length} {t('selected')}</span> - {formatBytes(sizeSelected, { decimals: 2, sizeType: "normal" })}</h2>
+                        <h2><span className={"font-semibold"}>{t('selected', { count: selected.length })}</span> - {formatBytes(sizeSelected, { decimals: 2, sizeType: "normal" })}</h2>
                     </div>
 
                     <Button variant="outline" onClick={() => {

@@ -38,7 +38,7 @@ export const LastUploadedImages = ({ images }: { images: (ImageWithFolder & Imag
                             setSelected([]);
                             setSelecting(false);
                         }} size="icon"><X className={"w-4 h-4"} /></Button>
-                        <h2 className={"font-semibold"}>{selected.length} {t('selected')}</h2>
+                        <h2 className={"font-semibold"}>{t('selected', { count: selected.length })}</h2>
                     </div>
 
                     <Button variant="outline" onClick={() => {
@@ -60,9 +60,27 @@ export const LastUploadedImages = ({ images }: { images: (ImageWithFolder & Imag
                         <ImagePreviewGrid
                             image={image}
                             selected={selected}
-                            onClick={() => {
-                                setStartIndex(index);
-                                setCarouselOpen(!carouselOpen);
+                            onClick={(e) => {
+                                if (selecting) {
+                                    if (e?.shiftKey) {
+                                        if (!selected.includes(image.id)) {
+                                            const lastSelected = images.findIndex((img) => img.id === selected[selected.length - 1]);
+                                            const currentSelected = images.findIndex((img) => img.id === image.id);
+                                            const range = images.slice(Math.min(lastSelected, currentSelected), Math.max(lastSelected, currentSelected) + 1);
+                                            setSelected([...selected, ...range.map((img) => img.id)]);
+                                            setSizeSelected(sizeSelected + range.reduce((acc, img) => acc + img.size, 0));
+                                        }
+                                    } else if (selected.includes(image.id)) {
+                                        setSelected(selected.filter((id) => id !== image.id));
+                                        setSizeSelected(sizeSelected - image.size);
+                                    } else {
+                                        setSelected([...selected, image.id]);
+                                        setSizeSelected(sizeSelected + image.size);
+                                    }
+                                } else {
+                                    setStartIndex(images.indexOf(image));
+                                    setCarouselOpen(true);
+                                }
                             }}
                             onSelect={() => {
                                 if (selected.includes(image.id)) {

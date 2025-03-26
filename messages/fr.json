@@ -109,7 +109,11 @@
       },
       "images": {
         "lastUploadedImages": "Dernières images téléchargées",
-        "empty": "Aucune image téléchargée"
+        "selected": "{count, plural, =1 {# image sélectionnée} other {# images sélectionnées}}",
+        "empty": "Aucune image téléchargée",
+        "actions": {
+          "delete": "Supprimer"
+        }
       },
       "contextMenu": {
         "createFolder": "Nouveau dossier"
@@ -1420,7 +1424,7 @@
   },
   "images": {
     "lastUploadedImages": "Last uploaded images",
-    "selected": "Selected",
+    "selected": "{count, plural, =1 {# image sélectionnée} other {# images sélectionnées}}",
     "empty": "No images uploaded",
     "page": {
       "title": "{folder} images",

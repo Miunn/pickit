@@ -109,7 +109,11 @@
       },
       "images": {
         "lastUploadedImages": "Last uploaded images",
-        "empty": "No images uploaded"
+        "selected": "{count, plural, =1 {# image} other {# images}} selected",
+        "empty": "No images uploaded",
+        "actions": {
+          "delete": "Delete selected images"
+        }
       },
       "contextMenu": {
         "createFolder": "New folder"
@@ -1368,7 +1372,7 @@
   },
   "images": {
     "lastUploadedImages": "Last uploaded images",
-    "selected": "Selected",
+    "selected": "{count, plural, =1 {# image} other {# images}} selected",
     "empty": "No images uploaded",
     "page": {
       "title": "{folder} images",
