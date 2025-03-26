@@ -66,9 +66,17 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                             <ImagePreviewGrid
                                 image={image}
                                 selected={selected}
-                                onClick={() => {
+                                onClick={(e) => {
                                     if (selecting) {
-                                        if (selected.includes(image.id)) {
+                                        if (e?.shiftKey) {
+                                            if (!selected.includes(image.id)) {
+                                                const lastSelected = folder.images.findIndex((img) => img.id === selected[selected.length - 1]);
+                                                const currentSelected = folder.images.findIndex((img) => img.id === image.id);
+                                                const range = folder.images.slice(Math.min(lastSelected, currentSelected), Math.max(lastSelected, currentSelected) + 1);
+                                                setSelected([...selected, ...range.map((img) => img.id)]);
+                                                setSizeSelected(sizeSelected + range.reduce((acc, img) => acc + img.size, 0));
+                                            }
+                                        } else if (selected.includes(image.id)) {
                                             setSelected(selected.filter((id) => id !== image.id));
                                             setSizeSelected(sizeSelected - image.size);
                                         } else {

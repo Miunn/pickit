@@ -18,7 +18,7 @@ import { changeFolderCover } from "@/actions/folders";
 export interface ImagePreviewProps {
     image: ImageWithFolder;
     selected: string[];
-    onClick: () => void;
+    onClick: (e?: React.MouseEvent) => void;
     onSelect: () => void;
 }
 
