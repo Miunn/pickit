@@ -1300,6 +1300,11 @@
       "subtitle": "Your created folders"
     },
     "views": {
+      "label": "View",
+      "options": {
+        "grid": "Grid",
+        "list": "List"
+      },
       "list": {
         "table": {
           "selection": "{count, plural, one {# folder selected} other {# folders selected}}",
@@ -1336,7 +1341,22 @@
       "properties": "Properties",
       "download": "Download"
     },
+    "sort": {
+      "label": "Sort by",
+      "options": {
+        "name": "Name",
+        "size": "Size",
+        "date": "Date"
+      }
+    },
+    "upload": {
+      "label": "Upload"
+    },
+    "share": {
+      "label": "Share"
+    },
     "download": {
+      "label": "Download",
       "ongoing": {
         "title": "Download started",
         "description": "Your folder is being downloaded. Please wait while we prepare the files for you."

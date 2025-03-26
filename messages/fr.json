@@ -1291,6 +1291,11 @@
       "subtitle": "Your created folders"
     },
     "views": {
+      "label": "Vue",
+      "options": {
+        "list": "Liste",
+        "grid": "Grille"
+      },
       "list": {
         "table": {
           "selection": "{count, plural, one {# dossier sélectionnée} other {# dossiers sélectionnées}} ",
@@ -1388,7 +1393,22 @@
         "cancel": "Cancel"
       }
     },
+    "sort": {
+      "label": "Trier par",
+      "options": {
+        "name": "Nom",
+        "size": "Taille",
+        "date": "Date"
+      }
+    },
+    "upload": {
+      "label": "Importer"
+    },
+    "share": {
+      "label": "Partager"
+    },
     "download": {
+      "label": "Télécharger",
       "ongoing": {
         "title": "Téléchargement en cours",
         "description": "Votre dossier est en train d'être téléchargé. Patientez quelques instants pendant que nous préparons votre archive."
