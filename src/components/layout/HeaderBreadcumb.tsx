@@ -152,7 +152,7 @@ export default function HeaderBreadcumb() {
                         </BreadcrumbItem>
                     </>
                 ) : (
-                    <BreadcrumbItem className="hidden md:block">
+                    <BreadcrumbItem className="hidden lg:block">
                         <BreadcrumbLink href={`/${locale}/app`}>
                             {t('dashboard')}
                         </BreadcrumbLink>
@@ -160,7 +160,7 @@ export default function HeaderBreadcumb() {
                 )}
                 {pathListFolders ? (
                     <>
-                        <BreadcrumbSeparator />
+                        <BreadcrumbSeparator className="hidden lg:block" />
                         <BreadcrumbItem>
                             <BreadcrumbPage>{t('folders')}</BreadcrumbPage>
                         </BreadcrumbItem>
@@ -176,8 +176,8 @@ export default function HeaderBreadcumb() {
                 ) : null}
                 {pathFolder ? (
                     <>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
+                        <BreadcrumbSeparator className="hidden lg:block" />
+                        <BreadcrumbItem className="hidden md:block">
                             <BreadcrumbLink href="/app/folders">{t('folders')}</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator className="hidden md:block" />
@@ -188,7 +188,7 @@ export default function HeaderBreadcumb() {
                 ) : null}
                 {pathLinks ? (
                     <>
-                        <BreadcrumbSeparator />
+                        <BreadcrumbSeparator className="hidden lg:block" />
                         <BreadcrumbItem>
                             <BreadcrumbPage>{t('links')}</BreadcrumbPage>
                         </BreadcrumbItem>
@@ -196,7 +196,7 @@ export default function HeaderBreadcumb() {
                 ) : null}
                 {pathAccount ? (
                     <>
-                        <BreadcrumbSeparator />
+                        <BreadcrumbSeparator className="hidden lg:block" />
                         <BreadcrumbItem>
                             <BreadcrumbPage>{t('account')}</BreadcrumbPage>
                         </BreadcrumbItem>
@@ -205,7 +205,7 @@ export default function HeaderBreadcumb() {
 
                 {pathAdministration ? (
                     <>
-                        <BreadcrumbSeparator />
+                        <BreadcrumbSeparator className="hidden lg:block" />
                         <BreadcrumbItem>
                             <BreadcrumbPage>{t('administration')}</BreadcrumbPage>
                         </BreadcrumbItem>
@@ -214,17 +214,17 @@ export default function HeaderBreadcumb() {
 
                 {pathAdministrationUsers ? (
                     <>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
+                        <BreadcrumbSeparator className="hidden lg:block" />
+                        <BreadcrumbItem className="hidden md:block">
                             <BreadcrumbLink href="/app/administration">
                                 {t('administration')}
                             </BreadcrumbLink>
                         </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
+                        <BreadcrumbSeparator className="hidden lg:block" />
+                        <BreadcrumbItem className="hidden lg:block">
                             <BreadcrumbList>{t('administrationUsers')}</BreadcrumbList>
                         </BreadcrumbItem>
-                        <BreadcrumbSeparator />
+                        <BreadcrumbSeparator className="hidden md:block" />
                         <BreadcrumbItem>
                             <BreadcrumbPage>{ adminUser?.name }</BreadcrumbPage>
                         </BreadcrumbItem>
