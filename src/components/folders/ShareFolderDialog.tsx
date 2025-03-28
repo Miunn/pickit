@@ -86,13 +86,9 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
             return;
         }
 
-        // Reset email field
-        sharePersonAccessTokenForm.setValue("email", "");
-        sharePersonAccessTokenForm.setValue("expiresAt", addMonths(new Date(), 3));
-        sharePersonAccessTokenForm.setValue("permission", FolderTokenPermission.READ);
-        sharePersonAccessTokenForm.setValue("pinCode", "");
         setShowPersonAccessTokenLock(false);
         setTokenList([...tokenList, { email, permission, expiryDate: expiresAt, pinCode }]);
+        sharePersonAccessTokenForm.reset();
     }
 
     const submitSharePersonTokens = async () => {
@@ -137,7 +133,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                         <Share2 className="mr-2" /> {t('trigger')}
                     </Button>
                 </DialogTrigger> : null}
-                <DialogContent className={`${showPersonAccessTokenLock ? "w-[66rem]" : "w-[48rem]"} max-w-max transition-all overflow-hidden`} onPointerDownOutside={(e) => openExpiryDatePopover && e.preventDefault()}>
+                <DialogContent className={`${showPersonAccessTokenLock ? "md:w-[66rem]" : "md:w-[48rem]"} w-full md:h-auto max-w-max transition-all overflow-hidden`} onPointerDownOutside={(e) => openExpiryDatePopover && e.preventDefault()}>
                     <DialogHeader>
                         <DialogTitle>{t('title')}</DialogTitle>
                         <DialogDescription>{t('description')}</DialogDescription>
@@ -149,7 +145,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                             <Link href={`/${locale}/app/links`}>{t('manageAccesses')}</Link>
                         </Button>
                     </div>
-                    <div className={"grid grid-cols-[0.3fr_1fr_auto_auto] gap-3 items-center"}>
+                    <div className={"grid grid-cols-[0.3fr_auto_1fr] md:grid-cols-[0.3fr_1fr_auto_auto] gap-3 items-center"}>
                         {validTokens.length > 0
                             ? validTokens.sort((a, b) => a.permission.localeCompare(b.permission)).map((token) => <Fragment key={token.token}>
                                 <Label className="capitalize">{
@@ -157,7 +153,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                         ? t('links.link.permissions.read')
                                         : t('links.link.permissions.write')
                                 }</Label>
-                                <Input placeholder={t('links.link.placeholder')} disabled={true}
+                                <Input className="hidden md:block" placeholder={t('links.link.placeholder')} disabled={true}
                                     value={`${typeof window !== 'undefined' ? window.location.origin : process.env.APP_URL}/app/folders/${folder.id}?share=${token.token}`} />
                                 {token.locked
                                     ? <Button variant={"outline"} size={"icon"} onClick={() => unlockAccessToken(token.id)}><Lock className="w-4 h-4" /></Button>
@@ -177,7 +173,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
 
                     <Label>{t('people.title')}</Label>
                     <Form {...sharePersonAccessTokenForm}>
-                        <form onSubmit={sharePersonAccessTokenForm.handleSubmit(addEmail)} className="flex gap-3 w-full items-end">
+                        <form onSubmit={sharePersonAccessTokenForm.handleSubmit(addEmail)} className="flex flex-wrap gap-3 w-full items-end">
                             <FormField
                                 control={sharePersonAccessTokenForm.control}
                                 name={"permission"}
@@ -202,7 +198,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                 control={sharePersonAccessTokenForm.control}
                                 name={"email"}
                                 render={({ field }) => (
-                                    <FormItem className="flex-1 flex flex-col min-w-52">
+                                    <FormItem className="md:flex-1 flex flex-col md:min-w-52">
                                         <FormLabel>{t('people.form.email.label')}</FormLabel>
                                         <FormControl>
                                             <Input placeholder={t('people.form.email.placeholder')} {...field} />
@@ -284,10 +280,10 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                             <Button type="submit">{t('buttons.emailAdd')}</Button>
                         </form>
                     </Form>
-                    <ScrollArea className={"max-h-40"}>
+                    <ScrollArea className={"max-h-20 md:max-h-40"}>
                         <div ref={emailScroll}>
                             {tokenList.map((token) => (
-                                <div key={token.email} className={"flex gap-1 w-full my-1"}>
+                                <div key={token.email} className={"grid grid-cols-[auto_auto_0.5fr_1fr] md:flex gap-1 w-full my-1"}>
                                     <Button onClick={() => setTokenList(tokenList.filter((e) => e.email !== token.email))} variant="ghost" size="icon" className="w-9 h-9">
                                         <X className={"w-4 h-4 text-red-500"} />
                                     </Button>
@@ -300,10 +296,10 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                             <SelectItem value={FolderTokenPermission.WRITE}>Write</SelectItem>
                                         </SelectContent>
                                     </Select>
-                                    <Input value={token.email} disabled={true} className="w-fit flex-1" />
+                                    <Input value={token.email} disabled={true} className="md:w-fit md:flex-1" />
                                     <Button
                                         variant={"outline"}
-                                        className={"text-left font-normal w-52"}
+                                        className={"text-left font-normal md:w-52"}
                                         disabled
                                     >
                                         {format(token.expiryDate, "PPP")}
