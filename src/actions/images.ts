@@ -9,7 +9,6 @@ import { imageCreateManyAndUpdateSizes, imageDeleteAndUpdateSizes } from "@/lib/
 import { changeFolderCover } from "./folders";
 import { validateShareToken } from "@/lib/utils";
 import { getCurrentSession } from "@/lib/session";
-import JSZip from "jszip";
 import { fileTypeFromBuffer } from 'file-type';
 import { z } from "zod";
 import { GoogleBucket } from "@/lib/bucket";
@@ -56,7 +55,7 @@ export async function getLightImages(): Promise<{
     return { error: null, lightImages: images }
 }
 
-export async function uploadImages(parentFolderId: string, formData: FormData, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashCode?: string | null): Promise<{ error: string | null, rejectedFiles?: string[] }> {
+export async function uploadImages(parentFolderId: string, formData: FormData, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashCode?: string | null): Promise<{ error: string | null, used?: bigint, max?: bigint, rejectedFiles?: string[] }> {
     const { user } = await getCurrentSession();
 
     if (!user) {
@@ -95,15 +94,17 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
     }
 
     if (file.size > folder.createdBy.maxStorage - folder.createdBy.usedStorage) {
-        return { error: "not-enough-storage" };
+        return { error: "not-enough-storage", used: folder.createdBy.usedStorage, max: folder.createdBy.maxStorage };
     }
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
     const typeFromBuffer = await fileTypeFromBuffer(buffer);
+    console.log("Type from buffer:", typeFromBuffer);
     if (!typeFromBuffer || !typeFromBuffer.mime.startsWith("image")) {
-        return { error: null, rejectedFiles: [fileName] };
+        console.log("Reject file");
+        return { error: 'invalid-file', rejectedFiles: [fileName] };
     }
 
     const nameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");

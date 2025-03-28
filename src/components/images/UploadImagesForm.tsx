@@ -13,6 +13,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner"
 import { uploadImages } from "@/actions/images";
 import { Progress } from "../ui/progress";
+import { formatBytes } from "@/lib/utils";
 
 export default function UploadImagesForm({ folderId, onUpload }: { folderId: string, onUpload?: () => void }) {
     const t = useTranslations("components.images.uploadImagesForm");
@@ -35,7 +36,7 @@ export default function UploadImagesForm({ folderId, onUpload }: { folderId: str
 
         toast(
             <div className="w-full">
-                Upload in progress
+                {t('ongoing.title')}
                 <Progress value={0} className="w-full mt-2" />
             </div>,
             {
@@ -60,13 +61,16 @@ export default function UploadImagesForm({ folderId, onUpload }: { folderId: str
                 error = true;
                 if (r.error === "not-enough-storage") {
                     notUploadedAmount++;
-                    toast.error(`Not enough space to upload ${data.images![i].name}`);
+                    toast.error(t('errors.not-enough-storage', { name: data.images[i].name, used: formatBytes(Number(r.used)), max: formatBytes(Number(r.max)) }));
+                } else if (r.error === 'invalid-file') {
+                    notUploadedAmount++;
+                    toast.error(t('errors.invalid-file', { name: data.images[i].name }))
                 }
             }
 
             toast(
                 <div className="w-full">
-                    Upload in progress
+                    {t('ongoing.title')}
                     <Progress value={Math.round(((i + 1) / data.images!.length) * 100)} className="w-full mt-2" />
                 </div>,
                 {
@@ -81,9 +85,9 @@ export default function UploadImagesForm({ folderId, onUpload }: { folderId: str
 
         if (data.images!.length - notUploadedAmount > 0) {
             toast.success(`${data.images!.length - notUploadedAmount} images uploaded successfully`);
+            uploadImageForm.reset();
         }
 
-        uploadImageForm.reset();
 
         if (onUpload) {
             onUpload();
@@ -102,13 +106,19 @@ export default function UploadImagesForm({ folderId, onUpload }: { folderId: str
                             <FormControl>
                                 <FileUploader
                                     multiple={true}
-                                    maxSize={1024 * 1024 * 5}
+                                    maxSize={1024 * 1024 * 1000}
                                     maxFileCount={999}
                                     accept={{
                                         'image/png': ['.png'],
                                         'image/jpeg': ['.jpg', '.jpeg'],
                                         'image/gif': ['.gif'],
                                         'image/webp': ['.webp'],
+                                        'video/x-msvideo': ['.avi'],
+                                        'video/mp4': ['.mp4', '.MP4'],
+                                        'video/quicktime': ['.mov'],
+                                        'video/mpeg': ['.mpg', '.mpeg'],
+                                        'video/x-flv': ['.flv'],
+                                        'video/*': ['.webm']
                                     }}
                                     onValueChange={(files) => onChange(files)}
                                     {...fieldProps}

@@ -62,7 +62,7 @@ export default function Header({ className }: { className?: string  }) {
                 </nav>
 
                 <div className="w-fit place-self-end flex gap-2">
-                    <Button>
+                    <Button asChild>
                         <Link href={`/${locale}/signin`}>{ t('nav.login') }</Link>
                     </Button>
                     <SwitchLocale locale={locale} />

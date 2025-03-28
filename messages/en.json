@@ -352,7 +352,7 @@
       "errors": {
         "fileSize": {
           "title": "File too big",
-          "description": "The file is too big. Maximum size is {maxSize}"
+          "description": "{name} exceed the maximum per file size of {maxSize}"
         },
         "fileType": {
           "title": "Invalid file type",
@@ -419,9 +419,16 @@
       },
       "uploadImagesForm": {
         "label": "Upload images",
+        "ongoing": {
+          "title": "Upload in progress"
+        },
         "actions": {
           "submit": "Upload",
           "submitting": "Uploading"
+        },
+        "errors": {
+          "not-enough-storage": "You don't have enough storage remaining to upload {name}. Your used storage is {used} / {max}.",
+          "invalid-file": "{name} isn't a file you can upload. Files must be either image or video."
         }
       }
     },

@@ -13,6 +13,7 @@ import React from "react";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { $Enums } from "@prisma/client";
 
 interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
     /**
@@ -116,6 +117,7 @@ export const FileUploader = (props: FileUploaderProps) => {
 
     const onDrop = React.useCallback(
         (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
+            console.log("Rejected files:", rejectedFiles);
             if (!multiple && maxFileCount === 1 && acceptedFiles.length > 1) {
                 toast({
                     title: "Error",
@@ -145,11 +147,22 @@ export const FileUploader = (props: FileUploaderProps) => {
             setFiles(updatedFiles)
 
             if (rejectedFiles.length > 0) {
-                rejectedFiles.forEach(({ file }) => {
-                    toast({
-                        title: t('errors.fileType.title'),
-                        description: t('errors.fileType.description', { name: file.name, allowedTypes: Object.keys(accept).join(", ") }),
-                        variant: "destructive",
+                rejectedFiles.forEach(({ file, errors }) => {
+                    console.log("errors", errors);
+                    errors.forEach(({ code }) => {
+                        if (code === 'file-too-large') {
+                            toast({
+                                title: t('errors.fileSize.title'),
+                                description: t('errors.fileSize.description', { name: file.name, maxSize: formatBytes(maxSize)}),
+                                variant: 'destructive'
+                            })
+                        } else if (code === 'file-invalid-type') {
+                            toast({
+                                title: t('errors.fileType.title'),
+                                description: t('errors.fileType.description', { name: file.name, allowedTypes: Object.keys(accept).join(", ") }),
+                                variant: "destructive",
+                            });
+                        }
                     })
                 });
             }

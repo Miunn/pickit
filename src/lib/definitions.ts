@@ -64,19 +64,19 @@ export const UploadImagesFormSchema = z.object({
             return file.length > 0;
         })
             .refine((file) => {
-                return Array.from(file).every((f: any) => f.type.startsWith('image/'));
+                return Array.from(file).every((f: any) => f.type.startsWith('image/') || f.type.startsWith('video/'));
             }, {
-                message: 'File must be an image',
+                message: 'File must be an image or a video',
             })
-            .refine((file) => Array.from(file).every((f: any) => file.size < 5000000), {
-                message: "Max size is 5MB."
+            .refine((file) => Array.from(file).every((f: any) => file.size < 1024*1024*1000), {
+                message: "Max size is 1GB."
             })
         : z.array(z.instanceof(File))
             .nonempty({ message: 'Please select at least one file' })
             .refine((file) => {
-                return Array.from(file).every((f) => f.type.startsWith('image/'));
+                return Array.from(file).every((f) => f.type.startsWith('image/') || f.type.startsWith('video/'));
             }, {
-                message: 'File must be an image',
+                message: 'File must be an image or a video',
             })
 });
 
