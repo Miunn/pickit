@@ -4,7 +4,7 @@ import Dropzone, {
 } from "react-dropzone"
 import {cn, formatBytes} from "@/lib/utils";
 import {useControllableState} from "@radix-ui/react-use-controllable-state";
-import {FileTextIcon, UploadIcon} from "lucide-react";
+import {FileTextIcon, PlayCircle, UploadIcon} from "lucide-react";
 import {toast} from "@/hooks/use-toast";
 import {Button} from "@/components/ui/button";
 import {Cross2Icon} from "@radix-ui/react-icons";
@@ -323,6 +323,12 @@ function FilePreview({ file }: FilePreviewProps) {
                 loading="lazy"
                 className="aspect-square shrink-0 rounded-md object-cover"
             />
+        )
+    }
+
+    if (file.type.startsWith('video/')) {
+        return (
+            <PlayCircle className="size-10 text-muted-foreground" aria-hidden="true" />
         )
     }
 
