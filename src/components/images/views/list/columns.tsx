@@ -47,7 +47,10 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
             const setStartIndex = table.options.meta?.imagesListActions?.setStartIndex;
 
             return <div className="truncate font-medium flex items-center gap-2">
-                <Image src={`/api/folders/${row.original.folder.id}/images/${row.original.id}`} width={40} height={40} alt={row.getValue("name")} className="w-[40px] h-[40px] object-cover rounded-xl" />
+                {row.original.type === "video"
+                    ? <Image src={`/api/folders/${row.original.folder.id}/videos/${row.original.id}/thumbnail`} width={40} height={40} alt={row.getValue("name")} className="w-[40px] h-[40px] object-cover rounded-xl" />
+                    : <Image src={`/api/folders/${row.original.folder.id}/images/${row.original.id}`} width={40} height={40} alt={row.getValue("name")} className="w-[40px] h-[40px] object-cover rounded-xl" />
+                }
                 <p onClick={() => {
                     if (setCarouselOpen && setStartIndex) {
                         setStartIndex(row.index);
