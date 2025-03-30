@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Comment" ALTER COLUMN "imageId" DROP NOT NULL,
+ALTER COLUMN "videoId" DROP NOT NULL;

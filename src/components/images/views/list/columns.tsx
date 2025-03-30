@@ -174,9 +174,9 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
                         <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-destructive focus:text-destructive font-semibold">{t('delete')}</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <RenameImageDialog image={row.original} openState={openRename} setOpenState={setOpenRename} />
-                <DeleteImageDialog image={row.original} open={openDelete} setOpen={setOpenDelete} />
-                <ImagePropertiesDialog image={row.original} open={openProperties} setOpen={setOpenProperties} />
+                <RenameImageDialog file={row.original} openState={openRename} setOpenState={setOpenRename} />
+                <DeleteImageDialog file={row.original} open={openDelete} setOpen={setOpenDelete} />
+                <ImagePropertiesDialog file={row.original} open={openProperties} setOpen={setOpenProperties} />
             </>
         },
         size: 50

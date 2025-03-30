@@ -6,7 +6,7 @@ import { ArrowRight, FolderSearch, View } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getSortedFolderContent } from "@/lib/utils";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolderAndComments } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments } from "@/lib/definitions";
 import { redirect } from "@/i18n/routing";
 import { ViewState } from "@/components/folders/ViewSelector";
 
@@ -23,7 +23,7 @@ export default async function FolderPage({ params, searchParams }: { params: { f
         <>
             {folderData.folder
                 ? <FolderContent
-                    folder={getSortedFolderContent(folderData.folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithAccessToken}
+                    folder={getSortedFolderContent(folderData.folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments & FolderWithAccessToken & FolderWithCreatedBy}
                     defaultView={searchParams.view}
                     isGuest={!session}
                 />

@@ -1,7 +1,7 @@
 import { ArrowUpDown, Loader2 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
 import { cn } from "@/lib/utils";
-import { CreateCommentFormSchema, ImageWithComments } from "@/lib/definitions";
+import { CreateCommentFormSchema, ImageWithComments, VideoWithComments } from "@/lib/definitions";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
@@ -17,7 +17,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card"
 import { useSearchParams } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
-export default function ImageCommentSection({ image, className, open, setOpen }: { image: ImageWithComments, className?: string, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ImageCommentSection({ file, className, open, setOpen }: { file: (ImageWithComments | VideoWithComments) & { type: 'image' | 'video' }, className?: string, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const t = useTranslations("components.images.comments");
     const formatter = useFormatter();
@@ -27,15 +27,10 @@ export default function ImageCommentSection({ image, className, open, setOpen }:
             content: ""
         }
     })
-    const [loading, setLoading] = React.useState<boolean>(false);
     const searchParams = useSearchParams();
 
     async function submitComment(data: z.infer<typeof CreateCommentFormSchema>) {
-        setLoading(true);
-
-        const r = await createComment(image.id, data, searchParams.get("share"), searchParams.get("t") === "p" ? "personAccessToken" : "accessToken", searchParams.get("h"));
-
-        setLoading(false);
+        const r = await createComment(file.id, file.type, data, searchParams.get("share"), searchParams.get("t") === "p" ? "personAccessToken" : "accessToken", searchParams.get("h"));
 
         if (!r) {
             toast({
@@ -57,7 +52,7 @@ export default function ImageCommentSection({ image, className, open, setOpen }:
     return (
         <Collapsible className={cn("w-full", className)} open={open} onOpenChange={setOpen}>
             <CollapsibleTrigger className="w-full flex justify-between items-center gap-2 font-semibold cursor-pointer bg-background hover:bg-accent transition-colors px-2 py-1 rounded-md">
-                <span>{ t('trigger', { count: image.comments.length }) }</span> <ArrowUpDown />
+                <span>{ t('trigger', { count: file.comments.length }) }</span> <ArrowUpDown />
             </CollapsibleTrigger>
             <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsibleLeave data-[state=open]:animate-collapsibleEnter">
                 <Form {...createCommentForm}>
@@ -86,7 +81,7 @@ export default function ImageCommentSection({ image, className, open, setOpen }:
                                     <p className="text-xs" dangerouslySetInnerHTML={{ __html: t('privacy.content') }} />
                                 </HoverCardContent>
                             </HoverCard>
-                            {loading
+                            {createCommentForm.formState.isSubmitting
                                 ? <Button variant="secondary" className="px-6 rounded-full" disabled><Loader2 className="animate-spin w-4 h-4 mr-2" /> { t('actions.submitting') }</Button>
                                 : <Button variant="secondary" className="px-6 rounded-full">{ t('actions.submit') }</Button>
                             }
@@ -94,7 +89,7 @@ export default function ImageCommentSection({ image, className, open, setOpen }:
                     </form>
                 </Form>
                 <ScrollArea className="flex max-h-64 flex-col px-2 mt-4">
-                    {image.comments.sort((a, b) => {
+                    {file.comments.sort((a, b) => {
                         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                     }).map((comment) => (
                         <div key={comment.id}>

@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import * as fs from "fs";
 import { revalidatePath } from "next/cache";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolder, FolderWithImagesWithFolderAndComments, LightFolder, PersonAccessTokenWithFolderWithCreatedBy } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolder, FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments, LightFolder, PersonAccessTokenWithFolderWithCreatedBy } from "@/lib/definitions";
 import { folderDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 import { FolderTokenPermission } from "@prisma/client";
 import { validateShareToken } from "@/lib/utils";
@@ -64,7 +64,7 @@ export async function getFolderName(id: string): Promise<{
 
 export async function getFolderFull(folderId: string, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashedPinCode?: string): Promise<{
     error: string | null,
-    folder: (FolderWithCreatedBy & FolderWithImages & FolderWithImagesWithFolderAndComments & FolderWithAccessToken) | null
+    folder: (FolderWithCreatedBy & FolderWithImages & FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments & FolderWithAccessToken) | null
     permission?: FolderTokenPermission
 }> {
     const { user } = await getCurrentSession();
@@ -94,8 +94,14 @@ export async function getFolderFull(folderId: string, shareToken?: string, token
             images: {
                 include: {
                     folder: true,
-                    comments: true
+                    comments: { include: { createdBy: true } }
                 },
+            },
+            videos: {
+                include: {
+                    folder: true,
+                    comments: { include: { createdBy: true } }
+                }
             },
             createdBy: true,
             AccessToken: true

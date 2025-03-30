@@ -1,6 +1,6 @@
 'use client'
 
-import { FolderWithImagesWithFolderAndComments } from "@/lib/definitions";
+import { FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments } from "@/lib/definitions";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import { imagesListViewColumns } from "./views/list/columns";
@@ -12,7 +12,7 @@ import { Button } from "../ui/button";
 import { useTranslations } from "next-intl";
 import { DeleteMultipleImagesDialog } from "./DeleteMultipleImagesDialog";
 
-export default function ImagesList({ folder }: { folder: FolderWithImagesWithFolderAndComments }) {
+export default function ImagesList({ folder }: { folder: FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments }) {
 
     const t = useTranslations("images.views.list.table");
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);
@@ -22,7 +22,7 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
     const [rowSelection, setRowSelection] = React.useState({})
 
     const table = useReactTable({
-        data: folder.images,
+        data: folder.images.concat(folder.videos),
         columns: imagesListViewColumns,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -148,7 +148,7 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
                     )}
                 </TableBody>
             </Table>
-            <CarouselDialog images={folder.images} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
+            <CarouselDialog files={folder.images.concat(folder.videos)} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteMultipleImagesDialog images={Object.keys(rowSelection)} open={openDeleteSelection} setOpen={setOpenDeleteSelection} onDelete={() => {
                 setRowSelection({});
             }} />

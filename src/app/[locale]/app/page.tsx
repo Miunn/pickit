@@ -3,7 +3,7 @@ import DashboardContent from "@/components/layout/DashboardContent";
 import { getCurrentSession } from "@/lib/session";
 import { redirect } from "@/i18n/routing";
 
-export default async function Home({ params }: { params: { locale: string } }) {
+export default async function Home() {
 
     const { user } = await getCurrentSession();
 
@@ -29,7 +29,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
         },
         take: 6,
     });
-    const lastImages = await prisma.image.findMany({
+    const lastFiles = (await prisma.image.findMany({
         where: {
             createdBy: { id: user.id }
         },
@@ -38,9 +38,22 @@ export default async function Home({ params }: { params: { locale: string } }) {
         ] as any,
         include: { folder: true, comments: { include: { createdBy: true } } },
         take: 6,
-    });
+    })).concat(
+        await prisma.video.findMany({
+            where: {
+                createdBy: { id: user.id }
+            },
+            orderBy: [
+                { updatedAt: 'desc' },
+            ] as any,
+            include: { folder: true, comments: { include: { createdBy: true } } },
+            take: 6,
+        })
+    ).sort((a, b) => {
+        return (b.updatedAt as Date).getTime() - (a.updatedAt as Date).getTime();
+    }).slice(0, 6);
 
     return (
-        <DashboardContent lastFolders={lastFolders} lastImages={lastImages} locale={params.locale} />
+        <DashboardContent lastFolders={lastFolders} lastFiles={lastFiles} />
     );
 }

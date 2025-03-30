@@ -30,6 +30,36 @@ export async function imageCreateManyAndUpdateSizes(data: { id?: string, name: s
     })
 }
 
+export async function videoCreateManyAndUpdatSizes(data: { id: string, name: string, size: number, extension: string, width: number, height: number }[], folderId: string, userId: string) {
+    await prisma.video.createMany({
+        data: data.map(({ id, name, size, extension, width, height }) => ({
+            id,
+            name,
+            size,
+            extension,
+            width,
+            height,
+            createdById: userId,
+            folderId: folderId,
+        }))
+    })
+
+    await prisma.folder.updateMany({
+        where: {
+            id: folderId
+        },
+        data: {
+            updatedAt: new Date().toISOString(),
+            size: { increment: data.reduce((acc, { size }) => acc + size, 0) }
+        }
+    })
+
+    await prisma.user.update({
+        where: { id: userId },
+        data: { usedStorage: { increment: data.reduce((acc, { size }) => acc + size, 0) } }
+    })
+}
+
 export async function imageDeleteAndUpdateSizes(imageId: string, userId: string) {
     const image = await prisma.image.findUnique({
         where: {
@@ -62,6 +92,38 @@ export async function imageDeleteAndUpdateSizes(imageId: string, userId: string)
         prisma.user.update({
             where: { id: image.createdById },
             data: { usedStorage: { decrement: image.size } }
+        })
+    ])
+}
+
+export async function videoDeleteAndUpdateSizes(videoId: string, userId: string) {
+    const video = await prisma.video.findUnique({
+        where: {
+            id: videoId,
+            createdBy: { id: userId }
+        },
+        include: {
+            folder: true,
+            createdBy: true
+        }
+    });
+
+    if (!video) {
+        throw new Error("Image not found");
+    }
+
+    await prisma.video.delete({
+        where: { id: videoId }
+    })
+
+    await prisma.$transaction([
+        prisma.folder.update({
+            where: { id: video.folderId },
+            data: { size: { decrement: video.size } }
+        }),
+        prisma.user.update({
+            where: { id: video.createdById },
+            data: { usedStorage: { decrement: video.size } }
         })
     ])
 }

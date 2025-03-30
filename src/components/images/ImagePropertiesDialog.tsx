@@ -1,4 +1,4 @@
-import { ImageWithFolder } from "@/lib/definitions";
+import { ImageWithFolder, VideoWithFolder } from "@/lib/definitions";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
@@ -11,7 +11,7 @@ import { Check, Loader2 } from "lucide-react";
 import saveAs from "file-saver";
 import { DeleteImageDialog } from "./DeleteImageDialog";
 
-export default function ImagePropertiesDialog({ image, open, setOpen }: { image: ImageWithFolder, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ImagePropertiesDialog({ file, open, setOpen }: { file: ImageWithFolder | VideoWithFolder, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const t = useTranslations("dialogs.images.properties");
     const formatter = useFormatter();
@@ -23,7 +23,7 @@ export default function ImagePropertiesDialog({ image, open, setOpen }: { image:
 
     const downloadImageHandler = async () => {
         setIsDownloading(true);
-        const r = await fetch(`/api/folders/${image.folder.id}/images/${image.id}/download`);
+        const r = await fetch(`/api/folders/${file.folder.id}/${file.type === 'video' ? 'videos' : 'images'}/${file.id}/download`);
         setIsDownloading(false);
         if (r.status === 404) {
             toast({
@@ -42,7 +42,7 @@ export default function ImagePropertiesDialog({ image, open, setOpen }: { image:
             return;
         }
 
-        saveAs(await r.blob(), `${image.name}.${image.extension}`);
+        saveAs(await r.blob(), `${file.name}.${file.extension}`);
     }
 
     return (
@@ -50,40 +50,40 @@ export default function ImagePropertiesDialog({ image, open, setOpen }: { image:
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{t('title')}</DialogTitle>
-                    <DialogDescription className="break-all text-ellipsis">{t('description', { name: image.name + '.' + image.extension })}</DialogDescription>
+                    <DialogDescription className="break-all text-ellipsis">{t('description', { name: file.name + '.' + file.extension })}</DialogDescription>
                 </DialogHeader>
 
                 <div className="w-full grid grid-cols-2 gap-y-12 gap-x-6 my-12">
                     <div>
                         <Label>{t('name')}</Label>
-                        <p className="truncate">{image.name + '.' + image.extension}</p>
+                        <p className="truncate">{file.name + '.' + file.extension}</p>
                     </div>
 
                     <div>
                         <Label>{t('parentFolder')}</Label>
-                        <p>{image.folder.name}</p>
+                        <p>{file.folder.name}</p>
                     </div>
 
                     <div>
                         <Label>{t('size')}</Label>
-                        <p>{formatBytes(image.size, { decimals: 2 })}</p>
+                        <p>{formatBytes(file.size, { decimals: 2 })}</p>
                     </div>
 
                     <div>
                         <Label>{t('dimensions')}</Label>
-                        <p>{image.width} pixels x {image.height} pixels</p>
+                        <p>{file.width} pixels x {file.height} pixels</p>
                     </div>
 
                     <div>
                         <Label>{t('uploadedAt')}</Label>
-                        <p className="capitalize">{formatter.dateTime(image.createdAt, { month: "long", year: "numeric", day: "numeric" })}</p>
+                        <p className="capitalize">{formatter.dateTime(file.createdAt, { month: "long", year: "numeric", day: "numeric" })}</p>
                     </div>
                 </div>
 
                 <DialogFooter>
                     <Button variant={"outline"} onClick={async () => {
                         setIsCopying(true);
-                        await copyImageToClipboard(image.folderId || '', image.id || '');
+                        await copyImageToClipboard(file.folderId || '', file.id || '');
                         setIsCopying(false);
 
                         setCopied(true);
@@ -115,7 +115,7 @@ export default function ImagePropertiesDialog({ image, open, setOpen }: { image:
                             : t('actions.download.trigger')
                         }</Button>
 
-                    <DeleteImageDialog image={image}>
+                    <DeleteImageDialog file={file}>
                         <Button variant={"destructive"}>{t('actions.delete')}</Button>
                     </DeleteImageDialog>
                 </DialogFooter>

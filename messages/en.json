@@ -108,7 +108,7 @@
         "empty": "No folders created"
       },
       "images": {
-        "lastUploadedImages": "Last uploaded images",
+        "lastUploadedImages": "Last updated images",
         "selected": "{count, plural, =1 {# image} other {# images}} selected",
         "empty": "No images uploaded",
         "actions": {
@@ -385,7 +385,13 @@
         "actions": {
           "copy": {
             "title": "Image copied",
-            "description": "Image has been copied to your clipboard"
+            "description": "Image has been copied to your clipboard",
+            "errors": {
+              "video-copy-unavailable": {
+                "title": "Impossible to copy video",
+                "description": "Video copying is not available. Please use the download button to download the video"
+              }
+            }
           }
         }
       },
@@ -1306,6 +1312,7 @@
     }
   },
   "folders": {
+    "filesCount": "{count, plural, one {# file} other {# files}}",
     "page": {
       "title": "Folders",
       "subtitle": "Your created folders"
@@ -1378,7 +1385,7 @@
     "empty": "No folders created"
   },
   "images": {
-    "lastUploadedImages": "Last uploaded images",
+    "lastUploadedImages": "Last updated images",
     "selected": "{count, plural, =1 {# image} other {# images}} selected",
     "empty": "No images uploaded",
     "page": {
@@ -1431,14 +1438,14 @@
             "download": "Download",
             "rename": "Rename",
             "setAsCover": {
-              "label": "Définir comme couverture",
+              "label": "Set as cover",
               "error": {
-                "title": "Impossible de définir la couverture",
-                "description": "Une erreur est survenue lors de la définition de la couverture"
+                "title": "Can't set as cover",
+                "description": "An unknown error happened while setting the image as cover"
               },
               "success": {
-                "title": "Couverture définie",
-                "description": "La couverture du dossier a été définie avec succès"
+                "title": "Cover set",
+                "description": "The image has been set as cover successfully"
               }
             },
             "properties": "Properties",

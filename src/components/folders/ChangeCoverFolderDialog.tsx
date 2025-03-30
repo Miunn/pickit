@@ -53,7 +53,7 @@ export default function ChangeCoverFolderDialog({ images, folderId, open, setOpe
                     <DialogDescription>{t("description")}</DialogDescription>
                 </DialogHeader>
 
-                <ImagesCarousel images={images} startIndex={0} currentIndex={current} setCurrentIndex={setCurrent} />
+                <ImagesCarousel files={images.map((i) => ({ ...i, type: 'image' }))} startIndex={0} currentIndex={current} setCurrentIndex={setCurrent} />
 
                 <DialogFooter>
                     <DialogClose asChild>

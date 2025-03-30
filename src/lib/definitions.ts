@@ -231,6 +231,24 @@ const folderWithImagesWithFolderAndComments = Prisma.validator<Prisma.FolderDefa
 
 export type FolderWithImagesWithFolderAndComments = Prisma.FolderGetPayload<typeof folderWithImagesWithFolderAndComments>
 
+const folderWithVideos = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { videos: true }
+})
+
+export type FolderWithVideos = Prisma.FolderGetPayload<typeof folderWithVideos>
+
+const folderWithVideosWithFolder = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { videos: { include: { folder: true } } },
+})
+
+export type FolderWithVideosWithFolder = Prisma.FolderGetPayload<typeof folderWithVideosWithFolder>
+
+const folderWithVideosWithFolderAndComments = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { videos: { include: { folder: true, comments: { include: { createdBy: true } } } } },
+})
+
+export type FolderWithVideosWithFolderAndComments = Prisma.FolderGetPayload<typeof folderWithVideosWithFolderAndComments>
+
 const folderWithAccessToken = Prisma.validator<Prisma.FolderDefaultArgs>()({
     include: { AccessToken: true }
 })
@@ -272,6 +290,18 @@ const imageWithComments = Prisma.validator<Prisma.ImageDefaultArgs>()({
 })
 
 export type ImageWithComments = Prisma.ImageGetPayload<typeof imageWithComments>
+
+const videoWithFolder = Prisma.validator<Prisma.VideoDefaultArgs>()({
+    include: { folder: true },
+})
+
+export type VideoWithFolder = Prisma.VideoGetPayload<typeof videoWithFolder>
+
+const videoWithComments = Prisma.validator<Prisma.VideoDefaultArgs>()({
+    include: { comments: { include: { createdBy: true } } },
+})
+
+export type VideoWithComments = Prisma.VideoGetPayload<typeof videoWithComments>
 
 const accessTokenWithFolder = Prisma.validator<Prisma.AccessTokenDefaultArgs>()({
     include: { folder: true },

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
-import { ImageWithComments, ImageWithFolder } from "@/lib/definitions";
+import { ImageWithComments, ImageWithFolder, VideoWithComments, VideoWithFolder } from "@/lib/definitions";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Braces, BracesIcon, Check, Copy, ExternalLink } from "lucide-react";
@@ -12,7 +12,7 @@ import ImageCommentSection from "./ImageCommentSection";
 import { useSearchParams } from "next/navigation";
 import ImageExif from "./ImageExif";
 
-export default function ImagesCarousel({ images, startIndex, currentIndex, setCurrentIndex }: { images: (ImageWithFolder & ImageWithComments)[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>> }) {
+export default function ImagesCarousel({ files, startIndex, currentIndex, setCurrentIndex }: { files: (((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments)) & { type: 'image' | 'video' })[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>> }) {
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
@@ -20,8 +20,8 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
 
     const t = useTranslations("components.images.carousel");
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
-    const imagesItemsRefs = images.map(() => useRef<HTMLDivElement>(null));
-    const [count, setCount] = useState(images.length);
+    const imagesItemsRefs = files.map(() => useRef<HTMLDivElement>(null));
+    const [count, setCount] = useState(files.length);
 
     const [copied, setCopied] = useState<boolean>(false);
 
@@ -43,22 +43,30 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
             <div className="flex justify-between items-center mb-2 gap-2 px-2">
                 <p className="font-semibold">{
                     currentIndex == 0
-                        ? images[currentIndex]?.name
-                        : images[currentIndex - 1]?.name
+                        ? files[currentIndex]?.name
+                        : files[currentIndex - 1]?.name
                 }</p>
                 <div className="flex gap-2">
-                    <ImageExif image={images[currentIndex === 0 ? currentIndex : currentIndex - 1]}>
+                    <ImageExif image={files[currentIndex === 0 ? currentIndex : currentIndex - 1]}>
                         <Button variant={"outline"} size={"icon"} type="button">
                             <Braces className="w-4 h-4" />
                         </Button>
                     </ImageExif>
                     <Button variant={"outline"} size={"icon"} type="button" asChild>
-                        <Link href={`/api/folders/${images.at(currentIndex - 1)?.folderId}/images/${images.at(currentIndex - 1)?.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} target="_blank">
+                        <Link href={`/api/folders/${files.at(currentIndex - 1)?.folderId}/images/${files.at(currentIndex - 1)?.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} target="_blank">
                             <ExternalLink className="w-4 h-4" />
                         </Link>
                     </Button>
-                    <Button variant={"outline"} size={"icon"} type="button" onClick={async () => {
-                        await copyImageToClipboard(images.at(currentIndex - 1)?.folderId || '', images.at(currentIndex - 1)?.id || '', shareToken || '', shareHashPin || '', tokenType);
+                    <Button className={files.at(currentIndex - 1)?.type === "video" ? "hidden" : "block"} variant={"outline"} size={"icon"} type="button" onClick={async () => {
+                        if (files.at(currentIndex - 1)?.type === "video") {
+                            toast({
+                                title: t('actions.copy.errors.video-copy-unavailable.title'),
+                                description: t('actions.copy.errors.video-copy-unavailable.description'),
+                                variant: "destructive",
+                            });
+                            return;
+                        }
+                        await copyImageToClipboard(files.at(currentIndex - 1)?.folderId || '', files.at(currentIndex - 1)?.id || '', shareToken || '', shareHashPin || '', tokenType);
 
                         setCopied(true);
                         toast({
@@ -83,11 +91,14 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                 startIndex: startIndex
             }} setApi={setCarouselApi}>
                 <CarouselContent className="h-fit">
-                    {images.map((image, index) => (
-                        <CarouselItem ref={imagesItemsRefs[index]} key={image.id} className="h-fit">
+                    {files.map((file, index) => (
+                        <CarouselItem ref={imagesItemsRefs[index]} key={file.id} className="h-fit">
                             <div className={`${commentSectionOpen ? "h-44" : "h-96"} flex justify-center items-center p-2 transition-all duration-300 ease-in-out`}>
-                                <Image src={`/api/folders/${image.folder.id}/images/${image.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
-                                    alt={image.name} className={`${commentSectionOpen ? "h-44" : "h-96"} max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out`} width={900} height={384} />
+                                {'type' in file && file.type === 'video'
+                                    ? <video className={`${commentSectionOpen ? "h-44" : "h-96"} max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out`} controls src={`/api/folders/${file.folder.id}/videos/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} />
+                                    : <Image src={`/api/folders/${file.folder.id}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
+                                        alt={file.name} className={`${commentSectionOpen ? "h-44" : "h-96"} max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out`} width={900} height={384} />
+                                }
                             </div>
                         </CarouselItem>
                     ))}
@@ -98,18 +109,18 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
             <div className="max-w-xl grid grid-cols-2 items-center px-2">
                 <p className="truncate">
                     {currentIndex == 0
-                        ? images[currentIndex]?.folder.name
-                        : images[currentIndex - 1]?.folder.name}
+                        ? files[currentIndex]?.folder.name
+                        : files[currentIndex - 1]?.folder.name}
                 </p>
                 <p className="text-sm text-muted-foreground text-nowrap text-end">
                     <span>{
                         currentIndex == 0
-                            ? `${images[currentIndex]?.width}x${images[currentIndex]?.height}`
-                            : `${images[currentIndex - 1]?.width}x${images[currentIndex - 1]?.height}`
+                            ? `${files[currentIndex]?.width}x${files[currentIndex]?.height}`
+                            : `${files[currentIndex - 1]?.width}x${files[currentIndex - 1]?.height}`
                     }</span> - <span>{
                         currentIndex == 0
-                            ? `${formatBytes(images[currentIndex]?.size, { decimals: 2 })}`
-                            : `${formatBytes(images[currentIndex - 1]?.size, { decimals: 2 })}`
+                            ? `${formatBytes(files[currentIndex]?.size, { decimals: 2 })}`
+                            : `${formatBytes(files[currentIndex - 1]?.size, { decimals: 2 })}`
                     }</span> - <span>{t('slide', { current: currentIndex, total: count })}</span>
                 </p>
             </div>
@@ -118,7 +129,7 @@ export default function ImagesCarousel({ images, startIndex, currentIndex, setCu
                 className="py-4 transition-all duration-1000 ease-in-out"
                 open={commentSectionOpen}
                 setOpen={setCommentSectionOpen}
-                image={images[currentIndex === 0 ? currentIndex : currentIndex - 1]}
+                file={files[currentIndex === 0 ? currentIndex : currentIndex - 1]}
             />
         </div>
     )

@@ -4,10 +4,9 @@ import { useFormatter, useTranslations } from "next-intl";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import React from "react";
 import Image from "next/image";
-import { ImageWithFolder } from "@/lib/definitions";
+import { ImageWithFolder, VideoWithFolder } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
 import { downloadClientImageHandler, formatBytes } from "@/lib/utils";
-import saveAs from "file-saver";
 import { toast } from "@/hooks/use-toast";
 import ImagePropertiesDialog from "./ImagePropertiesDialog";
 import { DeleteImageDialog } from "./DeleteImageDialog";
@@ -16,13 +15,13 @@ import RenameImageDialog from "./RenameImageDialog";
 import { changeFolderCover } from "@/actions/folders";
 
 export interface ImagePreviewProps {
-    image: ImageWithFolder;
+    file: ImageWithFolder | VideoWithFolder;
     selected: string[];
     onClick: (e?: React.MouseEvent) => void;
     onSelect: () => void;
 }
 
-export const ImagePreviewGrid = ({ image, selected, onClick, onSelect }: ImagePreviewProps) => {
+export const ImagePreviewGrid = ({ file, selected, onClick, onSelect }: ImagePreviewProps) => {
     const format = useFormatter();
     const t = useTranslations("images");
     const deleteTranslations = useTranslations("dialogs.images.delete");
@@ -37,29 +36,33 @@ export const ImagePreviewGrid = ({ image, selected, onClick, onSelect }: ImagePr
 
     return (
         <>
-            <ContextMenu key={image.id} modal={false}>
+            <ContextMenu key={file.id} modal={false}>
                 <ContextMenuTrigger asChild>
                     <button onClick={onClick} style={{ all: "unset", cursor: "pointer" }}>
-                        <div className={`inline-block w-64 rounded-2xl ${selected.includes(image.id) ? "bg-accent" : ""}`}>
-                            <div className={`${selected.includes(image.id) ? "scale-95" : ""}`}>
+                        <div className={`inline-block w-64 rounded-2xl ${selected.includes(file.id) ? "bg-accent" : ""}`}>
+                            <div className={`${selected.includes(file.id) ? "scale-95" : ""}`}>
                                 <div className={`relative h-36 mb-4 flex justify-center items-center`}>
-                                    <Image src={`/api/folders/${image.folderId}/images/${image.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`} alt={image.name}
-                                        className={"relative border border-primary rounded-xl object-cover"} sizes="33vw" fill />
+                                    {file.type === "video"
+                                        ? <Image src={`/api/folders/${file.folderId}/videos/${file.id}/thumbnail?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`} alt={file.name}
+                                            className={"relative border border-primary rounded-xl object-cover"} sizes="33vw" fill />
+                                        : <Image src={`/api/folders/${file.folderId}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`} alt={file.name}
+                                            className={"relative border border-primary rounded-xl object-cover"} sizes="33vw" fill />
+                                    }
                                 </div>
-                                <p className={"text-start truncate"}>{image.name}</p>
+                                <p className={"text-start truncate"}>{file.name}</p>
                                 <div className={"text-sm h-4 flex items-center justify-between"}>
                                     <div className="h-full flex items-center">
                                         <TooltipProvider>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
-                                                    <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(image.createdAt, {
+                                                    <p className={"text-sm opacity-60 capitalize truncate"}>{format.dateTime(file.createdAt, {
                                                         day: "numeric",
                                                         month: "short",
                                                         year: "numeric"
                                                     })}</p>
                                                 </TooltipTrigger>
                                                 <TooltipContent>
-                                                    <p className={"text-sm capitalize truncate"}>{format.dateTime(image.createdAt, {
+                                                    <p className={"text-sm capitalize truncate"}>{format.dateTime(file.createdAt, {
                                                         weekday: "long",
                                                         day: "numeric",
                                                         month: "short",
@@ -71,7 +74,7 @@ export const ImagePreviewGrid = ({ image, selected, onClick, onSelect }: ImagePr
                                             </Tooltip>
                                         </TooltipProvider>
                                     </div>
-                                    <p className="text-muted-foreground text-nowrap">{formatBytes(image.size)}</p>
+                                    <p className="text-muted-foreground text-nowrap">{formatBytes(file.size)}</p>
                                 </div>
                             </div>
                         </div>
@@ -84,14 +87,14 @@ export const ImagePreviewGrid = ({ image, selected, onClick, onSelect }: ImagePr
                     <ContextMenuItem onClick={onSelect}>
                         {t('actions.select')}
                     </ContextMenuItem>
-                    <ContextMenuItem onClick={() => downloadClientImageHandler(image)}>
+                    <ContextMenuItem onClick={() => downloadClientImageHandler(file)}>
                         {t('actions.download')}
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenRename(true)}>
                         {t('actions.rename')}
                     </ContextMenuItem>
                     <ContextMenuItem onClick={async () => {
-                        const r = await changeFolderCover(image.folderId, image.id);
+                        const r = await changeFolderCover(file.folderId, file.id);
 
                         if (r.error) {
                             toast({
@@ -116,9 +119,9 @@ export const ImagePreviewGrid = ({ image, selected, onClick, onSelect }: ImagePr
                     </ContextMenuItem>
                 </ContextMenuContent>
             </ContextMenu>
-            <RenameImageDialog image={image} openState={openRename} setOpenState={setOpenRename} />
-            <DeleteImageDialog image={image} open={openDelete} setOpen={setOpenDelete} />
-            <ImagePropertiesDialog image={image} open={openProperties} setOpen={setOpenProperties} />
+            <RenameImageDialog file={file} openState={openRename} setOpenState={setOpenRename} />
+            <DeleteImageDialog file={file} open={openDelete} setOpen={setOpenDelete} />
+            <ImagePropertiesDialog file={file} open={openProperties} setOpen={setOpenProperties} />
         </>
     )
 }

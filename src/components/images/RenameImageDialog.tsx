@@ -20,10 +20,10 @@ import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
 import { CreateFolderFormSchema } from "@/lib/definitions";
-import { Image } from "@prisma/client";
+import { Image, Video } from "@prisma/client";
 import { renameImage } from "@/actions/images";
 
-export default function RenameImageDialog({ openState, setOpenState, image }: { openState: boolean, setOpenState: any, image: Image }) {
+export default function RenameImageDialog({ openState, setOpenState, file }: { openState: boolean, setOpenState: any, file: Image | Video }) {
 
     const t = useTranslations("dialogs.images.rename");
 
@@ -32,13 +32,13 @@ export default function RenameImageDialog({ openState, setOpenState, image }: { 
     const form = useForm<z.infer<typeof CreateFolderFormSchema>>({
         resolver: zodResolver(CreateFolderFormSchema),
         defaultValues: {
-            name: image.name,
+            name: file.name,
         }
     });
 
     function onSubmit(data: z.infer<typeof CreateFolderFormSchema>) {
         setLoading(true);
-        renameImage(image.id, data).then(d => {
+        renameImage(file.id, file.type, data).then(d => {
             setLoading(false);
 
             if (d.error) {
@@ -71,7 +71,7 @@ export default function RenameImageDialog({ openState, setOpenState, image }: { 
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{t('title')}</DialogTitle>
-                    <DialogDescription>{t('description', { name: image.name })}</DialogDescription>
+                    <DialogDescription>{t('description', { name: file.name })}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-4">
@@ -84,7 +84,7 @@ export default function RenameImageDialog({ openState, setOpenState, image }: { 
                                     <FormControl>
                                         <Input placeholder={t('form.name.placeholder')} {...field} />
                                     </FormControl>
-                                    <FormDescription>{t('form.name.description', { name: image.name })}</FormDescription>
+                                    <FormDescription>{t('form.name.description', { name: file.name })}</FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}

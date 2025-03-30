@@ -108,7 +108,7 @@
         "empty": "Aucun dossier créé"
       },
       "images": {
-        "lastUploadedImages": "Dernières images téléchargées",
+        "lastUploadedImages": "Dernières images importées",
         "selected": "{count, plural, =1 {# image sélectionnée} other {# images sélectionnées}}",
         "empty": "Aucune image téléchargée",
         "actions": {
@@ -384,7 +384,13 @@
         "actions": {
           "copy": {
             "title": "Image copiée",
-            "description": "L'image a été copiée dans votre presse-papiers"
+            "description": "L'image a été copiée dans votre presse-papiers",
+            "errors": {
+              "video-copy-unavailable": {
+                "title": "Impossible to copy video",
+                "description": "Video copying is not available. Please use the download button to download the video"
+              }
+            }
           }
         }
       },
@@ -1297,6 +1303,7 @@
     }
   },
   "folders": {
+    "filesCount": "{count, plural, =0 {Aucun fichier} =1 {# fichier} other {# fichiers}}",
     "page": {
       "title": "Folders",
       "subtitle": "Your created folders"
@@ -1430,7 +1437,7 @@
     "empty": "Aucun dossier créé"
   },
   "images": {
-    "lastUploadedImages": "Last uploaded images",
+    "lastUploadedImages": "Dernières images importées",
     "selected": "{count, plural, =1 {# image sélectionnée} other {# images sélectionnées}}",
     "empty": "No images uploaded",
     "page": {

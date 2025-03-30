@@ -16,9 +16,9 @@ import { Loader2 } from "lucide-react";
 import { deleteImage } from "@/actions/images";
 import { toast } from "@/hooks/use-toast";
 import { useSearchParams } from "next/navigation";
-import { ImageWithFolder } from "@/lib/definitions";
+import { ImageWithFolder, VideoWithFolder } from "@/lib/definitions";
 
-export const DeleteImageDialog = ({ image, children, open, setOpen }: { image: ImageWithFolder, children?: React.ReactNode, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
+export const DeleteImageDialog = ({ file, children, open, setOpen }: { file: ImageWithFolder | VideoWithFolder, children?: React.ReactNode, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
     const t = useTranslations("dialogs.images.delete");
     const [deleting, setDeleting] = useState(false);
@@ -35,7 +35,7 @@ export const DeleteImageDialog = ({ image, children, open, setOpen }: { image: I
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{t('title')}</DialogTitle>
-                    <DialogDescription>{t('description', { image: image?.name })}</DialogDescription>
+                    <DialogDescription>{t('description', { image: file.name })}</DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
                     <DialogClose asChild>
@@ -43,7 +43,7 @@ export const DeleteImageDialog = ({ image, children, open, setOpen }: { image: I
                     </DialogClose>
                     <Button onClick={() => {
                         setDeleting(true);
-                        deleteImage(image.folderId, image.id, searchParams.get("share") || undefined, searchParams.get("h") || undefined, searchParams.get("t") || undefined).then(r => {
+                        deleteImage(file.folderId, file.id, file.type, searchParams.get("share") || undefined, searchParams.get("h") || undefined, searchParams.get("t") || undefined).then(r => {
                             setDeleting(false);
                             if (r.error) {
                                 toast({

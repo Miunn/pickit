@@ -1,12 +1,9 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { Folder, FolderTokenPermission } from "@prisma/client";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolderAndComments, ImageWithFolder, UploadImagesFormSchema } from "./definitions";
-import { z } from "zod";
-import { uploadImages } from "@/actions/images";
+import { Folder, FolderTokenPermission, Image, Video } from "@prisma/client";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments, ImageWithFolder, UploadImagesFormSchema, VideoWithFolder } from "./definitions";
 import { toast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner"
-import { UseFormReturn } from "react-hook-form";
 import { prisma } from "./prisma";
 import * as bcrypt from "bcryptjs";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
@@ -14,7 +11,8 @@ import saveAs from "file-saver";
 import JSZip from "jszip";
 import { Progress } from "@/components/ui/progress";
 import { getFolderFull } from "@/actions/folders";
-import { useTranslations } from "next-intl";
+import sharp from "sharp";
+import mediaInfoFactory, { MediaInfoResult } from 'mediainfo.js';
 
 export function formatBytes(
 	bytes: number,
@@ -56,8 +54,8 @@ export const copyImageToClipboard = async (folderId: string, imageId: string, sh
 	return true;
 }
 
-export const downloadClientImageHandler = async (image: ImageWithFolder) => {
-	const r = await fetch(`/api/folders/${image.folder.id}/images/${image.id}/download`);
+export const downloadClientImageHandler = async (file: ImageWithFolder | VideoWithFolder) => {
+	const r = await fetch(`/api/folders/${file.folder.id}/${file.type === 'video' ? 'videos' : 'images'}/${file.id}/download`);
 
 	if (r.status === 404) {
 		toast({
@@ -76,7 +74,7 @@ export const downloadClientImageHandler = async (image: ImageWithFolder) => {
 		return;
 	}
 
-	saveAs(await r.blob(), `${image.name}.${image.extension}`);
+	saveAs(await r.blob(), `${file.name}.${file.extension}`);
 }
 
 export const downloadClientFolder = async (folder: Folder | FolderWithImages, t: any, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashPinCode?: string) => {
@@ -148,7 +146,7 @@ export const downloadClientFolder = async (folder: Folder | FolderWithImages, t:
 	saveAs(zipData, `${folder.name}.zip`);
 }
 
-export const getSortedFolderContent = (folderContent: FolderWithImagesWithFolderAndComments, sort: ImagesSortMethod): FolderWithImagesWithFolderAndComments => {
+export const getSortedFolderContent = (folderContent: FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments, sort: ImagesSortMethod): FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments => {
 	switch (sort) {
 		case ImagesSortMethod.NameAsc:
 			return {
@@ -185,7 +183,26 @@ export const getSortedFolderContent = (folderContent: FolderWithImagesWithFolder
 	}
 }
 
-export const validateShareToken = async (folderId: string, token: string, type: "accessToken" | "personAccessToken", hashedPinCode?: string | null): Promise<{ error: string | null, folder: (FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithAccessToken) | null, permission?: FolderTokenPermission }> => {
+export const getSortedImagesVideosContent = (arr: (Image | Video)[], sort: ImagesSortMethod): (Image | Video)[] => {
+	switch (sort) {
+		case ImagesSortMethod.NameAsc:
+			return arr.sort((a, b) => a.name.localeCompare(b.name) || a.createdAt.getTime() - b.createdAt.getTime())
+		case ImagesSortMethod.NameDesc:
+			return arr.sort((a, b) => b.name.localeCompare(a.name) || a.createdAt.getTime() - b.createdAt.getTime())
+		case ImagesSortMethod.SizeAsc:
+			return arr.sort((a, b) => a.size - b.size || a.name.localeCompare(b.name))
+		case ImagesSortMethod.SizeDesc:
+			return arr.sort((a, b) => b.size - a.size || a.name.localeCompare(b.name))
+		case ImagesSortMethod.DateAsc:
+			return arr.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime() || a.name.localeCompare(b.name))
+		case ImagesSortMethod.DateDesc:
+			return arr.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime() || a.name.localeCompare(b.name))
+		default:
+			return arr;
+	}
+}
+
+export const validateShareToken = async (folderId: string, token: string, type: "accessToken" | "personAccessToken", hashedPinCode?: string | null): Promise<{ error: string | null, folder: (FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments & FolderWithAccessToken) | null, permission?: FolderTokenPermission }> => {
 	let accessToken;
 	if (type === "accessToken") {
 		accessToken = await prisma.accessToken.findUnique({
@@ -200,6 +217,12 @@ export const validateShareToken = async (folderId: string, token: string, type: 
 				folder: {
 					include: {
 						images: {
+							include: {
+								folder: true,
+								comments: { include: { createdBy: true } }
+							}
+						},
+						videos: {
 							include: {
 								folder: true,
 								comments: { include: { createdBy: true } }
@@ -226,6 +249,12 @@ export const validateShareToken = async (folderId: string, token: string, type: 
 				folder: {
 					include: {
 						images: {
+							include: {
+								folder: true,
+								comments: { include: { createdBy: true } }
+							}
+						},
+						videos: {
 							include: {
 								folder: true,
 								comments: { include: { createdBy: true } }

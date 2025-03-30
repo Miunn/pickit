@@ -8,7 +8,8 @@ import { z } from "zod";
 import * as bcrypt from "bcryptjs";
 
 export async function createComment(
-    imageId: string,
+    fileId: string,
+    fileType: "image" | "video",
     data: z.infer<typeof CreateCommentFormSchema>,
     shareToken?: string | null,
     type?: "accessToken" | "personAccessToken" | null,
@@ -20,25 +21,43 @@ export async function createComment(
         return false;
     }
 
-    const image = await prisma.image.findUnique({
-        where: { id: imageId },
-        include: {
-            folder: {
-                include: {
-                    images: { include: { folder: true, comments: { include: { createdBy: true } } } },
-                    createdBy: true,
-                    AccessToken: { omit: { pinCode: false } },
-                    PersonAccessToken: { omit: { pinCode: false } }
+    let file;
+    if (fileType === "image") {
+        file =  await prisma.image.findUnique({
+            where: { id: fileId },
+            include: {
+                folder: {
+                    include: {
+                        images: { include: { folder: true, comments: { include: { createdBy: true } } } },
+                        createdBy: true,
+                        AccessToken: { omit: { pinCode: false } },
+                        PersonAccessToken: { omit: { pinCode: false } }
+                    }
                 }
             }
-        }
-    });
+        });
+    } else if (fileType === "video") {
+        file = await prisma.video.findUnique({
+            where: { id: fileId },
+            include: {
+                folder: {
+                    include: {
+                        images: { include: { folder: true, comments: { include: { createdBy: true } } } },
+                        createdBy: true,
+                        AccessToken: { omit: { pinCode: false } },
+                        PersonAccessToken: { omit: { pinCode: false } }
+                    }
+                }
+            }
+        });
+    }
 
-    if (!image) {
+    if (!file) {
+        console.log("File not found");
         return false;
     }
 
-    const folder: FolderWithImagesWithFolderAndComments & FolderWithCreatedBy & FolderWithAccessToken & FolderWithPersonAccessToken = image.folder;
+    const folder: FolderWithImagesWithFolderAndComments & FolderWithCreatedBy & FolderWithAccessToken & FolderWithPersonAccessToken = file.folder;
     let commentName = "Anonymous";
 
     if (!user || folder.createdById !== user.id) {
@@ -59,7 +78,7 @@ export async function createComment(
                 }
 
                 const match = bcrypt.compareSync(accessToken.pinCode as string, h);
-                
+
                 if (!match) {
                     return false;
                 }
@@ -78,7 +97,7 @@ export async function createComment(
                 }
 
                 const match = bcrypt.compareSync(accessToken.pinCode as string, h);
-                
+
                 if (!match) {
                     return false;
                 }
@@ -99,19 +118,17 @@ export async function createComment(
         if (user) {
             data = {
                 text: parsedData.data.content,
-                createdBy: {
-                    connect: {
-                        id: user?.id
-                    }
-                },
+                createdBy: { connect: { id: user?.id } },
                 name: commentName,
-                image: { connect: { id: imageId } }
+                image: fileType === 'image' ? { connect: { id: fileId } } : undefined,
+                video: fileType === 'video' ? { connect: { id: fileId } } : undefined
             }
         } else {
             data = {
                 text: parsedData.data.content,
                 name: commentName,
-                image: { connect: { id: imageId } }
+                image: fileType === 'image' ? { connect: { id: fileId } } : undefined,
+                video: fileType === 'video' ? { connect: { id: fileId } } : undefined
             }
         }
 
@@ -119,9 +136,16 @@ export async function createComment(
             data,
             include: { image: { include: { folder: true } } }
         });
-        revalidatePath(`/app/folders/${comment.image.folder.id}`);
+        
+        if (!comment) {
+            console.log("Comment creation failed");
+            return false;
+        }
+
+        revalidatePath(`/app/folders/${folder.id}`);
         return true;
     } catch (e) {
+        console.log("Error creating comment", e);
         return false;
     }
 }

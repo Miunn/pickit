@@ -5,7 +5,7 @@ import fs from "fs";
 import { getCurrentSession } from "@/lib/session";
 import { GoogleBucket } from "@/lib/bucket";
 
-export async function GET(req: NextRequest, { params }: { params: { image: string }, }): Promise<NextResponse> {
+export async function GET(req: NextRequest, { params }: { params: { video: string }, }): Promise<NextResponse> {
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
     const tokenType = req.nextUrl.searchParams.get("t");
@@ -62,46 +62,46 @@ export async function GET(req: NextRequest, { params }: { params: { image: strin
             }
         }
 
-        const image = await prisma.image.findUnique({
+        const video = await prisma.video.findUnique({
             where: {
-                id: params.image,
+                id: params.video,
                 folder: {
                     id: access.folder.id as string
                 }
             }
         });
 
-        if (!image) {
+        if (!video) {
             return NextResponse.json({ error: "Image not found" });
         }
 
-        const file = GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`);
+        const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.id}`);
         const [buffer] = await file.download();
         const res = new NextResponse(buffer);
         res.headers.set('Content-Disposition', 'inline');
-        res.headers.set('Content-Type', `image/${image.extension}`);
+        res.headers.set('Content-Type', `video/${video.extension}`);
         return res;
     } else if (user) {
-        const image = await prisma.image.findUnique({
+        const video = await prisma.video.findUnique({
             where: {
-                id: params.image,
+                id: params.video,
                 createdBy: {
                     id: user.id as string
                 }
             }
         });
 
-        if (!image) {
-            return NextResponse.json({ error: "Image not found" }, { status: 404 });
+        if (!video) {
+            return NextResponse.json({ error: "Video not found" });
         }
 
-        const file = GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`);
+        const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.id}`);
         const [buffer] = await file.download();
         const res = new NextResponse(buffer);
         res.headers.set('Content-Disposition', 'inline');
-        res.headers.set('Content-Type', `image/${image.extension}`);
+        res.headers.set('Content-Type', `video/${video.extension}`);
         return res;
     } else {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        return NextResponse.json({ error: "Unauthorized" });
     }
 }

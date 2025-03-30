@@ -4,23 +4,20 @@ import { ImagePreviewGrid } from "@/components/images/ImagePreviewGrid";
 import React, { Fragment, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Loader2, Trash2, X } from "lucide-react";
+import { Trash2, X } from "lucide-react";
 import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
 import { CarouselDialog } from "@/components/images/CarouselDialog";
-import { FolderWithImagesWithFolderAndComments, ImageWithComments, ImageWithFolder } from "@/lib/definitions";
-import { formatBytes, getSortedFolderContent } from "@/lib/utils";
+import { FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments, ImageWithComments, ImageWithFolder, VideoWithComments, VideoWithFolder } from "@/lib/definitions";
+import { formatBytes, getSortedImagesVideosContent } from "@/lib/utils";
 import { ImagesSortMethod } from "../folders/SortImages";
 import UploadImagesForm from "./UploadImagesForm";
 
-export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWithFolderAndComments, sortState: ImagesSortMethod }) => {
+export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments, sortState: ImagesSortMethod }) => {
     const t = useTranslations("images");
     const deleteMultipleTranslations = useTranslations("dialogs.images.deleteMultiple");
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
     const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
-    const [selectImageToDelete, setSelectImageToDelete] = useState<ImageWithFolder | null>(null);
     const [startIndex, setStartIndex] = useState(0);
-
-    const [uploading, setUploading] = useState<boolean>(false);
 
     const [selecting, setSelecting] = useState<boolean>(false);
     const [selected, setSelected] = useState<string[]>([]);
@@ -57,45 +54,45 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                 : null
             }
             <div className={"flex flex-wrap gap-3"}>
-                {folder.images.length == 0
+                {folder.images.length && folder.videos.length == 0
                     ? <div className={"mx-auto flex flex-col justify-center items-center max-w-lg"}>
                         <UploadImagesForm folderId={folder.id} />
                     </div>
-                    : getSortedFolderContent(folder, sortState).images.map((image: ImageWithFolder & ImageWithComments) => (
-                        <Fragment key={image.id}>
+                    : (getSortedImagesVideosContent(folder.images.concat(folder.videos), sortState) as ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[]).map((file: (ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments)) => (
+                        <Fragment key={file.id}>
                             <ImagePreviewGrid
-                                image={image}
+                                file={file}
                                 selected={selected}
                                 onClick={(e) => {
                                     if (selecting) {
                                         if (e?.shiftKey) {
-                                            if (!selected.includes(image.id)) {
+                                            if (!selected.includes(file.id)) {
                                                 const lastSelected = folder.images.findIndex((img) => img.id === selected[selected.length - 1]);
-                                                const currentSelected = folder.images.findIndex((img) => img.id === image.id);
+                                                const currentSelected = folder.images.findIndex((img) => img.id === file.id);
                                                 const range = folder.images.slice(Math.min(lastSelected, currentSelected), Math.max(lastSelected, currentSelected) + 1);
                                                 setSelected([...selected, ...range.map((img) => img.id)]);
                                                 setSizeSelected(sizeSelected + range.reduce((acc, img) => acc + img.size, 0));
                                             }
-                                        } else if (selected.includes(image.id)) {
-                                            setSelected(selected.filter((id) => id !== image.id));
-                                            setSizeSelected(sizeSelected - image.size);
+                                        } else if (selected.includes(file.id)) {
+                                            setSelected(selected.filter((id) => id !== file.id));
+                                            setSizeSelected(sizeSelected - file.size);
                                         } else {
-                                            setSelected([...selected, image.id]);
-                                            setSizeSelected(sizeSelected + image.size);
+                                            setSelected([...selected, file.id]);
+                                            setSizeSelected(sizeSelected + file.size);
                                         }
                                     } else {
-                                        setStartIndex(folder.images.indexOf(image));
+                                        setStartIndex(folder.images.indexOf(file));
                                         setCarouselOpen(true);
                                     }
                                 }}
                                 onSelect={() => {
-                                    if (selected.includes(image.id)) {
-                                        setSelected(selected.filter((id) => id !== image.id));
-                                        setSizeSelected(sizeSelected - image.size);
+                                    if (selected.includes(file.id)) {
+                                        setSelected(selected.filter((id) => id !== file.id));
+                                        setSizeSelected(sizeSelected - file.size);
                                     } else {
                                         setSelecting(true);
-                                        setSelected([...selected, image.id]);
-                                        setSizeSelected(sizeSelected + image.size);
+                                        setSelected([...selected, file.id]);
+                                        setSizeSelected(sizeSelected + file.size);
                                     }
                                 }}
                             />
@@ -103,7 +100,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                     ))}
             </div>
 
-            <CarouselDialog images={folder.images} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
+            <CarouselDialog files={folder.images.map((i) => ({ ...i, type: 'image'})).concat(folder.videos.map((v) => ({ ...v, type: 'video' })))} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
                 setSelected([]);
                 setSelecting(false);

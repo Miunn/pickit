@@ -7,11 +7,10 @@ import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleIm
 import React, { Fragment, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { ImageWithComments, ImageWithFolder } from "@/lib/definitions";
+import { ImageWithComments, ImageWithFolder, VideoWithComments, VideoWithFolder } from "@/lib/definitions";
 
-export const LastUploadedImages = ({ images }: { images: (ImageWithFolder & ImageWithComments)[] }) => {
+export const LastUploadedImages = ({ files }: { files: ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[] }) => {
     const t = useTranslations("pages.dashboard.images");
-    const locale = useLocale();
 
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);
     const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
@@ -49,47 +48,47 @@ export const LastUploadedImages = ({ images }: { images: (ImageWithFolder & Imag
                 </div>
                 : null
             }
-            <div className={`flex flex-wrap gap-3 ${images.length == 0 && "justify-center"}`}>
-                {images.length == 0
+            <div className={`flex flex-wrap gap-3 ${files.length == 0 && "justify-center"}`}>
+                {files.length == 0
                     ? <div className={"flex flex-col justify-center items-center"}>
                         <ImageOff className={"w-32 h-32 opacity-20"} />
                         <p>{t('empty')}</p>
                     </div>
-                    : images.map((image, index) => (
-                        <Fragment key={image.id}>
+                    : files.map((file, index) => (
+                        <Fragment key={file.id}>
                         <ImagePreviewGrid
-                            image={image}
+                            file={file}
                             selected={selected}
                             onClick={(e) => {
                                 if (selecting) {
                                     if (e?.shiftKey) {
-                                        if (!selected.includes(image.id)) {
-                                            const lastSelected = images.findIndex((img) => img.id === selected[selected.length - 1]);
-                                            const currentSelected = images.findIndex((img) => img.id === image.id);
-                                            const range = images.slice(Math.min(lastSelected, currentSelected), Math.max(lastSelected, currentSelected) + 1);
-                                            setSelected([...selected, ...range.map((img) => img.id)]);
-                                            setSizeSelected(sizeSelected + range.reduce((acc, img) => acc + img.size, 0));
+                                        if (!selected.includes(file.id)) {
+                                            const lastSelected = files.findIndex((f) => f.id === selected[selected.length - 1]);
+                                            const currentSelected = files.findIndex((f) => f.id === file.id);
+                                            const range = files.slice(Math.min(lastSelected, currentSelected), Math.max(lastSelected, currentSelected) + 1);
+                                            setSelected([...selected, ...range.map((f) => f.id)]);
+                                            setSizeSelected(sizeSelected + range.reduce((acc, f) => acc + f.size, 0));
                                         }
-                                    } else if (selected.includes(image.id)) {
-                                        setSelected(selected.filter((id) => id !== image.id));
-                                        setSizeSelected(sizeSelected - image.size);
+                                    } else if (selected.includes(file.id)) {
+                                        setSelected(selected.filter((id) => id !== file.id));
+                                        setSizeSelected(sizeSelected - file.size);
                                     } else {
-                                        setSelected([...selected, image.id]);
-                                        setSizeSelected(sizeSelected + image.size);
+                                        setSelected([...selected, file.id]);
+                                        setSizeSelected(sizeSelected + file.size);
                                     }
                                 } else {
-                                    setStartIndex(images.indexOf(image));
+                                    setStartIndex(files.indexOf(file));
                                     setCarouselOpen(true);
                                 }
                             }}
                             onSelect={() => {
-                                if (selected.includes(image.id)) {
-                                    setSelected(selected.filter((id) => id !== image.id));
-                                    setSizeSelected(sizeSelected - image.size);
+                                if (selected.includes(file.id)) {
+                                    setSelected(selected.filter((id) => id !== file.id));
+                                    setSizeSelected(sizeSelected - file.size);
                                 } else {
                                     setSelecting(true);
-                                    setSelected([...selected, image.id]);
-                                    setSizeSelected(sizeSelected + image.size);
+                                    setSelected([...selected, file.id]);
+                                    setSizeSelected(sizeSelected + file.size);
                                 }
                             }}
                         />
@@ -98,7 +97,7 @@ export const LastUploadedImages = ({ images }: { images: (ImageWithFolder & Imag
                 }
             </div>
 
-            <CarouselDialog images={images} title={"Last uploaded images"} carouselOpen={carouselOpen}
+            <CarouselDialog files={files} title={"Last uploaded files"} carouselOpen={carouselOpen}
                 setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
                 setSelected([]);

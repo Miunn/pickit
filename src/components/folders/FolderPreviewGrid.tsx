@@ -58,7 +58,7 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
                         }
                         <p className="truncate">{folder.name}</p>
                         <div className={"text-sm flex h-4 items-center flex-nowrap"}>
-                            <p className={"opacity-60 text-nowrap"}>{folder._count.images ?? 0} images</p>
+                            <p className={"opacity-60 text-nowrap"}>{t('filesCount', {count: folder._count.images ?? 0})}</p>
                             <Separator className="mx-2" orientation="vertical" />
                             <TooltipProvider>
                                 <Tooltip>
