@@ -267,6 +267,12 @@ const folderWithImagesCount = Prisma.validator<Prisma.FolderDefaultArgs>()({
 
 export type FolderWithImagesCount = Prisma.FolderGetPayload<typeof folderWithImagesCount>
 
+const folderWithVideosCount = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { _count: { select: { videos: true } } }
+})
+
+export type FolderWithVideosCount = Prisma.FolderGetPayload<typeof folderWithVideosCount>
+
 const folderWithCover = Prisma.validator<Prisma.FolderDefaultArgs>()({
     include: { cover: true }
 })

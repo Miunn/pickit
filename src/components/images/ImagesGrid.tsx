@@ -54,7 +54,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                 : null
             }
             <div className={"flex flex-wrap gap-3"}>
-                {folder.images.length && folder.videos.length == 0
+                {folder.images.length === 0 && folder.videos.length === 0
                     ? <div className={"mx-auto flex flex-col justify-center items-center max-w-lg"}>
                         <UploadImagesForm folderId={folder.id} />
                     </div>

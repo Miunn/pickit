@@ -1,6 +1,6 @@
 'use client'
 
-import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, ImageWithComments, ImageWithFolder } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, FolderWithVideosCount, ImageWithComments, ImageWithFolder } from "@/lib/definitions";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import React from "react";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
@@ -17,7 +17,7 @@ import DeleteFolderDialog from "./DeleteFolderDialog";
 import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/images";
 import { downloadClientFolder } from "@/lib/utils";
 
-export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithCover }) {
+export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithVideosCount & FolderWithCover }) {
     const t = useTranslations("folders");
     const dialogsTranslations = useTranslations("dialogs.folders");
     const downloadT = useTranslations("folders.download");
@@ -58,7 +58,7 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
                         }
                         <p className="truncate">{folder.name}</p>
                         <div className={"text-sm flex h-4 items-center flex-nowrap"}>
-                            <p className={"opacity-60 text-nowrap"}>{t('filesCount', {count: folder._count.images ?? 0})}</p>
+                            <p className={"opacity-60 text-nowrap"}>{t('filesCount', {count: folder._count.images + folder._count.videos})}</p>
                             <Separator className="mx-2" orientation="vertical" />
                             <TooltipProvider>
                                 <Tooltip>

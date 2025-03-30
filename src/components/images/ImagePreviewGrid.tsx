@@ -93,23 +93,35 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect }: ImagePre
                     <ContextMenuItem onClick={() => setOpenRename(true)}>
                         {t('actions.rename')}
                     </ContextMenuItem>
-                    <ContextMenuItem onClick={async () => {
-                        const r = await changeFolderCover(file.folderId, file.id);
+                    {file.type === "image"
+                        ? <ContextMenuItem onClick={async () => {
+                            if (file.type !== "image") {
+                                toast({
+                                    title: t('actions.setAsCover.errors.video-cover-unavailable.title'),
+                                    description: t('actions.setAsCover.errors.video-cover-unavailable.description'),
+                                    variant: "destructive"
+                                });
+                                return;
+                            }
 
-                        if (r.error) {
+                            const r = await changeFolderCover(file.folderId, file.id);
+
+                            if (r.error) {
+                                toast({
+                                    title: t('actions.setAsCover.errors.unknown.title'),
+                                    description: t('actions.setAsCover.errors.unknown.description'),
+                                    variant: "destructive"
+                                });
+                                return;
+                            }
+
                             toast({
-                                title: t('actions.setAsCover.error.title'),
-                                description: t('actions.setAsCover.error.description'),
-                                variant: "destructive"
+                                title: t('actions.setAsCover.success.title'),
+                                description: t('actions.setAsCover.success.description')
                             });
-                            return;
-                        }
-
-                        toast({
-                            title: t('actions.setAsCover.success.title'),
-                            description: t('actions.setAsCover.success.description')
-                        });
-                    }}>{t('actions.setAsCover.label')}</ContextMenuItem>
+                        }}>{t('actions.setAsCover.label')}</ContextMenuItem>
+                        : null
+                    }
                     <ContextMenuItem onClick={() => setOpenProperties(true)}>
                         {t('actions.properties')}
                     </ContextMenuItem>

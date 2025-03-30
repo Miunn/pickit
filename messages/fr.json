@@ -1453,9 +1453,15 @@
       "rename": "Renommer",
       "setAsCover": {
         "label": "Définir comme couverture",
-        "error": {
-          "title": "Impossible de définir la couverture",
-          "description": "Une erreur est survenue lors de la définition de la couverture"
+        "errors": {
+          "video-cover-unavailable": {
+            "title": "Impossible de définir la couverture",
+            "description": "Une vidéo ne peut pas être définie comme couverture"
+          },
+          "unknown": {
+            "title": "Impossible de définir la couverture",
+            "description": "Une erreur est survenue lors de la définition de la couverture"
+          }
         },
         "success": {
           "title": "Couverture définie",

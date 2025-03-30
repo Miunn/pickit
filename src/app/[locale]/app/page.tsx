@@ -24,7 +24,7 @@ export default async function Home() {
             cover: true,
             AccessToken: true,
             _count: {
-                select: { images: true }
+                select: { images: true, videos: true }
             },
         },
         take: 6,

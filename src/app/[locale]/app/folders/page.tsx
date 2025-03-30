@@ -20,7 +20,7 @@ export default async function FoldersPage({ searchParams }: { searchParams: { vi
             cover: true,
             AccessToken: true,
             _count: {
-                select: { images: true }
+                select: { images: true, videos: true }
             }
         },
     });
