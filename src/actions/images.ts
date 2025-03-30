@@ -112,7 +112,7 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
 
     let data;
     if (typeFromBuffer.mime.startsWith("video")) {
-        const mediainfo = await mediaInfoFactory({ locateFile: (file) => `${process.env.APP_URL}/${file}` });
+        const mediainfo = await mediaInfoFactory({ locateFile: (file) => `${process.env.APP_URL}/mediainfo/${file}` });
         const metadata = await mediainfo.analyzeData(buffer.length, () => buffer)
         mediainfo.close();
 
