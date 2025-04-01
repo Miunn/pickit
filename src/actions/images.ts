@@ -12,7 +12,11 @@ import { fileTypeFromBuffer } from 'file-type';
 import { z } from "zod";
 import { GoogleBucket } from "@/lib/bucket";
 import { randomUUID } from "crypto";
-import mediaInfoFactory, { MediaInfoResult, Track } from "mediainfo.js";
+import mediaInfoFactory, { Track } from "mediainfo.js";
+import ffmpeg from "fluent-ffmpeg";
+import { PassThrough } from "stream";
+
+ffmpeg.setFfmpegPath("node_modules\\@ffmpeg-installer\\win32-x64\\ffmpeg.exe");
 
 export async function getLightImages(): Promise<{
     error: string | null;
@@ -116,15 +120,44 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
         const metadata = await mediainfo.analyzeData(buffer.length, () => buffer)
         mediainfo.close();
 
+        // Extract thumbnail from video
+        const thumbnailBuffer = await new Promise<Buffer>((resolve, reject) => {
+            const inputStream = new PassThrough();
+            const passThrough = new PassThrough();
+            const chunks: Buffer[] = [];
+
+            passThrough.on("data", (chunk) => chunks.push(chunk));
+            passThrough.on("end", () => resolve(Buffer.concat(chunks)));
+            passThrough.on("error", reject);
+
+            inputStream.end(buffer);
+            ffmpeg()
+                .input(inputStream)
+                .outputOptions("-frames:v 1") // Extract a single frame
+                .format("image2") // Output format as image
+                .pipe(passThrough, { end: true });
+        });
+
+        const videoId = randomUUID().toString();
         const videoData = {
-            id: randomUUID().toString(),
+            id: videoId,
             name: nameWithoutExtension,
             size: file.size,
             extension: typeFromBuffer.ext,
             width: metadata.media?.track.find((track: Track) => track["@type"] === "Video")?.Active_Width || 0,
             height: metadata.media?.track.find((track: Track) => track["@type"] === "Video")?.Active_Height || 0,
+            duration: metadata.media?.track.find((track: Track) => track["@type"] === "General")?.Duration || 0,
+            thumbnail: videoId + '-thumbnail',
         }
         await videoCreateManyAndUpdatSizes([videoData], parentFolderId, user?.id ? user.id : folder.createdById);
+
+        try {
+            await GoogleBucket.file(`${user!.id}/${parentFolderId}/${videoData.thumbnail}`).save(thumbnailBuffer);
+        } catch (err) {
+            console.error("Error writing file:", err);
+            throw new Error("File upload failed");
+        }
+
         data = videoData;
     } else if (typeFromBuffer.mime.startsWith("image")) {
         const image = sharp(buffer);
@@ -286,6 +319,12 @@ export async function deleteImage(folderId: string, fileId: string, fileType: st
                     }
                 }
             });
+
+            try {
+                await GoogleBucket.file(`${file?.createdById}/${file?.folderId}/${file?.thumbnail}`).delete();
+            } catch (err) {
+                console.error("Error deleting thumbnail:", err);
+            }
         } else if (fileType === "image") {
             file = await prisma.image.findUnique({
                 where: {
@@ -318,6 +357,11 @@ export async function deleteImage(folderId: string, fileId: string, fileType: st
                     }
                 }
             });
+            try {
+                await GoogleBucket.file(`${file?.createdById}/${file?.folderId}/${file?.thumbnail}`).delete();
+            } catch (err) {
+                console.error("Error deleting thumbnail:", err);
+            }
         } else if (fileType === "image") {
             file = await prisma.image.findUnique({
                 where: {
@@ -361,7 +405,7 @@ export async function deleteImage(folderId: string, fileId: string, fileType: st
     return { error: null };
 }
 
-export async function deleteImages(files: { id: string, type: string}[]) {
+export async function deleteImages(files: { id: string, type: string }[]) {
     for (const file of files) {
         await deleteImage("", file.id, file.type);
     }

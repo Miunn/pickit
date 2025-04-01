@@ -63,8 +63,10 @@ model Video {
   name        String
   size        Int
   extension   String
-  width       Int
-  height      Int
+  width       Int      @default(0)
+  height      Int      @default(0)
+  duration    Int      @default(0)
+  thumbnail   String?
   type        String   @default("video")
   folder      Folder   @relation("FolderVideos", fields: [folderId], references: [id], onDelete: Cascade)
   folderId    String

@@ -30,15 +30,17 @@ export async function imageCreateManyAndUpdateSizes(data: { id?: string, name: s
     })
 }
 
-export async function videoCreateManyAndUpdatSizes(data: { id: string, name: string, size: number, extension: string, width: number, height: number }[], folderId: string, userId: string) {
+export async function videoCreateManyAndUpdatSizes(data: { id: string, name: string, size: number, extension: string, width: number, height: number, duration: number, thumbnail: string }[], folderId: string, userId: string) {
     await prisma.video.createMany({
-        data: data.map(({ id, name, size, extension, width, height }) => ({
+        data: data.map(({ id, name, size, extension, width, height, duration, thumbnail }) => ({
             id,
             name,
             size,
             extension,
             width,
             height,
+            duration,
+            thumbnail,
             createdById: userId,
             folderId: folderId,
         }))

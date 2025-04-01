@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentSession } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 
-export default async function GET(req: NextRequest, { params }: { params: { folder: string, video: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { folder: string, video: string } }) {
     const { user } = await getCurrentSession();
 
     if (!user) {
@@ -21,13 +21,13 @@ export default async function GET(req: NextRequest, { params }: { params: { fold
     });
 
     if (!video) {
+        console.log("No video found")
         return Response.json({ error: "No videos found in this folder" }, { status: 404 });
     }
 
-    const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.id}`);
+    console.log("Video found", video)
+    const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.thumbnail}`);
     const [buffer] = await file.download();
     const res = new NextResponse(buffer);
-    res.headers.set('Content-Type', 'image/png');
-    res.headers.set('Content-Disposition', `attachment; filename=${video.name}.png`);
     return res;
 }
