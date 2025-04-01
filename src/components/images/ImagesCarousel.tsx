@@ -39,9 +39,9 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
     }, [carouselApi]);
 
     return (
-        <div className={"p-4 mx-auto"}>
-            <div className="flex justify-between items-center mb-2 gap-2 px-2">
-                <p className="font-semibold">{
+        <div className={"w-full overflow-hidden p-4 mx-auto"}>
+            <div className="max-w-full flex justify-between items-center mb-2 gap-2 px-2">
+                <p className="font-semibold truncate">{
                     currentIndex == 0
                         ? files[currentIndex]?.name
                         : files[currentIndex - 1]?.name
@@ -57,7 +57,7 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                             <ExternalLink className="w-4 h-4" />
                         </Link>
                     </Button>
-                    <Button className={files.at(currentIndex - 1)?.type === "video" ? "hidden" : "block"} variant={"outline"} size={"icon"} type="button" onClick={async () => {
+                    <Button className={files.at(currentIndex - 1)?.type === "video" ? "hidden" : ""} variant={"outline"} size={"icon"} type="button" onClick={async () => {
                         if (files.at(currentIndex - 1)?.type === "video") {
                             toast({
                                 title: t('actions.copy.errors.video-copy-unavailable.title'),

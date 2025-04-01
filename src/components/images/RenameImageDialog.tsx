@@ -68,10 +68,10 @@ export default function RenameImageDialog({ openState, setOpenState, file }: { o
 
     return (
         <Dialog open={openState} onOpenChange={setOpenState}>
-            <DialogContent>
+            <DialogContent className="w-full overflow-hidden">
                 <DialogHeader>
                     <DialogTitle>{t('title')}</DialogTitle>
-                    <DialogDescription>{t('description', { name: file.name })}</DialogDescription>
+                    <DialogDescription className="text-wrap break-all">{t('description', { name: file.name })}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-4">
@@ -84,7 +84,7 @@ export default function RenameImageDialog({ openState, setOpenState, file }: { o
                                     <FormControl>
                                         <Input placeholder={t('form.name.placeholder')} {...field} />
                                     </FormControl>
-                                    <FormDescription>{t('form.name.description', { name: file.name })}</FormDescription>
+                                    <FormDescription className="text-wrap break-all">{t('form.name.description', { name: file.name })}</FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}

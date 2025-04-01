@@ -35,7 +35,7 @@ export const DeleteImageDialog = ({ file, children, open, setOpen }: { file: Ima
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{t('title')}</DialogTitle>
-                    <DialogDescription>{t('description', { image: file.name })}</DialogDescription>
+                    <DialogDescription className="text-wrap break-all">{t('description', { image: file.name })}</DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
                     <DialogClose asChild>
