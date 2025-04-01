@@ -12,7 +12,7 @@ import ImageCommentSection from "./ImageCommentSection";
 import { useSearchParams } from "next/navigation";
 import ImageExif from "./ImageExif";
 
-export default function ImagesCarousel({ files, startIndex, currentIndex, setCurrentIndex }: { files: (((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments)) & { type: 'image' | 'video' })[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>> }) {
+export default function ImagesCarousel({ files, startIndex, currentIndex, setCurrentIndex }: { files: ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>> }) {
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");

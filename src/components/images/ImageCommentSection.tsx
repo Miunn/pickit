@@ -17,7 +17,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card"
 import { useSearchParams } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
-export default function ImageCommentSection({ file, className, open, setOpen }: { file: (ImageWithComments | VideoWithComments) & { type: 'image' | 'video' }, className?: string, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ImageCommentSection({ file, className, open, setOpen }: { file: ImageWithComments | VideoWithComments, className?: string, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const t = useTranslations("components.images.comments");
     const formatter = useFormatter();
@@ -30,7 +30,7 @@ export default function ImageCommentSection({ file, className, open, setOpen }: 
     const searchParams = useSearchParams();
 
     async function submitComment(data: z.infer<typeof CreateCommentFormSchema>) {
-        const r = await createComment(file.id, file.type, data, searchParams.get("share"), searchParams.get("t") === "p" ? "personAccessToken" : "accessToken", searchParams.get("h"));
+        const r = await createComment(file.id, file.type === "video" ? "video" : "image", data, searchParams.get("share"), searchParams.get("t") === "p" ? "personAccessToken" : "accessToken", searchParams.get("h"));
 
         if (!r) {
             toast({
