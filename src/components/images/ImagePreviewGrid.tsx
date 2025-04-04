@@ -13,6 +13,7 @@ import { DeleteImageDialog } from "./DeleteImageDialog";
 import { useSearchParams } from "next/navigation";
 import RenameImageDialog from "./RenameImageDialog";
 import { changeFolderCover } from "@/actions/folders";
+import { CirclePlay } from "lucide-react";
 
 export interface ImagePreviewProps {
     file: ImageWithFolder | VideoWithFolder;
@@ -41,12 +42,16 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect }: ImagePre
                     <button onClick={onClick} style={{ all: "unset", cursor: "pointer" }}>
                         <div className={`inline-block w-64 rounded-2xl ${selected.includes(file.id) ? "bg-accent" : ""}`}>
                             <div className={`${selected.includes(file.id) ? "scale-95" : ""}`}>
-                                <div className={`relative h-36 mb-4 flex justify-center items-center`}>
+                                <div className={`relative h-36 mb-4 flex justify-center items-center group`}>
                                     {file.type === "video"
                                         ? <Image src={`/api/folders/${file.folderId}/videos/${file.id}/thumbnail?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`} alt={file.name}
                                             className={"relative border border-primary rounded-xl object-cover"} sizes="33vw" fill />
                                         : <Image src={`/api/folders/${file.folderId}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`} alt={file.name}
                                             className={"relative border border-primary rounded-xl object-cover"} sizes="33vw" fill />
+                                    }
+                                    {file.type === "video"
+                                        ? <CirclePlay className="absolute left-2 bottom-2 text-white opacity-80 group-hover:opacity-100 transition-all duration-200 ease-in-out" size={25} />
+                                        : null
                                     }
                                 </div>
                                 <p className={"text-start truncate"}>{file.name}</p>
