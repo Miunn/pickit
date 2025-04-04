@@ -1492,7 +1492,15 @@
         "table": {
           "selection": "{count, plural, one {# image sélectionnée} other {# images sélectionnées}} ",
           "deleteSelected": "Supprimer les images sélectionnées",
-          "empty": "Aucune image téléchargée"
+          "empty": "Aucune image téléchargée",
+          "page": {
+            "label": "{pageStart} - {pageEnd} sur {count}",
+            "rowsPerPage": "Lignes par page",
+            "previous": "Précédent",
+            "next": "Suivant",
+            "goToFirst": "Aller à la première page",
+            "goToLast": "Aller à la dernière page"
+          }
         },
         "header": {
           "name": "Nom",

@@ -2,35 +2,59 @@
 
 import { FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments } from "@/lib/definitions";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
+import { flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
 import { imagesListViewColumns } from "./views/list/columns";
-import React, { use, useEffect } from "react";
-import { ChevronDownIcon, ChevronUpIcon, Trash2, X } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { ChevronDownIcon, ChevronLeft, ChevronRight, ChevronUpIcon, Trash2, X } from "lucide-react";
 import { cn, formatBytes } from "@/lib/utils";
 import { CarouselDialog } from "./CarouselDialog";
 import { Button } from "../ui/button";
 import { useTranslations } from "next-intl";
 import { DeleteMultipleImagesDialog } from "./DeleteMultipleImagesDialog";
+import { Select, SelectItem, SelectContent, SelectValue, SelectTrigger } from "../ui/select";
 
 export default function ImagesList({ folder }: { folder: FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments }) {
-
     const t = useTranslations("images.views.list.table");
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);
     const [startIndex, setStartIndex] = React.useState<number>(0);
     const [openDeleteSelection, setOpenDeleteSelection] = React.useState<boolean>(false);
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [rowSelection, setRowSelection] = React.useState({})
+    const [pagination, setPagination] = React.useState({
+        pageIndex: 0,
+        pageSize: 10,
+    });
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Reference to the table container for virtualization
+    const tableContainerRef = useRef<HTMLDivElement>(null);
+
+    // Ensure folder data is available
+    useEffect(() => {
+        if (folder && folder.images && folder.videos) {
+            setIsLoading(false);
+        }
+    }, [folder]);
+
+    // Prepare data safely
+    const tableData = React.useMemo(() => {
+        if (!folder || !folder.images || !folder.videos) return [];
+        return folder.images.concat(folder.videos) || [];
+    }, [folder]);
 
     const table = useReactTable({
-        data: folder.images.concat(folder.videos),
+        data: tableData,
         columns: imagesListViewColumns,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
         onRowSelectionChange: setRowSelection,
+        onPaginationChange: setPagination,
         state: {
             sorting,
             rowSelection,
+            pagination
         },
         enableSortingRemoval: false,
         meta: {
@@ -42,13 +66,66 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
         getRowId: (row) => row.id,
     });
 
+    if (isLoading) {
+        return <div className="flex items-center justify-center h-64">
+            <p className="text-muted-foreground">{t('loading')}</p>
+        </div>;
+    }
+
     return (
         <>
+            <div className="flex items-center justify-between py-4">
+                <div className="ml-auto flex items-center gap-2">
+                    <p className="text-sm">
+                        {t('page.label', { 
+                            pageStart: (table.getState().pagination.pageIndex * table.getState().pagination.pageSize) + 1, 
+                            pageEnd: Math.min(
+                                (table.getState().pagination.pageIndex * table.getState().pagination.pageSize) + table.getState().pagination.pageSize,
+                                tableData.length
+                            ), 
+                            count: tableData.length 
+                        })}
+                    </p>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        <ChevronLeft className="w-4 h-4" />
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        <ChevronRight className="w-4 h-4" />
+                    </Button>
+                    <Select
+                        value={table.getState().pagination.pageSize.toString()}
+                        onValueChange={(value) => {
+                            table.setPageSize(Number(value))
+                        }}
+                    >
+                        <SelectTrigger className="w-[70px]">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {[10, 20, 30, 40, 50].map(pageSize => (
+                                <SelectItem key={pageSize} value={pageSize.toString()}>
+                                    {pageSize}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
             {Object.keys(rowSelection).length > 0
                 ? <div className={"flex justify-between items-center mb-5 bg-gray-50 rounded-2xl w-full p-2"}>
                     <div className={"flex gap-2 items-center"}>
                         <Button variant="ghost" onClick={() => { setRowSelection({}) }} size="icon"><X className={"w-4 h-4"} /></Button>
-                        <h2><span className={"font-semibold"}>{t('selection', { count: Object.keys(rowSelection).length })}</span> - {formatBytes(folder.images.filter((i) => Object.keys(rowSelection).includes(i.id)).reduce((a, b) => a + b.size, 0), { decimals: 2, sizeType: "normal" })}</h2>
+                        <h2><span className={"font-semibold"}>{t('selection', { count: Object.keys(rowSelection).length })}</span> - {formatBytes(folder.images?.filter((i) => Object.keys(rowSelection).includes(i.id)).reduce((a, b) => a + b.size, 0) || 0, { decimals: 2, sizeType: "normal" })}</h2>
                     </div>
 
                     <Button variant="outline" onClick={() => {
@@ -59,29 +136,29 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
                 </div>
                 : null
             }
-            <Table className="w-full">
-                <TableHeader>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id} className="hover:bg-transparent">
-                            {headerGroup.headers.map((header) => {
-                                return (
-                                    <TableHead
-                                        key={header.id}
-                                        aria-sort={
-                                            header.column.getIsSorted() === "asc"
-                                                ? "ascending"
-                                                : header.column.getIsSorted() === "desc"
-                                                    ? "descending"
-                                                    : "none"
-                                        }
-                                        {...{
-                                            colSpan: header.colSpan,
-                                            style: {
-                                                width: header.getSize(),
-                                            },
-                                        }}
-                                    >
-                                        {header.isPlaceholder ? null : (
+            <div ref={tableContainerRef} className="overflow-auto" style={{ height: 'calc(100vh - 250px)' }}>
+                <Table className="w-full">
+                    <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                                {headerGroup.headers.map((header) => {
+                                    return (
+                                        <TableHead
+                                            key={header.id}
+                                            aria-sort={
+                                                header.column.getIsSorted() === "asc"
+                                                    ? "ascending"
+                                                    : header.column.getIsSorted() === "desc"
+                                                        ? "descending"
+                                                        : "none"
+                                            }
+                                            {...{
+                                                colSpan: header.colSpan,
+                                                style: {
+                                                    width: header.getSize(),
+                                                },
+                                            }}
+                                        >
                                             <div
                                                 className={cn(
                                                     header.column.getCanSort() &&
@@ -89,7 +166,6 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
                                                 )}
                                                 onClick={header.column.getToggleSortingHandler()}
                                                 onKeyDown={(e) => {
-                                                    // Enhanced keyboard handling for sorting
                                                     if (header.column.getCanSort() && (e.key === "Enter" || e.key === " ")) {
                                                         e.preventDefault();
                                                         header.column.getToggleSortingHandler()?.(e);
@@ -117,34 +193,34 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
                                                     ),
                                                 }[header.column.getIsSorted() as string] ?? null}
                                             </div>
-                                        )}
-                                    </TableHead>
-                                );
-                            })}
-                        </TableRow>
-                    ))}
-                </TableHeader>
-                <TableBody>
-                    {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                            <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                                {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id} className="truncate">
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </TableCell>
-                                ))}
+                                        </TableHead>
+                                    );
+                                })}
                             </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                            <TableCell colSpan={imagesListViewColumns.length} className="h-24 text-center">
-                                { t('empty') }
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
-            <CarouselDialog files={folder.images.concat(folder.videos)} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell key={cell.id} className="truncate">
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={imagesListViewColumns.length} className="h-24 text-center">
+                                    {t('empty')}
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+            <CarouselDialog files={tableData} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteMultipleImagesDialog images={Object.keys(rowSelection)} open={openDeleteSelection} setOpen={setOpenDeleteSelection} onDelete={() => {
                 setRowSelection({});
             }} />

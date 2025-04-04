@@ -1439,7 +1439,15 @@
         "table": {
           "selection": "{count, plural, one {# image selected} other {# images selected}}",
           "deleteSelected": "Delete selected images",
-          "empty": "No images uploaded"
+          "empty": "No images uploaded",
+          "page": {
+            "label": "{pageStart} - {pageEnd} of {count}",
+            "rowsPerPage": "Rows per page",
+            "previous": "Previous",
+            "next": "Next",
+            "goToFirst": "Go to first page",
+            "goToLast": "Go to last page"
+          }
         },
         "header": {
           "name": "Name",
