@@ -768,7 +768,21 @@
               "title": "Can't share folder",
               "description": "An unknown error happened while sharing the folder"
             }
+          },
+          "noContacts": {
+            "title": "No contacts",
+            "description": "Please add at least one contact before sharing"
           }
+        },
+        "message": {
+          "title": "Write a message to share with your contacts",
+          "description": "This message will be shared in the email sent to the recipients",
+          "back": "Back to contacts",
+          "recipients": "Recipients",
+          "label": "Add a message (optional)",
+          "placeholder": "Take a look at this album...",
+          "sending": "Sending emails",
+          "send": "Send"
         }
       },
       "delete": {

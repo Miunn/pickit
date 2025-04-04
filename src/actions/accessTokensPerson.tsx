@@ -83,7 +83,7 @@ export async function createNewPersonAccessToken(folderId: string, target: strin
     return { error: null, personAccessToken }
 }
 
-export async function createMultiplePersonAccessTokens(folderId: string, data: { email: string, permission: FolderTokenPermission, expiryDate: Date, pinCode?: string }[]): Promise<{
+export async function createMultiplePersonAccessTokens(folderId: string, data: { email: string, permission: FolderTokenPermission, expiryDate: Date, pinCode?: string, message?: string }[]): Promise<{
     error: string | null
 }> {
     const { user } = await getCurrentSession();
@@ -118,7 +118,15 @@ export async function createMultiplePersonAccessTokens(folderId: string, data: {
         }))
     });
 
-    await sendShareFolderEmail(data.map((d, i) => ({ email: d.email, link: `${process.env.APP_URL}/app/folders/${folderId}?share=${tokens[i]}&t=p`, locked: false })), user.name!, folder.name)
+    // Get the message from the first item (they should all have the same message)
+    const message = data.length > 0 ? data[0].message : undefined;
+
+    await sendShareFolderEmail(data.map((d, i) => ({ 
+        email: d.email, 
+        link: `${process.env.APP_URL}/app/folders/${folderId}?share=${tokens[i]}&t=p`, 
+        locked: false,
+        message: message
+    })), user.name!, folder.name)
     return { error: null }
 }
 
@@ -297,9 +305,9 @@ export async function sendAgainPersonAccessToken(token: string) {
     return { error: null }
 }
 
-async function sendShareFolderEmail(data: { email: string, link: string, locked: boolean }[], name: string, folderName: string) {
+async function sendShareFolderEmail(data: { email: string, link: string, locked: boolean, message?: string }[], name: string, folderName: string) {
     data.forEach(async (d) => {
-        const content = await render(<ShareFolderTemplate name={name} folderName={folderName} link={d.link} isLocked={d.locked} />);
+        const content = await render(<ShareFolderTemplate name={name} folderName={folderName} link={d.link} isLocked={d.locked} message={d.message} />);
 
         await transporter.sendMail({
             from: `"The Echomori Team" <${process.env.MAIL_SENDER}>`,

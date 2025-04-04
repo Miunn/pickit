@@ -119,6 +119,7 @@ export const CreatePersonAccessTokenFormSchema = z.object({
     email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
     permission: z.nativeEnum(FolderTokenPermission),
     pinCode: z.string().length(8).optional(),
+    message: z.string().optional(),
     expiresAt: z.date({
         required_error: "Please select an expiry date",
         invalid_type_error: "Selected date is invalid",

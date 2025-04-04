@@ -745,7 +745,21 @@
               "title": "Impossible de partager le dossier",
               "description": "Une erreur est survenue lors du partage du dossier"
             }
+          },
+          "noContacts": {
+            "title": "Aucun contact",
+            "description": "Veuillez ajouter au moins un contact avant de partager"
           }
+        },
+        "message": {
+          "title": "Écrire un message à partager avec vos contacts",
+          "description": "Ce message sera partagé dans l'email envoyé aux destinataires",
+          "back": "Retour aux contacts",
+          "recipients": "Destinataires",
+          "label": "Ajouter un message (optionnel)",
+          "placeholder": "Jetez un coup d'oeil à cet album...",
+          "sending": "Envoi des emails",
+          "send": "Envoyer"
         }
       },
       "properties": {

@@ -4,7 +4,7 @@ const baseUrl = process.env.APP_URL
     ? process.env.APP_URL
     : 'http://localhost:3000';
 
-export default function ShareFolderTemplate({ name, folderName, link, isLocked }: { name: string, folderName: string, link: string, isLocked: boolean }) {
+export default function ShareFolderTemplate({ name, folderName, link, isLocked, message }: { name: string, folderName: string, link: string, isLocked: boolean, message?: string }) {
     return (
         <Html>
             <Head>
@@ -48,9 +48,17 @@ export default function ShareFolderTemplate({ name, folderName, link, isLocked }
 
                                 <Text>Bonjour,</Text>
 
-                                <Text><strong>{name}</strong> a partagé le dossier <strong>{folderName}</strong> avec vous sur {process.env.APP_NAME}.</Text>
+                                <Text><strong>{name}</strong> a partagé le dossier <strong>{folderName}</strong> avec vous sur {process.env.APP_NAME}{
+                                    message ? ` et a ajouté le message suivant :` : '.'
+                                }</Text>
 
-                                <Text>Cliquez sur le bouton ci-dessous pour y accéder et découvrir les photos qu'il contient :</Text>
+                                {message && (
+                                    <div className="bg-[#f9f9f9] p-[15px] my-[15px] border-[1px] border-[#cccccc] rounded-[5px]">
+                                        <Text className="whitespace-pre-wrap">{message}</Text>
+                                    </div>
+                                )}
+
+                                <Text>Cliquez sur le bouton ci-dessous pour y accéder et découvrir les photos et vidéos qu'il contient :</Text>
 
                                 <div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
                                     <Button href={link} className="box-border w-full rounded-[8px] bg-indigo-600 px-[12px] py-[12px] text-center font-semibold text-white">
@@ -90,37 +98,6 @@ export default function ShareFolderTemplate({ name, folderName, link, isLocked }
                                         <Text className="!mb-0 !mt-[4px] !text-[16px] !leading-[24px] !text-gray-500">
                                             Upload and share your memories easily
                                         </Text>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align="center">
-                                        <Row className="table-cell !h-[44px] !w-[56px] !align-bottom">
-                                            <Column className="!pr-[8px]">
-                                                <Link href="#">
-                                                    <Img
-                                                        alt="Facebook"
-                                                        height="36"
-                                                        src="https://react.email/static/facebook-logo.png"
-                                                        width="36"
-                                                    />
-                                                </Link>
-                                            </Column>
-                                            <Column className="!pr-[8px]">
-                                                <Link href="#">
-                                                    <Img alt="X" height="36" src="https://react.email/static/x-logo.png" width="36" />
-                                                </Link>
-                                            </Column>
-                                            <Column>
-                                                <Link href="#">
-                                                    <Img
-                                                        alt="Instagram"
-                                                        height="36"
-                                                        src="https://react.email/static/instagram-logo.png"
-                                                        width="36"
-                                                    />
-                                                </Link>
-                                            </Column>
-                                        </Row>
                                     </td>
                                 </tr>
                                 <tr>
