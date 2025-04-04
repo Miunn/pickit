@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { Folder, FolderTokenPermission, Image, Video } from "@prisma/client";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments, ImageWithFolder, UploadImagesFormSchema, VideoWithFolder } from "./definitions";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolderAndComments, FolderWithVideos, FolderWithVideosWithFolderAndComments, ImageWithFolder, UploadImagesFormSchema, VideoWithFolder } from "./definitions";
 import { toast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner"
 import { prisma } from "./prisma";
@@ -77,9 +77,9 @@ export const downloadClientImageHandler = async (file: ImageWithFolder | VideoWi
 	saveAs(await r.blob(), `${file.name}.${file.extension}`);
 }
 
-export const downloadClientFolder = async (folder: Folder | FolderWithImages, t: any, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashPinCode?: string) => {
-	let folderWithImages: FolderWithImages;
-	if (!('images' in folder)) {
+export const downloadClientFolder = async (folder: Folder | FolderWithImages | FolderWithVideos, t: any, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashPinCode?: string) => {
+	let folderWithImagesAndVideos: FolderWithImages & FolderWithVideos;
+	if (!('images' in folder) || !('videos' in folder)) {
 		const r = await getFolderFull(folder.id, shareToken, tokenType, hashPinCode);
 
 		if (r.error || !r.folder) {
@@ -91,9 +91,9 @@ export const downloadClientFolder = async (folder: Folder | FolderWithImages, t:
 			return;
 		}
 
-		folderWithImages = r.folder;
+		folderWithImagesAndVideos = r.folder;
 	} else {
-		folderWithImages = folder as FolderWithImages;
+		folderWithImagesAndVideos = folder as FolderWithImages & FolderWithVideos;
 	}
 
 	sonnerToast(
@@ -114,9 +114,10 @@ export const downloadClientFolder = async (folder: Folder | FolderWithImages, t:
 	)
 
 	const zip = new JSZip();
+	const totalFiles = folderWithImagesAndVideos.images.length + folderWithImagesAndVideos.videos.length;
 
-	for (let i = 0; i < folderWithImages.images.length; i++) {
-		const image = folderWithImages.images[i];
+	for (let i = 0; i < folderWithImagesAndVideos.images.length; i++) {
+		const image = folderWithImagesAndVideos.images[i];
 		const r = await fetch(`/api/folders/${folder.id}/images/${image.id}/download`);
 
 		const buffer = await r.arrayBuffer();
@@ -129,7 +130,27 @@ export const downloadClientFolder = async (folder: Folder | FolderWithImages, t:
 				id: "download-progress-toast",
 				description: <div className="w-full">
 					{ t('ongoing.description') }
-					<Progress value={(i + 1) / folderWithImages.images.length * 100} className="w-full mt-2" />
+					<Progress value={(i + 1) / totalFiles * 100} className="w-full mt-2" />
+				</div>
+			}
+		)
+	}
+
+	for (let i = 0; i < folderWithImagesAndVideos.videos.length; i++) {
+		const video = folderWithImagesAndVideos.videos[i];
+		const r = await fetch(`/api/folders/${folder.id}/videos/${video.id}/download`);
+
+		const buffer = await r.arrayBuffer();
+
+		zip.file(`${video.name}-${video.createdAt.getTime()}.${video.extension}`, buffer);
+
+		sonnerToast(
+			<div className="w-full">{ t('ongoing.title') }</div>,
+			{
+				id: "download-progress-toast",
+				description: <div className="w-full">
+					{ t('ongoing.description') }
+					<Progress value={(i + 1) / totalFiles * 100} className="w-full mt-2" />
 				</div>
 			}
 		)

@@ -32,10 +32,6 @@ export default function FoldersList({ folders }: { folders: (FolderWithAccessTok
         getRowId: (row) => row.id,
     });
 
-    useEffect(() => {
-        console.log(rowSelection);
-    }, [rowSelection])
-
     return (
         <>
             {Object.keys(rowSelection).length > 0

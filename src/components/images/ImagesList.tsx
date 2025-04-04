@@ -42,10 +42,6 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
         getRowId: (row) => row.id,
     });
 
-    useEffect(() => {
-        console.log(rowSelection);
-    }, [rowSelection])
-
     return (
         <>
             {Object.keys(rowSelection).length > 0
