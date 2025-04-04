@@ -12,7 +12,7 @@ export default function SwitchLocale({ locale, className }: { locale: string, cl
 
     return (
         <Button variant={"ghost"} size={"icon"} asChild>
-        <Link href={switchLocaleUrl(pathname + searchParams, locale === "en" ? "fr" : "en")} className={cn("font-normal", className)}>
+        <Link href={switchLocaleUrl(pathname + "?" + searchParams.toString(), locale === "en" ? "fr" : "en")} className={cn("font-normal", className)}>
             <Languages className="w-4 h-4" />
         </Link>
         </Button>

@@ -39,7 +39,7 @@ export const DeleteMultipleImagesDialog = ({ images, open, setOpen, onDelete }: 
                     <DialogDescription>{t('description', { n: validImages.length })}</DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <DialogClose>
+                    <DialogClose asChild>
                         <Button variant="outline">{t('actions.cancel')}</Button>
                     </DialogClose>
                     <Button onClick={() => {

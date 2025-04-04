@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
 import { imagesListViewColumns } from "./views/list/columns";
 import React, { useEffect, useRef, useState } from "react";
-import { ChevronDownIcon, ChevronLeft, ChevronRight, ChevronUpIcon, Trash2, X } from "lucide-react";
+import { ChevronDownIcon, ChevronLeft, ChevronRight, ChevronUpIcon, Loader2, Trash2, X } from "lucide-react";
 import { cn, formatBytes } from "@/lib/utils";
 import { CarouselDialog } from "./CarouselDialog";
 import { Button } from "../ui/button";
@@ -68,7 +68,7 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
 
     if (isLoading) {
         return <div className="flex items-center justify-center h-64">
-            <p className="text-muted-foreground">{t('loading')}</p>
+            <Loader2 className="w-4 h-4 animate-spin" />
         </div>;
     }
 
