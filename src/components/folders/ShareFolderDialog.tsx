@@ -155,186 +155,199 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
     const renderShareView = () => {
         return (
             <>
-                <div className="flex justify-between items-center">
-                    <Label>{t('links.label')}</Label>
-                    <Button variant={"link"} className="pr-0" asChild>
+                <div className="flex flex-row justify-between items-start items-center gap-2">
+                    <Label className="font-medium">{t('links.label')}</Label>
+                    <Button variant={"link"} className="pr-0 pl-0 sm:pl-2" asChild>
                         <Link href={`/${locale}/app/links`}>{t('manageAccesses')}</Link>
                     </Button>
                 </div>
-                <div className={"grid grid-cols-[0.3fr_auto_1fr] md:grid-cols-[0.3fr_1fr_auto_auto] gap-3 items-center"}>
+                <div className={"grid grid-cols-[0.3fr_1fr] sm:grid-cols-[0.3fr_1fr_auto] gap-3 items-center mb-4"}>
                     {validTokens.length > 0
                         ? validTokens.sort((a, b) => a.permission.localeCompare(b.permission)).map((token) => <Fragment key={token.token}>
-                            <Label className="capitalize">{
-                                token.permission === FolderTokenPermission.READ
+                            <Label className="capitalize text-sm">
+                                {token.permission === FolderTokenPermission.READ
                                     ? t('links.link.permissions.read')
                                     : t('links.link.permissions.write')
-                            }</Label>
-                            <Input className="hidden md:block" placeholder={t('links.link.placeholder')} disabled={true}
+                                }
+                            </Label>
+                            <Input className="hidden sm:block" placeholder={t('links.link.placeholder')} disabled={true}
                                 value={`${typeof window !== 'undefined' ? window.location.origin : process.env.APP_URL}/app/folders/${folder.id}?share=${token.token}`} />
-                            {token.locked
-                                ? <Button variant={"outline"} size={"icon"} onClick={() => unlockAccessToken(token.id)}><Lock className="w-4 h-4" /></Button>
-                                : <Button variant={"outline"} size={"icon"} onClick={() => {
-                                    setLockToken(token);
-                                    setLockTokenType("accessToken");
-                                    setOpenLockToken(true);
-                                }}><Unlock className="w-4 h-4" /></Button>
-                            }
-                            <Button onClick={() => copyToClipboard(`${typeof window !== 'undefined' ? window.location.origin : process.env.APP_URL}/app/folders/${folder.id}?share=${token.token}`)} className="text-start">
-                                {t('links.link.copy')}
-                            </Button>
+                            <div className="flex items-center gap-2">
+                                {token.locked
+                                    ? <Button variant={"outline"} size={"icon"} onClick={() => unlockAccessToken(token.id)}><Lock className="w-4 h-4" /></Button>
+                                    : <Button variant={"outline"} size={"icon"} onClick={() => {
+                                        setLockToken(token);
+                                        setLockTokenType("accessToken");
+                                        setOpenLockToken(true);
+                                    }}><Unlock className="w-4 h-4" /></Button>
+                                }
+                                <Button onClick={() => copyToClipboard(`${typeof window !== 'undefined' ? window.location.origin : process.env.APP_URL}/app/folders/${folder.id}?share=${token.token}`)} className="text-start flex-1 sm:flex-none">
+                                    {t('links.link.copy')}
+                                </Button>
+                            </div>
                         </Fragment>)
-                        : <p className="col-span-3 text-sm">{t('links.empty')}</p>}
+                        : <p className="col-span-1 sm:col-span-3 text-sm">{t('links.empty')}</p>}
                 </div>
                 <Separator orientation={"horizontal"} className={"my-4"} />
 
-                <div className="space-y-2">
-                    <Label>{t('people.title')}</Label>
+                <div className="space-y-4">
+                    <Label className="font-medium">{t('people.title')}</Label>
                     <Form {...sharePersonAccessTokenForm}>
-                        <form onSubmit={sharePersonAccessTokenForm.handleSubmit(addEmail)} className="flex gap-3 w-full items-end">
-                        <FormField
-                            control={sharePersonAccessTokenForm.control}
-                            name={"permission"}
-                            render={({ field }) => (
-                                <FormItem className="flex flex-col w-24">
-                                    <FormLabel>{t('people.form.permission.label')}</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder={t('people.form.permission.placeholder')} />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value={FolderTokenPermission.READ}>{t('people.form.permission.options.read')}</SelectItem>
-                                            <SelectItem value={FolderTokenPermission.WRITE}>{t('people.form.permission.options.write')}</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={sharePersonAccessTokenForm.control}
-                            name={"email"}
-                            render={({ field }) => (
-                                <FormItem className="md:flex-1 flex flex-col md:min-w-52">
-                                    <FormLabel>{t('people.form.email.label')}</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder={t('people.form.email.placeholder')} {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={sharePersonAccessTokenForm.control}
-                            name="expiresAt"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-col w-52">
-                                    <FormLabel>{t('people.form.expiryDate.label')}</FormLabel>
-                                    <Popover open={openExpiryDatePopover} onOpenChange={setOpenExpiryDatePopover} modal={true}>
-                                        <PopoverTrigger asChild>
+                        <form onSubmit={sharePersonAccessTokenForm.handleSubmit(addEmail)} className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+                            <div className="flex flex-col sm:flex-row gap-4 w-full">
+                                <FormField
+                                    control={sharePersonAccessTokenForm.control}
+                                    name={"permission"}
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-col sm:w-24">
+                                            <FormLabel>{t('people.form.permission.label')}</FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder={t('people.form.permission.placeholder')} />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value={FolderTokenPermission.READ}>{t('people.form.permission.options.read')}</SelectItem>
+                                                    <SelectItem value={FolderTokenPermission.WRITE}>{t('people.form.permission.options.write')}</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={sharePersonAccessTokenForm.control}
+                                    name={"email"}
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-col flex-1">
+                                            <FormLabel>{t('people.form.email.label')}</FormLabel>
                                             <FormControl>
-                                                <Button
-                                                    variant={"outline"}
-                                                    className={cn(
-                                                        "text-left font-normal",
-                                                        !field.value && "text-muted-foreground"
-                                                    )}
-                                                >
-                                                    {field.value ? (
-                                                        format(field.value, "PPP")
-                                                    ) : (
-                                                        <span>Pick a date</span>
-                                                    )}
-                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                </Button>
+                                                <Input placeholder={t('people.form.email.placeholder')} className=" mg:max-w-auto" {...field} />
                                             </FormControl>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0" align="start">
-                                            <Calendar
-                                                mode="single"
-                                                selected={field.value}
-                                                onSelect={field.onChange}
-                                                disabled={(date) => date < new Date()}
-                                                initialFocus
-                                            />
-                                        </PopoverContent>
-                                    </Popover>
-                                </FormItem>
-                            )}
-                        />
-
-                        <div className="flex items-end">
-                            <FormField
-                                control={sharePersonAccessTokenForm.control}
-                                name="pinCode"
-                                render={({ field }) => (
-                                    <FormItem className={`flex flex-col transition-all ${showPersonAccessTokenLock ? "w-72 mr-2" : "overflow-hidden w-0 mr-0"}`}>
-                                        <FormLabel className="text-nowrap">{t('people.form.pinCode.label')}</FormLabel>
-                                        <FormControl>
-                                            <InputOTP maxLength={8} pattern={REGEXP_ONLY_DIGITS} {...field}>
-                                                <InputOTPGroup>
-                                                    <InputOTPSlot index={0} />
-                                                    <InputOTPSlot index={1} />
-                                                    <InputOTPSlot index={2} />
-                                                    <InputOTPSlot index={3} />
-                                                    <InputOTPSlot index={4} />
-                                                    <InputOTPSlot index={5} />
-                                                    <InputOTPSlot index={6} />
-                                                    <InputOTPSlot index={7} />
-                                                </InputOTPGroup>
-                                            </InputOTP>
-                                        </FormControl>
-                                    </FormItem>
-                                )}
-                            />
-                            <Button variant={"outline"} size={"icon"} onClick={() => setShowPersonAccessTokenLock(!showPersonAccessTokenLock)} type="button">{showPersonAccessTokenLock
-                                ? <X className="w-4 h-4" />
-                                : <Unlock className="w-4 h-4" />
-                            }
-                            </Button>
-                        </div>
-
-                        <Button type="submit">{t('buttons.emailAdd')}</Button>
-                    </form>
-                </Form>
-                <ScrollArea className={"max-h-20 md:max-h-40"}>
-                    <div ref={emailScroll}>
-                        {tokenList.map((token) => (
-                            <div key={token.email} className={"grid grid-cols-[auto_auto_0.5fr_1fr] md:flex gap-1 w-full my-1"}>
-                                <Button onClick={() => setTokenList(tokenList.filter((e) => e.email !== token.email))} variant="ghost" size="icon" className="w-9 h-9">
-                                    <X className={"w-4 h-4 text-red-500"} />
-                                </Button>
-                                <Select value={token.permission} disabled>
-                                    <SelectTrigger className="w-24">
-                                        <SelectValue placeholder="Permission" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value={FolderTokenPermission.READ}>Read</SelectItem>
-                                        <SelectItem value={FolderTokenPermission.WRITE}>Write</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <Input value={token.email} disabled={true} className="md:w-fit md:flex-1" />
-                                <Button
-                                    variant={"outline"}
-                                    className={"text-left font-normal md:w-52"}
-                                    disabled
-                                >
-                                    {format(token.expiryDate, "PPP")}
-                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                </Button>
-                                {token.pinCode
-                                    ? <Button variant={"outline"} size={"icon"} disabled><Lock className="w-4 h-4" /></Button>
-                                    : null
-                                }
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={sharePersonAccessTokenForm.control}
+                                    name="expiresAt"
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-col sm:w-48">
+                                            <FormLabel>{t('people.form.expiryDate.label')}</FormLabel>
+                                            <Popover open={openExpiryDatePopover} onOpenChange={setOpenExpiryDatePopover} modal={true}>
+                                                <PopoverTrigger asChild>
+                                                    <FormControl>
+                                                        <Button
+                                                            variant={"outline"}
+                                                            className={cn(
+                                                                "text-left font-normal w-full",
+                                                                !field.value && "text-muted-foreground"
+                                                            )}
+                                                        >
+                                                            {field.value ? (
+                                                                format(field.value, "PPP")
+                                                            ) : (
+                                                                <span>Pick a date</span>
+                                                            )}
+                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                        </Button>
+                                                    </FormControl>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-auto p-0" align="start">
+                                                    <Calendar
+                                                        mode="single"
+                                                        selected={field.value}
+                                                        onSelect={field.onChange}
+                                                        disabled={(date) => date < new Date()}
+                                                        initialFocus
+                                                    />
+                                                </PopoverContent>
+                                            </Popover>
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
-                        ))}
-                    </div>
-                </ScrollArea>
-                <DialogFooter>
-                    <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                    </DialogClose>
-                    <Button onClick={handleShareClick}>Share</Button>
-                </DialogFooter>
+
+                            <div className="flex items-end w-full sm:w-auto">
+                                <FormField
+                                    control={sharePersonAccessTokenForm.control}
+                                    name="pinCode"
+                                    render={({ field }) => (
+                                        <FormItem className={`flex flex-col transition-all ${showPersonAccessTokenLock ? "mr-2" : "overflow-hidden w-0 mr-0"}`}>
+                                            <FormLabel className="text-nowrap">{t('people.form.pinCode.label')}</FormLabel>
+                                            <FormControl>
+                                                <InputOTP maxLength={8} pattern={REGEXP_ONLY_DIGITS} {...field}>
+                                                    <InputOTPGroup>
+                                                        <InputOTPSlot index={0} />
+                                                        <InputOTPSlot index={1} />
+                                                        <InputOTPSlot index={2} />
+                                                        <InputOTPSlot index={3} />
+                                                        <InputOTPSlot index={4} />
+                                                        <InputOTPSlot index={5} />
+                                                        <InputOTPSlot index={6} />
+                                                        <InputOTPSlot index={7} />
+                                                    </InputOTPGroup>
+                                                </InputOTP>
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button variant={"outline"} size={"icon"} onClick={() => setShowPersonAccessTokenLock(!showPersonAccessTokenLock)} type="button">{showPersonAccessTokenLock
+                                    ? <X className="w-4 h-4" />
+                                    : <Unlock className="w-4 h-4" />
+                                }
+                                </Button>
+                            </div>
+
+                            <Button type="submit" className="w-full sm:w-auto">{t('buttons.emailAdd')}</Button>
+                        </form>
+                    </Form>
+                    <ScrollArea className={"max-h-32 md:max-h-40 border rounded-md p-2"}>
+                        <div ref={emailScroll} className="space-y-2">
+                            {tokenList.length === 0 ? (
+                                <p className="text-sm text-muted-foreground text-center py-2">{t('people.empty') || "No contacts added yet"}</p>
+                            ) : (
+                                tokenList.map((token) => (
+                                    <div key={token.email} className={"flex gap-2 w-full p-2 rounded-md bg-muted/30"}>
+                                        <div className="flex items-center gap-2">
+                                            <Button onClick={() => setTokenList(tokenList.filter((e) => e.email !== token.email))} variant="ghost" size="icon" className="w-8 h-8">
+                                                <X className={"w-4 h-4 text-red-500"} />
+                                            </Button>
+                                            <Select value={token.permission} disabled>
+                                                <SelectTrigger className="w-24">
+                                                    <SelectValue placeholder="Permission" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value={FolderTokenPermission.READ}>Read</SelectItem>
+                                                    <SelectItem value={FolderTokenPermission.WRITE}>Write</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <Input value={token.email} disabled={true} className="w-full sm:w-fit sm:flex-1" />
+                                        <div className="flex items-center gap-2">
+                                            <Button
+                                                variant={"outline"}
+                                                className={"text-left font-normal w-full sm:w-52"}
+                                                disabled
+                                            >
+                                                {format(token.expiryDate, "PPP")}
+                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                            </Button>
+                                            {token.pinCode
+                                                ? <Button variant={"outline"} size={"icon"} disabled><Lock className="w-4 h-4" /></Button>
+                                                : null
+                                            }
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </ScrollArea>
+                    <DialogFooter className="flex-col sm:flex-row gap-2 pt-4">
+                        <DialogClose asChild>
+                            <Button variant="outline" className="w-full sm:w-auto">Cancel</Button>
+                        </DialogClose>
+                        <Button onClick={handleShareClick} className="w-full sm:w-auto">Share</Button>
+                    </DialogFooter>
                 </div>
             </>
         );
@@ -346,7 +359,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
             <>
                 <div className="space-y-4">
                     <div className="space-y-2">
-                        <Label>{t('message.recipients') || "Recipients"}</Label>
+                        <Label className="text-base font-medium">{t('message.recipients') || "Recipients"}</Label>
                         <div className="flex flex-wrap gap-2">
                             {tokenList.slice(0, 4).map((token) => (
                                 <div key={token.email} className="bg-muted px-3 py-1 rounded-full text-sm">
@@ -362,9 +375,9 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     </div>
                     
                     <div className="space-y-2">
-                        <Label>{t('message.label') || "Add a message (optional)"}</Label>
+                        <Label className="text-base font-medium">{t('message.label') || "Add a message (optional)"}</Label>
                         <textarea 
-                            className="w-full min-h-[150px] p-3 border rounded-md"
+                            className="w-full min-h-[150px] p-3 border rounded-md resize-none"
                             placeholder={t('message.placeholder') || "Add a personal message to share with your contacts..."}
                             value={shareMessage}
                             onChange={(e) => setShareMessage(e.target.value)}
@@ -372,13 +385,13 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     </div>
                 </div>
                 
-                <DialogFooter>
-                    <Button variant="outline" onClick={handleBackToContacts}>
+                <DialogFooter className="flex-col sm:flex-row gap-2 pt-4">
+                    <Button variant="outline" onClick={handleBackToContacts} className="w-full sm:w-auto">
                         {t('message.back') || "Back"}
                     </Button>
                     {loadingShare
-                        ? <Button disabled><Loader2 className={"w-4 h-4 mr-2 animate-spin"} /> {t('message.sending') || "Sending emails"}</Button>
-                        : <Button onClick={submitSharePersonTokens}>{t('message.send') || "Send"}</Button>}
+                        ? <Button disabled className="w-full sm:w-auto"><Loader2 className={"w-4 h-4 mr-2 animate-spin"} /> {t('message.sending') || "Sending emails"}</Button>
+                        : <Button onClick={submitSharePersonTokens} className="w-full sm:w-auto">{t('message.send') || "Send"}</Button>}
                 </DialogFooter>
             </>
         );
@@ -393,18 +406,18 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     </Button>
                 </DialogTrigger> : null}
                 <DialogContent 
-                    className={`md:h-auto max-w-max overflow-hidden`} 
+                    className={`sm:h-auto w-full max-w-full overflow-auto`} 
                     onPointerDownOutside={(e) => openExpiryDatePopover && e.preventDefault()}
                 >
                     <motion.div
                         initial={false}
-                        animate={{
-                            width: showMessageStep 
-                                ? '48rem' 
-                                : showPersonAccessTokenLock 
-                                    ? '66rem' 
-                                    : '48rem',
-                        }}
+                        // animate={{
+                        //     width: showMessageStep 
+                        //         ? '48rem' 
+                        //         : showPersonAccessTokenLock 
+                        //             ? '66rem' 
+                        //             : '48rem',
+                        // }}
                         transition={{ 
                             type: "spring", 
                             stiffness: 300, 
@@ -413,19 +426,21 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                         className="w-full"
                     >
                         <DialogHeader>
-                            <DialogTitle>{
-                                showMessageStep
+                            <DialogTitle className="text-xl">
+                                {showMessageStep
                                     ? <div className="flex items-center gap-2">
                                             <ChevronLeft className="size-4 cursor-pointer" onClick={handleBackToContacts} />
                                         {t('title')}
                                     </div>
                                     : t('title')
-                            }</DialogTitle>
-                            <DialogDescription>{
-                                showMessageStep
+                                }
+                            </DialogTitle>
+                            <DialogDescription className="text-sm">
+                                {showMessageStep
                                     ? t('message.description')
                                     : t('description')
-                            }</DialogDescription>
+                                }
+                            </DialogDescription>
                         </DialogHeader>
 
                         <AnimatePresence mode="wait">

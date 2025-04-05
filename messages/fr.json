@@ -685,7 +685,8 @@
           }
         },
         "people": {
-          "title": "Personnes",
+          "title": "Contacts",
+          "empty": "Aucun contact pour le moment",
           "form": {
             "permission": {
               "label": "Permission",

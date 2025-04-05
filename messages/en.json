@@ -696,7 +696,7 @@
         "description": "Share the folder with others",
         "manageAccesses": "Manage accesses",
         "links": {
-          "label": "Share folder with a link",
+          "label": "Share with a link",
           "empty": "No sharing links created yet",
           "link": {
             "permissions": {
@@ -708,7 +708,8 @@
           }
         },
         "people": {
-          "title": "Share to people",
+          "title": "Share to contacts",
+          "empty": "No contacts yet",
           "form": {
             "permission": {
               "label": "Permission",
