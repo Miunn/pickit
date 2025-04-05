@@ -406,7 +406,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     </Button>
                 </DialogTrigger> : null}
                 <DialogContent 
-                    className={`sm:h-auto w-full max-w-full overflow-auto`} 
+                    className={`sm:h-auto w-full max-w-full md:max-w-3xl overflow-auto`} 
                     onPointerDownOutside={(e) => openExpiryDatePopover && e.preventDefault()}
                 >
                     <motion.div
