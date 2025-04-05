@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useLocale, useTranslations } from "next-intl";
-import { CalendarIcon, ChevronLeft, Loader2, Lock, MessageSquare, Share2, Unlock, X } from "lucide-react";
+import { CalendarIcon, ChevronLeft, Eye, Loader2, Lock, MessageSquare, Pen, Share2, Unlock, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -51,7 +51,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
 
     const [openExpiryDatePopover, setOpenExpiryDatePopover] = useState(false);
     const [showPersonAccessTokenLock, setShowPersonAccessTokenLock] = useState(false);
-    
+
     // New state for the two-step process
     const [showMessageStep, setShowMessageStep] = useState(false);
     const [shareMessage, setShareMessage] = useState("");
@@ -155,7 +155,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
     const renderShareView = () => {
         return (
             <>
-                <div className="flex flex-row justify-between items-start items-center gap-2">
+                <div className="flex flex-row justify-between items-center gap-2">
                     <Label className="font-medium">{t('links.label')}</Label>
                     <Button variant={"link"} className="pr-0 pl-0 sm:pl-2" asChild>
                         <Link href={`/${locale}/app/links`}>{t('manageAccesses')}</Link>
@@ -301,29 +301,38 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                             <Button type="submit" className="w-full sm:w-auto">{t('buttons.emailAdd')}</Button>
                         </form>
                     </Form>
-                    <ScrollArea className={"max-h-32 md:max-h-40 border rounded-md p-2"}>
+                    <ScrollArea className={"max-h-32 md:max-h-40 border rounded-md p-2 w-full"}>
                         <div ref={emailScroll} className="space-y-2">
                             {tokenList.length === 0 ? (
                                 <p className="text-sm text-muted-foreground text-center py-2">{t('people.empty') || "No contacts added yet"}</p>
                             ) : (
                                 tokenList.map((token) => (
-                                    <div key={token.email} className={"flex gap-2 w-full p-2 rounded-md bg-muted/30"}>
+                                    <div key={token.email} className={"flex gap-2 p-2 rounded-md bg-muted/30"}>
                                         <div className="flex items-center gap-2">
-                                            <Button onClick={() => setTokenList(tokenList.filter((e) => e.email !== token.email))} variant="ghost" size="icon" className="w-8 h-8">
+                                            <Button onClick={() => setTokenList(tokenList.filter((e) => e.email !== token.email))} variant="ghost" size="icon" className="flexw-8 h-8">
                                                 <X className={"w-4 h-4 text-red-500"} />
                                             </Button>
-                                            <Select value={token.permission} disabled>
-                                                <SelectTrigger className="w-24">
-                                                    <SelectValue placeholder="Permission" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value={FolderTokenPermission.READ}>Read</SelectItem>
-                                                    <SelectItem value={FolderTokenPermission.WRITE}>Write</SelectItem>
-                                                </SelectContent>
-                                            </Select>
                                         </div>
-                                        <Input value={token.email} disabled={true} className="w-full sm:w-fit sm:flex-1" />
-                                        <div className="flex items-center gap-2">
+                                        <Select value={token.permission} disabled>
+                                            <SelectTrigger className="hidden sm:flex w-24">
+                                                <SelectValue placeholder="Permission" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value={FolderTokenPermission.READ}>{t('people.form.permission.options.read')}</SelectItem>
+                                                <SelectItem value={FolderTokenPermission.WRITE}>{t('people.form.permission.options.write')}</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <div className="flex sm:hidden items-center">
+                                            <Button variant="outline" size="icon" className="flex sm:hidden" disabled>
+                                                {token.permission === FolderTokenPermission.READ ? (
+                                                    <Eye className="w-4 h-4" />
+                                                ) : (
+                                                    <Pen className="w-4 h-4" />
+                                                )}
+                                            </Button>
+                                        </div>
+                                        <Input value={token.email} disabled={true} className="sm:w-fit sm:flex-1" />
+                                        <div className="hidden sm:flex items-center gap-2">
                                             <Button
                                                 variant={"outline"}
                                                 className={"text-left font-normal w-full sm:w-52"}
@@ -373,10 +382,10 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                             )}
                         </div>
                     </div>
-                    
+
                     <div className="space-y-2">
                         <Label className="text-base font-medium">{t('message.label') || "Add a message (optional)"}</Label>
-                        <textarea 
+                        <textarea
                             className="w-full min-h-[150px] p-3 border rounded-md resize-none"
                             placeholder={t('message.placeholder') || "Add a personal message to share with your contacts..."}
                             value={shareMessage}
@@ -384,7 +393,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                         />
                     </div>
                 </div>
-                
+
                 <DialogFooter className="flex-col sm:flex-row gap-2 pt-4">
                     <Button variant="outline" onClick={handleBackToContacts} className="w-full sm:w-auto">
                         {t('message.back') || "Back"}
@@ -405,8 +414,8 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                         <Share2 className="mr-2" /> {t('trigger')}
                     </Button>
                 </DialogTrigger> : null}
-                <DialogContent 
-                    className={`sm:h-auto w-full max-w-full md:max-w-3xl overflow-auto`} 
+                <DialogContent
+                    className={`sm:h-auto w-full max-w-full md:max-w-3xl overflow-auto`}
                     onPointerDownOutside={(e) => openExpiryDatePopover && e.preventDefault()}
                 >
                     <motion.div
@@ -418,10 +427,10 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                         //             ? '66rem' 
                         //             : '48rem',
                         // }}
-                        transition={{ 
-                            type: "spring", 
-                            stiffness: 300, 
-                            damping: 30 
+                        transition={{
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 30
                         }}
                         className="w-full"
                     >
@@ -429,7 +438,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                             <DialogTitle className="text-xl">
                                 {showMessageStep
                                     ? <div className="flex items-center gap-2">
-                                            <ChevronLeft className="size-4 cursor-pointer" onClick={handleBackToContacts} />
+                                        <ChevronLeft className="size-4 cursor-pointer" onClick={handleBackToContacts} />
                                         {t('title')}
                                     </div>
                                     : t('title')
