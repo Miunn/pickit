@@ -86,37 +86,6 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                                 </tr>
                                 <tr>
                                     <td align="center">
-                                        <Row className="table-cell !h-[44px] !w-[56px] !align-bottom">
-                                            <Column className="!pr-[8px]">
-                                                <Link href="#">
-                                                    <Img
-                                                        alt="Facebook"
-                                                        height="36"
-                                                        src="https://react.email/static/facebook-logo.png"
-                                                        width="36"
-                                                    />
-                                                </Link>
-                                            </Column>
-                                            <Column className="!pr-[8px]">
-                                                <Link href="#">
-                                                    <Img alt="X" height="36" src="https://react.email/static/x-logo.png" width="36" />
-                                                </Link>
-                                            </Column>
-                                            <Column>
-                                                <Link href="#">
-                                                    <Img
-                                                        alt="Instagram"
-                                                        height="36"
-                                                        src="https://react.email/static/instagram-logo.png"
-                                                        width="36"
-                                                    />
-                                                </Link>
-                                            </Column>
-                                        </Row>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align="center">
                                         <Text className="!mb-0 !mt-[4px] !text-[16px] !font-semibold !leading-[24px] !text-gray-500">
                                             support@echomori.fr
                                         </Text>
