@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { useTranslations } from "next-intl";
 
@@ -9,7 +9,7 @@ export default function FeatureCarouselPreview() {
     const t = useTranslations("components.featuresCarousel");
 
     const [expandedIndex, setExpandedIndex] = React.useState<number>(0);
-    const progressRefs = [React.useRef<HTMLDivElement>(null), React.useRef<HTMLDivElement>(null), React.useRef<HTMLDivElement>(null), React.useRef<HTMLDivElement>(null)];
+    const progressRefs = useMemo(() => [React.useRef<HTMLDivElement>(null), React.useRef<HTMLDivElement>(null), React.useRef<HTMLDivElement>(null), React.useRef<HTMLDivElement>(null)], []);
 
     useEffect(() => {
         progressRefs[expandedIndex].current?.classList.add("animate-progress");
@@ -19,7 +19,7 @@ export default function FeatureCarouselPreview() {
                 ref.current?.classList.remove("animate-progress");
             }
         });
-    }, [expandedIndex]);
+    }, [expandedIndex, progressRefs]);
 
     return (
         <div className="grid grid-cols-2 gap-6 min-h-[444px]">

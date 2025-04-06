@@ -20,7 +20,7 @@ export default function LinksDataTable({ accessTokens, defaultTokenIndex, lightF
 
     useEffect(() => {
         setSelectedTokens(Object.keys(selectedTokensIndexes).map((k) => accessTokens[parseInt(k)].token));
-    }, [selectedTokensIndexes]);
+    }, [selectedTokensIndexes, accessTokens]);
 
     return (
         <DataTable

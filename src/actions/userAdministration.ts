@@ -26,6 +26,7 @@ export async function getUsers(): Promise<{
             image: true,
             role: true,
             usedStorage: true,
+            maxStorage: true,
             createdAt: true,
             updatedAt: true,
             _count: {
@@ -63,6 +64,7 @@ export async function getUser(userId: string): Promise<{
             image: true,
             role: true,
             usedStorage: true,
+            maxStorage: true,
             createdAt: true,
             updatedAt: true,
             _count: {

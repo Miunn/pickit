@@ -24,7 +24,7 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
 
             setExifData(exif);
         });
-    }, [image]);
+    }, [image, shareToken, shareHashPin, tokenType]);
 
     return (
         <Dialog>

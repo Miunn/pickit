@@ -6,7 +6,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Images, MoreHorizontal } from "lucide-react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import RenameFolderDialog from "@/components/folders/RenameFolderDialog";
 import DeleteFolderDialog from "@/components/folders/DeleteFolderDialog";
@@ -117,13 +117,13 @@ export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWit
             const downloadT = useTranslations("folders.download");
             const [folderImages, setFolderImages] = useState<(ImageWithFolder & ImageWithComments)[]>([]);
 
-            async function loadImages() {
+            const loadImages = useCallback(async () => {
                 setFolderImages((await getImagesWithFolderAndCommentsFromFolder(row.original.id)).images);
-            }
+            }, [row.original.id]);
 
             useEffect(() => {
                 loadImages();
-            }, [row.original.id]);
+            }, [row.original.id, loadImages]);
 
             const [openShare, setOpenShare] = useState<boolean>(false);
             const [openChangeCover, setOpenChangeCover] = useState<boolean>(false);

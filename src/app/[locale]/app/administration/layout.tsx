@@ -1,5 +1,4 @@
-import Header from "@/components/layout/Header";
-import { redirect } from "@/i18n/routing";
+import { redirect } from "@/i18n/navigation";
 import { getCurrentSession } from "@/lib/session";
 import { Role } from "@prisma/client";
 
@@ -14,7 +13,7 @@ export default async function AdminLayout({
     const { user } = await getCurrentSession();
 
     if (!user?.role.includes(Role.ADMIN)) {
-        return redirect(`/app`);
+        return redirect({ href: `/app`, locale: locale });
     }
 
     return (

@@ -57,7 +57,7 @@ const InputOTPSlot = React.forwardRef<
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [char, inputOTPContext.slots, index]);
+  }, [char, inputOTPContext.slots, index, displayChar]);
 
   return (
     <div

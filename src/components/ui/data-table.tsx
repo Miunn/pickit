@@ -19,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { Input } from "./input"
 import { DataTablePagination } from "./data-table-pagination"
 
@@ -59,9 +59,9 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  useMemo(() => {
+  useEffect(() => {
     table.setPageSize(12);
-  }, []);
+  }, [table]);
 
   return (
     <div className="w-full">

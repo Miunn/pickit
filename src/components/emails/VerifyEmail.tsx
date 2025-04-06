@@ -46,7 +46,7 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                             }}>
                                 <Text>Bonjour { name },</Text>
 
-                                <Text>Cette adresse a été renseignée au sein d'un compte <strong>{process.env.APP_NAME}</strong>.</Text>
+                                <Text>Cette adresse a été renseignée au sein d&apos;un compte <strong>{process.env.APP_NAME}</strong>.</Text>
 
                                 <Text>Pour vérifier et continuer à utiliser votre compte, veuillez cliquer sur le bouton ci-dessous.</Text>
 
@@ -56,10 +56,10 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                                     </Button>
                                 </div>
 
-                                <Text>Si vous n'avez pas de compte Echomori ou que vous n'avez pas effectué de changement, vous pouvez ignorer ce message.</Text>
+                                <Text>Si vous n&apos;avez pas de compte Echomori ou que vous n&apos;avez pas effectué de changement, vous pouvez ignorer ce message.</Text>
 
                                 <Text>Cordialement,<br />
-                                    L'équipe <strong>{process.env.APP_NAME}</strong></Text>
+                                    L&apos;équipe <strong>{process.env.APP_NAME}</strong></Text>
                             </Column>
                         </Row>
 

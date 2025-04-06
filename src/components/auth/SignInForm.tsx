@@ -58,7 +58,7 @@ export default function SignInForm({ locale }: { locale: string }) {
                 variant: "destructive"
             });
         }
-    }, [searchParams]);
+    }, [searchParams, t]);
 
     useEffect(() => {
         displayParamsErrorToast();

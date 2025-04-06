@@ -11,7 +11,7 @@ import { Button } from "../ui/button"
 import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import React from "react"
-import { useRouter } from "@/i18n/routing"
+import { useRouter } from "@/i18n/navigation"
 import bcrypt from "bcryptjs";
 import { useSearchParams } from "next/navigation"
 

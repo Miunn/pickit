@@ -3,14 +3,14 @@ import { getLightFolders } from "@/actions/folders";
 import { getPersonsAccessTokens } from "@/actions/accessTokensPerson";
 import { getTranslations } from "next-intl/server";
 import { getCurrentSession } from "@/lib/session";
-import { redirect } from "@/i18n/routing";
+import { redirect } from "@/i18n/navigation";
 import LinksContent from "./LinksContent";
 
-export default async function LinksPage({ searchParams }: { searchParams: { s?: "links" | "contacts", l?: string } }) {
+export default async function LinksPage({ params, searchParams }: { params: { locale: string }, searchParams: { s?: "links" | "contacts", l?: string } }) {
 
     const { user } = await getCurrentSession();
     if (!user) {
-        return redirect(`/signin`);
+        return redirect({ href: `/signin`, locale: params.locale });
     }
 
     const t = await getTranslations("pages.links");

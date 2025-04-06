@@ -12,7 +12,7 @@ export default function UsersDataTable({ users, defaultUserIndex }: { users: Use
 
     useEffect(() => {
         setSelectedUsers(Object.keys(selectedUsersIndexes).map((k) => users[parseInt(k)].id));
-    }, [selectedUsersIndexes]);
+    }, [selectedUsersIndexes, users]);
 
     return (
         <DataTable

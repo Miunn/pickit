@@ -191,7 +191,7 @@ export type SignInFormState =
     | undefined
 
 const userAdministration = Prisma.validator<Prisma.UserDefaultArgs>()({
-    select: { id: true, name: true, email: true, emailVerified: true, emailVerificationDeadline: true, role: true, image: true, usedStorage: true, createdAt: true, updatedAt: true, _count: { select: { folders: true, images: true } } }
+    select: { id: true, name: true, email: true, emailVerified: true, emailVerificationDeadline: true, role: true, image: true, usedStorage: true, maxStorage: true, createdAt: true, updatedAt: true, _count: { select: { folders: true, images: true } } }
 });
 
 export type UserAdministration = Prisma.UserGetPayload<typeof userAdministration>

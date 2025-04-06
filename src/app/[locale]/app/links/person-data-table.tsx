@@ -19,7 +19,7 @@ export default function PersonDataTable({ personsAccessTokens, defaultTokenIndex
 
     useEffect(() => {
         setSelectedTokens(Object.keys(selectedTokensIndexes).map((k) => personsAccessTokens[parseInt(k)].token));
-    }, [selectedTokensIndexes]);
+    }, [selectedTokensIndexes, personsAccessTokens]);
 
     return (
         <DataTable

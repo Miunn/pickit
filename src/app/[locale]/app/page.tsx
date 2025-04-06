@@ -1,14 +1,14 @@
 import {prisma} from "@/lib/prisma";
 import DashboardContent from "@/components/layout/DashboardContent";
 import { getCurrentSession } from "@/lib/session";
-import { redirect } from "@/i18n/routing";
+import { redirect } from "@/i18n/navigation";
 
-export default async function Home() {
+export default async function Home({ params }: { params: { locale: string } }) {
 
     const { user } = await getCurrentSession();
 
     if (!user) {
-        return redirect("/signin");
+        return redirect({ href: "/signin", locale: params.locale });
     }
 
     const lastFolders = await prisma.folder.findMany({

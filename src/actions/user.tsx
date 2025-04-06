@@ -36,6 +36,7 @@ export default async function getMe(): Promise<{
             role: true,
             image: true,
             usedStorage: true,
+            maxStorage: true,
             createdAt: true,
             updatedAt: true
         }
@@ -268,7 +269,8 @@ export async function requestPasswordReset(data: z.infer<typeof RequestPasswordR
     }
 
     const user = await prisma.user.findUnique({
-        where: { email: parsedData.data.email }
+        where: { email: parsedData.data.email },
+        omit: { password: false }
     });
 
     if (!user || !user.password) {

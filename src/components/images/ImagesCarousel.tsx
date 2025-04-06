@@ -20,7 +20,6 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
 
     const t = useTranslations("components.images.carousel");
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
-    const imagesItemsRefs = files.map(() => useRef<HTMLDivElement>(null));
     const [count, setCount] = useState(files.length);
 
     const [copied, setCopied] = useState<boolean>(false);
@@ -36,7 +35,7 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
         carouselApi.on("select", () => {
             setCurrentIndex(carouselApi.selectedScrollSnap() + 1);
         })
-    }, [carouselApi]);
+    }, [carouselApi, setCurrentIndex]);
 
     return (
         <div className={"w-full overflow-hidden p-4 mx-auto"}>
@@ -91,8 +90,8 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                 startIndex: startIndex
             }} setApi={setCarouselApi}>
                 <CarouselContent className="h-fit">
-                    {files.map((file, index) => (
-                        <CarouselItem ref={imagesItemsRefs[index]} key={file.id} className="h-fit">
+                    {files.map((file) => (
+                        <CarouselItem key={file.id} className="h-fit">
                             <div className={`${commentSectionOpen ? "h-44" : "h-96"} flex justify-center items-center p-2 transition-all duration-300 ease-in-out`}>
                                 {'type' in file && file.type === 'video'
                                     ? <video className={`${commentSectionOpen ? "h-44" : "h-96"} max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out`} controls src={`/api/folders/${file.folder.id}/videos/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} />

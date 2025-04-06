@@ -32,13 +32,13 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
 
     const [folderImages, setFolderImages] = React.useState<(ImageWithFolder & ImageWithComments)[]>([]);
 
-    async function loadImages() {
+    const loadImages = React.useCallback(async () => {
         setFolderImages((await getImagesWithFolderAndCommentsFromFolder(folder.id)).images);
-    }
+    }, [folder.id]);
 
     React.useEffect(() => {
         loadImages();
-    }, [folder.id]);
+    }, [folder.id, loadImages]);
 
     return (
         <>

@@ -4,14 +4,14 @@ import getMe from "@/actions/user";
 import ReviewFolders from "@/components/account/reviewFolders";
 import { prisma } from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
-import { redirect } from "@/i18n/routing";
+import { redirect } from "@/i18n/navigation";
 
-export default async function AccountPage() {
+export default async function AccountPage({ params }: { params: { locale: string } }) {
 
     const user = (await getMe()).user;
 
     if (!user) {
-        return redirect(`/signin`);
+        return redirect({ href: '/signin', locale: params.locale });
     }
 
     const t = await getTranslations("pages.account");

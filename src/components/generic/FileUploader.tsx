@@ -168,7 +168,7 @@ export const FileUploader = (props: FileUploaderProps) => {
             }
         },
 
-        [files, maxFileCount, multiple, setFiles]
+        [files, maxFileCount, multiple, setFiles, accept, maxSize, t]
     )
 
     function onRemove(index: number) {

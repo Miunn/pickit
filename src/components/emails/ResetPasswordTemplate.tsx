@@ -50,7 +50,7 @@ export default function ResetPasswordTemplate({ name, token }: { name: string, t
 
                                 <Text>Vous avez récemment demandé une réinitialisation de votre mot de passe associé à votre compte { process.env.APP_NAME }.</Text>
 
-                                <Text>Afin de créer un nouveau mot de passe et de récupérer l'accès à votre compte, cliquez sur le bouton ci-dessous :</Text>
+                                <Text>Afin de créer un nouveau mot de passe et de récupérer l&lsquo;accès à votre compte, cliquez sur le bouton ci-dessous :</Text>
 
                                 <div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
                                     <Button href={`${process.env.APP_URL}/en/account/reset/${token}`} className="box-border w-full rounded-[8px] bg-indigo-600 px-[12px] py-[12px] text-center font-semibold text-white">
@@ -60,10 +60,10 @@ export default function ResetPasswordTemplate({ name, token }: { name: string, t
 
                                 <Text>Ce lien de réinitialisation expirera après 15 minutes.</Text>
 
-                                <Text>Si vous n'avez pas soumis de demande de réinitialisation de mot de passe, vous pouvez simplement ignorer ce message.</Text>
+                                <Text>Si vous n&lsquo;avez pas soumis de demande de réinitialisation de mot de passe, vous pouvez simplement ignorer ce message.</Text>
 
                                 <Text>Cordialement,<br />
-                                    L'équipe <strong>{process.env.APP_NAME}</strong></Text>
+                                    L&lsquo;équipe <strong>{process.env.APP_NAME}</strong></Text>
                             </Column>
                         </Row>
 

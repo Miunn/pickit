@@ -58,7 +58,7 @@ export default function ShareFolderTemplate({ name, folderName, link, isLocked, 
                                     </div>
                                 )}
 
-                                <Text>Cliquez sur le bouton ci-dessous pour y accéder et découvrir les photos et vidéos qu'il contient :</Text>
+                                <Text>Cliquez sur le bouton ci-dessous pour y accéder et découvrir les photos et vidéos qu&apos;il contient :</Text>
 
                                 <div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
                                     <Button href={link} className="box-border w-full rounded-[8px] bg-indigo-600 px-[12px] py-[12px] text-center font-semibold text-white">
@@ -69,13 +69,13 @@ export default function ShareFolderTemplate({ name, folderName, link, isLocked, 
                                 {isLocked
                                     ? <Text>
                                         {name} a vérouillé ce dossier par un code que vous devrez renseigner avant de pouvoir accéder à son contenu.
-                                        Si vous ne connaissez pas ce code, veuillez contacter {name} pour l'obtenir.
+                                        Si vous ne connaissez pas ce code, veuillez contacter {name} pour l&apos;obtenir.
                                     </Text>
                                     : null
                                 }
 
                                 <Text>Cordialement,<br />
-                                    L'équipe <strong>{process.env.APP_NAME}</strong></Text>
+                                    L&apos;équipe <strong>{process.env.APP_NAME}</strong></Text>
                             </Column>
                         </Row>
 
