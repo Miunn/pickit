@@ -80,6 +80,24 @@ jobs:
           ls -la node_modules
       - name: Opt-out telemetry
         run: npx next telemetry disable
+      - name: Debug module resolution
+        run: |
+          echo "Checking module resolution paths:"
+          node -e "console.log(require('module').paths)"
+          echo "Checking Next.js configuration:"
+          cat next.config.mjs
+          echo "Checking tsconfig paths:"
+          cat tsconfig.json
+          echo "Checking case sensitivity of component files:"
+          find src/components -type f -name "*.tsx" -exec ls -l {} \;
       - name: Build with Next.js
         run: |
-          ${{ steps.detect-package-manager.outputs.manager }} run build
+          echo "Current directory structure:"
+          ls -la src/components/
+          echo "Building with verbose output and case sensitivity check:"
+          NODE_OPTIONS="--trace-warnings --preserve-symlinks" ${{ steps.detect-package-manager.outputs.manager }} run build
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NODE_ENV: production
+          DEBUG: "*"
+          NEXT_CASE_SENSITIVE: "true"
