@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useMemo } from "react";
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { useTranslations } from "next-intl";
 
@@ -9,17 +9,24 @@ export default function FeatureCarouselPreview() {
     const t = useTranslations("components.featuresCarousel");
 
     const [expandedIndex, setExpandedIndex] = React.useState<number>(0);
-    const progressRefs = useMemo(() => [React.useRef<HTMLDivElement>(null), React.useRef<HTMLDivElement>(null), React.useRef<HTMLDivElement>(null), React.useRef<HTMLDivElement>(null)], []);
+    const progressRefs = React.useRef<Array<React.RefObject<HTMLDivElement>>>([]);
 
-    useEffect(() => {
-        progressRefs[expandedIndex].current?.classList.add("animate-progress");
+    // Initialize refs array on mount
+    React.useEffect(() => {
+        progressRefs.current = Array(4).fill(null).map(() => React.createRef<HTMLDivElement>());
+    }, []);
 
-        progressRefs.forEach((ref, index) => {
-            if (index !== expandedIndex) {
-                ref.current?.classList.remove("animate-progress");
+    React.useEffect(() => {
+        if (progressRefs.current[expandedIndex]?.current) {
+            progressRefs.current[expandedIndex].current?.classList.add("animate-progress");
+        }
+
+        progressRefs.current.forEach((ref, index) => {
+            if (index !== expandedIndex && ref.current) {
+                ref.current.classList.remove("animate-progress");
             }
         });
-    }, [expandedIndex, progressRefs]);
+    }, [expandedIndex, progressRefs.current]);
 
     return (
         <div className="grid grid-cols-2 gap-6 min-h-[444px]">
@@ -37,7 +44,7 @@ export default function FeatureCarouselPreview() {
                     <CardContent className={`transition-all duration-500 ease-in-out ${expandedIndex === 0 ? "max-h-32 opacity-100" : "max-h-0 opacity-0 py-0"}`}>
                         <p className="text-sm text-foreground mb-4" dangerouslySetInnerHTML={{ __html: t('section1.description') }} />
                         <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20">
-                            <div ref={progressRefs[0]} className="group-hover:[animation-play-state:paused] h-full w-0 flex-1 bg-primary" onAnimationEndCapture={() => setExpandedIndex((expandedIndex + 1) % 4)}></div>
+                            <div ref={progressRefs.current[0]} className="group-hover:[animation-play-state:paused] h-full w-0 flex-1 bg-primary animate-progress" onAnimationEndCapture={() => setExpandedIndex((expandedIndex + 1) % 4)}></div>
                         </div>
                     </CardContent>
                 </Card>
@@ -54,7 +61,7 @@ export default function FeatureCarouselPreview() {
                     <CardContent className={`transition-all duration-500 ease-in-out ${expandedIndex === 1 ? "max-h-32 opacity-100" : "max-h-0 opacity-0 py-0"}`}>
                         <p className="text-sm text-foreground mb-4">{t('section2.description')}</p>
                         <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20">
-                            <div ref={progressRefs[1]} className="group-hover:[animation-play-state:paused] h-full w-0 flex-1 bg-primary" onAnimationEndCapture={() => setExpandedIndex((expandedIndex + 1) % 4)}></div>
+                            <div ref={progressRefs.current[1]} className="group-hover:[animation-play-state:paused] h-full w-0 flex-1 bg-primary" onAnimationEndCapture={() => setExpandedIndex((expandedIndex + 1) % 4)}></div>
                         </div>
                     </CardContent>
                 </Card>
@@ -73,7 +80,7 @@ export default function FeatureCarouselPreview() {
                             {t('section3.description')}
                         </p>
                         <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20">
-                            <div ref={progressRefs[2]} className="group-hover:[animation-play-state:paused] h-full w-0 flex-1 bg-primary" onAnimationEndCapture={() => setExpandedIndex((expandedIndex + 1) % 4)}></div>
+                            <div ref={progressRefs.current[2]} className="group-hover:[animation-play-state:paused] h-full w-0 flex-1 bg-primary" onAnimationEndCapture={() => setExpandedIndex((expandedIndex + 1) % 4)}></div>
                         </div>
                     </CardContent>
                 </Card>
@@ -92,7 +99,7 @@ export default function FeatureCarouselPreview() {
                             {t('section4.description')}
                         </p>
                         <div className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20">
-                            <div ref={progressRefs[3]} className="group-hover:[animation-play-state:paused] h-full w-0 flex-1 bg-primary" onAnimationEndCapture={() => setExpandedIndex((expandedIndex + 1) % 4)}></div>
+                            <div ref={progressRefs.current[3]} className="group-hover:[animation-play-state:paused] h-full w-0 flex-1 bg-primary" onAnimationEndCapture={() => setExpandedIndex((expandedIndex + 1) % 4)}></div>
                         </div>
                     </CardContent>
                 </Card>
