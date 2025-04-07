@@ -15,6 +15,11 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      NODE_ENV:
+        description: "Node environment"
+        required: true
+        default: "production"
 
 env:
   NODE_ENV: production
@@ -53,7 +58,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "22"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
       - name: Restore cache
         uses: actions/cache@v3
