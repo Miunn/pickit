@@ -239,8 +239,7 @@
         },
         "success": {
           "title": "Password reset requested",
-          "description": "If the email is associated to an account, you will receive an email with further instructions",
-          "action": "Login"
+          "description": "If the email is associated to an account, you will receive an email with further instructions"
         }
       },
       "resetPasswordForm": {
@@ -271,8 +270,9 @@
         },
         "success": {
           "title": "Password reset",
-          "description": "Your password has been reset successfully. You can now login with your new password",
-          "action": "Login"
+          "description": "Your password has been reset successfully.",
+          "action": "Login",
+          "actionLong": "Login to your account"
         }
       }
     },
