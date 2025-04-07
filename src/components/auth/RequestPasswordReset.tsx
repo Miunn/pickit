@@ -14,7 +14,6 @@ import { requestPasswordReset } from "@/actions/user"
 import { toast } from "@/hooks/use-toast"
 import Link from "next/link"
 import { useTranslations } from "next-intl"
-import { ToastAction } from "../ui/toast"
 
 export default function RequestPasswordReset({ locale, defaultEmail }: { locale: string, defaultEmail?: string }) {
 
@@ -46,16 +45,8 @@ export default function RequestPasswordReset({ locale, defaultEmail }: { locale:
 
         toast({
             title: t('success.title'),
-            description: t('success.description'),
-            action: <ToastAction altText={t('success.action')} asChild>
-                <Button variant={"outline"} asChild>
-                    <Link href={"/signin"}>
-                        {t('success.action')}
-                    </Link>
-                </Button>
-            </ToastAction>
+            description: t('success.description')
         })
-
     }
 
     return (
