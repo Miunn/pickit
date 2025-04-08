@@ -18,7 +18,6 @@ import { useTranslations } from "next-intl"
 export default function RequestPasswordReset({ locale, defaultEmail }: { locale: string, defaultEmail?: string }) {
 
     const t = useTranslations('components.auth.requestPasswordReset');
-    const [loading, setLoading] = useState<boolean>(false);
 
     const form = useForm<z.infer<typeof RequestPasswordResetFormSchema>>({
         resolver: zodResolver(RequestPasswordResetFormSchema),
@@ -28,11 +27,7 @@ export default function RequestPasswordReset({ locale, defaultEmail }: { locale:
     });
 
     const submit = async (data: z.infer<typeof RequestPasswordResetFormSchema>) => {
-        setLoading(true);
-
         const r = await requestPasswordReset(data);
-
-        setLoading(false);
 
         if (r.error) {
             toast({
@@ -50,7 +45,7 @@ export default function RequestPasswordReset({ locale, defaultEmail }: { locale:
     }
 
     return (
-        <Card className="">
+        <Card className="max-w-lg">
             <CardHeader>
                 <CardTitle>{t('title')}</CardTitle>
                 <CardDescription>{t('description')}</CardDescription>
@@ -72,13 +67,13 @@ export default function RequestPasswordReset({ locale, defaultEmail }: { locale:
                             )}
                         />
 
-                        <div className="w-full flex gap-2 self-end">
+                        <div className="w-full flex flex-col gap-2 self-end">
+                            {form.formState.isSubmitting
+                                ? <Button type="button" className="flex-1" disabled><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t('actions.submitting')}</Button>
+                                : <Button type="submit" className="flex-1">{t('actions.submit')}</Button>}
                             <Button variant={"outline"} type="button" asChild>
                                 <Link href={`/${locale}/signin`}>{t('actions.backToLogin')}</Link>
                             </Button>
-                            {loading
-                                ? <Button type="button" className="flex-1" disabled><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t('actions.submitting')}</Button>
-                                : <Button type="submit" className="flex-1">{t('actions.submit')}</Button>}
                         </div>
                     </form>
                 </Form>
