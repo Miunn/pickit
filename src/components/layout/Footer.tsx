@@ -11,9 +11,9 @@ export default function Footer() {
         <footer className="border-t border-primary px-6">
             <div className="max-w-7xl mx-auto py-12">
                 <div className="flex flex-col md:flex-row justify-between">
-                    <h1 className="text-7xl md:text-6xl lg:text-7xl text-center lg:text-left tracking-wider">Echomori</h1>
+                    <h1 className="text-5xl md:text-6xl lg:text-7xl text-center lg:text-left tracking-wider">Echomori</h1>
 
-                    <div className="flex flex-col sm:flex-row sm:justify-between md:justify-start gap-6 md:gap-16 mt-16 md:mt-0">
+                    <div className="flex flex-col sm:flex-row sm:justify-between md:justify-start gap-6 md:gap-16 mt-8 sm:mt-16 md:mt-0">
                         <div className="flex flex-col gap-4">
                             <Label>{t('about.title')}</Label>
 
