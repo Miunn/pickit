@@ -24,8 +24,8 @@ export default function ClientPage() {
             <main className="mb-32">
                 <Header className="sticky top-0 z-50 bg-background/90 backdrop-blur mb-11" />
 
-                <div className="relative bg-primary h-[500px] md:h-[600px] rounded-3xl mx-6 text-white">
-                    <div className="max-w-7xl grid lg:grid-cols-2 gap-11 justify-between items-center px-11 mx-auto h-full">
+                <div className="relative bg-primary h-fit md:h-[600px] rounded-3xl mx-4 text-white py-8 sm:py-16 md:py-0">
+                    <div className="max-w-7xl grid lg:grid-cols-2 gap-11 justify-between items-center px-4 sm:px-11 mx-auto h-full">
                         <div className="relative col-span-2 lg:col-span-1">
                             <div
                                 className={cn(
@@ -38,15 +38,15 @@ export default function ClientPage() {
                                     <ArrowRightIcon className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
                                 </AnimatedShinyText>
                             </div>
-                            <h1 className="relative text-6xl lg:max-w-lg mb-8">
+                            <h1 className="relative text-4xl md:text-6xl lg:max-w-lg mb-8">
                                 {locale === "fr"
                                     ? <span>
                                         Sauvegardez des moments de <span className="relative">
                                             vie
                                             <svg
-                                                className="pointer-events-none absolute -right-4 top-1 z-20"
-                                                width="32"
-                                                height="32"
+                                                className="pointer-events-none absolute -right-4 -top-1 md:top-1 z-20"
+                                                width="30"
+                                                height="30"
                                                 viewBox="0 0 21 21"
                                                 style={{
                                                     transform: "rotate(80deg)"
