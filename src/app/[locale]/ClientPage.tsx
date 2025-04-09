@@ -22,11 +22,11 @@ export default function ClientPage() {
     return (
         <>
             <main className="mb-32">
-                <Header className="sticky top-0 z-50 bg-background/90 backdrop-blur mb-11 px-6" />
+                <Header className="sticky top-0 z-50 bg-background/90 backdrop-blur mb-11" />
 
                 <div className="relative bg-primary h-[500px] md:h-[600px] rounded-3xl mx-6 text-white">
                     <div className="max-w-7xl grid lg:grid-cols-2 gap-11 justify-between items-center px-11 mx-auto h-full">
-                        <div className="relative col-span-2">
+                        <div className="relative col-span-2 lg:col-span-1">
                             <div
                                 className={cn(
                                     "backdrop-filter-[12px] w-fit inline-flex py-2 items-center justify-between rounded-full border border-white/5 bg-white/10 px-3 text-xs sm:text-sm text-white dark:text-black transition-all ease-in hover:cursor-pointer hover:bg-white/20 group gap-1",
@@ -113,13 +113,13 @@ export default function ClientPage() {
                                 {t('hero.description')}
                             </p>
 
-                            <div className="flex items-center gap-4">
-                                <Button className="p-7 rounded-full" variant={"secondary"} asChild>
+                            <div className="flex flex-col sm:flex-row items-center gap-4">
+                                <Button className="w-full sm:w-fit p-7 rounded-full" variant={"secondary"} asChild>
                                     <Link href={"/signin?side=register"}>
                                         {t('hero.getStarted')} <ArrowRight />
                                     </Link>
                                 </Button>
-                                <Button variant={"link"} className="text-white" onClick={() => moreRef.current?.scrollIntoView({ behavior: "smooth" })}>
+                                <Button variant={"link"} className="w-full sm:w-fit text-white" onClick={() => moreRef.current?.scrollIntoView({ behavior: "smooth" })}>
                                     {t('hero.seeMore')}
                                 </Button>
                             </div>
@@ -133,7 +133,7 @@ export default function ClientPage() {
                     </div>
 
 
-                    <div className="hidden lg:block absolute bottom-0 lg:left-[200px] xl:left-[296px] -translate-x-1/2 translate-y-1/2">
+                    <div className="hidden lg:inline absolute bottom-0 lg:left-[200px] xl:left-[296px] -translate-x-1/2 translate-y-1/2">
                         <div className="absolute bottom-0 right-32 translate-y-1/2 w-32 h-32 bg-primary">
                             <div className="w-32 h-32 bg-background rounded-tr-lg "></div>
                         </div>
