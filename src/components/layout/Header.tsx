@@ -62,7 +62,7 @@ export default function Header({ className }: { className?: string  }) {
 
                 <nav className="opacity-0 md:opacity-100 place-self-center">
                     <ul className="grid grid-cols-3 place-items-center gap-10 font-semibold text-sm">
-                        <li><NavLinks /></li>
+                        <NavLinks />
                     </ul>
                 </nav>
 
