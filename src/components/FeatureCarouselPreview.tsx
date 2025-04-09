@@ -29,7 +29,7 @@ export default function FeatureCarouselPreview() {
     }, [expandedIndex, progressRefs]);
 
     return (
-        <div className="grid grid-cols-2 gap-6 min-h-[444px]">
+        <div className="flex flex-col xl:grid xl:grid-cols-2 gap-6 min-h-[444px]">
             <div className="flex flex-col gap-3">
                 <Card className={`group cursor-pointer transition-all duration-500 ease-in-out overflow-hidden ${expandedIndex === 0 ? "max-h-64" : "max-h-18"}`} onClick={() => setExpandedIndex(0)}>
                     <CardHeader>
