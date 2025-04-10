@@ -101,7 +101,7 @@ export default function UploadImagesForm({ folderId, onUpload }: { folderId: str
                     control={uploadImageForm.control}
                     name="images"
                     render={({ field: { value, onChange, ...fieldProps } }) => (
-                        <FormItem className="w-[443px]">
+                        <FormItem className="max-w-[443px]">
                             <FormLabel>{t('label')}</FormLabel>
                             <FormControl>
                                 <FileUploader
