@@ -1,18 +1,11 @@
 import createNextIntlPlugin from "next-intl/plugin";
 
-import path from 'path';
-
 const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     experimental: {
         serverComponentsExternalPackages: ['@prisma/client', 'pg', 'bcrypt-edge'],
-    },
-    webpack: (config) => {
-        config.resolve.alias.canvas = false;
-        config.resolve.alias['@'] = path.resolve(__dirname, 'src');
-        return config;
     }
 };
 
