@@ -25,13 +25,6 @@ env:
   NODE_ENV: production
   GOOGLE_BUCKET_NAME: ${{ secrets.GOOGLE_BUCKET_NAME }}
   NEXT_TELEMETRY_DISABLED: 1
-  NODE_OPTIONS: "--max_old_space_size=4096"
-
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
 
 jobs:
   # Build job
