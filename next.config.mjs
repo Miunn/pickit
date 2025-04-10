@@ -1,5 +1,7 @@
 import createNextIntlPlugin from "next-intl/plugin";
 
+const path = require('path');
+
 const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
