@@ -1,8 +1,8 @@
 'use client'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import PersonDataTable from "./person-data-table";
-import LinksDataTable from "./links-data-table";
+import PersonDataTable from "../../../../components/tables/links/person-data-table";
+import LinksDataTable from "../../../../components/tables/links/links-data-table";
 import { useTranslations } from "next-intl";
 import { AccessTokenWithFolder, LightFolder, PersonAccessTokenWithFolder } from "@/lib/definitions";
 import { useQueryState } from "nuqs";
