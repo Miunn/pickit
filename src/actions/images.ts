@@ -4,20 +4,18 @@ import { prisma } from "@/lib/prisma";
 import sharp from "sharp";
 import { revalidatePath } from "next/cache";
 import { ImageLightWithFolderName, ImageWithComments, ImageWithFolder, RenameImageFormSchema } from "@/lib/definitions";
-import { imageCreateManyAndUpdateSizes, imageDeleteAndUpdateSizes, videoCreateManyAndUpdatSizes, videoDeleteAndUpdateSizes } from "@/lib/prismaExtend";
-import { changeFolderCover } from "./folders";
+import { imageDeleteAndUpdateSizes, videoCreateManyAndUpdatSizes, videoDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 import { validateShareToken } from "@/lib/utils";
 import { getCurrentSession } from "@/lib/session";
 import { fileTypeFromBuffer } from 'file-type';
 import { z } from "zod";
-import { generateV4UploadUrl, GoogleBucket } from "@/lib/bucket";
-import { randomUUID } from "crypto";
+import { GoogleBucket } from "@/lib/bucket";
 import mediaInfoFactory, { Track } from "mediainfo.js";
 import ffmpeg from "fluent-ffmpeg";
 import { PassThrough } from "stream";
 import crypto from "crypto";
 
-ffmpeg.setFfmpegPath("node_modules\\@ffmpeg-installer\\win32-x64\\ffmpeg.exe");
+ffmpeg.setFfmpegPath(process.env.FFMPEG_PATH as string);
 
 export async function getLightImages(): Promise<{
     error: string | null;
