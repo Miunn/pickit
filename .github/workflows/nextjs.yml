@@ -5,6 +5,16 @@ on:
     branches: [ main, staging ]
   pull_request:
     branches: [ main, staging ]
+  workflow_dispatch:
+    inputs:
+      NODE_ENV:
+        description: "Node environment"
+        required: true
+        default: "production"
+
+env:
+  NODE_ENV: production
+  GOOGLE_BUCKET_NAME: ${{ secrets.GOOGLE_BUCKET_NAME }}
 
 jobs:
   build:
