@@ -26,7 +26,7 @@ export default function FeatureCarouselPreview() {
                 ref.current.classList.remove("animate-progress");
             }
         });
-    }, [expandedIndex, progressRefs]);
+    }, [expandedIndex, progressRefs.current]);
 
     return (
         <div className="flex flex-col xl:grid xl:grid-cols-2 gap-6 min-h-[444px]">
