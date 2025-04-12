@@ -24,9 +24,9 @@ export default function ClientPage() {
             <main className="mb-32">
                 <Header className="sticky top-0 z-50 bg-background/90 backdrop-blur mb-11" />
 
-                <div className="relative bg-primary h-[600px] rounded-3xl mx-6 text-white">
-                    <div className="max-w-7xl grid grid-cols-2 gap-11 justify-between items-center mx-auto h-full">
-                        <div className="relative">
+                <div className="relative bg-primary h-fit md:h-[600px] rounded-3xl mx-4 text-white py-8 sm:py-16 md:py-0">
+                    <div className="max-w-7xl grid lg:grid-cols-2 gap-11 justify-between items-center px-4 sm:px-11 mx-auto h-full">
+                        <div className="relative col-span-2 lg:col-span-1">
                             <div
                                 className={cn(
                                     "backdrop-filter-[12px] w-fit inline-flex py-2 items-center justify-between rounded-full border border-white/5 bg-white/10 px-3 text-xs sm:text-sm text-white dark:text-black transition-all ease-in hover:cursor-pointer hover:bg-white/20 group gap-1",
@@ -38,15 +38,15 @@ export default function ClientPage() {
                                     <ArrowRightIcon className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
                                 </AnimatedShinyText>
                             </div>
-                            <h1 className="relative text-6xl max-w-lg mb-8">
+                            <h1 className="relative text-4xl md:text-6xl lg:max-w-lg mb-8">
                                 {locale === "fr"
                                     ? <span>
                                         Sauvegardez des moments de <span className="relative">
                                             vie
                                             <svg
-                                                className="pointer-events-none absolute -right-4 top-1 z-20"
-                                                width="32"
-                                                height="32"
+                                                className="pointer-events-none absolute -right-4 -top-1 md:top-1 z-20"
+                                                width="30"
+                                                height="30"
                                                 viewBox="0 0 21 21"
                                                 style={{
                                                     transform: "rotate(80deg)"
@@ -74,7 +74,7 @@ export default function ClientPage() {
                                         </span>
                                     </span>
                                     : <span>
-                                        Save moments<br /> of <span className="relative">
+                                        Save moments<br className="hidden lg:block" /> of <span className="relative">
                                             life
                                             <svg
                                                 className="pointer-events-none absolute -right-4 top-1 z-20"
@@ -109,31 +109,31 @@ export default function ClientPage() {
                                 }
                             </h1>
 
-                            <p className="text-xl max-w-xl mb-8">
+                            <p className="text-xl lg:max-w-xl mb-8">
                                 {t('hero.description')}
                             </p>
 
-                            <div className="flex items-center gap-4">
-                                <Button className="p-7 rounded-full" variant={"secondary"} asChild>
+                            <div className="flex flex-col sm:flex-row items-center gap-4">
+                                <Button className="w-full sm:w-fit p-7 rounded-full" variant={"secondary"} asChild>
                                     <Link href={"/signin?side=register"}>
                                         {t('hero.getStarted')} <ArrowRight />
                                     </Link>
                                 </Button>
-                                <Button variant={"link"} className="text-white" onClick={() => moreRef.current?.scrollIntoView({ behavior: "smooth" })}>
+                                <Button variant={"link"} className="w-full sm:w-fit text-white" onClick={() => moreRef.current?.scrollIntoView({ behavior: "smooth" })}>
                                     {t('hero.seeMore')}
                                 </Button>
                             </div>
                         </div>
 
-                        <div className="relative h-full">
-                            <Image className="rounded-xl absolute left-1/2 top-1/3 -translate-x-2/3 -translate-y-1/2 object-cover" src={"/beach.jpg"} alt="beach" width={320} height={213} />
-                            <Image className="rounded-xl absolute right-1/4 bottom-1/3 translate-x-1/2 translate-y-1/2 object-cover" src={"/bridge.jpg"} alt="beach" width={300} height={200} />
-                            <Image className="rounded-xl absolute left-2/3 top-1/3 translate-x-1/3 -translate-y-1/2 object-cover" src={"/parrot.jpg"} alt="beach" width={170} height={256} />
+                        <div className="hidden lg:block relative h-full">
+                            <Image className="rounded-xl absolute left-1/3 top-1/3 -translate-x-1/2 -translate-y-1/2 object-cover" src={"/beach.jpg"} alt="beach" width={320} height={213} />
+                            <Image className="rounded-xl absolute right-1/2 bottom-1/3 translate-x-1/2 translate-y-1/2 object-cover" src={"/bridge.jpg"} alt="beach" width={300} height={200} />
+                            <Image className="rounded-xl absolute left-2/3 top-1/3 -translate-y-1/2 object-cover" src={"/parrot.jpg"} alt="beach" width={170} height={256} />
                         </div>
                     </div>
 
 
-                    <div className="absolute bottom-0 left-[296px] -translate-x-1/2 translate-y-1/2">
+                    <div className="hidden lg:inline absolute bottom-0 lg:left-[200px] xl:left-[296px] -translate-x-1/2 translate-y-1/2">
                         <div className="absolute bottom-0 right-32 translate-y-1/2 w-32 h-32 bg-primary">
                             <div className="w-32 h-32 bg-background rounded-tr-lg "></div>
                         </div>
@@ -150,9 +150,9 @@ export default function ClientPage() {
                     </div>
                 </div>
 
-                <div ref={moreRef} className="max-w-7xl mx-auto grid grid-cols-3 my-32">
-                    <div className="col-start-2 col-span-2">
-                        <h3 className="text-5xl">Store & Share your photos easily</h3>
+                <div ref={moreRef} className="max-w-7xl grid grid-cols-4 xl:grid-cols-3 my-16 lg:my-32 mx-16">
+                    <div className="col-start-1 lg:col-start-2 col-end-5 xl:col-end-4">
+                        <h3 className="text-4xl md:text-5xl">Store & Share your photos easily</h3>
 
                         <p>
                             With Echomori, you can store and share your photos to your loved ones easily.
@@ -161,12 +161,12 @@ export default function ClientPage() {
                     </div>
                 </div>
 
-                <div className="mt-64 max-w-7xl mx-auto">
+                <div className="mt-32 lg:mt-64 max-w-2xl xl:max-w-7xl mx-auto px-4">
                     <h2 className="text-2xl font-semibold mb-2" dangerouslySetInnerHTML={{ __html: t('featuresTitle') }} />
                     <FeatureCarouselPreview />
                 </div>
 
-                <div id="faq">
+                <div id="faq" className="mx-4">
                     <FaqAccordion />
                 </div>
             </main>

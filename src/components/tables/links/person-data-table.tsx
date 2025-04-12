@@ -1,11 +1,9 @@
 "use client"
 
 import { DataTable } from "@/components/ui/data-table";
-import { linksColumns } from "./columns-links";
-import CreateAccessTokenDialog from "@/components/accessTokens/CreateAccessTokenDialog";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Link, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessTokenDialog";
 import { LightFolder, PersonAccessTokenWithFolder } from "@/lib/definitions";
 import { useEffect, useState } from "react";

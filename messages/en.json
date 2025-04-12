@@ -42,7 +42,7 @@
     "landing": {
       "hero": {
         "title": "Save moments of life",
-        "description": "Save your memories and share them to your loved ones, don't let memories fade away",
+        "description": "Save your memories and share them to your loved ones, don't let them fade away",
         "getStarted": "Get started",
         "seeMore": "See more"
       },
@@ -239,8 +239,7 @@
         },
         "success": {
           "title": "Password reset requested",
-          "description": "If the email is associated to an account, you will receive an email with further instructions",
-          "action": "Login"
+          "description": "If the email is associated to an account, you will receive an email with further instructions"
         }
       },
       "resetPasswordForm": {
@@ -271,8 +270,9 @@
         },
         "success": {
           "title": "Password reset",
-          "description": "Your password has been reset successfully. You can now login with your new password",
-          "action": "Login"
+          "description": "Your password has been reset successfully.",
+          "action": "Login",
+          "actionLong": "Login to your account"
         }
       }
     },

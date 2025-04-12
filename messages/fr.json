@@ -239,8 +239,7 @@
         },
         "success": {
           "title": "Demande de réinitialisation prise en compte",
-          "description": "Si un compte existe avec l'adresse mail fournie, un message de réinitialisation de mot de passe a été envoyé",
-          "action": "Connexion"
+          "description": "Si un compte existe avec l'adresse mail fournie, un message de réinitialisation de mot de passe a été envoyé"
         }
       },
       "resetPasswordForm": {
@@ -271,7 +270,9 @@
         },
         "success": {
           "title": "Mot de passe réinitialisé",
-          "description": "Votre mot de passe a été réinitialisé avec succès"
+          "description": "Votre mot de passe a été réinitialisé avec succès",
+          "action": "Connexion",
+          "actionLong": "Connexion à votre compte"
         }
       }
     },

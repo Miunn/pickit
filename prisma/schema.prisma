@@ -23,6 +23,12 @@ enum Role {
   ADMIN
 }
 
+enum PasswordResetRequestStatus {
+  PENDING
+  SUCCESS
+  ERROR
+}
+
 model Folder {
   id                String              @id @default(cuid())
   name              String
@@ -163,6 +169,7 @@ model PasswordResetRequest {
   id      String   @id @default(cuid())
   token   String   @unique @default(uuid(4))
   expires DateTime
+  status  PasswordResetRequestStatus @default(PENDING)
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @unique

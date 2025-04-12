@@ -4,7 +4,7 @@ import { getPersonsAccessTokens } from "@/actions/accessTokensPerson";
 import { getTranslations } from "next-intl/server";
 import { getCurrentSession } from "@/lib/session";
 import { redirect } from "@/i18n/navigation";
-import LinksContent from "./LinksContent";
+import LinksContent from "@/components/accessTokens/LinksContent";
 
 export default async function LinksPage({ params, searchParams }: { params: { locale: string }, searchParams: { s?: "links" | "contacts", l?: string } }) {
 

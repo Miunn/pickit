@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import * as bcrypt from "bcryptjs";
 import { transporter } from "@/lib/mailing";
-import { VerifyEmailRequest } from "@prisma/client";
+import { PasswordResetRequestStatus, VerifyEmailRequest } from "@prisma/client";
 import { addDays } from "date-fns";
 import { getCurrentSession } from "@/lib/session";
 import { render } from "@react-email/components";
@@ -311,31 +311,34 @@ export async function resetPassword(token: string, newPassword: string): Promise
     error: string | null,
 }> {
     const resetRequest = await prisma.passwordResetRequest.findUnique({
-        where: {
-            token
-        }
+        where: { token }
     });
 
     if (!resetRequest) {
         return { error: "invalid-token" };
     }
 
+    if (resetRequest.status !== PasswordResetRequestStatus.PENDING) {
+        if (resetRequest.status === PasswordResetRequestStatus.SUCCESS) {
+            return { error: "already-reset" };
+        }
+
+        return { error: "invalid-status" };
+    }
+
     const salt = bcrypt.genSaltSync(10)
     const hashedNewPassword = bcrypt.hashSync(newPassword, salt);
 
     await prisma.user.update({
-        where: {
-            id: resetRequest.userId
-        },
-        data: {
-            password: hashedNewPassword
-        }
+        where: { id: resetRequest.userId },
+        data: { password: hashedNewPassword }
     });
 
-    await prisma.passwordResetRequest.delete({
+    await prisma.passwordResetRequest.update({
         where: {
             token
-        }
+        },
+        data: { status: PasswordResetRequestStatus.SUCCESS }
     });
 
     return { error: null };

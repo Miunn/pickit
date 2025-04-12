@@ -7,10 +7,10 @@ export default function FaqAccordion() {
     const t = useTranslations("components.faq");
 
     return (
-        <div className="max-w-7xl mx-auto flex flex-col items-center my-32">
+        <div className="max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-2xl xl:max-w-4xl mx-auto flex flex-col items-center my-32">
             <Label className="text-primary font-semibold mb-3 tracking-wider text-base">{t('titleMini')}</Label>
-            <h3 className="text-5xl mb-11">{t('title')}</h3>
-            <Accordion type="single" collapsible className="w-[750px] space-y-2" defaultValue="2">
+            <h3 className="text-xl sm:text-4xl md:text-5xl mb-6 md:mb-11">{t('title')}</h3>
+            <Accordion type="single" collapsible className="w-full space-y-2" defaultValue="2">
                 <AccordionItem
                     value="1"
                     className="bg-background has-focus-visible:border-ring has-focus-visible:ring-ring/50 rounded-md border px-4 py-1 outline-none last:border-b has-focus-visible:ring-[3px]"
