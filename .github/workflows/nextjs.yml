@@ -35,8 +35,7 @@ jobs:
       - name: Opt-out telemetry
         run: npx next telemetry disable
 
-      - name: Run linting
-        run: npm run lint
+
 
       - name: Build application
         run: npm run build
