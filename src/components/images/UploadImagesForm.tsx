@@ -71,7 +71,7 @@ export default function UploadImagesForm({ folderId, onUpload }: { folderId: str
             }
 
             if (r.uploadUrls) {
-                fetch(r.uploadUrls[uploadUrlId], {
+                await fetch(r.uploadUrls[uploadUrlId], {
                     method: "PUT",
                     body: new File([data.images![i]], data.images![i].name, { type: data.images![i].type }),
                     headers: {
