@@ -20,6 +20,6 @@ jobs:
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
       - name: Connect, pull, build and deploy
         run: |
-          ssh ${{ secrets.SSH_USER}}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && npm run build && systemctl restart echomori.service"
+          ssh ${{ secrets.SSH_USER}}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIRECTORY }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && npm run build && systemctl restart echomori.service"
       - name: Cleanup
         run: rm -rf ~/.ssh
