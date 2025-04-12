@@ -201,7 +201,7 @@ export async function finalizeImageUpload(
             const image = await prisma.image.create({
                 data: {
                     id: fileId,
-                    name: verificationData.name,
+                    name: verificationData.name.split('.')[0],
                     size: verificationData.size,
                     folderId: parentFolderId,
                     createdById: session.user.id,
@@ -244,7 +244,7 @@ export async function finalizeImageUpload(
             const video = await prisma.video.create({
                 data: {
                     id: fileId,
-                    name: verificationData.name,
+                    name: verificationData.name.split('.')[0],
                     size: verificationData.size,
                     folderId: parentFolderId,
                     createdById: session.user.id,
