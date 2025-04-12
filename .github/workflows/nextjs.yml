@@ -1,0 +1,106 @@
+<<<<<<< HEAD
+=======
+# Sample workflow for building and deploying a Next.js site to GitHub Pages
+#
+# To get started with Next.js see: https://nextjs.org/docs/getting-started
+#
+name: Check NextJs build
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main", "staging"]
+    
+  # Runs on any open or reopened pull request
+  pull_request:
+    types: [opened, reopened]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      NODE_ENV:
+        description: "Node environment"
+        required: true
+        default: "production"
+
+env:
+  NODE_ENV: production
+  GOOGLE_BUCKET_NAME: ${{ secrets.GOOGLE_BUCKET_NAME }}
+  NEXT_TELEMETRY_DISABLED: 1
+  NODE_OPTIONS: "--max_old_space_size=4096"
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Detect package manager
+        id: detect-package-manager
+        run: |
+          if [ -f "${{ github.workspace }}/yarn.lock" ]; then
+            echo "manager=yarn" >> $GITHUB_OUTPUT
+            echo "command=install" >> $GITHUB_OUTPUT
+            echo "runner=yarn" >> $GITHUB_OUTPUT
+            exit 0
+          elif [ -f "${{ github.workspace }}/package.json" ]; then
+            echo "manager=npm" >> $GITHUB_OUTPUT
+            echo "command=install" >> $GITHUB_OUTPUT
+            echo "runner=npx --no-install" >> $GITHUB_OUTPUT
+            exit 0
+          else
+            echo "Unable to determine package manager" >&2
+            exit 1
+          fi
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+          cache: ${{ steps.detect-package-manager.outputs.manager }}
+      - name: Restore cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            .next/cache
+            node_modules
+            ${{ steps.detect-package-manager.outputs.manager }}-cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx', '**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
+      - name: Install dependencies
+        run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+      - name: Verify dependencies
+        run: |
+          ${{ steps.detect-package-manager.outputs.manager }} list --depth=0
+          ls -la node_modules
+      - name: Opt-out telemetry
+        run: npx next telemetry disable
+      - name: Debug module resolution
+        run: |
+          echo "Checking module resolution paths:"
+          node -e "console.log(require('module').paths)"
+          echo "Checking Next.js configuration:"
+          cat next.config.mjs
+          echo "Checking tsconfig paths:"
+          cat tsconfig.json
+          echo "Checking case sensitivity of component files:"
+          find src/components -type f -name "*.tsx" -exec ls -l {} \;
+      - name: Build with Next.js
+        run: |
+          echo "Current directory structure:"
+          ls -la src/components/
+          echo "Building with verbose output and case sensitivity check:"
+          NODE_OPTIONS="--trace-warnings --preserve-symlinks" ${{ steps.detect-package-manager.outputs.manager }} run build
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NODE_ENV: production
+          DEBUG: "*"
+          NEXT_CASE_SENSITIVE: "true"
+>>>>>>> 9cc7614 (Case sensitive)
