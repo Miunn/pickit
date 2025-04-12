@@ -47,13 +47,13 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
                     <Link href={`/${locale}/app/folders/${folder.id}`} locale={locale}
                         className={"inline-block w-64"}>
                         {folder.cover
-                            ? <div className={`relative h-36 mb-4 flex justify-center items-center`}>
+                            ? <div className={`relative h-36 mb-4 flex justify-center items-center border border-primary rounded-xl`}>
                                 <Image src={`/api/folders/${folder.id}/images/${folder.coverId}`} alt={folder.cover.name}
-                                    className={"relative border border-primary rounded-xl object-cover"} sizes="33vw" fill />
+                                    className={"relative rounded-xl object-cover"} sizes="33vw" fill />
                             </div>
                             : <div
-                                className={"border rounded-2xl bg-gray-100 h-36 mb-4 flex justify-center items-center"}>
-                                <Images className={"opacity-50"} />
+                                className={"border border-primary rounded-2xl bg-gray-100 dark:bg-gray-800 h-36 mb-4 flex justify-center items-center"}>
+                                <Images className={"opacity-50 dark:text-gray-400"} />
                             </div>
                         }
                         <p className="truncate">{folder.name}</p>
