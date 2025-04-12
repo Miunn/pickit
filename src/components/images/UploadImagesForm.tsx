@@ -53,10 +53,11 @@ export default function UploadImagesForm({ folderId, onUpload }: { folderId: str
         let notUploadedAmount = 0;
         const formData = new FormData();
         for (let i = 0; i < data.images!.length; i++) {
+            const uploadUrlId = crypto.randomUUID();
             formData.set("image", new File([data.images![i]], data.images![i].name, { type: data.images![i].type }));
             formData.set("name", data.images![i].name);
+            formData.set("uploadUrlId", uploadUrlId);
             const r = await uploadImages(folderId, formData, shareToken, tokenType, shareHashPin);
-            toast("Result: " + JSON.stringify(r));
 
             if (r.error) {
                 error = true;
@@ -67,6 +68,16 @@ export default function UploadImagesForm({ folderId, onUpload }: { folderId: str
                     notUploadedAmount++;
                     toast.error(t('errors.invalid-file', { name: data.images[i].name }))
                 }
+            }
+
+            if (r.uploadUrls) {
+                fetch(r.uploadUrls[uploadUrlId], {
+                    method: "PUT",
+                    body: new File([data.images![i]], data.images![i].name, { type: data.images![i].type }),
+                    headers: {
+                        "Content-Type": 'application/octet-stream'
+                    }
+                })
             }
 
             toast(
