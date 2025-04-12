@@ -3,9 +3,6 @@ name: CD Flow
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
-    types: [ merged ]
 
 jobs:
   run_pull:
