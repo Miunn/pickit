@@ -10,7 +10,7 @@ import { validateShareToken } from "@/lib/utils";
 import { getCurrentSession } from "@/lib/session";
 import { fileTypeFromBuffer } from 'file-type';
 import { z } from "zod";
-import { GoogleBucket } from "@/lib/bucket";
+import { generateV4UploadUrl, GoogleBucket } from "@/lib/bucket";
 import { randomUUID } from "crypto";
 import mediaInfoFactory, { Track } from "mediainfo.js";
 import ffmpeg from "fluent-ffmpeg";
@@ -59,26 +59,38 @@ export async function getLightImages(): Promise<{
     return { error: null, lightImages: images }
 }
 
-export async function uploadImages(parentFolderId: string, formData: FormData, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashCode?: string | null): Promise<{ error: string | null, used?: bigint, max?: bigint, rejectedFiles?: string[] }> {
+export async function uploadImages(
+    parentFolderId: string,
+    formData: FormData,
+    shareToken?: string | null,
+    tokenType?: "accessToken" | "personAccessToken" | null,
+    hashCode?: string | null
+): Promise<{
+    uploadUrls: { [key: string]: string } | null,
+    error: string | null,
+    used?: bigint,
+    max?: bigint,
+    rejectedFiles?: string[]
+}> {
     const { user } = await getCurrentSession();
 
     if (!user) {
         if (!shareToken || !tokenType) {
-            return { error: "You must be logged in to upload images" };
+            return { error: "You must be logged in to upload images", uploadUrls: null };
         }
 
         const validateToken = await validateShareToken(parentFolderId, shareToken, tokenType, hashCode);
 
         if (validateToken.error) {
-            return { error: "You must have a valid share link to upload to this folder" };
+            return { error: "You must have a valid share link to upload to this folder", uploadUrls: null };
         }
 
         if (validateToken.folder === null) {
-            return { error: "Folder not found" };
+            return { error: "Folder not found", uploadUrls: null };
         }
 
         if (validateToken.permission === "READ") {
-            return { error: "You do not have permission to upload images to this folder" };
+            return { error: "You do not have permission to upload images to this folder", uploadUrls: null };
         }
     }
 
@@ -88,17 +100,17 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
     });
 
     if (!folder) {
-        return { error: "You are not authorized to upload images to this folder" };
+        return { error: "You are not authorized to upload images to this folder", uploadUrls: null };
     }
 
     const file = formData.get("image") as File;
     const fileName = formData.get("name") as string;
     if (!file || !fileName) {
-        return { error: "No file found" };
+        return { error: "No file found", uploadUrls: null };
     }
 
     if (file.size > folder.createdBy.maxStorage - folder.createdBy.usedStorage) {
-        return { error: "not-enough-storage", used: folder.createdBy.usedStorage, max: folder.createdBy.maxStorage };
+        return { error: "not-enough-storage", used: folder.createdBy.usedStorage, max: folder.createdBy.maxStorage, uploadUrls: null };
     }
 
     const arrayBuffer = await file.arrayBuffer();
@@ -108,7 +120,7 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
     console.log("Type from buffer:", typeFromBuffer);
     if (!typeFromBuffer || (!typeFromBuffer.mime.startsWith("image") && !typeFromBuffer.mime.startsWith("video"))) {
         console.log("Reject file");
-        return { error: 'invalid-file', rejectedFiles: [fileName] };
+        return { error: 'invalid-file', rejectedFiles: [fileName], uploadUrls: null };
     }
 
     const nameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
@@ -188,11 +200,13 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
     }
 
     if (!data) {
-        return { error: "error-creating-image" };
+        return { error: "error-creating-image", uploadUrls: null };
     }
 
+    const uploadUrls: { [key: string]: string } = {};
     try {
-        await GoogleBucket.file(`${user!.id}/${parentFolderId}/${data?.id}`).save(buffer);
+        uploadUrls[formData.get("uploadUrlId") as string] = await generateV4UploadUrl(`${user!.id}/${parentFolderId}/${data?.id}`);
+        // await GoogleBucket.file(`${user!.id}/${parentFolderId}/${data?.id}`).save(buffer, { resumable: true });
     } catch (err) {
         console.error("Error writing file:", err);
         throw new Error("File upload failed");
@@ -202,7 +216,7 @@ export async function uploadImages(parentFolderId: string, formData: FormData, s
     revalidatePath("/app/folders");
     revalidatePath("/app");
 
-    return { error: null };
+    return { error: null, uploadUrls: uploadUrls };
 }
 
 export async function getImagesWithFolderAndCommentsFromFolder(folderId: string): Promise<{
