@@ -10,7 +10,7 @@ import { CarouselDialog } from "@/components/images/CarouselDialog";
 import { FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments, ImageWithComments, ImageWithFolder, VideoWithComments, VideoWithFolder } from "@/lib/definitions";
 import { formatBytes, getSortedImagesVideosContent } from "@/lib/utils";
 import { ImagesSortMethod } from "../folders/SortImages";
-import UploadImagesForm from "./UploadImagesForm";
+import { UploadImagesForm } from "./UploadImagesForm";
 
 export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments, sortState: ImagesSortMethod }) => {
     const t = useTranslations("images");
@@ -35,7 +35,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
     return (
         <div>
             {selecting
-                ? <div className={"flex justify-between items-center mb-5 bg-gray-50 rounded-2xl w-full p-2"}>
+                ? <div className={"flex justify-between items-center mb-5 bg-gray-50 dark:bg-primary/30 rounded-2xl w-full p-2"}>
                     <div className={"flex gap-2 items-center"}>
                         <Button variant="ghost" onClick={() => {
                             setSelected([]);

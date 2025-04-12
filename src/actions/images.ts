@@ -15,6 +15,7 @@ import { randomUUID } from "crypto";
 import mediaInfoFactory, { Track } from "mediainfo.js";
 import ffmpeg from "fluent-ffmpeg";
 import { PassThrough } from "stream";
+import crypto from "crypto";
 
 ffmpeg.setFfmpegPath("node_modules\\@ffmpeg-installer\\win32-x64\\ffmpeg.exe");
 
@@ -59,164 +60,238 @@ export async function getLightImages(): Promise<{
     return { error: null, lightImages: images }
 }
 
-export async function uploadImages(
-    parentFolderId: string,
+export async function initiateImageUpload(
     formData: FormData,
-    shareToken?: string | null,
-    tokenType?: "accessToken" | "personAccessToken" | null,
-    hashCode?: string | null
+    parentFolderId: string
 ): Promise<{
-    uploadUrls: { [key: string]: string } | null,
-    error: string | null,
-    used?: bigint,
-    max?: bigint,
-    rejectedFiles?: string[]
+    error: string | null;
+    uploadUrl: string | null;
+    verificationToken?: string;
+    fileId?: string;
 }> {
-    const { user } = await getCurrentSession();
-
-    if (!user) {
-        if (!shareToken || !tokenType) {
-            return { error: "You must be logged in to upload images", uploadUrls: null };
-        }
-
-        const validateToken = await validateShareToken(parentFolderId, shareToken, tokenType, hashCode);
-
-        if (validateToken.error) {
-            return { error: "You must have a valid share link to upload to this folder", uploadUrls: null };
-        }
-
-        if (validateToken.folder === null) {
-            return { error: "Folder not found", uploadUrls: null };
-        }
-
-        if (validateToken.permission === "READ") {
-            return { error: "You do not have permission to upload images to this folder", uploadUrls: null };
-        }
+    const session = await getCurrentSession();
+    if (!session?.user?.id) {
+        return { error: "not-authenticated", uploadUrl: null };
     }
 
-    const folder = await prisma.folder.findUnique({
-        where: { id: parentFolderId },
-        include: { createdBy: true }
-    });
+    const fileName = formData.get("fileName") as string;
+    const fileSize = Number(formData.get("fileSize"));
+    const fileType = formData.get("fileType") as string;
+    const fileSamples = formData.get("fileSamples") as string; // Base64 encoded samples
 
-    if (!folder) {
-        return { error: "You are not authorized to upload images to this folder", uploadUrls: null };
+    if (!fileName || !fileSize || !fileType || !fileSamples) {
+        return { error: "missing-metadata", uploadUrl: null };
     }
 
-    const file = formData.get("image") as File;
-    const fileName = formData.get("name") as string;
-    if (!file || !fileName) {
-        return { error: "No file found", uploadUrls: null };
+    // Validate file type
+    if (!isValidFileType(fileType)) {
+        return { error: "invalid-file-type", uploadUrl: null };
     }
 
-    if (file.size > folder.createdBy.maxStorage - folder.createdBy.usedStorage) {
-        return { error: "not-enough-storage", used: folder.createdBy.usedStorage, max: folder.createdBy.maxStorage, uploadUrls: null };
-    }
+    // Generate verification token
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const fileId = crypto.randomBytes(16).toString('hex');
 
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    // Save verification data to cloud storage
+    const verificationData = {
+        name: fileName,
+        size: fileSize,
+        type: fileType,
+        samples: JSON.parse(fileSamples), // Parse the samples array
+        userId: session.user.id,
+        timestamp: Date.now()
+    };
 
-    const typeFromBuffer = await fileTypeFromBuffer(buffer);
-    console.log("Type from buffer:", typeFromBuffer);
-    if (!typeFromBuffer || (!typeFromBuffer.mime.startsWith("image") && !typeFromBuffer.mime.startsWith("video"))) {
-        console.log("Reject file");
-        return { error: 'invalid-file', rejectedFiles: [fileName], uploadUrls: null };
-    }
-
-    const nameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
-    const slug = `${fileName.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}-${Date.now()}`;
-
-    let data;
-    if (typeFromBuffer.mime.startsWith("video")) {
-        const mediainfo = await mediaInfoFactory({ locateFile: (file) => `${process.env.APP_URL}/mediainfo/${file}` });
-        const metadata = await mediainfo.analyzeData(buffer.length, () => buffer)
-        mediainfo.close();
-
-        // Extract thumbnail from video
-        const thumbnailBuffer = await new Promise<Buffer>((resolve, reject) => {
-            const inputStream = new PassThrough();
-            const passThrough = new PassThrough();
-            const chunks: Buffer[] = [];
-
-            passThrough.on("data", (chunk) => chunks.push(chunk));
-            passThrough.on("end", () => resolve(Buffer.concat(chunks)));
-            passThrough.on("error", reject);
-
-            inputStream.end(buffer);
-            ffmpeg()
-                .input(inputStream)
-                .outputOptions("-frames:v 1") // Extract a single frame
-                .format("image2") // Output format as image
-                .pipe(passThrough, { end: true });
-        });
-
-        const videoId = randomUUID().toString();
-        const videoData = {
-            id: videoId,
-            name: nameWithoutExtension,
-            size: file.size,
-            extension: typeFromBuffer.ext,
-            width: metadata.media?.track.find((track: Track) => track["@type"] === "Video")?.Active_Width || 0,
-            height: metadata.media?.track.find((track: Track) => track["@type"] === "Video")?.Active_Height || 0,
-            duration: metadata.media?.track.find((track: Track) => track["@type"] === "General")?.Duration || 0,
-            thumbnail: videoId + '-thumbnail',
-        }
-        await videoCreateManyAndUpdatSizes([videoData], parentFolderId, user?.id ? user.id : folder.createdById);
-
-        try {
-            await GoogleBucket.file(`${user!.id}/${parentFolderId}/${videoData.thumbnail}`).save(thumbnailBuffer);
-        } catch (err) {
-            console.error("Error writing file:", err);
-            throw new Error("File upload failed");
-        }
-
-        data = videoData;
-    } else if (typeFromBuffer.mime.startsWith("image")) {
-        const image = sharp(buffer);
-        const metadata = await image.metadata();
-        const imageData = {
-            id: randomUUID().toString(),
-            name: nameWithoutExtension,
-            slug,
-            extension: typeFromBuffer.ext,
-            size: file.size,
-            width: metadata.width || 0,
-            height: metadata.height || 0
-        };
-
-        await imageCreateManyAndUpdateSizes([imageData], parentFolderId, user?.id ? user.id : folder.createdById);
-
-        if (folder.coverId === null) {
-            const cover = await prisma.image.findFirst({
-                where: {
-                    folderId: parentFolderId
-                },
-                select: { id: true }
-            });
-            await changeFolderCover(parentFolderId, cover!.id);
-        }
-
-        data = imageData;
-    }
-
-    if (!data) {
-        return { error: "error-creating-image", uploadUrls: null };
-    }
-
-    const uploadUrls: { [key: string]: string } = {};
     try {
-        uploadUrls[formData.get("uploadUrlId") as string] = await generateV4UploadUrl(`${user!.id}/${parentFolderId}/${data?.id}`);
-        // await GoogleBucket.file(`${user!.id}/${parentFolderId}/${data?.id}`).save(buffer, { resumable: true });
+        await GoogleBucket.file(`${session.user.id}/${parentFolderId}/verification/${verificationToken}.json`)
+            .save(JSON.stringify(verificationData), {
+                metadata: {
+                    contentType: 'application/json',
+                    metadata: {
+                        userId: session.user.id,
+                        folderId: parentFolderId,
+                        fileId: fileId
+                    }
+                }
+            });
+
+        // Generate signed URL for upload
+        const [uploadUrl] = await GoogleBucket.file(`${session.user.id}/${parentFolderId}/${fileId}`)
+            .getSignedUrl({
+                version: 'v4',
+                action: 'write',
+                expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+                contentType: fileType
+            });
+
+        return {
+            error: null,
+            uploadUrl,
+            verificationToken,
+            fileId
+        };
     } catch (err) {
-        console.error("Error writing file:", err);
-        throw new Error("File upload failed");
+        console.error("Error initiating upload:", err);
+        return { error: "upload-initiation-failed", uploadUrl: null };
+    }
+}
+
+export async function finalizeImageUpload(
+    formData: FormData,
+    parentFolderId: string
+): Promise<{ error: string | null; fileId: string | null }> {
+    const session = await getCurrentSession();
+    if (!session?.user?.id) {
+        return { error: "not-authenticated", fileId: null };
     }
 
-    revalidatePath(`/app/folders/${parentFolderId}`);
-    revalidatePath("/app/folders");
-    revalidatePath("/app");
+    const verificationToken = formData.get("verificationToken") as string;
+    const fileId = formData.get("fileId") as string;
 
-    return { error: null, uploadUrls: uploadUrls };
+    if (!verificationToken || !fileId) {
+        return { error: "missing-verification-data", fileId: null };
+    }
+
+    try {
+        // Get verification data
+        const [verificationFile] = await GoogleBucket.file(`${session.user.id}/${parentFolderId}/verification/${verificationToken}.json`).download();
+        const verificationData = JSON.parse(verificationFile.toString());
+
+        // Verify metadata
+        if (verificationData.userId !== session.user.id) {
+            return { error: "verification-failed", fileId: null };
+        }
+
+        // Get the uploaded file
+        const [uploadedFile] = await GoogleBucket.file(`${session.user.id}/${parentFolderId}/${fileId}`).download();
+        const uploadedBuffer = Buffer.from(uploadedFile);
+
+        // Verify file type
+        const detectedType = await fileTypeFromBuffer(uploadedBuffer);
+        if (!detectedType || detectedType.mime !== verificationData.type) {
+            await GoogleBucket.file(`${session.user.id}/${parentFolderId}/${fileId}`).delete();
+            return { error: "file-type-mismatch", fileId: null };
+        }
+
+        // Verify file size
+        if (uploadedBuffer.length !== verificationData.size) {
+            await GoogleBucket.file(`${session.user.id}/${parentFolderId}/${fileId}`).delete();
+            return { error: "file-size-mismatch", fileId: null };
+        }
+
+        // Verify file samples
+        const sampleSize = 1024 * 1024; // 1MB
+        const samples = verificationData.samples;
+        for (let i = 0; i < samples.length; i++) {
+            const start = i * sampleSize;
+            const end = Math.min(start + sampleSize, uploadedBuffer.length);
+            const sample = uploadedBuffer.slice(start, end);
+            const sampleHash = crypto.createHash('sha256').update(sample).digest('base64');
+
+            if (sampleHash !== samples[i]) {
+                await GoogleBucket.file(`${session.user.id}/${parentFolderId}/${fileId}`).delete();
+                return { error: "file-content-mismatch", fileId: null };
+            }
+        }
+
+        // Delete verification file
+        await GoogleBucket.file(`${session.user.id}/${parentFolderId}/verification/${verificationToken}.json`).delete();
+
+        // Create database record
+        if (verificationData.type.startsWith("image/")) {
+            const metadata = await sharp(uploadedBuffer).metadata();
+            const image = await prisma.image.create({
+                data: {
+                    id: fileId,
+                    name: verificationData.name,
+                    size: verificationData.size,
+                    folderId: parentFolderId,
+                    createdById: session.user.id,
+                    extension: verificationData.name.split('.').pop() || '',
+                    width: metadata.width || 0,
+                    height: metadata.height || 0
+                }
+            });
+            revalidatePath(`/app/folders/${parentFolderId}`);
+            revalidatePath(`/app/folders`);
+            revalidatePath(`/app`);
+
+            return { error: null, fileId: image.id };
+        } else if (verificationData.type.startsWith("video/")) {
+            // Process thumbnail creation
+            const thumbnailBuffer = await new Promise<Buffer>((resolve, reject) => {
+                const inputStream = new PassThrough();
+                const passThrough = new PassThrough();
+                const chunks: Buffer[] = [];
+
+                passThrough.on("data", (chunk) => chunks.push(chunk));
+                passThrough.on("end", () => resolve(Buffer.concat(chunks)));
+                passThrough.on("error", reject);
+
+                inputStream.end(uploadedBuffer);
+                ffmpeg()
+                    .input(inputStream)
+                    .outputOptions("-frames:v 1")
+                    .format("image2")
+                    .pipe(passThrough, { end: true });
+            });
+
+            // Save thumbnail
+            await GoogleBucket.file(`${session.user.id}/${parentFolderId}/${fileId}-thumbnail`).save(thumbnailBuffer);
+
+            // Create video record
+            const mediainfo = await mediaInfoFactory({ locateFile: (file) => `${process.env.APP_URL}/mediainfo/${file}` });
+            const metadata = await mediainfo.analyzeData(uploadedBuffer.length, () => uploadedBuffer);
+            mediainfo.close();
+            const video = await prisma.video.create({
+                data: {
+                    id: fileId,
+                    name: verificationData.name,
+                    size: verificationData.size,
+                    folderId: parentFolderId,
+                    createdById: session.user.id,
+                    extension: verificationData.name.split('.').pop() || '',
+                    thumbnail: `${fileId}-thumbnail`,
+                    width: metadata.media?.track.find((track: Track) => track["@type"] === "Video")?.Active_Width || 0,
+                    height: metadata.media?.track.find((track: Track) => track["@type"] === "Video")?.Active_Height || 0,
+                    duration: metadata.media?.track.find((track: Track) => track["@type"] === "General")?.Duration || 0
+                }
+            });
+
+            revalidatePath(`/app/folders/${parentFolderId}`);
+            revalidatePath(`/app/folders`);
+            revalidatePath(`/app`);
+
+            return { error: null, fileId: video.id };
+        }
+
+        return { error: "invalid-file-type", fileId: null };
+    } catch (err) {
+        console.error("Error finalizing upload:", err);
+        return { error: "upload-finalization-failed", fileId: null };
+    }
+}
+
+// Helper function to validate file type
+function isValidFileType(fileType: string): boolean {
+    return fileType.startsWith("image/") || fileType.startsWith("video/");
+}
+
+// Update the uploadImages function to match the new return types
+export async function uploadImages(
+    formData: FormData,
+    parentFolderId: string,
+    isVerificationStep: boolean = false
+): Promise<{
+    error: string | null;
+    uploadUrl?: string | null;
+    imageId?: string | null;
+}> {
+    if (isVerificationStep) {
+        return await finalizeImageUpload(formData, parentFolderId);
+    } else {
+        return await initiateImageUpload(formData, parentFolderId);
+    }
 }
 
 export async function getImagesWithFolderAndCommentsFromFolder(folderId: string): Promise<{
@@ -371,6 +446,10 @@ export async function deleteImage(folderId: string, fileId: string, fileType: st
                     }
                 }
             });
+
+
+            console.log("File", file);
+
             try {
                 await GoogleBucket.file(`${file?.createdById}/${file?.folderId}/${file?.thumbnail}`).delete();
             } catch (err) {
@@ -424,4 +503,113 @@ export async function deleteImages(files: { id: string, type: string }[]) {
         await deleteImage("", file.id, file.type);
     }
     return { error: null };
+}
+
+export async function processVideoAfterUpload(
+    folderId: string,
+    videoId: string
+): Promise<{ error: string | null }> {
+    const { user } = await getCurrentSession();
+
+    if (!user) {
+        return { error: "You must be logged in to process video after upload" };
+    }
+
+    try {
+        const video = await prisma.video.findUnique({
+            where: {
+                id: videoId,
+                folderId: folderId,
+                createdById: user.id
+            }
+        });
+
+        if (!video) {
+            return { error: "Video not found" };
+        }
+
+        // Download video from cloud storage
+        const file = GoogleBucket.file(`${user.id}/${folderId}/${videoId}`);
+        const [buffer] = await file.download();
+
+        // Process video metadata
+        const mediainfo = await mediaInfoFactory({ locateFile: (file) => `${process.env.APP_URL}/mediainfo/${file}` });
+        const metadata = await mediainfo.analyzeData(buffer.length, () => buffer);
+        mediainfo.close();
+
+        // Extract thumbnail
+        const thumbnailBuffer = await new Promise<Buffer>((resolve, reject) => {
+            const inputStream = new PassThrough();
+            const passThrough = new PassThrough();
+            const chunks: Buffer[] = [];
+
+            passThrough.on("data", (chunk) => chunks.push(chunk));
+            passThrough.on("end", () => resolve(Buffer.concat(chunks)));
+            passThrough.on("error", reject);
+
+            inputStream.end(buffer);
+            ffmpeg()
+                .input(inputStream)
+                .outputOptions("-frames:v 1")
+                .format("image2")
+                .pipe(passThrough, { end: true });
+        });
+
+        // Save thumbnail
+        await GoogleBucket.file(`${user.id}/${folderId}/${video.thumbnail}`).save(thumbnailBuffer);
+
+        // Update video record with metadata
+        await prisma.video.update({
+            where: { id: videoId },
+            data: {
+                width: metadata.media?.track.find((track: Track) => track["@type"] === "Video")?.Active_Width || 0,
+                height: metadata.media?.track.find((track: Track) => track["@type"] === "Video")?.Active_Height || 0,
+                duration: metadata.media?.track.find((track: Track) => track["@type"] === "General")?.Duration || 0,
+            }
+        });
+
+        return { error: null };
+    } catch (err) {
+        console.error("Error processing video:", err);
+        return { error: "Failed to process video" };
+    }
+}
+
+// Add this function to clean up orphaned verification files
+export async function cleanupOrphanedVerificationFiles(
+    parentFolderId: string,
+    maxAgeHours: number = 24
+): Promise<{ error: string | null, cleanedCount: number }> {
+    try {
+        const { user } = await getCurrentSession();
+
+        if (!user) {
+            return { error: "You must be logged in to clean up verification files", cleanedCount: 0 };
+        }
+
+        // List all verification files in the folder
+        const [files] = await GoogleBucket.getFiles({
+            prefix: `${user.id}/${parentFolderId}/verification/`
+        });
+
+        const now = Date.now();
+        let cleanedCount = 0;
+
+        // Check each file's creation time and delete if older than maxAgeHours
+        for (const file of files) {
+            const [metadata] = await file.getMetadata();
+            const creationTime = new Date(metadata.timeCreated || 0).getTime();
+            const ageHours = (now - creationTime) / (1000 * 60 * 60);
+
+            if (ageHours > maxAgeHours) {
+                await file.delete();
+                cleanedCount++;
+            }
+        }
+
+        return { error: null, cleanedCount };
+    } catch (err) {
+        console.error("Error cleaning up verification files:", err);
+        return { error: "Failed to clean up verification files", cleanedCount: 0 };
+    }
 }
