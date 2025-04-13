@@ -3,7 +3,7 @@ import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, Car
 import { ImageWithComments, ImageWithFolder, VideoWithComments, VideoWithFolder } from "@/lib/definitions";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { Braces, BracesIcon, Check, Copy, ExternalLink, Pencil } from "lucide-react";
+import { Braces, Check, Copy, ExternalLink, Pencil } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
