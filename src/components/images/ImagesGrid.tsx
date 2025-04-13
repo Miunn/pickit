@@ -1,7 +1,7 @@
 'use client'
 
 import { ImagePreviewGrid } from "@/components/images/ImagePreviewGrid";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Trash2, X } from "lucide-react";
@@ -23,6 +23,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
     const [selected, setSelected] = useState<string[]>([]);
     const [sizeSelected, setSizeSelected] = useState<number>(0);
 
+    const concatImagesVideos = useMemo(() => folder.images.concat(folder.videos), [folder.images, folder.videos]);
 
 
     useEffect(() => {
@@ -54,24 +55,32 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                 : null
             }
             <div className={"flex flex-wrap gap-3"}>
-                {folder.images.length === 0 && folder.videos.length === 0
+                {concatImagesVideos.length === 0
                     ? <div className={"mx-auto flex flex-col justify-center items-center max-w-lg"}>
                         <UploadImagesForm folderId={folder.id} />
                     </div>
-                    : (getSortedImagesVideosContent(folder.images.concat(folder.videos), sortState) as ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[]).map((file: (ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments)) => (
+                    : (getSortedImagesVideosContent(concatImagesVideos, sortState) as ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[]).map((file: (ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments)) => (
                         <Fragment key={file.id}>
                             <ImagePreviewGrid
                                 file={file}
                                 selected={selected}
                                 onClick={(e) => {
                                     if (selecting) {
-                                        if (e?.shiftKey) {
-                                            if (!selected.includes(file.id)) {
-                                                const lastSelected = folder.images.findIndex((img) => img.id === selected[selected.length - 1]);
-                                                const currentSelected = folder.images.findIndex((img) => img.id === file.id);
-                                                const range = folder.images.slice(Math.min(lastSelected, currentSelected), Math.max(lastSelected, currentSelected) + 1);
-                                                setSelected([...selected, ...range.map((img) => img.id)]);
-                                                setSizeSelected(sizeSelected + range.reduce((acc, img) => acc + img.size, 0));
+                                        if (e?.shiftKey && selected.length > 0) {
+                                            const lastSelectedId = selected[selected.length - 1];
+                                            const lastSelectedIndex = concatImagesVideos.findIndex((item) => item.id === lastSelectedId);
+                                            const currentIndex = concatImagesVideos.findIndex((item) => item.id === file.id);
+                                            
+                                            if (lastSelectedIndex !== -1 && currentIndex !== -1) {
+                                                const start = Math.min(lastSelectedIndex, currentIndex);
+                                                const end = Math.max(lastSelectedIndex, currentIndex);
+                                                const range = concatImagesVideos.slice(start, end + 1);
+                                                
+                                                const newSelectedIds = range.map((item) => item.id);
+                                                const newSize = range.reduce((acc, item) => acc + item.size, 0);
+                                                
+                                                setSelected([...new Set([...selected, ...newSelectedIds])]);
+                                                setSizeSelected(sizeSelected + newSize);
                                             }
                                         } else if (selected.includes(file.id)) {
                                             setSelected(selected.filter((id) => id !== file.id));
@@ -81,7 +90,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                                             setSizeSelected(sizeSelected + file.size);
                                         }
                                     } else {
-                                        setStartIndex(folder.images.indexOf(file));
+                                        setStartIndex(concatImagesVideos.indexOf(file));
                                         setCarouselOpen(true);
                                     }
                                 }}
@@ -100,7 +109,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                     ))}
             </div>
 
-            <CarouselDialog files={folder.images.map((i) => ({ ...i, type: 'image'})).concat(folder.videos.map((v) => ({ ...v, type: 'video' })))} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
+            <CarouselDialog files={concatImagesVideos} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
                 setSelected([]);
                 setSelecting(false);
