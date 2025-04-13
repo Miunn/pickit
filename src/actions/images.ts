@@ -361,6 +361,24 @@ export async function renameImage(fileId: string, fileType: string, data: z.infe
     return { error: null };
 }
 
+export async function updateImageDescription(fileId: string, description: string): Promise<{ error: string | null }> {
+    const { user } = await getCurrentSession();
+
+    if (!user) {
+        return { error: "You must be logged in to update image description" };
+    }
+
+    console.log("Updating image description", fileId, description);
+
+    const image = await prisma.image.update({
+        where: { id: fileId, createdBy: { id: user.id } },
+        data: { description }
+    });
+
+    revalidatePath(`/app/folders/${image.folderId}`);
+    return { error: null };
+}
+
 export async function deleteImage(folderId: string, fileId: string, fileType: string, shareToken?: string, hashPin?: string, tokenType?: string) {
     let validateToken = null;
     if (shareToken) {

@@ -382,6 +382,7 @@
       },
       "carousel": {
         "slide": "Slide {current} of {total}",
+        "noDescription": "No description",
         "actions": {
           "copy": {
             "title": "Image copied",
@@ -966,6 +967,36 @@
         "success": {
           "title": "Images deleted",
           "description": "{n, plural, one {# image} other {# images}} have been deleted successfully"
+        }
+      },
+      "editDescription": {
+        "title": "Edit Description",
+        "description": "Edit the description for {name}",
+        "form": {
+          "description": {
+            "label": "Description",
+            "placeholder": "Enter a description for this file",
+            "help": "Remember the context and what this {fileType} represents",
+            "fileType": {
+              "image": "image",
+              "video": "video"
+            }
+          }
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Save",
+          "submitting": "Saving..."
+        },
+        "success": {
+          "title": "Success",
+          "description": "Description updated successfully"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Error",
+            "description": "An error occurred while updating the description"
+          }
         }
       }
     },
