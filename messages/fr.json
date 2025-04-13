@@ -427,6 +427,7 @@
         "ongoing": {
           "title": "Importation en cours"
         },
+        "success": "{count, plural, one {# fichier importé} other {# fichiers importés}} avec succès",
         "actions": {
           "submit": "Importer",
           "submitting": "Importation..."

@@ -428,6 +428,7 @@
         "ongoing": {
           "title": "Upload in progress"
         },
+        "success": "{count, plural, one {# file uploaded} other {# files uploaded}} successfully",
         "actions": {
           "submit": "Upload",
           "submitting": "Uploading"
