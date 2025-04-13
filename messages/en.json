@@ -1359,6 +1359,7 @@
     }
   },
   "folders": {
+    "sharedBy": "Shared by {name}",
     "filesCount": "{count, plural, one {# file} other {# files}}",
     "page": {
       "title": "Folders",
