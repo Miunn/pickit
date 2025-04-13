@@ -48,6 +48,7 @@ model Folder {
 model Image {
   id          String   @id @default(cuid())
   name        String
+  description String?
   size        Int
   extension   String
   width       Int
@@ -67,6 +68,7 @@ model Image {
 model Video {
   id          String   @id @default(cuid())
   name        String
+  description String?
   size        Int
   extension   String
   width       Int      @default(0)

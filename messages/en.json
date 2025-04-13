@@ -382,6 +382,7 @@
       },
       "carousel": {
         "slide": "Slide {current} of {total}",
+        "noDescription": "No description",
         "actions": {
           "copy": {
             "title": "Image copied",
@@ -428,6 +429,7 @@
         "ongoing": {
           "title": "Upload in progress"
         },
+        "success": "{count, plural, one {# file uploaded} other {# files uploaded}} successfully",
         "actions": {
           "submit": "Upload",
           "submitting": "Uploading"
@@ -966,6 +968,36 @@
           "title": "Images deleted",
           "description": "{n, plural, one {# image} other {# images}} have been deleted successfully"
         }
+      },
+      "editDescription": {
+        "title": "Edit Description",
+        "description": "Edit the description for {name}",
+        "form": {
+          "description": {
+            "label": "Description",
+            "placeholder": "Enter a description for this file",
+            "help": "Remember the context and what this {fileType} represents",
+            "fileType": {
+              "image": "image",
+              "video": "video"
+            }
+          }
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Save",
+          "submitting": "Saving..."
+        },
+        "success": {
+          "title": "Success",
+          "description": "Description updated successfully"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Error",
+            "description": "An error occurred while updating the description"
+          }
+        }
       }
     },
     "accessTokens": {
@@ -1327,6 +1359,7 @@
     }
   },
   "folders": {
+    "sharedBy": "Shared by {name}",
     "filesCount": "{count, plural, one {# file} other {# files}}",
     "page": {
       "title": "Folders",

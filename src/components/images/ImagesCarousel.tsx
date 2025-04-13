@@ -1,22 +1,27 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 import { ImageWithComments, ImageWithFolder, VideoWithComments, VideoWithFolder } from "@/lib/definitions";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { Braces, BracesIcon, Check, Copy, ExternalLink } from "lucide-react";
+import { Braces, BracesIcon, Check, Copy, ExternalLink, Pencil } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
-import { copyImageToClipboard, formatBytes } from "@/lib/utils";
+import { cn, copyImageToClipboard, formatBytes } from "@/lib/utils";
 import ImageCommentSection from "./ImageCommentSection";
 import { useSearchParams } from "next/navigation";
 import ImageExif from "./ImageExif";
+import EditDescriptionDialog from "./EditDescriptionDialog";
+import { Role } from "@prisma/client";
+import { useSession } from "@/providers/SessionProvider";
 
 export default function ImagesCarousel({ files, startIndex, currentIndex, setCurrentIndex }: { files: ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>> }) {
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
     const tokenType = searchParams.get("t") === "p" ? "personAccessToken" : "accessToken";
+
+    const { user } = useSession();
 
     const t = useTranslations("components.images.carousel");
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
@@ -38,7 +43,7 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
     }, [carouselApi, setCurrentIndex]);
 
     return (
-        <div className={"w-full overflow-hidden p-4 mx-auto"}>
+        <div className={"w-full overflow-hidden p-2 mx-auto"}>
             <div className="max-w-full flex justify-between items-center mb-2 gap-2 px-2">
                 <p className="font-semibold truncate">{
                     currentIndex == 0
@@ -105,13 +110,13 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                 <CarouselPrevious />
                 <CarouselNext />
             </Carousel>
-            <div className="max-w-xl grid grid-cols-2 items-center px-2">
+            <div className="w-full grid grid-cols-2 items-center px-2">
                 <p className="truncate">
                     {currentIndex == 0
                         ? files[currentIndex]?.folder.name
                         : files[currentIndex - 1]?.folder.name}
                 </p>
-                <p className="text-sm text-muted-foreground text-nowrap text-end">
+                <p className="text-sm text-muted-foreground text-nowrap text-end justify-self-end">
                     <span>{
                         currentIndex == 0
                             ? `${files[currentIndex]?.width}x${files[currentIndex]?.height}`
@@ -124,8 +129,22 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                 </p>
             </div>
 
+            <div className="w-full px-2 py-2 flex justify-between items-start gap-4">
+                <p className={cn("text-sm text-muted-foreground flex-1 whitespace-pre-wrap line-clamp-5", files[currentIndex === 0 ? currentIndex : currentIndex - 1].description ? "" : "italic")}>
+                    {files[currentIndex === 0 ? currentIndex : currentIndex - 1].description || t('noDescription')}
+                </p>
+
+                {user?.role.includes(Role.ADMIN) || user?.id === files[currentIndex === 0 ? currentIndex : currentIndex - 1].folder.createdById
+                    ? <EditDescriptionDialog file={files[currentIndex === 0 ? currentIndex : currentIndex - 1]}>
+                    <Button variant={"outline"} size={"icon"} type="button">
+                        <Pencil className="w-4 h-4" />
+                        </Button>
+                    </EditDescriptionDialog>
+                    : null}
+            </div>
+
             <ImageCommentSection
-                className="py-4 transition-all duration-1000 ease-in-out"
+                className="py-2 transition-all duration-1000 ease-in-out"
                 open={commentSectionOpen}
                 setOpen={setCommentSectionOpen}
                 file={files[currentIndex === 0 ? currentIndex : currentIndex - 1]}

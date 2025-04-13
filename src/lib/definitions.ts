@@ -86,6 +86,14 @@ export const RenameImageFormSchema = z.object({
     }).max(255),
 });
 
+export const EditDescriptionFormSchema = z.object({
+    description: z.string().min(1, {
+        message: "Description must be at least 1 character long"
+    }).max(255, {
+        message: "Description must be at most 255 characters long"
+    })
+});
+
 export const CreateCommentFormSchema = z.object({
     content: z.string().min(1, {
         message: "Comment must be at least 1 character long"

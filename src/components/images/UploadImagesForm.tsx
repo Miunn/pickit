@@ -56,11 +56,24 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
         if (!data.images || data.images.length === 0) return;
 
         setIsUploading(true);
-        const progressToast = toast.loading("Preparing upload...");
+        toast(
+            <div className="w-full">
+                {t('ongoing.title')}
+                <Progress value={0} className="w-full mt-2" />
+            </div>,
+            {
+                id: "progress-toast",
+                duration: Infinity,
+                classNames: {
+                    content: "w-full",
+                    title: "w-full"
+                }
+            }
+        );
 
         try {
             const results = await Promise.all(
-                data.images.map(async (file: File) => {
+                data.images.map(async (file: File, i: number) => {
                     try {
                         // Step 1: Prepare file samples
                         const sampleSize = 1024 * 1024; // 1MB
@@ -116,6 +129,15 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
                             throw new Error(finalizeResult.error);
                         }
 
+                        toast(
+                            <div className="w-full">
+                                {t('ongoing.title')}
+                                <Progress value={Math.round(((i + 1) / data.images!.length) * 100)} className="w-full mt-2" />
+                            </div>,
+                            {
+                                id: "progress-toast"
+                            }
+                        )
                         return {
                             success: true,
                             file: file.name
@@ -127,20 +149,18 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
                             file: file.name,
                             error: error instanceof Error ? error.message : "Unknown error"
                         };
-                    }
+                    }        
                 })
             );
 
             const successfulUploads = results.filter(r => r.success);
             const failedUploads = results.filter(r => !r.success);
 
-            if (successfulUploads.length > 0) {
-                toast.success(`Successfully uploaded ${successfulUploads.length} file(s)`);
-            }
+            setTimeout(() => {
+                toast.dismiss("progress-toast");
+            }, 2000);
 
-            if (failedUploads.length > 0) {
-                toast.error(`Failed to upload ${failedUploads.length} file(s)`);
-            }
+            toast.success(t('success', { count: successfulUploads.length }));
 
             setFiles([]);
             setShowUploadModal(false);
@@ -152,7 +172,6 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
             toast.error("An error occurred during upload");
         } finally {
             setIsUploading(false);
-            toast.dismiss(progressToast);
         }
     };
 

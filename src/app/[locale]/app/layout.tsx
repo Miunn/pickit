@@ -19,7 +19,7 @@ import { getCurrentSession } from "@/lib/session";
 import { CommandSearch } from "@/components/CommandSearch";
 import { NuqsAdapter } from 'nuqs/adapters/react'
 import { SwitchTheme } from "@/components/generic/SwitchTheme";
-
+import SessionProvider from "@/providers/SessionProvider";
 export const metadata: Metadata = {
     title: "Echomori",
     description: "Upload and share images with ease.",
@@ -32,7 +32,7 @@ export default async function LocaleLayout({
     children: React.ReactNode;
     params: { locale: string };
 }>) {
-    const me = (await getCurrentSession()).user;
+    const { user, session } = await getCurrentSession();
 
     const t = await getTranslations("sidebar");
     const folders = (await getLightFolders()).lightFolders;
@@ -43,90 +43,92 @@ export default async function LocaleLayout({
 
     return (
         <NuqsAdapter>
-            <SidebarProvider>
-                <AppSidebar locale={locale} user={me} items={{
-                    navMainItems: [
-                        {
-                            key: "folders",
-                            title: t('main.folders'),
-                            icon: Folder,
-                            url: `/${locale}/app/folders`,
-                            isActive: true,
-                            items: folders.map((folder) => ({
-                                key: folder.id,
-                                title: folder.name,
-                                url: `/${locale}/app/folders/${folder.id}`
-                            }))
-                        },
-                        {
-                            key: "images",
-                            title: t('main.images'),
-                            icon: Image,
-                            url: `/${locale}/app/images`,
-                            items: images.map((image) => ({
-                                key: image.id,
-                                title: `${image.folder.name} - ${image.name}`,
-                                url: `/${locale}/app/folders/${image.folder.id}`
-                            }))
-                        },
-                        {
-                            key: "links",
-                            title: t('main.links'),
-                            icon: Link,
-                            url: `/${locale}/app/links`,
-                            items: accessTokens.map((accessToken) => ({
-                                key: accessToken.id,
-                                title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
-                                url: `/${locale}/app/links?l=${accessToken.id}`
-                            })).concat(personsAccessTokens.map((accessToken) => ({
-                                key: accessToken.id,
-                                title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
-                                url: `/${locale}/app/links?l=${accessToken.id}`
-                            })))
-                        },
-                        {
-                            key: "shared-with-me",
-                            title: t('main.sharedWithMe'),
-                            icon: Folder,
-                            url: `/${locale}/app/shared-with-me`,
-                            items: sharedWithMeFolders.map((accessToken) => ({
-                                key: accessToken.folder.id,
-                                title: `${accessToken.folder.createdBy.name} - ${accessToken.folder.name}`,
-                                url: `/${locale}/app/folders/${accessToken.folder.id}?share=${accessToken.token}&t=p`
-                            })),
-                        }
-                    ],
-                    navSecondaryItems: [
-                        ...(me?.role.includes(Role.ADMIN) ? [{
-                            title: "Administration",
-                            icon: undefined,
-                            url: `/${locale}/app/administration`,
-                        }] : [])
-                    ],
-                }} />
-                <SidebarInset className="flex-1 max-h-[calc(100svh-theme(spacing.4))]">
-                    <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-                        <div className="w-full flex justify-between items-center px-4">
-                            <div className="flex items-center gap-2">
-                                <SidebarTrigger className="-ml-1" />
-                                <Separator orientation="vertical" className="mr-2 h-4" />
-                                <HeaderBreadcumb />
+            <SessionProvider values={{ user: user, session: session }}>
+                <SidebarProvider>
+                    <AppSidebar locale={locale} user={user} items={{
+                        navMainItems: [
+                            {
+                                key: "folders",
+                                title: t('main.folders'),
+                                icon: Folder,
+                                url: `/${locale}/app/folders`,
+                                isActive: true,
+                                items: folders.map((folder) => ({
+                                    key: folder.id,
+                                    title: folder.name,
+                                    url: `/${locale}/app/folders/${folder.id}`
+                                }))
+                            },
+                            {
+                                key: "images",
+                                title: t('main.images'),
+                                icon: Image,
+                                url: `/${locale}/app/images`,
+                                items: images.map((image) => ({
+                                    key: image.id,
+                                    title: `${image.folder.name} - ${image.name}`,
+                                    url: `/${locale}/app/folders/${image.folder.id}`
+                                }))
+                            },
+                            {
+                                key: "links",
+                                title: t('main.links'),
+                                icon: Link,
+                                url: `/${locale}/app/links`,
+                                items: accessTokens.map((accessToken) => ({
+                                    key: accessToken.id,
+                                    title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
+                                    url: `/${locale}/app/links?l=${accessToken.id}`
+                                })).concat(personsAccessTokens.map((accessToken) => ({
+                                    key: accessToken.id,
+                                    title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
+                                    url: `/${locale}/app/links?l=${accessToken.id}`
+                                })))
+                            },
+                            {
+                                key: "shared-with-me",
+                                title: t('main.sharedWithMe'),
+                                icon: Folder,
+                                url: `/${locale}/app/shared-with-me`,
+                                items: sharedWithMeFolders.map((accessToken) => ({
+                                    key: accessToken.folder.id,
+                                    title: `${accessToken.folder.createdBy.name} - ${accessToken.folder.name}`,
+                                    url: `/${locale}/app/folders/${accessToken.folder.id}?share=${accessToken.token}&t=p`
+                                })),
+                            }
+                        ],
+                        navSecondaryItems: [
+                            ...(user?.role.includes(Role.ADMIN) ? [{
+                                title: "Administration",
+                                icon: undefined,
+                                url: `/${locale}/app/administration`,
+                            }] : [])
+                        ],
+                    }} />
+                    <SidebarInset className="flex-1 max-h-[calc(100svh-theme(spacing.4))]">
+                        <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+                            <div className="w-full flex justify-between items-center px-4">
+                                <div className="flex items-center gap-2">
+                                    <SidebarTrigger className="-ml-1" />
+                                    <Separator orientation="vertical" className="mr-2 h-4" />
+                                    <HeaderBreadcumb />
+                                </div>
+                                <div>
+                                    <SwitchLocale locale={locale} className="text-xs" />
+                                    <SwitchTheme />
+                                </div>
                             </div>
-                            <div>
-                                <SwitchLocale locale={locale} className="text-xs" />
-                                <SwitchTheme />
-                            </div>
-                        </div>
-                    </header>
-                    {me?.emailVerified === false ? (
-                        <UnverifiedEmail locale={locale} userDeletionDate={me.emailVerificationDeadline || addDays(me.createdAt, 7)} />
-                    ) : null}
+                        </header>
+                        {user?.emailVerified === false ? (
+                            <UnverifiedEmail locale={locale} userDeletionDate={user.emailVerificationDeadline || addDays(user.createdAt, 7)} />
+                        ) : null}
 
-                    <div className="flex flex-1 flex-col gap-4 p-4 overflow-auto pt-4">
-                        {children}
-                    </div>
-                </SidebarInset>
-            </SidebarProvider>
+                        <div className="flex flex-1 flex-col gap-4 p-4 overflow-auto pt-4">
+                            {children}
+                        </div>
+                    </SidebarInset>
+                </SidebarProvider>
+            </SessionProvider>
             <CommandSearch folders={folders} images={images} />
             <Toaster />
         </NuqsAdapter>

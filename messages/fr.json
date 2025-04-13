@@ -382,6 +382,7 @@
       },
       "carousel": {
         "slide": "Image {current} sur {total}",
+        "noDescription": "Aucune description",
         "actions": {
           "copy": {
             "title": "Image copiée",
@@ -427,6 +428,7 @@
         "ongoing": {
           "title": "Importation en cours"
         },
+        "success": "{count, plural, one {# fichier importé} other {# fichiers importés}} avec succès",
         "actions": {
           "submit": "Importer",
           "submitting": "Importation..."
@@ -964,6 +966,36 @@
           "title": "Images supprimées",
           "description": "{n, plural, zero {aucune image n'a été supprimée} one {# image a été supprimée} other {# images ont été supprimées}} avec succès"
         }
+      },
+      "editDescription": {
+        "title": "Modifier la description",
+        "description": "Modifier la description de {name}",
+        "form": {
+          "description": {
+            "label": "Description",
+            "placeholder": "Entrez une description pour ce fichier",
+            "help": "Souvenez du contexte et de ce que représente cette {fileType}",
+            "fileType": {
+              "image": "image",
+              "video": "vidéo"
+            }
+          }
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Enregistrer",
+          "submitting": "Enregistrement..."
+        },
+        "success": {
+          "title": "Succès",
+          "description": "Description mise à jour avec succès"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Erreur",
+            "description": "Une erreur s'est produite lors de la mise à jour de la description"
+          }
+        }
       }
     },
     "accessTokens": {
@@ -1319,6 +1351,7 @@
     }
   },
   "folders": {
+    "sharedBy": "Partagé par {name}",
     "filesCount": "{count, plural, =0 {Aucun fichier} =1 {# fichier} other {# fichiers}}",
     "page": {
       "title": "Folders",

@@ -68,7 +68,7 @@ export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentPro
             <h3 className={"mb-2 flex justify-between items-center"}>
                 <p className="font-semibold">{folder.name} {
                     isGuest
-                        ? <span className="font-normal text-sm">- Shared by {folder.createdBy.name}</span>
+                        ? <span className="font-normal text-sm">- {t('sharedBy', { name: folder.createdBy.name })}</span>
                         : null
                 }</p>
 
