@@ -17,6 +17,6 @@ jobs:
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
       - name: Connect, pull, build and deploy
         run: |
-          ssh ${{ secrets.SSH_USER}}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIRECTORY }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && npx prisma migrate deploy && npm run build && sudo systemctl restart echomori.service"
+          ssh ${{ secrets.SSH_USER}}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIRECTORY }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && npx prisma migrate deploy && npx prisma generate && npm run build && sudo systemctl restart echomori.service"
       - name: Cleanup
         run: rm -rf ~/.ssh
