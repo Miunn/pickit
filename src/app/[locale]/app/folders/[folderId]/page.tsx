@@ -52,8 +52,8 @@ export async function generateMetadata({ params, searchParams }: { params: { fol
             title: t("title", { folderName: "Folder" }),
             description: t("description", { folderName: "Folder" }),
             openGraph: {
-                title: t("title", { folderName: "Folder" }),
-                description: t("description", { folderName: "Folder" }),
+                title: t("openGraph.title", { folderName: "Folder" }),
+                description: t("openGraph.description", { folderName: "Folder" }),
             }
         }
     }
@@ -62,8 +62,8 @@ export async function generateMetadata({ params, searchParams }: { params: { fol
         title: t("title", { folderName: folderName.name }),
         description: t("description", { folderName: folderName.name }),
         openGraph: {
-            title: t("title", { folderName: folderName.name }),
-            description: t("description", { folderName: folderName.name }),
+            title: t("openGraph.title", { folderName: folderName.name }),
+            description: t("openGraph.description", { folderName: folderName.name }),
         }
     }
 }
