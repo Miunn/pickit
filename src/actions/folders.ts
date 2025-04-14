@@ -1,16 +1,12 @@
 "use server"
 
 import { prisma } from "@/lib/prisma";
-import * as fs from "fs";
 import { revalidatePath } from "next/cache";
 import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolder, FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments, LightFolder, PersonAccessTokenWithFolderWithCreatedBy } from "@/lib/definitions";
-import { folderDeleteAndUpdateSizes } from "@/lib/prismaExtend";
 import { FolderTokenPermission } from "@prisma/client";
-import { validateShareToken } from "@/lib/utils";
 import { getCurrentSession } from "@/lib/session";
-import JSZip from "jszip";
 import { GoogleBucket } from "@/lib/bucket";
-
+import { validateShareToken } from "./tokenValidation";
 export async function getLightFolders(): Promise<{
     lightFolders: LightFolder[],
     error?: string | null
@@ -257,7 +253,9 @@ export async function deleteFolder(folderId: string): Promise<any> {
         console.error("Error deleting folder from bucket", e);
     }
 
-    await folderDeleteAndUpdateSizes(folderId, user.id as string);
+    await prisma.folder.delete({
+        where: { id: folderId }
+    });
 
     revalidatePath("/app/folders");
     revalidatePath("/app");

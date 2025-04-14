@@ -1,18 +1,15 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { Folder, FolderTokenPermission, Image, Video } from "@prisma/client";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolderAndComments, FolderWithVideos, FolderWithVideosWithFolderAndComments, ImageWithFolder, UploadImagesFormSchema, VideoWithFolder } from "./definitions";
+import { Folder, Image, Video } from "@prisma/client";
+import { FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolderAndComments, FolderWithVideos, FolderWithVideosWithFolderAndComments, ImageWithFolder, VideoWithFolder } from "./definitions";
 import { toast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner"
-import { prisma } from "./prisma";
-import * as bcrypt from "bcryptjs";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
 import saveAs from "file-saver";
 import JSZip from "jszip";
 import { Progress } from "@/components/ui/progress";
 import { getFolderFull } from "@/actions/folders";
-import sharp from "sharp";
-import mediaInfoFactory, { MediaInfoResult } from 'mediainfo.js';
+import { getFolderFullFromAccessTokenServer } from "@/actions/tokenValidation";
 
 export function formatBytes(
 	bytes: number,
@@ -223,138 +220,9 @@ export const getSortedImagesVideosContent = (arr: (Image | Video)[], sort: Image
 	}
 }
 
-export const validateShareToken = async (folderId: string, token: string, type: "accessToken" | "personAccessToken", hashedPinCode?: string | null): Promise<{ error: string | null, folder: (FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments & FolderWithAccessToken) | null, permission?: FolderTokenPermission }> => {
-	let accessToken;
-	if (type === "accessToken") {
-		accessToken = await prisma.accessToken.findUnique({
-			where: {
-				token: token,
-				folderId: folderId,
-				expires: {
-					gte: new Date()
-				}
-			},
-			include: {
-				folder: {
-					include: {
-						images: {
-							include: {
-								folder: true,
-								comments: { include: { createdBy: true } }
-							}
-						},
-						videos: {
-							include: {
-								folder: true,
-								comments: { include: { createdBy: true } }
-							}
-						},
-						createdBy: true
-					}
-				}
-			},
-			omit: {
-				pinCode: false
-			}
-		});
-	} else if (type === "personAccessToken") {
-		accessToken = await prisma.personAccessToken.findUnique({
-			where: {
-				token: token,
-				folderId: folderId,
-				expires: {
-					gte: new Date()
-				}
-			},
-			include: {
-				folder: {
-					include: {
-						images: {
-							include: {
-								folder: true,
-								comments: { include: { createdBy: true } }
-							}
-						},
-						videos: {
-							include: {
-								folder: true,
-								comments: { include: { createdBy: true } }
-							}
-						},
-						createdBy: true
-					}
-				}
-			},
-			omit: {
-				pinCode: false
-			}
-		});
-	} else {
-		return { error: "invalid-token-type", folder: null };
-	}
-
-	if (!accessToken) {
-		return { error: "invalid-token", folder: null };
-	}
-
-	if (accessToken.locked && !hashedPinCode) {
-		return { error: "code-needed", folder: null };
-	}
-
-	if (accessToken.locked) {
-		if (!hashedPinCode) {
-			return { error: "wrong-pin", folder: null };
-		}
-
-		const match = bcrypt.compareSync(accessToken.pinCode as string, hashedPinCode);
-
-		if (!match) {
-			return { error: "wrong-pin", folder: null };
-		}
-	}
-
-	return { error: null, folder: { ...accessToken.folder, AccessToken: [] }, permission: accessToken.permission };
-}
-
 export const getFolderFullFromAccessToken = async (folderId: string, token: string, type: "accessToken" | "personAccessToken"):
 	Promise<{ error: string | null, folder: (FolderWithImagesWithFolderAndComments & FolderWithCreatedBy) | null }> => {
-	let accessToken;
-
-	if (type === "accessToken") {
-		accessToken = await prisma.accessToken.findUnique({
-			where: {
-				token: token,
-				folderId: folderId,
-				expires: {
-					gte: new Date()
-				}
-			},
-			include: {
-				folder: { include: { images: { include: { folder: true, comments: { include: { createdBy: true } } } }, createdBy: true } }
-			}
-		});
-	} else if (type === "personAccessToken") {
-		accessToken = await prisma.personAccessToken.findUnique({
-			where: {
-				token: token,
-				folderId: folderId,
-				expires: {
-					gte: new Date()
-				}
-			},
-			include: {
-				folder: { include: { images: { include: { folder: true, comments: { include: { createdBy: true } } } }, createdBy: true } }
-			}
-		});
-	} else {
-		return { error: "invalid-token-type", folder: null };
-	}
-
-	if (!accessToken) {
-		return { error: "invalid-token", folder: null };
-	}
-
-	return { error: null, folder: accessToken.folder };
+	return getFolderFullFromAccessTokenServer(folderId, token, type);
 }
 
 export function cn(...inputs: ClassValue[]) {
