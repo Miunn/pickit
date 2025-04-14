@@ -7,6 +7,16 @@ import WorldMap from "@/components/ui/world-map";
 import { ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata(): Promise<Metadata> {
+    const t = await getTranslations("metadata.contact");
+    return {
+        title: t("title"),
+        description: t("description"),
+    }
+}
 
 export default function ContactPage() {
 

@@ -5,6 +5,15 @@ import ReviewFolders from "@/components/account/reviewFolders";
 import { prisma } from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+    const t = await getTranslations("metadata.account");
+    return {
+        title: t("title"),
+        description: t("description"),
+    }
+}
 
 export default async function AccountPage({ params }: { params: { locale: string } }) {
 

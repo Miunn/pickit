@@ -5,6 +5,15 @@ import { getTranslations } from "next-intl/server";
 import { getCurrentSession } from "@/lib/session";
 import { redirect } from "@/i18n/navigation";
 import LinksContent from "@/components/accessTokens/LinksContent";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+    const t = await getTranslations("metadata.links");
+    return {
+        title: t("title"),
+        description: t("description"),
+    }
+}
 
 export default async function LinksPage({ params, searchParams }: { params: { locale: string }, searchParams: { s?: "links" | "contacts", l?: string } }) {
 

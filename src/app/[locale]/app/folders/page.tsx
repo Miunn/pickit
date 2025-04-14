@@ -3,6 +3,16 @@ import { getCurrentSession } from "@/lib/session";
 import { redirect } from "@/i18n/navigation";
 import { ViewState } from "@/components/folders/ViewSelector";
 import FoldersContent from "@/components/folders/FoldersContent";
+import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata(): Promise<Metadata> {
+    const t = await getTranslations("metadata.folders");
+    return {
+        title: t("title"),
+        description: t("description"),
+    }
+}
 
 export default async function FoldersPage({ params, searchParams }: { params: { locale: string }, searchParams: { view?: ViewState } }) {
 

@@ -9,6 +9,64 @@ import { ImagesSortMethod } from "@/components/folders/SortImages";
 import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments } from "@/lib/definitions";
 import { redirect } from "@/i18n/navigation";
 import { ViewState } from "@/components/folders/ViewSelector";
+import { getTranslations } from "next-intl/server";
+import { Metadata } from "next";
+import { prisma } from "@/lib/prisma";
+
+export async function generateMetadata({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { sort?: ImagesSortMethod, view?: ViewState, share?: string, t?: string, h?: string } }): Promise<Metadata> {
+    const t = await getTranslations("metadata.folder");
+    const { user } = await getCurrentSession();
+    let folderName: { name: string } | null = null;
+    if (!user) {
+        if (!searchParams.share) {
+            return {
+                title: t("title", { folderName: "Folder" }),
+                description: t("description", { folderName: "Folder" }),
+                openGraph: {
+                    title: t("title", { folderName: "Folder" }),
+                    description: t("description", { folderName: "Folder" }),
+                }
+            }
+        }
+
+        if (searchParams.t === "p") {
+            folderName = await prisma.personAccessToken.findUnique({
+                where: { token: searchParams.share },
+                select: { folder: { select: { name: true } } }
+            }).then(result => result ? { name: result.folder.name } : null);
+        } else {
+            folderName = await prisma.accessToken.findUnique({
+                where: { token: searchParams.share },
+                select: { folder: { select: { name: true } } }
+            }).then(result => result ? { name: result.folder.name } : null);
+        }
+    } else {
+        folderName = await prisma.folder.findUnique({
+            where: { id: params.folderId, createdBy: { id: user.id } },
+            select: { name: true }
+        });
+    }
+
+    if (!folderName) {
+        return {
+            title: t("title", { folderName: "Folder" }),
+            description: t("description", { folderName: "Folder" }),
+            openGraph: {
+                title: t("title", { folderName: "Folder" }),
+                description: t("description", { folderName: "Folder" }),
+            }
+        }
+    }
+
+    return {
+        title: t("title", { folderName: folderName.name }),
+        description: t("description", { folderName: folderName.name }),
+        openGraph: {
+            title: t("title", { folderName: folderName.name }),
+            description: t("description", { folderName: folderName.name }),
+        }
+    }
+}
 
 export default async function FolderPage({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { sort?: ImagesSortMethod, view?: ViewState, share?: string, t?: string, h?: string } }) {
 

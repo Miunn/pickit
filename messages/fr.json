@@ -1,4 +1,54 @@
 {
+  "metadata": {
+    "landing": {
+      "title": "Echomori - Sauvegardez des moments de vie",
+      "description": "Sauvegardez vos photos, organisez vos albums et partagez vos souvenirs. Ne laissez plus aucun souvenir s'échapper"
+    },
+    "signin": {
+      "title": "Connexion - Echomori",
+      "description": "Connexion à votre compte Echomori"
+    },
+    "signup": {
+      "title": "Création de compte - Echomori",
+      "description": "Création de compte Echomori"
+    },
+    "verifyEmail": {
+      "title": "Vérification de l'adresse mail - Echomori",
+      "description": "Vérifier votre adresse mail pour accéder à votre compte Echomori"
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié - Echomori",
+      "description": "Réinitialiser le mot de passe de votre compte Echomori"
+    },
+    "resetPassword": {
+      "title": "Réinitialiser le mot de passe - Echomori",
+      "description": "Réinitialiser le mot de passe de votre compte Echomori"
+    },
+    "dashboard": {
+      "title": "Tableau de bord - Echomori",
+      "description": "Tableau de bord"
+    },
+    "folders": {
+      "title": "Dossiers - Echomori",
+      "description": "Dossiers"
+    },
+    "folder": {
+      "title": "{folderName} - Echomori",
+      "description": "Gérer votre dossier"
+    },
+    "links": {
+      "title": "Liens - Echomori",
+      "description": "Liens"
+    },
+    "account": {
+      "title": "Compte - Echomori",
+      "description": "Compte"
+    },
+    "contact": {
+      "title": "Contact - Echomori",
+      "description": "Contact"
+    }
+  },
   "app": {
     "newFolder": "New folder",
     "uploadImages": "Upload",
