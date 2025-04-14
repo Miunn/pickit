@@ -6,7 +6,7 @@ import { Toaster as SonnerToaster } from "@/components/ui/sonner"
 import { getMessages } from 'next-intl/server';
 import { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
-
+import NextTopLoader from 'nextjs-toploader';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -33,11 +33,12 @@ export default async function LocaleLayout({ children, params }: Props) {
                     defaultTheme="system"
                     enableSystem={true}
                     disableTransitionOnChange={true}>
-                <NextIntlClientProvider messages={messages}>
-                    {children}
-                    <Toaster />
-                    <SonnerToaster richColors />
-                </NextIntlClientProvider>
+                    <NextTopLoader color='#30b57e' />
+                    <NextIntlClientProvider messages={messages}>
+                        {children}
+                        <Toaster />
+                        <SonnerToaster richColors />
+                    </NextIntlClientProvider>
                 </ThemeProvider>
             </body>
         </html>
