@@ -34,7 +34,11 @@
     },
     "folder": {
       "title": "{folderName} - Echomori",
-      "description": "Gérer votre dossier"
+      "description": "Gérer votre dossier",
+      "openGraph": {
+        "title": "{folderName} - Echomori",
+        "description": "Voir les photos et vidéos hébergées dans {folderName}"
+      }
     },
     "links": {
       "title": "Liens - Echomori",

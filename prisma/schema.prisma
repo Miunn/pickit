@@ -16,6 +16,7 @@ datasource db {
 enum FolderTokenPermission {
   READ
   WRITE
+  ADMIN
 }
 
 enum Role {
@@ -25,6 +26,8 @@ enum Role {
 
 enum PasswordResetRequestStatus {
   PENDING
+  USED
+  EXPIRED
   SUCCESS
   ERROR
 }

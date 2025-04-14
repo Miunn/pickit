@@ -34,7 +34,11 @@
     },
     "folder": {
       "title": "{folderName} - Echomori",
-      "description": "Manage your folder"
+      "description": "Check hosted photos and videos from {folderName}",
+      "openGraph": {
+        "title": "{folderName} - Echomori",
+        "description": "Check hosted photos and videos from {folderName}"
+      }
     },
     "links": {
       "title": "Links - Echomori",

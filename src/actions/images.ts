@@ -4,8 +4,6 @@ import { prisma } from "@/lib/prisma";
 import sharp from "sharp";
 import { revalidatePath } from "next/cache";
 import { ImageLightWithFolderName, ImageWithComments, ImageWithFolder, RenameImageFormSchema } from "@/lib/definitions";
-import { imageDeleteAndUpdateSizes, videoCreateManyAndUpdatSizes, videoDeleteAndUpdateSizes } from "@/lib/prismaExtend";
-import { validateShareToken } from "@/lib/utils";
 import { getCurrentSession } from "@/lib/session";
 import { fileTypeFromBuffer } from 'file-type';
 import { z } from "zod";
@@ -14,6 +12,8 @@ import mediaInfoFactory, { Track } from "mediainfo.js";
 import ffmpeg from "fluent-ffmpeg";
 import { PassThrough } from "stream";
 import crypto from "crypto";
+import { validateShareToken } from "./tokenValidation";
+import { FolderTokenPermission } from "@prisma/client";
 
 ffmpeg.setFfmpegPath(process.env.FFMPEG_PATH as string);
 
@@ -501,12 +501,24 @@ export async function deleteImage(folderId: string, fileId: string, fileType: st
 
     if (user) {
         if (file.type === "video") {
-            await videoDeleteAndUpdateSizes(fileId, user.id);
+            await prisma.video.delete({
+                where: { id: fileId }
+            })
         } else {
-            await imageDeleteAndUpdateSizes(fileId, user.id);
+            await prisma.image.delete({
+                where: { id: fileId }
+            })
         }
-    } else if (validateToken?.folder) {
-        await imageDeleteAndUpdateSizes(fileId, validateToken.folder.createdById);
+    } else if (validateToken?.folder && validateToken.permission === FolderTokenPermission.WRITE) {
+        if (file.type === "video") {
+            await prisma.video.delete({
+                where: { id: fileId }
+            })
+        } else {
+            await prisma.image.delete({
+                where: { id: fileId }
+            })
+        }
     }
 
     revalidatePath(`/app/folders/${file.folder.id}`);
