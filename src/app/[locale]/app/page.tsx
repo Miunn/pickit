@@ -2,6 +2,16 @@ import {prisma} from "@/lib/prisma";
 import DashboardContent from "@/components/layout/DashboardContent";
 import { getCurrentSession } from "@/lib/session";
 import { redirect } from "@/i18n/navigation";
+import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
+    const t = await getTranslations("metadata.dashboard")
+    return {
+        title: t("title"),
+        description: t("description"),
+    }
+}
 
 export default async function Home({ params }: { params: { locale: string } }) {
 

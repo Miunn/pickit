@@ -1,4 +1,54 @@
 {
+  "metadata": {
+    "landing": {
+      "title": "Echomori - Save moments of life",
+      "description": "Save your memories and share them to your loved ones, don't let them fade away"
+    },
+    "signin": {
+      "title": "Sign in - Echomori",
+      "description": "Sign in to your Echomori account"
+    },
+    "signup": {
+      "title": "Sign up - Echomori",
+      "description": "Sign up to your Echomori account"
+    },
+    "verifyEmail": {
+      "title": "Verify email - Echomori",
+      "description": "Verify your email address to access your Echomori account"
+    },
+    "forgotPassword": {
+      "title": "Forgot password - Echomori",
+      "description": "Reset the password of your Echomori account"
+    },
+    "resetPassword": {
+      "title": "Reset password - Echomori",
+      "description": "Reset the password of your Echomori account"
+    },
+    "dashboard": {
+      "title": "Dashboard - Echomori",
+      "description": "Dashboard"
+    },
+    "folders": {
+      "title": "Folders - Echomori",
+      "description": "Folders"
+    },
+    "folder": {
+      "title": "{folderName} - Echomori",
+      "description": "Manage your folder"
+    },
+    "links": {
+      "title": "Links - Echomori",
+      "description": "Links"
+    },
+    "account": {
+      "title": "Account - Echomori",
+      "description": "Account"
+    },
+    "contact": {
+      "title": "Contact - Echomori",
+      "description": "Contact"
+    }
+  },
   "DashboardPage": {
     "newFolder": "New folder",
     "uploadImages": "Upload",

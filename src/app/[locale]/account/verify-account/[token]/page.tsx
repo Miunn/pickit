@@ -1,6 +1,16 @@
 import { verifyAccount } from "@/actions/user";
 import { MessageCircleQuestion, TicketCheck } from "lucide-react";
 import Link from "next/link";
+import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata({ params }: { params: { locale: string, token: string } }): Promise<Metadata> {
+    const t = await getTranslations("metadata.verifyEmail");
+    return {
+        title: t("title"),
+        description: t("description"),
+    }
+}
 
 export default async function VerifyAccountPage({ params }: { params: { locale: string, token: string } }) {
 

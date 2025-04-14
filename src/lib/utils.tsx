@@ -31,7 +31,6 @@ export function formatBytes(
 }
 
 export const switchLocaleUrl = (url: string, locale: string): string => {
-	console.log(url)
 	// Remove the locale from the url
 	url = url.replace(/\/[a-z]{2}\/?/, "/");
 

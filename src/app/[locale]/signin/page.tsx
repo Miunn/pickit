@@ -4,6 +4,23 @@ import SignupForm from "@/components/auth/SignupForm";
 import { getCurrentSession } from "@/lib/session";
 import { redirect } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
+import { Metadata } from "next";
+
+export async function generateMetadata({ params, searchParams }: { params: { locale: string }, searchParams: { side?: string } }): Promise<Metadata> {
+    if (searchParams.side === "register") {
+        const t = await getTranslations("metadata.signup");
+        return {
+            title: t("title"),
+            description: t("description"),
+        }
+    }
+    
+    const t = await getTranslations("metadata.signin");
+    return {
+        title: t("title"),
+        description: t("description"),
+    }
+}
 
 export default async function LoginPage({ params, searchParams }: { params: { locale: string }, searchParams: { side?: string, error?: string } }) {
 
