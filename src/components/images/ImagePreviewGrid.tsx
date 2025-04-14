@@ -2,7 +2,7 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import React from "react";
+import React, { Suspense } from "react";
 import Image from "next/image";
 import { ImageWithFolder, VideoWithFolder } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
@@ -14,6 +14,7 @@ import { useSearchParams } from "next/navigation";
 import RenameImageDialog from "./RenameImageDialog";
 import { changeFolderCover } from "@/actions/folders";
 import { CirclePlay } from "lucide-react";
+import LoadingImage from "../LoadingImage";
 
 export interface ImagePreviewProps {
     file: ImageWithFolder | VideoWithFolder;
@@ -44,10 +45,22 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect }: ImagePre
                             <div className={`${selected.includes(file.id) ? "scale-95" : ""}`}>
                                 <div className={`relative h-36 mb-4 flex justify-center items-center group`}>
                                     {file.type === "video"
-                                        ? <Image src={`/api/folders/${file.folderId}/videos/${file.id}/thumbnail?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`} alt={file.name}
-                                            className={"relative border border-primary rounded-xl object-cover"} sizes="33vw" fill />
-                                        : <Image src={`/api/folders/${file.folderId}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`} alt={file.name}
-                                            className={"relative border border-primary rounded-xl object-cover"} sizes="33vw" fill />
+                                        ? <LoadingImage
+                                            src={`/api/folders/${file.folderId}/videos/${file.id}/thumbnail?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`}
+                                            alt={file.name}
+                                            className={"relative border border-primary rounded-xl object-cover"}
+                                            spinnerClassName={"text-primary"}
+                                            sizes="33vw"
+                                            fill
+                                        />
+                                        : <LoadingImage
+                                            src={`/api/folders/${file.folderId}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`}
+                                            alt={file.name}
+                                            className={"relative border border-primary rounded-xl object-cover"}
+                                            spinnerClassName={"text-primary"}
+                                            sizes="33vw"
+                                            fill
+                                        />
                                     }
                                     {file.type === "video"
                                         ? <CirclePlay className="absolute left-2 bottom-2 text-white opacity-80 group-hover:opacity-100 transition-all duration-200 ease-in-out" size={25} />
