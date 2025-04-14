@@ -28,6 +28,8 @@ enum PasswordResetRequestStatus {
   PENDING
   USED
   EXPIRED
+  SUCCESS
+  ERROR
 }
 
 model Folder {

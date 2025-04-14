@@ -12,7 +12,9 @@ export enum Role {
 export enum PasswordResetRequestStatus {
     PENDING = 'PENDING',
     USED = 'USED',
-    EXPIRED = 'EXPIRED'
+    EXPIRED = 'EXPIRED',
+    SUCCESS = 'SUCCESS',
+    ERROR = 'ERROR'
 }
 
 export type PersonAccessToken = {
