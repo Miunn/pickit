@@ -9,12 +9,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
+import { Link } from "@/i18n/navigation";
 import { PersonAccessTokenWithFolder } from "@/lib/definitions"
-import type { FolderTokenPermission } from "@/types/prisma";
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, BadgeCheck, BadgeMinus, CircleHelp, Eye, Lock, LockOpen, MoreHorizontal, Pencil, PencilOff } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
 import { useState } from "react";
 
 // Define the permission values as constants
@@ -216,7 +215,6 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
             const locale = useLocale();
             const [lockOpen, setLockOpen] = useState<boolean>(false);
             const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
-            const link = `${process.env.APP_URL}/${locale}/app/folders/${accessToken.folder.id}?share=${accessToken.token}`;
             return (
                 <>
                     <DropdownMenu>
@@ -229,7 +227,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                         <DropdownMenuContent align="end" className="min-w-40">
                             <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
                             <DropdownMenuItem asChild>
-                                <Link href={`${process.env.APP_URL}/${locale}/app/folders/${accessToken.folder.id}`} className="cursor-default">
+                                <Link href={`/app/folders/${accessToken.folder.id}`} className="cursor-default">
                                     {t('open')}
                                 </Link>
                             </DropdownMenuItem>

@@ -88,7 +88,7 @@ export async function validateShareToken(
     return { error: "invalid-token-type", folder: null };
   }
 
-  if (!accessToken) {
+  if (!accessToken || !accessToken.isActive) {
     return { error: "invalid-token", folder: null };
   }
 

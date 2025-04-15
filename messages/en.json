@@ -53,11 +53,6 @@
       "description": "Contact"
     }
   },
-  "DashboardPage": {
-    "newFolder": "New folder",
-    "uploadImages": "Upload",
-    "manageLinks": "Manage links"
-  },
   "auth": {
     "signInTab": "Login",
     "signUpTab": "Sign up"
@@ -1598,6 +1593,11 @@
     "page": {
       "title": "Manage your access links"
     }
+  },
+  "invalidToken": {
+    "title": "Invalid or expired token",
+    "description": "It seems this link doesn't lead to a valid folder. Please check the link or contact the owner.",
+    "goBack": "Go back to the home page"
   },
   "NotFoundPage": {
     "description": "This page could not be found"
