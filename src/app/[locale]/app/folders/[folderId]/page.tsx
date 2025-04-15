@@ -77,6 +77,10 @@ export default async function FolderPage({ params, searchParams }: { params: { f
         return redirect({ href: "/signin", locale: params.locale });
     }
 
+    if (searchParams.share) {
+        fetch(`${process.env.APP_URL}/api/tokens/increment?token=${searchParams.share}`)
+    }
+
     return (
         <>
             {folderData.folder

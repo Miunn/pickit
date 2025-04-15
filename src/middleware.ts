@@ -40,10 +40,6 @@ export default async function middleware(req: NextRequest) {
         return NextResponse.redirect(redirectUrl);
     }
 
-    if (req.nextUrl.searchParams.get("share") && await isValidShareLink(params(req.url).folderId, req.nextUrl.searchParams.get("share"), req.nextUrl.searchParams.get("t"))) {
-        await fetch(`${process.env.APP_URL}/api/tokens/increment?token=${req.nextUrl.searchParams.get("share")}`);
-    }
-
     if (req.method === "GET") {
 		const response = handleI18nRouting(req);
 		const token = req.cookies.get("session")?.value ?? null;
