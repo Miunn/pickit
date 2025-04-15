@@ -53,11 +53,6 @@
       "description": "Contact"
     }
   },
-  "app": {
-    "newFolder": "New folder",
-    "uploadImages": "Upload",
-    "manageLinks": "Manage links"
-  },
   "auth": {
     "signInTab": "Se connecter",
     "signUpTab": "Créer un compte"

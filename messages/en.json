@@ -53,11 +53,6 @@
       "description": "Contact"
     }
   },
-  "DashboardPage": {
-    "newFolder": "New folder",
-    "uploadImages": "Upload",
-    "manageLinks": "Manage links"
-  },
   "auth": {
     "signInTab": "Login",
     "signUpTab": "Sign up"
