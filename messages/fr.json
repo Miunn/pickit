@@ -1655,6 +1655,11 @@
       "title": "Gérer les liens d'accès"
     }
   },
+  "invalidToken": {
+    "title": "Lien invalide ou expiré",
+    "description": "Il semble que ce lien ne mène pas à un dossier valide. Veuillez vérifier le lien ou contacter le propriétaire.",
+    "goBack": "Retour à la page d'accueil"
+  },
   "NotFoundPage": {
     "description": "La page que vous cherchez n'existe pas ou a été déplacée."
   }
