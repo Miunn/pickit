@@ -33,7 +33,7 @@ export default async function LocaleLayout({ children, params }: Props) {
                     defaultTheme="system"
                     enableSystem={true}
                     disableTransitionOnChange={true}>
-                    <NextTopLoader color='#30b57e' />
+                    <NextTopLoader color='#30b57e' showSpinner={false} />
                     <NextIntlClientProvider messages={messages}>
                         {children}
                         <Toaster />
