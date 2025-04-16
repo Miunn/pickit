@@ -56,7 +56,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
             }
             <div className={"flex flex-wrap gap-3"}>
                 {concatImagesVideos.length === 0
-                    ? <div className={"mx-auto flex flex-col justify-center items-center max-w-lg"}>
+                    ? <div className={"mx-auto mt-14 flex flex-col justify-center items-center max-w-lg"}>
                         <UploadImagesForm folderId={folder.id} />
                     </div>
                     : (getSortedImagesVideosContent(concatImagesVideos, sortState) as ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[]).map((file: (ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments)) => (

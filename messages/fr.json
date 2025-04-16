@@ -394,7 +394,7 @@
       }
     },
     "fileUploader": {
-      "title": "Déplacer et déposer vos fichiers ici ou cliquez pour les télécharger",
+      "title": "Déplacer et déposer vos fichiers ici ou cliquez pour les importer",
       "dragActiveTitle": "Déposez vos fichiers ici",
       "description": "Vous pouvez télécharger {count, plural, one {un fichier} other {vos images}} jusqu'à {maxSize} {count, plural, one {} other {chacune}}",
       "remove": "Supprimer",
