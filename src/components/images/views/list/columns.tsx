@@ -129,8 +129,9 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
                         alt={row.getValue("name") || ''} 
                         className="w-[40px] h-[40px] object-cover rounded-xl" 
                         loading="lazy"
-                        placeholder="blur"
-                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZjBmMGYwIi8+PC9zdmc+"
+                        // placeholder="blur"
+                        sizes="40px"
+                        // blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZjBmMGYwIi8+PC9zdmc+"
                       />
                     : <Image 
                         src={`/api/folders/${row.original.folder?.id || ''}/images/${row.original.id || ''}`} 
@@ -139,8 +140,9 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
                         alt={row.getValue("name") || ''} 
                         className="w-[40px] h-[40px] object-cover rounded-xl" 
                         loading="lazy"
-                        placeholder="blur"
-                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZjBmMGYwIi8+PC9zdmc+"
+                        // placeholder="blur"
+                        sizes="40px"
+                        // blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZjBmMGYwIi8+PC9zdmc+"
                       />
                 }
                 <p onClick={() => {
