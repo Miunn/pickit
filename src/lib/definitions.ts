@@ -58,6 +58,14 @@ export const RenameFolderFormSchema = z.object({
     }).max(255),
 });
 
+export const EditFolderDescriptionFormSchema = z.object({
+    description: z.string().min(1, {
+        message: "Description must be at least 1 character long"
+    }).max(255, {
+        message: "Description must be at most 255 characters long"
+    })
+});
+
 export const UploadImagesFormSchema = z.object({
     images: typeof window === 'undefined'
         ? z.any().refine((file) => {
