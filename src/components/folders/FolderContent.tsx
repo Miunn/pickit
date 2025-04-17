@@ -92,7 +92,7 @@ export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentPro
                         <Download className={"mr-2"} /> {t('actions.download')}
                     </Button>
                 </div>
-                <div className="lg:flex xl:hidden gap-4">
+                <div className="hidden lg:flex xl:hidden gap-4">
                     <ViewSelector viewState={viewState} setViewState={setViewState} />
                     {viewState === ViewState.Grid
                         ? <SortImages sortState={sortState} setSortState={setSortState} />
