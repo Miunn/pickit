@@ -3,7 +3,7 @@ import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, Car
 import { ImageWithComments, ImageWithFolder, VideoWithComments, VideoWithFolder } from "@/lib/definitions";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { Braces, Check, Copy, Download, ExternalLink, Loader2, Pencil } from "lucide-react";
+import { Braces, Check, Copy, Download, Expand, ExternalLink, Loader2, Pencil } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
@@ -15,6 +15,7 @@ import EditDescriptionDialog from "./EditDescriptionDialog";
 import { Role } from "@prisma/client";
 import { useSession } from "@/providers/SessionProvider";
 import LoadingImage from "../LoadingImage";
+import FullScreenImageCarousel from "./FullScrenImageCarousel";
 
 export default function ImagesCarousel({ files, startIndex, currentIndex, setCurrentIndex }: { files: ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>> }) {
     const searchParams = useSearchParams();
@@ -53,11 +54,11 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                         : files[currentIndex - 1]?.name
                 }</p>
                 <div className="flex gap-2">
-                    <ImageExif image={files[currentIndex === 0 ? currentIndex : currentIndex - 1]}>
+                    <FullScreenImageCarousel files={files} defaultIndex={currentIndex - 1}>
                         <Button variant={"outline"} size={"icon"} type="button">
-                            <Braces className="w-4 h-4" />
+                            <Expand className="w-4 h-4" />
                         </Button>
-                    </ImageExif>
+                    </FullScreenImageCarousel>
                     <Button variant={"outline"} size={"icon"} type="button" asChild>
                         <Link href={`/api/folders/${files.at(currentIndex - 1)?.folderId}/images/${files.at(currentIndex - 1)?.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} target="_blank">
                             <ExternalLink className="w-4 h-4" />
@@ -98,6 +99,11 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                             ? <Check className="w-4 h-4" />
                             : <Copy className="w-4 h-4" />}
                     </Button>
+                    <ImageExif image={files[currentIndex === 0 ? currentIndex : currentIndex - 1]}>
+                        <Button variant={"outline"} size={"icon"} type="button">
+                            <Braces className="w-4 h-4" />
+                        </Button>
+                    </ImageExif>
                 </div>
             </div>
             <Carousel className="w-full h-fit mx-auto max-w-xl mb-2" opts={{

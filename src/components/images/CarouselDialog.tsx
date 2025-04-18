@@ -21,7 +21,7 @@ export const CarouselDialog = ({ files, title, carouselOpen, setCarouselOpen, st
             <DialogContent className={"w-full max-w-3xl"}>
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
-                    {/* <DialogDescription>{t('description')}</DialogDescription> */}
+                    <DialogDescription>{t('description')}</DialogDescription>
                 </DialogHeader>
 
                 <ImagesCarousel files={files} startIndex={startIndex} currentIndex={current} setCurrentIndex={setCurrent} />
