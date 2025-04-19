@@ -84,21 +84,21 @@ export default function FullScreenImageCarousel({
                         </CarouselContent>
                         <div className="absolute inset-0 flex items-center justify-between pointer-events-none">
                             <div 
-                                className="pointer-events-auto w-1/4 h-full flex items-center justify-start pl-14"
+                                className="pointer-events-auto w-1/5 md:w-1/4 h-full flex items-center justify-start pl-14"
                                 onMouseEnter={() => setShowLeftNav(true)}
                                 onMouseLeave={() => setShowLeftNav(false)}
                             >
                                 <div className={`flex items-center justify-center transition-opacity duration-300 ${showLeftNav ? 'opacity-100' : 'opacity-0'}`}>
-                                    <CarouselPrevious className="relative left-0 translate-x-0 h-12 w-12" />
+                                    <CarouselPrevious className="relative left-0 translate-x-0 w-10 h-10 md:h-12 md:w-12" />
                                 </div>
                             </div>
                             <div 
-                                className="pointer-events-auto w-1/4 h-full flex items-center justify-end pr-14"
+                                className="pointer-events-auto w-1/5 md:w-1/4 h-full flex items-center justify-end pr-14"
                                 onMouseEnter={() => setShowRightNav(true)}
                                 onMouseLeave={() => setShowRightNav(false)}
                             >
                                 <div className={`flex items-center justify-center transition-opacity duration-300 ${showRightNav ? 'opacity-100' : 'opacity-0'}`}>
-                                    <CarouselNext className="relative right-0 translate-x-0 h-12 w-12" />
+                                    <CarouselNext className="relative right-0 translate-x-0 w-10 h-10 md:h-12 md:w-12" />
                                 </div>
                             </div>
                         </div>
