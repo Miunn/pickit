@@ -693,6 +693,25 @@
           }
         }
       },
+      "deleteDescription": {
+        "title": "Delete description",
+        "description": "Are you sure you want to delete the description for {name}? This action cannot be undone.",
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Delete",
+          "submitting": "Deleting..."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't delete description",
+            "description": "An unknown error happened while deleting the description"
+          }
+        },
+        "success": {
+          "title": "Description deleted",
+          "description": "The description has been deleted successfully"
+        }
+      },
       "properties": {
         "title": "Folder properties",
         "description": "Properties of {name}",
@@ -1073,6 +1092,25 @@
             "title": "Error",
             "description": "An error occurred while updating the description"
           }
+        }
+      },
+      "deleteDescription": {
+        "title": "Delete Description",
+        "description": "Are you sure you want to delete the description for {name}? This action cannot be undone.",
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Delete",
+          "submitting": "Deleting..."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't delete description",
+            "description": "An unknown error happened while deleting the description"
+          }
+        },
+        "success": {
+          "title": "Description deleted",
+          "description": "The description has been deleted successfully"
         }
       }
     },

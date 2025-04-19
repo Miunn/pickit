@@ -249,6 +249,25 @@ export async function changeFolderDescription(folderId: string, description: str
     return { error: null }
 }
 
+export async function deleteFolderDescription(folderId: string): Promise<{ error: string | null }> {
+    const { user } = await getCurrentSession();
+
+    if (!user) {
+        return { error: "You must be logged in to delete a folder's description" };
+    }
+
+    await prisma.folder.update({
+        where: {
+            id: folderId,
+            createdBy: { id: user.id as string }
+        },
+        data: { description: null }
+    })
+
+    revalidatePath("/app/folders");
+    return { error: null }
+}
+
 export async function deleteFolder(folderId: string): Promise<any> {
     const { user } = await getCurrentSession();
 

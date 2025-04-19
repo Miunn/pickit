@@ -13,6 +13,8 @@ import { ImagesSortMethod } from "../folders/SortImages";
 import { UploadImagesForm } from "./UploadImagesForm";
 import EditDescriptionDialog from "../folders/EditDescriptionDialog";
 import { useSession } from "@/providers/SessionProvider";
+import { deleteFolderDescription } from "@/actions/folders";
+import DeleteDescriptionDialog from "../folders/DeleteDescriptionDialog";
 
 export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments, sortState: ImagesSortMethod }) => {
     const { user } = useSession();
@@ -66,9 +68,14 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                     )}>
                         <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>{folder.description}</p>
                         {folder.createdById === user?.id
-                            ? <EditDescriptionDialog folder={folder}>
-                                <Button variant="ghost" size="icon" className="absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300"><Pencil className={"w-4 h-4"} /></Button>
-                            </EditDescriptionDialog>
+                            ? <div className="flex flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
+                                <EditDescriptionDialog folder={folder}>
+                                    <Button variant="ghost" size="icon"><Pencil className={"w-4 h-4"} /></Button>
+                                </EditDescriptionDialog>
+                                <DeleteDescriptionDialog folder={folder}>
+                                    <Button variant="ghost" size="icon"><Trash2 className={"w-4 h-4"} /></Button>
+                                </DeleteDescriptionDialog>
+                            </div>
                             : null
                         }
                     </div>

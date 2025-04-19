@@ -692,6 +692,25 @@
           }
         }
       },
+      "deleteDescription": {
+        "title": "Supprimer la description",
+        "description": "Êtes-vous sûr de vouloir supprimer la description de {name} ? Cette action est irréversible.",
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Supprimer",
+          "submitting": "Suppression..."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de supprimer la description",
+            "description": "Une erreur inconnue est survenue lors de la suppression de la description"
+          }
+        },
+        "success": {
+          "title": "Description supprimée",
+          "description": "La description a été supprimée avec succès"
+        }
+      },
       "create": {
         "trigger": "Nouveau dossier",
         "title": "Créer un nouveau dossier",
@@ -1050,7 +1069,7 @@
           "description": {
             "label": "Description",
             "placeholder": "Entrez une description pour ce fichier",
-            "help": "Souvenez du contexte et de ce que représente cette {fileType}",
+            "help": "Rappelez-vous le contexte et ce que ce {fileType} représente",
             "fileType": {
               "image": "image",
               "video": "vidéo"
@@ -1071,6 +1090,25 @@
             "title": "Erreur",
             "description": "Une erreur s'est produite lors de la mise à jour de la description"
           }
+        }
+      },
+      "deleteDescription": {
+        "title": "Supprimer la description",
+        "description": "Êtes-vous sûr de vouloir supprimer la description de {name} ? Cette action est irréversible.",
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Supprimer",
+          "submitting": "Suppression..."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de supprimer la description",
+            "description": "Une erreur inconnue est survenue lors de la suppression de la description"
+          }
+        },
+        "success": {
+          "title": "Description supprimée",
+          "description": "La description a été supprimée avec succès"
         }
       }
     },
@@ -1671,10 +1709,71 @@
       "deleteMultiple": {
         "trigger": "Supprimer",
         "title": "Supprimer les images",
-        "description": "Êtes-vous sûr de vouloir supprimer {n} images ? Cette actions est irréversible.",
-        "submit": "Supprimer",
-        "submitting": "Suppression...",
-        "cancel": "Annuler"
+        "description": "Êtes-vous sûr de vouloir supprimer {n} images ? Cette action est irréversible.",
+        "actions": {
+          "submit": "Supprimer",
+          "submitting": "Suppression...",
+          "cancel": "Annuler"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de supprimer les images",
+            "description": "Une erreur inconnue est survenue lors de la suppression des images"
+          }
+        },
+        "success": {
+          "title": "Images supprimées",
+          "description": "{n, plural, zero {aucune image n'a été supprimée} one {# image a été supprimée} other {# images ont été supprimées}} avec succès"
+        }
+      },
+      "editDescription": {
+        "title": "Modifier la description",
+        "description": "Modifier la description de {name}",
+        "form": {
+          "description": {
+            "label": "Description",
+            "placeholder": "Entrez une description pour ce fichier",
+            "help": "Rappelez-vous le contexte et ce que ce {fileType} représente",
+            "fileType": {
+              "image": "image",
+              "video": "vidéo"
+            }
+          }
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Enregistrer",
+          "submitting": "Enregistrement..."
+        },
+        "success": {
+          "title": "Succès",
+          "description": "Description mise à jour avec succès"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Erreur",
+            "description": "Une erreur s'est produite lors de la mise à jour de la description"
+          }
+        }
+      },
+      "deleteDescription": {
+        "title": "Supprimer la description",
+        "description": "Êtes-vous sûr de vouloir supprimer la description de {name} ? Cette action est irréversible.",
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Supprimer",
+          "submitting": "Suppression..."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de supprimer la description",
+            "description": "Une erreur inconnue est survenue lors de la suppression de la description"
+          }
+        },
+        "success": {
+          "title": "Description supprimée",
+          "description": "La description a été supprimée avec succès"
+        }
       }
     }
   },
