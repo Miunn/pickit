@@ -27,8 +27,6 @@ export default function RenameImageDialog({ openState, setOpenState, file }: { o
 
     const t = useTranslations("dialogs.images.rename");
 
-    const [loading, setLoading] = useState(false);
-
     const form = useForm<z.infer<typeof CreateFolderFormSchema>>({
         resolver: zodResolver(CreateFolderFormSchema),
         defaultValues: {
@@ -36,34 +34,25 @@ export default function RenameImageDialog({ openState, setOpenState, file }: { o
         }
     });
 
-    function onSubmit(data: z.infer<typeof CreateFolderFormSchema>) {
-        setLoading(true);
-        renameImage(file.id, file.type, data).then(d => {
-            setLoading(false);
+    async function onSubmit(data: z.infer<typeof CreateFolderFormSchema>) {
+        const d = await renameImage(file.id, file.type, data);
 
-            if (d.error) {
-                toast({
-                    title: t('errors.unknown.title'),
-                    description: t('errors.unknown.description'),
-                    variant: "destructive"
-                });
-            }
-
-            form.reset();
-            toast({
-                title: t('success.title'),
-                description: t('success.description'),
-            });
-
-            setOpenState(false);
-        }).catch((r) => {
-            setLoading(false);
+        if (d.error) {
             toast({
                 title: t('errors.unknown.title'),
                 description: t('errors.unknown.description'),
                 variant: "destructive"
             });
+            return;
+        }
+
+        form.reset();
+        toast({
+            title: t('success.title'),
+            description: t('success.description'),
         });
+
+        setOpenState(false);
     }
 
     return (
@@ -94,7 +83,7 @@ export default function RenameImageDialog({ openState, setOpenState, file }: { o
                             <DialogClose asChild>
                                 <Button type={"button"} variant="outline">{t('actions.cancel')}</Button>
                             </DialogClose>
-                            {loading
+                            {form.formState.isSubmitting
                                 ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"} /> {t('actions.submitting')}</Button>
                                 : <Button type={"submit"}>{t('actions.submit')}</Button>
                             }

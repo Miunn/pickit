@@ -1045,7 +1045,7 @@
       "deleteMultiple": {
         "trigger": "Supprimer",
         "title": "Supprimer les images",
-        "description": "Êtes-vous sûr de vouloir supprimer {n} images ? Cette action est irréversible.",
+        "description": "Êtes-vous sûr de vouloir supprimer {n, plural, =1 {image} other {# images}} ? Cette action est irréversible.",
         "actions": {
           "submit": "Supprimer",
           "submitting": "Suppression...",
