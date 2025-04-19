@@ -964,11 +964,17 @@
           "label": "White balance"
         },
         "gps": {
+          "coordinates": {
+            "label": "GPS coordinates"
+          },
           "latitude": {
             "label": "Latitude"
           },
           "longitude": {
             "label": "Longitude"
+          },
+          "altitude": {
+            "label": "Altitude"
           }
         }
       },
