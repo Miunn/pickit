@@ -15,6 +15,7 @@ import RenameImageDialog from "./RenameImageDialog";
 import { changeFolderCover } from "@/actions/folders";
 import { CirclePlay } from "lucide-react";
 import LoadingImage from "../LoadingImage";
+import { useSession } from "@/providers/SessionProvider";
 
 export interface ImagePreviewProps {
     file: ImageWithFolder | VideoWithFolder;
@@ -35,6 +36,8 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect }: ImagePre
     const [openRename, setOpenRename] = React.useState(false);
     const [openProperties, setOpenProperties] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);
+
+    const { user } = useSession();
 
     return (
         <>
@@ -102,16 +105,22 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect }: ImagePre
                     <ContextMenuItem onClick={onClick}>
                         {t('actions.view')}
                     </ContextMenuItem>
-                    <ContextMenuItem onClick={onSelect}>
-                        {t('actions.select')}
-                    </ContextMenuItem>
+                    {file.createdById === user?.id
+                        ? <ContextMenuItem onClick={onSelect}>
+                            {t('actions.select')}
+                        </ContextMenuItem>
+                        : null
+                    }
                     <ContextMenuItem onClick={() => downloadClientImageHandler(file)}>
                         {t('actions.download')}
                     </ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenRename(true)}>
-                        {t('actions.rename')}
-                    </ContextMenuItem>
-                    {file.type === "image"
+                    {file.createdById === user?.id
+                        ? <ContextMenuItem onClick={() => setOpenRename(true)}>
+                            {t('actions.rename')}
+                        </ContextMenuItem>
+                        : null
+                    }
+                    {file.type === "image" && file.createdById === user?.id
                         ? <ContextMenuItem onClick={async () => {
                             if (file.type !== "image") {
                                 toast({
@@ -143,10 +152,15 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect }: ImagePre
                     <ContextMenuItem onClick={() => setOpenProperties(true)}>
                         {t('actions.properties')}
                     </ContextMenuItem>
-                    <ContextMenuSeparator />
-                    <ContextMenuItem onClick={() => setOpenDelete(true)} className="text-red-600 focus:text-red-600 font-semibold">
-                        {deleteTranslations('trigger')}
-                    </ContextMenuItem>
+                    {file.createdById === user?.id
+                        ? <>
+                            <ContextMenuSeparator />
+                            <ContextMenuItem onClick={() => setOpenDelete(true)} className="text-red-600 focus:text-red-600 font-semibold">
+                                {deleteTranslations('trigger')}
+                            </ContextMenuItem>
+                        </>
+                        : null
+                    }
                 </ContextMenuContent>
             </ContextMenu>
             <RenameImageDialog file={file} openState={openRename} setOpenState={setOpenRename} />

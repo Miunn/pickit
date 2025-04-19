@@ -1047,7 +1047,7 @@
       "deleteMultiple": {
         "trigger": "Delete",
         "title": "Delete images",
-        "description": "Are you sure you want to delete {n} images ? This action cannot be undone.",
+        "description": "Are you sure you want to delete {n, plural, =1 {image} other {# images}} ? This action cannot be undone.",
         "actions": {
           "submit": "Delete",
           "submitting": "Deleting...",

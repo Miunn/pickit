@@ -28,7 +28,7 @@ export const DeleteImageDialog = ({ file, children, open, setOpen }: { file: Ima
         <Dialog open={open} onOpenChange={setOpen}>
             {children
                 ? <DialogTrigger asChild>
-                    { children }
+                    {children}
                 </DialogTrigger>
                 : null
             }
@@ -41,37 +41,37 @@ export const DeleteImageDialog = ({ file, children, open, setOpen }: { file: Ima
                     <DialogClose asChild>
                         <Button variant="outline">{t('actions.cancel')}</Button>
                     </DialogClose>
-                    <Button onClick={() => {
+                    <Button onClick={async () => {
                         setDeleting(true);
-                        deleteImage(file.folderId, file.id, file.type, searchParams.get("share") || undefined, searchParams.get("h") || undefined, searchParams.get("t") || undefined).then(r => {
-                            setDeleting(false);
-                            if (r.error) {
-                                toast({
-                                    title: t('errors.unknown.title'),
-                                    description: t('errors.unknown.description'),
-                                    variant: "destructive"
-                                });
-                                return
-                            }
-
-                            if (setOpen) {
-                                setOpen(false);
-                            }
+                        const r = await deleteImage(file.folderId, file.id, file.type, searchParams.get("share") || undefined, searchParams.get("h") || undefined, searchParams.get("t") || undefined);
+                        setDeleting(false);
+                        
+                        if (r.error) {
                             toast({
-                                title: t('success.title'),
-                                description: t('success.description'),
+                                title: t('errors.unknown.title'),
+                                description: t('errors.unknown.description'),
+                                variant: "destructive"
                             });
-                        })
+                            return
+                        }
+
+                        if (setOpen) {
+                            setOpen(false);
+                        }
+                        toast({
+                            title: t('success.title'),
+                            description: t('success.description'),
+                        });
                     }} disabled={deleting} variant={"destructive"}>{
-                            deleting ? (
-                                <>
-                                    <Loader2 className={"animate-spin mr-2"} /> {t('actions.submitting')}
-                                </>
-                            )
-                                : t('actions.submit')
-                        }</Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+                        deleting ? (
+                            <>
+                                <Loader2 className={"animate-spin mr-2"} /> {t('actions.submitting')}
+                            </>
+                        )
+                            : t('actions.submit')
+                    }</Button>
+            </DialogFooter>
+        </DialogContent>
+        </Dialog >
     )
 }

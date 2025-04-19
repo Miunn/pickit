@@ -42,7 +42,7 @@ export const DeleteMultipleImagesDialog = ({ images, open, setOpen, onDelete }: 
                     <DialogClose asChild>
                         <Button variant="outline">{t('actions.cancel')}</Button>
                     </DialogClose>
-                    <Button onClick={() => {
+                    <Button onClick={async () => {
                         if (validImages.length === 0) {
                             toast({
                                 title: t('errors.noImages.title'),
@@ -53,36 +53,25 @@ export const DeleteMultipleImagesDialog = ({ images, open, setOpen, onDelete }: 
                         }
 
                         setDeleting(true);
-                        deleteImages(validImages)
-                            .then(r => {
-                                if (r.error) {
-                                    toast({
-                                        title: t('errors.unknown.title'),
-                                        description: t('errors.unknown.description'),
-                                        variant: "destructive"
-                                    });
-                                    setDeleting(false);
-                                    return;
-                                }
+                        const r = await deleteImages(validImages);
+                        setDeleting(false);
 
-                                onDelete();
-                                setDeleting(false);
-                                setOpen(false);
-
-                                toast({
-                                    title: t('success.title'),
-                                    description: t('success.description', { n: validImages.length }),
-                                });
-                            })
-                            .catch(error => {
-                                console.error("Error deleting images:", error);
-                                toast({
-                                    title: t('errors.unknown.title'),
-                                    description: t('errors.unknown.description'),
-                                    variant: "destructive"
-                                });
-                                setDeleting(false);
+                        if (r.error) {
+                            toast({
+                                title: t('errors.unknown.title'),
+                                description: t('errors.unknown.description'),
+                                variant: "destructive"
                             });
+                            return;
+                        }
+
+                        onDelete();
+                        setOpen(false);
+
+                        toast({
+                            title: t('success.title'),
+                            description: t('success.description', { n: validImages.length }),
+                        });
                     }} disabled={deleting || validImages.length === 0} variant={"destructive"}>{
                             deleting ? (
                                 <>
