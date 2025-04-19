@@ -62,7 +62,7 @@ export default function FullScreenImageCarousel({
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
-            <DialogContent className="w-screen h-screen max-w-none max-h-none p-0 border-none bg-transparent overflow-hidden" closeButton={<Cross2Icon className="size-7 bg-gray-600 text-white rounded-md p-1" />}>
+            <DialogContent className="w-dvw h-dvh max-w-none max-h-none p-0 border-none bg-transparent overflow-hidden" closeButton={<Cross2Icon className="size-7 bg-gray-600 text-white rounded-md p-1" />}>
                 <div className="fixed inset-0 bg-black/90 flex items-center justify-center">
                     <Carousel className="w-full h-full" opts={{
                         align: "center",
@@ -74,9 +74,9 @@ export default function FullScreenImageCarousel({
                                 <CarouselItem key={file.id} className="h-full">
                                     <div className="relative h-full w-full flex justify-center items-center p-2">
                                         {'type' in file && file.type === 'video'
-                                            ? <video className="h-full w-full max-h-screen object-contain" controls src={`/api/folders/${file.folder.id}/videos/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} />
+                                            ? <video className="h-full w-full max-h-dvh object-contain" controls src={`/api/folders/${file.folder.id}/videos/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} />
                                             : <LoadingImage src={`/api/folders/${file.folder.id}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
-                                                alt={file.name} className="h-full w-full max-h-screen object-contain" width={1920} height={1080} spinnerClassName="w-10 h-10 text-primary" />
+                                                alt={file.name} className="h-full w-full max-h-dvh object-contain" width={1920} height={1080} spinnerClassName="w-10 h-10 text-primary" />
                                         }
                                     </div>
                                 </CarouselItem>
