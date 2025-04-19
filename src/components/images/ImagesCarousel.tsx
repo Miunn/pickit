@@ -118,7 +118,7 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                 <CarouselContent className="h-fit">
                     {files.map((file) => (
                         <CarouselItem key={file.id} className="h-fit">
-                            <div className={`${commentSectionOpen ? "h-44" : "h-96"} flex justify-center items-center p-2 transition-all duration-300 ease-in-out`}>
+                            <div className={`${commentSectionOpen ? "h-44" : "h-96"} relative flex justify-center items-center p-2 transition-all duration-300 ease-in-out`}>
                                 {'type' in file && file.type === 'video'
                                     ? <video className={`${commentSectionOpen ? "h-44" : "h-96"} max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out`} controls src={`/api/folders/${file.folder.id}/videos/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} />
                                     : <LoadingImage src={`/api/folders/${file.folder.id}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
