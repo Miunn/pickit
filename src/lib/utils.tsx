@@ -27,6 +27,26 @@ export function formatBytes(
 	return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${sizeType === "accurate" ? accurateSizes[i] ?? "Bytest" : sizes[i] ?? "B"}`
 }
 
+export const convertDDtoDMS = (dd: number): { degrees: number, minutes: number, seconds: number } => {
+	const abs = Math.abs(dd);
+	const degrees = Math.floor(abs);
+	const minutes = Math.floor((abs - degrees) * 60);
+	const seconds = Math.floor((abs - degrees - minutes / 60) * 3600);
+
+	return { degrees, minutes, seconds };
+}
+
+export const getDMSstringWithDirection = (degrees: number, minutes: number, seconds: number, direction: "N" | "S" | "E" | "W"): string => {
+	return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+}
+
+export const getCoordinatesString = (latitude: number, longitude: number): string => {
+	const latitudeDMS = convertDDtoDMS(latitude);
+	const longitudeDMS = convertDDtoDMS(longitude);
+
+	return `${getDMSstringWithDirection(latitudeDMS.degrees, latitudeDMS.minutes, latitudeDMS.seconds, latitude < 0 ? "S" : "N")}, ${getDMSstringWithDirection(longitudeDMS.degrees, longitudeDMS.minutes, longitudeDMS.seconds, longitude < 0 ? "W" : "E")}`;
+}
+
 export const switchLocaleUrl = (url: string, locale: string): string => {
 	// Remove the locale from the url
 	url = url.replace(/\/[a-z]{2}\/?/, "/");

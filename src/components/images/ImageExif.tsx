@@ -7,6 +7,9 @@ import { useSearchParams } from "next/navigation";
 import { Label } from "../ui/label";
 import { useTranslations } from "next-intl";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import Link from "next/link";
+import { MapPin } from "lucide-react";
+import { getCoordinatesString, getDMSstringWithDirection } from "@/lib/utils";
 
 export default function ImageExif({ children, image }: { children: React.ReactNode, image: ImageWithFolder }) {
     const searchParams = useSearchParams();
@@ -263,7 +266,44 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                         </TooltipProvider>
                     </div>
                     <div>
-                        <Label>{t('gps.latitude.label')}</Label>
+                        <Label>{t('gps.altitude.label')}</Label>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <p className="truncate">{exifData.Altitude || t('noData')}</p>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{exifData.Altitude || t('noData')}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </div>
+                    <div className="col-span-2">
+                        <Label>{t('gps.coordinates.label')}</Label>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    {exifData.latitude && exifData.longitude
+                                        ? <Link href={`https://www.google.com/maps/search/?api=1&query=${exifData.latitude},${exifData.longitude}`} target="_blank" className="flex items-center gap-2 hover:underline hover:underline-offset-1">
+                                            {getCoordinatesString(exifData.latitude, exifData.longitude)} <MapPin className="w-4 h-4" />
+                                        </Link>
+                                        : t('noData')
+                                    }
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{exifData.latitude && exifData.longitude ? getCoordinatesString(exifData.latitude, exifData.longitude) : t('noData')}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                        {/* <Label className="flex items-center justify-between gap-2">
+                            {t('gps.latitude.label')}
+                            {exifData.latitude && exifData.longitude
+                                ? <Link href={`https://www.google.com/maps/search/?api=1&query=${exifData.latitude},${exifData.longitude}`} target="_blank">
+                                    <MapPin className="w-4 h-4" />
+                                </Link>
+                                : null
+                            }
+                        </Label>
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger asChild>
@@ -276,7 +316,15 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                         </TooltipProvider>
                     </div>
                     <div>
-                        <Label>{t('gps.longitude.label')}</Label>
+                        <Label className="flex items-center justify-between gap-2">
+                            {t('gps.longitude.label')}
+                            {exifData.latitude && exifData.longitude
+                                ? <Link href={`https://www.google.com/maps/search/?api=1&query=${exifData.latitude},${exifData.longitude}`} target="_blank">
+                                    <MapPin className="w-4 h-4" />
+                                </Link>
+                                : null
+                            }
+                        </Label>
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger asChild>
@@ -286,10 +334,8 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                                     <p>{exifData.longitude || t('noData')}</p>
                                 </TooltipContent>
                             </Tooltip>
-                        </TooltipProvider>
+                        </TooltipProvider> */}
                     </div>
-
-
                 </div>
 
                 <DialogFooter>

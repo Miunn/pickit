@@ -963,11 +963,17 @@
           "label": "Balance des blancs"
         },
         "gps": {
+          "coordinates": {
+            "label": "Coordonnées GPS"
+          },
           "latitude": {
             "label": "Latitude"
           },
           "longitude": {
             "label": "Longitude"
+          },
+          "altitude": {
+            "label": "Altitude"
           }
         }
       },
