@@ -11,10 +11,12 @@ export default function LoadingImage({ spinnerClassName, ...imageProps }: Loadin
     const [isLoading, setIsLoading] = useState(true);
     return (
         <>
-            {isLoading && <Loader2 className={cn(spinnerClassName, "animate-spin")} />}
+            <div className={cn("absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2", spinnerClassName)}>
+                {isLoading && <Loader2 className={cn(spinnerClassName, "animate-spin")} />}
+            </div>
             <Image
                 {...imageProps}
-                onLoadingComplete={() => setIsLoading(false)}
+                onLoad={() => setIsLoading(false)}
             />
         </>
     )
