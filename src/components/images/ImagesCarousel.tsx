@@ -17,7 +17,7 @@ import { useSession } from "@/providers/SessionProvider";
 import LoadingImage from "../LoadingImage";
 import FullScreenImageCarousel from "./FullScrenImageCarousel";
 
-export default function ImagesCarousel({ files, startIndex }: { files: ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[], startIndex: number }) {
+export default function ImagesCarousel({ files, startIndex, currentIndex, setCurrentIndex }: { files: ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[], startIndex: number, currentIndex?: number, setCurrentIndex?: React.Dispatch<React.SetStateAction<number>> }) {
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
@@ -29,7 +29,10 @@ export default function ImagesCarousel({ files, startIndex }: { files: ((ImageWi
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
     const [count, setCount] = useState(files.length);
 
-    const [currentIndex, setCurrentIndex] = useState<number>(startIndex);
+    const [internalCurrentIndex, setInternalCurrentIndex] = useState<number>(startIndex);
+    const currentIndexState = currentIndex ?? internalCurrentIndex;
+    const setCurrentIndexState = setCurrentIndex ?? setInternalCurrentIndex;
+
     const [downloading, setDownloading] = useState<boolean>(false);
     const [copied, setCopied] = useState<boolean>(false);
 
@@ -39,43 +42,43 @@ export default function ImagesCarousel({ files, startIndex }: { files: ((ImageWi
         if (!carouselApi) return;
 
         setCount(carouselApi.scrollSnapList().length);
-        setCurrentIndex(carouselApi.selectedScrollSnap() + 1);
+        setCurrentIndexState(carouselApi.selectedScrollSnap() + 1);
 
         carouselApi.on("select", () => {
-            setCurrentIndex(carouselApi.selectedScrollSnap() + 1);
+            setCurrentIndexState(carouselApi.selectedScrollSnap() + 1);
         })
-    }, [carouselApi, setCurrentIndex]);
+    }, [carouselApi, setCurrentIndexState]);
 
     return (
         <div className={"w-full overflow-hidden p-2 mx-auto"}>
             <div className="max-w-full flex justify-between items-center mb-2 gap-2 px-2">
                 <p className="font-semibold truncate">{
-                    currentIndex == 0
-                        ? files[currentIndex]?.name
-                        : files[currentIndex - 1]?.name
+                    currentIndexState == 0
+                        ? files[currentIndexState]?.name
+                        : files[currentIndexState - 1]?.name
                 }</p>
                 <div className="flex gap-2">
-                    <FullScreenImageCarousel files={files} defaultIndex={currentIndex - 1} parentCarouselApi={carouselApi}>
+                    <FullScreenImageCarousel files={files} defaultIndex={currentIndexState - 1} parentCarouselApi={carouselApi}>
                         <Button variant={"outline"} size={"icon"} type="button">
                             <Expand className="w-4 h-4" />
                         </Button>
                     </FullScreenImageCarousel>
                     <Button variant={"outline"} size={"icon"} type="button" asChild>
-                        <Link href={`/api/folders/${files.at(currentIndex - 1)?.folderId}/images/${files.at(currentIndex - 1)?.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} target="_blank">
+                        <Link href={`/api/folders/${files.at(currentIndexState - 1)?.folderId}/images/${files.at(currentIndexState - 1)?.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} target="_blank">
                             <ExternalLink className="w-4 h-4" />
                         </Link>
                     </Button>
                     <Button variant={"outline"} size={"icon"} type="button" onClick={async () => {
                         setDownloading(true);
-                        await downloadClientImageHandler(files.at(currentIndex - 1) as ImageWithFolder | VideoWithFolder);
+                        await downloadClientImageHandler(files.at(currentIndexState - 1) as ImageWithFolder | VideoWithFolder);
                         setDownloading(false);
                     }} disabled={downloading}>
                         {downloading
                             ? <Loader2 className="w-4 h-4 animate-spin" />
                             : <Download className="w-4 h-4" />}
                     </Button>
-                    <Button className={files.at(currentIndex - 1)?.type === "video" ? "hidden" : ""} variant={"outline"} size={"icon"} type="button" onClick={async () => {
-                        if (files.at(currentIndex - 1)?.type === "video") {
+                    <Button className={files.at(currentIndexState - 1)?.type === "video" ? "hidden" : ""} variant={"outline"} size={"icon"} type="button" onClick={async () => {
+                        if (files.at(currentIndexState - 1)?.type === "video") {
                             toast({
                                 title: t('actions.copy.errors.video-copy-unavailable.title'),
                                 description: t('actions.copy.errors.video-copy-unavailable.description'),
@@ -83,7 +86,7 @@ export default function ImagesCarousel({ files, startIndex }: { files: ((ImageWi
                             });
                             return;
                         }
-                        await copyImageToClipboard(files.at(currentIndex - 1)?.folderId || '', files.at(currentIndex - 1)?.id || '', shareToken || '', shareHashPin || '', tokenType);
+                        await copyImageToClipboard(files.at(currentIndexState - 1)?.folderId || '', files.at(currentIndexState - 1)?.id || '', shareToken || '', shareHashPin || '', tokenType);
 
                         setCopied(true);
                         toast({
@@ -100,7 +103,7 @@ export default function ImagesCarousel({ files, startIndex }: { files: ((ImageWi
                             ? <Check className="w-4 h-4" />
                             : <Copy className="w-4 h-4" />}
                     </Button>
-                    <ImageExif image={files[currentIndex === 0 ? currentIndex : currentIndex - 1]}>
+                    <ImageExif image={files[currentIndexState === 0 ? currentIndexState : currentIndexState - 1]}>
                         <Button variant={"outline"} size={"icon"} type="button">
                             <Braces className="w-4 h-4" />
                         </Button>
@@ -130,32 +133,32 @@ export default function ImagesCarousel({ files, startIndex }: { files: ((ImageWi
             </Carousel>
             <div className="w-full grid grid-cols-2 items-center px-2">
                 <p className="truncate">
-                    {currentIndex == 0
-                        ? files[currentIndex]?.folder.name
-                        : files[currentIndex - 1]?.folder.name}
+                    {currentIndexState == 0
+                        ? files[currentIndexState]?.folder.name
+                        : files[currentIndexState - 1]?.folder.name}
                 </p>
                 <p className="text-sm text-muted-foreground text-nowrap text-end justify-self-end">
                     <span>{
-                        currentIndex == 0
-                            ? `${files[currentIndex]?.width}x${files[currentIndex]?.height}`
-                            : `${files[currentIndex - 1]?.width}x${files[currentIndex - 1]?.height}`
+                        currentIndexState == 0
+                            ? `${files[currentIndexState]?.width}x${files[currentIndexState]?.height}`
+                            : `${files[currentIndexState - 1]?.width}x${files[currentIndexState - 1]?.height}`
                     }</span> - <span>{
-                        currentIndex == 0
-                            ? `${formatBytes(files[currentIndex]?.size, { decimals: 2 })}`
-                            : `${formatBytes(files[currentIndex - 1]?.size, { decimals: 2 })}`
-                    }</span> - <span>{t('slide', { current: currentIndex, total: count })}</span>
+                        currentIndexState == 0
+                            ? `${formatBytes(files[currentIndexState]?.size, { decimals: 2 })}`
+                            : `${formatBytes(files[currentIndexState - 1]?.size, { decimals: 2 })}`
+                    }</span> - <span>{t('slide', { current: currentIndexState, total: count })}</span>
                 </p>
             </div>
 
             <div className="w-full px-2 py-2 flex justify-between items-start gap-4">
-                <p className={cn("text-sm text-muted-foreground flex-1 whitespace-pre-wrap line-clamp-5", files[currentIndex === 0 ? currentIndex : currentIndex - 1].description ? "" : "italic")}>
-                    {files[currentIndex === 0 ? currentIndex : currentIndex - 1].description || t('noDescription')}
+                <p className={cn("text-sm text-muted-foreground flex-1 whitespace-pre-wrap line-clamp-5", files[currentIndexState === 0 ? currentIndexState : currentIndexState - 1].description ? "" : "italic")}>
+                    {files[currentIndexState === 0 ? currentIndexState : currentIndexState - 1].description || t('noDescription')}
                 </p>
 
-                {user?.role.includes(Role.ADMIN) || user?.id === files[currentIndex === 0 ? currentIndex : currentIndex - 1].folder.createdById
-                    ? <EditDescriptionDialog file={files[currentIndex === 0 ? currentIndex : currentIndex - 1]}>
-                    <Button variant={"outline"} size={"icon"} type="button">
-                        <Pencil className="w-4 h-4" />
+                {user?.role.includes(Role.ADMIN) || user?.id === files[currentIndexState === 0 ? currentIndexState : currentIndexState - 1].folder.createdById
+                    ? <EditDescriptionDialog file={files[currentIndexState === 0 ? currentIndexState : currentIndexState - 1]}>
+                        <Button variant={"outline"} size={"icon"} type="button">
+                            <Pencil className="w-4 h-4" />
                         </Button>
                     </EditDescriptionDialog>
                     : null}
@@ -165,7 +168,7 @@ export default function ImagesCarousel({ files, startIndex }: { files: ((ImageWi
                 className="py-2 transition-all duration-1000 ease-in-out"
                 open={commentSectionOpen}
                 setOpen={setCommentSectionOpen}
-                file={files[currentIndex === 0 ? currentIndex : currentIndex - 1]}
+                file={files[currentIndexState === 0 ? currentIndexState : currentIndexState - 1]}
             />
         </div>
     )
