@@ -3,7 +3,6 @@
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
@@ -52,7 +51,14 @@ export default function EditDescriptionDialog({
     };
 
     return (
-        <Dialog open={openState} onOpenChange={setOpenState}>
+        <Dialog open={openState} onOpenChange={(open) => {
+            setOpenState(open);
+            if (!open) {
+                form.reset({
+                    description: ""
+                });
+            }
+        }}>
             {children && (
                 <DialogTrigger asChild>
                     {children}
