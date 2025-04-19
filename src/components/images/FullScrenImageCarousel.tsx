@@ -84,7 +84,7 @@ export default function FullScreenImageCarousel({
                         </CarouselContent>
                         <div className="absolute inset-0 flex items-center justify-between pointer-events-none">
                             <div 
-                                className="pointer-events-auto w-1/5 md:w-1/4 h-full flex items-center justify-start pl-14"
+                                className="pointer-events-auto w-1/5 md:w-1/4 h-full flex items-center justify-start pl-10 md:pl-14"
                                 onMouseEnter={() => setShowLeftNav(true)}
                                 onMouseLeave={() => setShowLeftNav(false)}
                             >
@@ -93,7 +93,7 @@ export default function FullScreenImageCarousel({
                                 </div>
                             </div>
                             <div 
-                                className="pointer-events-auto w-1/5 md:w-1/4 h-full flex items-center justify-end pr-14"
+                                className="pointer-events-auto w-1/5 md:w-1/4 h-full flex items-center justify-end pr-10 md:pr-14"
                                 onMouseEnter={() => setShowRightNav(true)}
                                 onMouseLeave={() => setShowRightNav(false)}
                             >
