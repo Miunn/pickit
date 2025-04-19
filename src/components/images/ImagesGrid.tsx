@@ -60,7 +60,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                 : null
             }
             <div className={cn(
-                concatImagesVideos.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-[repeat(auto-fill,16rem)] gap-3 mx-auto",
+                concatImagesVideos.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,16rem)] gap-3 mx-auto",
             )}>
                 {folder.description
                     ? <div className={cn("w-full lg:max-w-64 max-h-[200px] relative group overflow-auto",
