@@ -666,6 +666,52 @@
           "description": "The folder's cover has been changed successfully"
         }
       },
+      "editDescription": {
+        "trigger": "Edit description",
+        "title": "Edit folder's description",
+        "description": "Change the description for {folder}",
+        "form": {
+          "description": {
+            "label": "Description",
+            "placeholder": "This is a description",
+            "description": "The description will be displayed next to the uploaded images and videos"
+          }
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Save",
+          "submitting": "Saving"
+        },
+        "success": {
+          "title": "Folder's description changed",
+          "description": "The folder's description has been changed successfully"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't change folder's description",
+            "description": "An unknown error happened while changing the folder's description"
+          }
+        }
+      },
+      "deleteDescription": {
+        "title": "Delete description",
+        "description": "Are you sure you want to delete the description for {name}? This action cannot be undone.",
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Delete",
+          "submitting": "Deleting..."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't delete description",
+            "description": "An unknown error happened while deleting the description"
+          }
+        },
+        "success": {
+          "title": "Description deleted",
+          "description": "The description has been deleted successfully"
+        }
+      },
       "properties": {
         "title": "Folder properties",
         "description": "Properties of {name}",
@@ -1047,6 +1093,25 @@
             "description": "An error occurred while updating the description"
           }
         }
+      },
+      "deleteDescription": {
+        "title": "Delete Description",
+        "description": "Are you sure you want to delete the description for {name}? This action cannot be undone.",
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Delete",
+          "submitting": "Deleting..."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't delete description",
+            "description": "An unknown error happened while deleting the description"
+          }
+        },
+        "success": {
+          "title": "Description deleted",
+          "description": "The description has been deleted successfully"
+        }
       }
     },
     "accessTokens": {
@@ -1410,6 +1475,7 @@
   "folders": {
     "sharedBy": "Shared by {name}",
     "filesCount": "{count, plural, one {# file} other {# files}}",
+    "addDescription": "Add a description",
     "page": {
       "title": "Folders",
       "subtitle": "Your created folders"

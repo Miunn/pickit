@@ -75,6 +75,9 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
     return (
         <>
             <div className="flex items-center justify-between py-4">
+                <div>
+                    <p className="text-sm truncate">{folder.description}</p>
+                </div>
                 <div className="ml-auto flex items-center gap-2">
                     <p className="text-sm">
                         {t('page.label', { 

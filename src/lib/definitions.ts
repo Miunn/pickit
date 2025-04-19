@@ -58,6 +58,10 @@ export const RenameFolderFormSchema = z.object({
     }).max(255),
 });
 
+export const EditFolderDescriptionFormSchema = z.object({
+    description: z.string()
+});
+
 export const UploadImagesFormSchema = z.object({
     images: typeof window === 'undefined'
         ? z.any().refine((file) => {

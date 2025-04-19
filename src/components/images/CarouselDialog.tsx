@@ -14,17 +14,16 @@ export const CarouselDialog = ({ files, title, carouselOpen, setCarouselOpen, st
     startIndex: number
 }) => {
     const t = useTranslations("dialogs.images.carousel");
-    const [current, setCurrent] = useState<number>(startIndex);
 
     return (
         <Dialog open={carouselOpen} onOpenChange={setCarouselOpen}>
             <DialogContent className={"w-full max-w-3xl"}>
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
-                    {/* <DialogDescription>{t('description')}</DialogDescription> */}
+                    <DialogDescription>{t('description')}</DialogDescription>
                 </DialogHeader>
 
-                <ImagesCarousel files={files} startIndex={startIndex} currentIndex={current} setCurrentIndex={setCurrent} />
+                <ImagesCarousel files={files} startIndex={startIndex} />
             </DialogContent>
         </Dialog>
     )

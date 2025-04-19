@@ -3,11 +3,11 @@ import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, Car
 import { ImageWithComments, ImageWithFolder, VideoWithComments, VideoWithFolder } from "@/lib/definitions";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { Braces, Check, Copy, ExternalLink, Pencil } from "lucide-react";
+import { Braces, Check, Copy, Download, Expand, ExternalLink, Loader2, Pencil } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
-import { cn, copyImageToClipboard, formatBytes } from "@/lib/utils";
+import { cn, copyImageToClipboard, downloadClientImageHandler, formatBytes } from "@/lib/utils";
 import ImageCommentSection from "./ImageCommentSection";
 import { useSearchParams } from "next/navigation";
 import ImageExif from "./ImageExif";
@@ -15,8 +15,9 @@ import EditDescriptionDialog from "./EditDescriptionDialog";
 import { Role } from "@prisma/client";
 import { useSession } from "@/providers/SessionProvider";
 import LoadingImage from "../LoadingImage";
+import FullScreenImageCarousel from "./FullScrenImageCarousel";
 
-export default function ImagesCarousel({ files, startIndex, currentIndex, setCurrentIndex }: { files: ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>> }) {
+export default function ImagesCarousel({ files, startIndex }: { files: ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[], startIndex: number }) {
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
@@ -28,6 +29,8 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
     const [count, setCount] = useState(files.length);
 
+    const [currentIndex, setCurrentIndex] = useState<number>(startIndex);
+    const [downloading, setDownloading] = useState<boolean>(false);
     const [copied, setCopied] = useState<boolean>(false);
 
     const [commentSectionOpen, setCommentSectionOpen] = useState<boolean>(false);
@@ -52,15 +55,24 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                         : files[currentIndex - 1]?.name
                 }</p>
                 <div className="flex gap-2">
-                    <ImageExif image={files[currentIndex === 0 ? currentIndex : currentIndex - 1]}>
+                    <FullScreenImageCarousel files={files} defaultIndex={currentIndex - 1} parentCarouselApi={carouselApi}>
                         <Button variant={"outline"} size={"icon"} type="button">
-                            <Braces className="w-4 h-4" />
+                            <Expand className="w-4 h-4" />
                         </Button>
-                    </ImageExif>
+                    </FullScreenImageCarousel>
                     <Button variant={"outline"} size={"icon"} type="button" asChild>
                         <Link href={`/api/folders/${files.at(currentIndex - 1)?.folderId}/images/${files.at(currentIndex - 1)?.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} target="_blank">
                             <ExternalLink className="w-4 h-4" />
                         </Link>
+                    </Button>
+                    <Button variant={"outline"} size={"icon"} type="button" onClick={async () => {
+                        setDownloading(true);
+                        await downloadClientImageHandler(files.at(currentIndex - 1) as ImageWithFolder | VideoWithFolder);
+                        setDownloading(false);
+                    }} disabled={downloading}>
+                        {downloading
+                            ? <Loader2 className="w-4 h-4 animate-spin" />
+                            : <Download className="w-4 h-4" />}
                     </Button>
                     <Button className={files.at(currentIndex - 1)?.type === "video" ? "hidden" : ""} variant={"outline"} size={"icon"} type="button" onClick={async () => {
                         if (files.at(currentIndex - 1)?.type === "video") {
@@ -88,6 +100,11 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                             ? <Check className="w-4 h-4" />
                             : <Copy className="w-4 h-4" />}
                     </Button>
+                    <ImageExif image={files[currentIndex === 0 ? currentIndex : currentIndex - 1]}>
+                        <Button variant={"outline"} size={"icon"} type="button">
+                            <Braces className="w-4 h-4" />
+                        </Button>
+                    </ImageExif>
                 </div>
             </div>
             <Carousel className="w-full h-fit mx-auto max-w-xl mb-2" opts={{

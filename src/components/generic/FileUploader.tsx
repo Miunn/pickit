@@ -237,9 +237,9 @@ export const FileUploader = (props: FileUploaderProps) => {
                                     <p className="font-medium text-muted-foreground">
                                         {t('title')}
                                     </p>
-                                    <p className="text-sm text-muted-foreground/70">
+                                    {/* <p className="text-sm text-muted-foreground/70">
                                         {t('description', {count: maxFileCount, maxSize: formatBytes(maxSize)})}
-                                    </p>
+                                    </p> */}
                                 </div>
                             </div>
                         )}
