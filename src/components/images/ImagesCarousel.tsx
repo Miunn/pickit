@@ -17,7 +17,7 @@ import { useSession } from "@/providers/SessionProvider";
 import LoadingImage from "../LoadingImage";
 import FullScreenImageCarousel from "./FullScrenImageCarousel";
 
-export default function ImagesCarousel({ files, startIndex, currentIndex, setCurrentIndex }: { files: ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[], startIndex: number, currentIndex: number, setCurrentIndex: React.Dispatch<React.SetStateAction<number>> }) {
+export default function ImagesCarousel({ files, startIndex }: { files: ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[], startIndex: number }) {
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
@@ -29,6 +29,7 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
     const [count, setCount] = useState(files.length);
 
+    const [currentIndex, setCurrentIndex] = useState<number>(startIndex);
     const [downloading, setDownloading] = useState<boolean>(false);
     const [copied, setCopied] = useState<boolean>(false);
 
@@ -54,7 +55,7 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                         : files[currentIndex - 1]?.name
                 }</p>
                 <div className="flex gap-2">
-                    <FullScreenImageCarousel files={files} defaultIndex={currentIndex - 1}>
+                    <FullScreenImageCarousel files={files} defaultIndex={currentIndex - 1} parentCarouselApi={carouselApi}>
                         <Button variant={"outline"} size={"icon"} type="button">
                             <Expand className="w-4 h-4" />
                         </Button>

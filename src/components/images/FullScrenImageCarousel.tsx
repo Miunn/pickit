@@ -12,36 +12,50 @@ export default function FullScreenImageCarousel({
     defaultIndex,
     children,
     open, 
-    setOpen 
+    setOpen,
+    parentCarouselApi
 }: { 
     files: ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[],
-    defaultIndex?: number,
+    defaultIndex: number,
     children?: React.ReactNode,
     open?: boolean,
-    setOpen?: React.Dispatch<React.SetStateAction<boolean>>
+    setOpen?: React.Dispatch<React.SetStateAction<boolean>>,
+    parentCarouselApi?: CarouselApi
 }) {
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
     const tokenType = searchParams.get("t") === "p" ? "personAccessToken" : "accessToken";
-    const [currentIndex, setCurrentIndex] = useState(defaultIndex ?? 0);
-    const [carouselApi, setCarouselApi] = useState<CarouselApi>();
     const t = useTranslations("dialogs.images.carousel");
+    const [carouselApi, setCarouselApi] = useState<CarouselApi>();
 
+    // Simple one-way sync from parent to fullscreen
     useEffect(() => {
-        if (!carouselApi) return;
+        if (!carouselApi || !parentCarouselApi) return;
+        
+        const handleParentSelect = () => {
+            const selectedIndex = parentCarouselApi.selectedScrollSnap();
+            carouselApi.scrollTo(selectedIndex);
+        };
+        
+        parentCarouselApi.on("select", handleParentSelect);
+        
+        return () => {
+            parentCarouselApi.off("select", handleParentSelect);
+        };
+    }, [carouselApi, parentCarouselApi]);
 
-        // Force scroll to the desired index
-        carouselApi.scrollTo(defaultIndex ?? 0, true);
-        setCurrentIndex(defaultIndex ?? 0);
-
-        carouselApi.on("select", () => {
-            setCurrentIndex(carouselApi.selectedScrollSnap());
-        });
-    }, [carouselApi, defaultIndex]);
-    
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={(open) => {
+            if (setOpen) {
+                setOpen(open);
+            }
+
+            if (!open) {
+                console.log("closing, syncing parent", carouselApi?.selectedScrollSnap());
+                parentCarouselApi?.scrollTo(carouselApi?.selectedScrollSnap() ?? 0);
+            }
+        }}>
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
@@ -52,8 +66,8 @@ export default function FullScreenImageCarousel({
                         opts={{
                             align: "center",
                             loop: true,
-                            startIndex: defaultIndex ?? 0,
-                            skipSnaps: false
+                            skipSnaps: false,
+                            startIndex: defaultIndex ?? 0
                         }}
                         setApi={setCarouselApi}
                     >
