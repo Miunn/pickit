@@ -60,7 +60,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                 : null
             }
             <div className={cn(
-                concatImagesVideos.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-[repeat(auto-fill,16rem)] gap-3 mx-auto",
+                concatImagesVideos.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,16rem)] gap-3 mx-auto",
             )}>
                 {folder.description
                     ? <div className={cn("w-full lg:max-w-64 max-h-[200px] relative group overflow-auto",
@@ -68,7 +68,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                     )}>
                         <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>{folder.description}</p>
                         {folder.createdById === user?.id
-                            ? <div className="flex flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
+                            ? <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
                                 <EditDescriptionDialog folder={folder}>
                                     <Button variant="ghost" size="icon"><Pencil className={"w-4 h-4"} /></Button>
                                 </EditDescriptionDialog>
