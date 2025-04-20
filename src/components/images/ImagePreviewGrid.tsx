@@ -16,6 +16,7 @@ import { changeFolderCover } from "@/actions/folders";
 import { CirclePlay } from "lucide-react";
 import LoadingImage from "../LoadingImage";
 import { useSession } from "@/providers/SessionProvider";
+import { useDraggable } from "@dnd-kit/core";
 
 export interface ImagePreviewProps {
     file: ImageWithFolder | VideoWithFolder;
@@ -39,11 +40,17 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect }: ImagePre
 
     const { user } = useSession();
 
+    const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: file.id });
+    
+    const style = transform ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+    } : undefined;
+
     return (
         <>
             <ContextMenu key={file.id} modal={false}>
                 <ContextMenuTrigger asChild>
-                    <button onClick={onClick} style={{ all: "unset", cursor: "pointer" }}>
+                    <button ref={setNodeRef} onClick={onClick} className="unset cursor-pointer" style={style} {...listeners} {...attributes}>
                         <div className={`inline-block w-64 rounded-2xl ${selected.includes(file.id) ? "bg-accent" : ""}`}>
                             <div className={`${selected.includes(file.id) ? "scale-95" : ""}`}>
                                 <div className={`relative h-36 mb-4 flex justify-center items-center group`}>
