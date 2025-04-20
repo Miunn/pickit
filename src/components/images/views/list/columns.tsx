@@ -13,28 +13,29 @@ import ImagePropertiesDialog from "../../ImagePropertiesDialog";
 import React, { useState, useMemo, useCallback } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { changeFolderCover } from "@/actions/folders";
+import LoadingImage from "@/components/LoadingImage";
 
 // Memoized dropdown menu component
-const ImageActionsDropdown = React.memo(({ 
-    row, 
-    t, 
-    setCarouselOpen, 
-    setStartIndex, 
-    setOpenRename, 
-    setOpenProperties, 
-    setOpenDelete 
-}: { 
-    row: any, 
-    t: any, 
-    setCarouselOpen: any, 
-    setStartIndex: any, 
-    setOpenRename: any, 
-    setOpenProperties: any, 
-    setOpenDelete: any 
+const ImageActionsDropdown = React.memo(({
+    row,
+    t,
+    setCarouselOpen,
+    setStartIndex,
+    setOpenRename,
+    setOpenProperties,
+    setOpenDelete
+}: {
+    row: any,
+    t: any,
+    setCarouselOpen: any,
+    setStartIndex: any,
+    setOpenRename: any,
+    setOpenProperties: any,
+    setOpenDelete: any
 }) => {
     const handleSetAsCover = useCallback(async () => {
         if (!row?.original?.folderId || !row?.original?.id) return;
-        
+
         const r = await changeFolderCover(row.original.folderId, row.original.id);
 
         if (r.error) {
@@ -121,30 +122,34 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
             const setStartIndex = table.options.meta?.imagesListActions?.setStartIndex;
 
             return <div className="truncate font-medium flex items-center gap-2">
-                {row.original.type === "video"
-                    ? <Image 
-                        src={`/api/folders/${row.original.folder?.id || ''}/videos/${row.original.id || ''}/thumbnail`} 
-                        width={40} 
-                        height={40} 
-                        alt={row.getValue("name") || ''} 
-                        className="w-[40px] h-[40px] object-cover rounded-xl" 
-                        loading="lazy"
-                        // placeholder="blur"
-                        sizes="40px"
+                <div className="relative w-[40px] h-[40px]">
+                    {row.original.type === "video"
+                        ? <LoadingImage
+                            src={`/api/folders/${row.original.folder?.id || ''}/videos/${row.original.id || ''}/thumbnail`}
+                            width={40}
+                            height={40}
+                            alt={row.getValue("name") || ''}
+                            className="w-[40px] h-[40px] object-cover rounded-xl"
+                            loading="lazy"
+                            // placeholder="blur"
+                            quality={50}
+                            sizes="40px"
                         // blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZjBmMGYwIi8+PC9zdmc+"
-                      />
-                    : <Image 
-                        src={`/api/folders/${row.original.folder?.id || ''}/images/${row.original.id || ''}`} 
-                        width={40} 
-                        height={40} 
-                        alt={row.getValue("name") || ''} 
-                        className="w-[40px] h-[40px] object-cover rounded-xl" 
-                        loading="lazy"
-                        // placeholder="blur"
-                        sizes="40px"
+                        />
+                        : <LoadingImage
+                            src={`/api/folders/${row.original.folder?.id || ''}/images/${row.original.id || ''}`}
+                            width={40}
+                            height={40}
+                            alt={row.getValue("name") || ''}
+                            className="w-[40px] h-[40px] object-cover rounded-xl"
+                            loading="lazy"
+                            // placeholder="blur"
+                            sizes="40px"
+                            quality={50}
                         // blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZjBmMGYwIi8+PC9zdmc+"
-                      />
-                }
+                        />
+                    }
+                </div>
                 <p onClick={() => {
                     if (setCarouselOpen && setStartIndex && row?.index !== undefined) {
                         setStartIndex(row.index);
@@ -218,7 +223,7 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
         id: "actions",
         cell: ({ row, table }) => {
             if (!row?.original) return null;
-            
+
             const t = useTranslations("images.views.list.columns.actions");
 
             const setCarouselOpen = table.options.meta?.imagesListActions?.setCarouselOpen;
@@ -230,7 +235,7 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
 
             return (
                 <>
-                    <ImageActionsDropdown 
+                    <ImageActionsDropdown
                         row={row}
                         t={t}
                         setCarouselOpen={setCarouselOpen}
