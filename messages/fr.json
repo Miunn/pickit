@@ -1412,7 +1412,13 @@
           },
           "lock": "Vérouiller",
           "unlock": "Dévérouiller",
-          "delete": "Supprimer"
+          "delete": {
+            "label": "Supprimer",
+            "success": {
+              "title": "Lien supprimé",
+              "description": "Le lien a été supprimé avec succès"
+            }
+          }
         }
       },
       "actions": {
