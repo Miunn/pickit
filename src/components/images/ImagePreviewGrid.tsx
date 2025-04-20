@@ -2,8 +2,7 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import React, { Suspense } from "react";
-import Image from "next/image";
+import React from "react";
 import { ImageWithFolder, VideoWithFolder } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
 import { downloadClientImageHandler, formatBytes } from "@/lib/utils";
@@ -16,7 +15,8 @@ import { changeFolderCover } from "@/actions/folders";
 import { CirclePlay } from "lucide-react";
 import LoadingImage from "../LoadingImage";
 import { useSession } from "@/providers/SessionProvider";
-import { useDraggable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 export interface ImagePreviewProps {
     file: ImageWithFolder | VideoWithFolder;
@@ -40,10 +40,12 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect }: ImagePre
 
     const { user } = useSession();
 
-    const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: file.id });
+    const { attributes, listeners, setNodeRef, transition, transform } = useSortable({ id: file.id });
     
     const style = transform ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        transform: CSS.Translate.toString(transform),
+        zIndex: 100,
+        transition
     } : undefined;
 
     return (
