@@ -56,7 +56,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                 if (bIndex === -1) return -1;
                 return aIndex - bIndex;
             });
-            setSortedImagesVideos(sortedItems);            
+            setSortedImagesVideos(sortedItems);
         }
     }, [concatImagesVideos, dragOrder]);
 
@@ -65,10 +65,15 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
     }, [sortState]);
 
     const sensors = useSensors(
-        useSensor(PointerSensor),
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                delay: 90,
+                tolerance: 5,
+            },
+        }),
         useSensor(TouchSensor, {
             activationConstraint: {
-                delay: 250,
+                delay: 90,
                 tolerance: 5,
             },
         }),
@@ -196,6 +201,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                             : sortedImagesVideos.map((file: (ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments)) => (
                                 <Fragment key={file.id}>
                                     <ImagePreviewGrid
+                                        className={`${activeId === file.id ? "opacity-50" : ""}`}
                                         file={file}
                                         selected={selected}
                                         onClick={(e) => {

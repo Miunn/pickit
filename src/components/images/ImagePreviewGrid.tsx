@@ -5,7 +5,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import React from "react";
 import { ImageWithFolder, VideoWithFolder } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
-import { downloadClientImageHandler, formatBytes } from "@/lib/utils";
+import { cn, downloadClientImageHandler, formatBytes } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import ImagePropertiesDialog from "./ImagePropertiesDialog";
 import { DeleteImageDialog } from "./DeleteImageDialog";
@@ -23,9 +23,10 @@ export interface ImagePreviewProps {
     selected: string[];
     onClick: (e?: React.MouseEvent) => void;
     onSelect: () => void;
+    className?: string;
 }
 
-export const ImagePreviewGrid = ({ file, selected, onClick, onSelect }: ImagePreviewProps) => {
+export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className }: ImagePreviewProps) => {
     const format = useFormatter();
     const t = useTranslations("images");
     const deleteTranslations = useTranslations("dialogs.images.delete");
@@ -44,7 +45,6 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect }: ImagePre
     
     const style = transform ? {
         transform: CSS.Translate.toString(transform),
-        zIndex: 100,
         transition
     } : undefined;
 
@@ -53,7 +53,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect }: ImagePre
             <ContextMenu key={file.id} modal={false}>
                 <ContextMenuTrigger asChild>
                     <button ref={setNodeRef} onClick={onClick} className="unset cursor-pointer" style={style} {...listeners} {...attributes}>
-                        <div className={`inline-block w-64 rounded-2xl ${selected.includes(file.id) ? "bg-accent" : ""}`}>
+                        <div className={cn(`inline-block w-64 rounded-2xl ${selected.includes(file.id) ? "bg-accent" : ""}`, className)}>
                             <div className={`${selected.includes(file.id) ? "scale-95" : ""}`}>
                                 <div className={`relative h-36 mb-4 flex justify-center items-center group`}>
                                     {file.type === "video"
