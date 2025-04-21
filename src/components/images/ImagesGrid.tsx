@@ -14,7 +14,7 @@ import { UploadImagesForm } from "./UploadImagesForm";
 import EditDescriptionDialog from "../folders/EditDescriptionDialog";
 import { useSession } from "@/providers/SessionProvider";
 import DeleteDescriptionDialog from "../folders/DeleteDescriptionDialog";
-import { closestCenter, DndContext, DragEndEvent, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { closestCenter, DndContext, DragEndEvent, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 
 export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments, sortState: ImagesSortMethod }) => {
@@ -33,8 +33,9 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
     const [dragOrder, setDragOrder] = useState<string[]>(concatImagesVideos.map(item => item.id));
-    const [sortStrategy, setSortStrategy] = useState<ImagesSortMethod | 'dragOrder'>(sortState);
+    const [activeId, setActiveId] = useState(null);
 
+    const [sortStrategy, setSortStrategy] = useState<ImagesSortMethod | 'dragOrder'>(sortState);
     const [sortedImagesVideos, setSortedImagesVideos] = useState<((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[]>([]);
 
     useEffect(() => {
@@ -79,6 +80,11 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
             setSizeSelected(0);
         }
     }, [selected]);
+
+    const handleDragStart = (event: any) => {
+        const { active } = event;
+        setActiveId(active.id);
+    }
 
     const handleDragMove = (event: any) => {
         const { active } = event;
@@ -133,6 +139,8 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                 return arrayMove(currentOrder, oldIndex, newIndex);
             });
         }
+
+        setActiveId(null);
     }
 
     return (
@@ -179,7 +187,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                     </div>
                     : null
                 }
-                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd} onDragMove={handleDragMove}>
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragMove={handleDragMove}>
                     <SortableContext items={sortedImagesVideos.map((item) => item.id)}>
                         {concatImagesVideos.length === 0
                             ? <div className={"col-start-1 col-end-3 xl:col-start-2 xl:col-end-4 2xl:col-start-3 2xl:col-end-5 mx-auto mt-6 flex flex-col justify-center items-center max-w-lg"}>
@@ -234,6 +242,17 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                                 </Fragment>
                             ))}
                     </SortableContext>
+                    <DragOverlay>
+                        {activeId
+                            ? <ImagePreviewGrid
+                                file={sortedImagesVideos.find((item) => item.id === activeId)!}
+                                selected={selected}
+                                onClick={() => { }}
+                                onSelect={() => { }}
+                            />
+                            : null
+                        }
+                    </DragOverlay>
                 </DndContext>
             </div>
 
