@@ -3,11 +3,11 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import React, { useState } from "react";
 import ImagesCarousel from "./ImagesCarousel";
-import { ImageWithComments, ImageWithFolder, VideoWithComments, VideoWithFolder } from "@/lib/definitions";
+import { FileWithComments, FileWithFolder } from "@/lib/definitions";
 import { useTranslations } from "next-intl";
 
 export const CarouselDialog = ({ files, title, carouselOpen, setCarouselOpen, startIndex }: {
-    files: ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[],
+    files: (FileWithFolder & FileWithComments)[],
     title: string,
     carouselOpen: any,
     setCarouselOpen: React.Dispatch<React.SetStateAction<boolean>>,

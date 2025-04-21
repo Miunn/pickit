@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Folder, Image, Link } from "lucide-react";
 import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
 import { getLightFolders, getSharedWithMeFolders } from "@/actions/folders";
-import { getLightImages } from "@/actions/images";
+import { getLightFiles } from "@/actions/files";
 import { getAccessTokens } from "@/actions/accessTokens";
 import UnverifiedEmail from "@/components/layout/UnverifiedEmail";
 import { addDays } from "date-fns";
@@ -36,7 +36,7 @@ export default async function LocaleLayout({
 
     const t = await getTranslations("sidebar");
     const folders = (await getLightFolders()).lightFolders;
-    const images = (await getLightImages()).lightImages;
+    const files = (await getLightFiles()).lightFiles;
     const accessTokens = (await getAccessTokens()).accessTokens;
     const personsAccessTokens = (await getPersonsAccessTokens()).personAccessTokens;
     const sharedWithMeFolders = (await getSharedWithMeFolders()).accessTokens;
@@ -60,14 +60,14 @@ export default async function LocaleLayout({
                                 }))
                             },
                             {
-                                key: "images",
+                                key: "files",
                                 title: t('main.images'),
                                 icon: Image,
-                                url: `/${locale}/app/images`,
-                                items: images.map((image) => ({
-                                    key: image.id,
-                                    title: `${image.folder.name} - ${image.name}`,
-                                    url: `/${locale}/app/folders/${image.folder.id}`
+                                url: `/${locale}/app/files`,
+                                items: files.map((file) => ({
+                                    key: file.id,
+                                    title: `${file.folder.name} - ${file.name}`,
+                                    url: `/${locale}/app/folders/${file.folder.id}`
                                 }))
                             },
                             {
@@ -129,7 +129,7 @@ export default async function LocaleLayout({
                     </SidebarInset>
                 </SidebarProvider>
             </SessionProvider>
-            <CommandSearch folders={folders} images={images} />
+            <CommandSearch folders={folders} files={files} />
             <Toaster />
         </NuqsAdapter>
     );

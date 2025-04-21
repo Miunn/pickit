@@ -11,7 +11,7 @@ import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner"
-import { initiateImageUpload, finalizeImageUpload } from "@/actions/images";
+import { initiateFileUpload, finalizeFileUpload } from "@/actions/files";
 import { Progress } from "../ui/progress";
 import { formatBytes } from "@/lib/utils";
 import { useState } from "react";
@@ -95,7 +95,7 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
                         verificationFormData.append("fileType", file.type);
                         verificationFormData.append("fileSamples", JSON.stringify(samples));
 
-                        const verificationResult = await initiateImageUpload(verificationFormData, folderId) as InitiateUploadResult;
+                        const verificationResult = await initiateFileUpload(verificationFormData, folderId) as InitiateUploadResult;
                         
                         if (verificationResult.error) {
                             throw new Error(verificationResult.error);
@@ -123,7 +123,7 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
                         finalizeFormData.append("verificationToken", verificationResult.verificationToken || "");
                         finalizeFormData.append("fileId", verificationResult.fileId || "");
 
-                        const finalizeResult = await finalizeImageUpload(finalizeFormData, folderId) as FinalizeUploadResult;
+                        const finalizeResult = await finalizeFileUpload(finalizeFormData, folderId) as FinalizeUploadResult;
 
                         if (finalizeResult.error) {
                             throw new Error(finalizeResult.error);

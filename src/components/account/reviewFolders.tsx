@@ -10,7 +10,7 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function ReviewFolders({ folders }: { folders: { id: string, name: string, size: number, createdAt: Date, _count: { images: number } }[] }) {
+export default function ReviewFolders({ folders }: { folders: { id: string, name: string, size: number, createdAt: Date, _count: { files: number } }[] }) {
 
     const intlFormatter = useFormatter();
     const t = useTranslations("components.account.reviewFolders");
@@ -38,7 +38,7 @@ export default function ReviewFolders({ folders }: { folders: { id: string, name
                             <p className="text-sm text-muted-foreground capitalize">{intlFormatter.dateTime(folder.createdAt, { weekday: "long", day: "numeric", year: "numeric", month: "long" })}</p>
                         </div>
                         <div className="flex items-center gap-3">
-                            <p className="text-sm text-muted-foreground">{t('folder.images', { count: folder._count.images })}</p>
+                            <p className="text-sm text-muted-foreground">{t('folder.images', { count: folder._count.files })}</p>
                             <p className="text-sm text-muted-foreground">{formatBytes(folder.size)}</p>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>

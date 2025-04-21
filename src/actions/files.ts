@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import sharp from "sharp";
 import { revalidatePath } from "next/cache";
-import { ImageLightWithFolderName, ImageWithComments, ImageWithFolder, RenameImageFormSchema } from "@/lib/definitions";
+import { FileLightWithFolderName, FileWithComments, FileWithFolder, RenameImageFormSchema } from "@/lib/definitions";
 import { getCurrentSession } from "@/lib/session";
 import { fileTypeFromBuffer } from 'file-type';
 import { z } from "zod";
@@ -13,21 +13,21 @@ import ffmpeg from "fluent-ffmpeg";
 import { PassThrough } from "stream";
 import crypto from "crypto";
 import { validateShareToken } from "./tokenValidation";
-import { FolderTokenPermission } from "@prisma/client";
+import { FolderTokenPermission, FileType } from "@prisma/client";
 
 ffmpeg.setFfmpegPath(process.env.FFMPEG_PATH as string);
 
-export async function getLightImages(): Promise<{
+export async function getLightFiles(): Promise<{
     error: string | null;
-    lightImages: ImageLightWithFolderName[];
+    lightFiles: FileLightWithFolderName[];
 }> {
     const { user } = await getCurrentSession();
 
     if (!user) {
-        return { error: "You must be logged in to get images", lightImages: [] }
+        return { error: "You must be logged in to get files", lightFiles: [] }
     }
 
-    const images = await prisma.image.findMany({
+    const files = await prisma.file.findMany({
         where: {
             createdBy: {
                 id: user.id
@@ -55,10 +55,10 @@ export async function getLightImages(): Promise<{
         ],
     });
 
-    return { error: null, lightImages: images }
+    return { error: null, lightFiles: files }
 }
 
-export async function initiateImageUpload(
+export async function initiateFileUpload(
     formData: FormData,
     parentFolderId: string
 ): Promise<{
@@ -134,7 +134,7 @@ export async function initiateImageUpload(
     }
 }
 
-export async function finalizeImageUpload(
+export async function finalizeFileUpload(
     formData: FormData,
     parentFolderId: string
 ): Promise<{ error: string | null; fileId: string | null }> {
@@ -198,10 +198,11 @@ export async function finalizeImageUpload(
         // Create database record
         if (verificationData.type.startsWith("image/")) {
             const metadata = await sharp(uploadedBuffer).metadata();
-            const image = await prisma.image.create({
+            const image = await prisma.file.create({
                 data: {
                     id: fileId,
                     name: verificationData.name.split('.')[0],
+                    type: FileType.IMAGE,
                     size: verificationData.size,
                     folderId: parentFolderId,
                     createdById: session.user.id,
@@ -241,10 +242,11 @@ export async function finalizeImageUpload(
             const mediainfo = await mediaInfoFactory({ locateFile: (file) => `${process.env.APP_URL}/mediainfo/${file}` });
             const metadata = await mediainfo.analyzeData(uploadedBuffer.length, () => uploadedBuffer);
             mediainfo.close();
-            const video = await prisma.video.create({
+            const video = await prisma.file.create({
                 data: {
                     id: fileId,
                     name: verificationData.name.split('.')[0],
+                    type: FileType.VIDEO,
                     size: verificationData.size,
                     folderId: parentFolderId,
                     createdById: session.user.id,
@@ -286,30 +288,27 @@ export async function uploadImages(
     imageId?: string | null;
 }> {
     if (isVerificationStep) {
-        return await finalizeImageUpload(formData, parentFolderId);
+        return await finalizeFileUpload(formData, parentFolderId);
     } else {
-        return await initiateImageUpload(formData, parentFolderId);
+        return await initiateFileUpload(formData, parentFolderId);
     }
 }
 
 export async function getImagesWithFolderAndCommentsFromFolder(folderId: string): Promise<{
-    images: (ImageWithFolder & ImageWithComments)[],
+    images: (FileWithFolder & FileWithComments)[],
     error: string | null
 }> {
     const { user } = await getCurrentSession();
 
     if (!user) {
-        return { error: "You must be logged in to load images from folder", images: [] }
+        return { error: "You must be logged in to load files from folder", images: [] }
     }
 
-    const images = await prisma.image.findMany({
+    const files = await prisma.file.findMany({
         where: {
-            folder: {
-                id: folderId
-            },
-            createdBy: {
-                id: user.id
-            }
+            folder: { id: folderId },
+            createdBy: { id: user.id },
+            type: FileType.IMAGE
         },
         include: {
             folder: true,
@@ -317,14 +316,14 @@ export async function getImagesWithFolderAndCommentsFromFolder(folderId: string)
         }
     });
 
-    return { error: null, images: images };
+    return { error: null, images: files };
 }
 
-export async function renameImage(fileId: string, fileType: string, data: z.infer<typeof RenameImageFormSchema>): Promise<{ error: string | null }> {
+export async function renameFile(fileId: string, data: z.infer<typeof RenameImageFormSchema>): Promise<{ error: string | null }> {
     const { user } = await getCurrentSession();
 
     if (!user) {
-        return { error: "You must be logged in to rename images" };
+        return { error: "You must be logged in to rename files" };
     }
 
     const parsedData = RenameImageFormSchema.safeParse(data);
@@ -333,44 +332,31 @@ export async function renameImage(fileId: string, fileType: string, data: z.infe
         return { error: "invalid-data" };
     }
 
-    if (fileType === "image") {
-        try {
-            const image = await prisma.image.update({
-                where: { id: fileId, createdBy: { id: user.id } },
-                data: { name: parsedData.data.name }
-            });
-            revalidatePath(`/app/folders/${image.folderId}`);
-        } catch (err) {
-            console.error("Error renaming image:", err);
-            return { error: "Image not found" };
-        }
-    } else if (fileType === "video") {
-        try {
-            const video = await prisma.video.update({
-                where: { id: fileId, createdBy: { id: user.id } },
-                data: { name: parsedData.data.name }
-            });
-            revalidatePath(`/app/folders/${video.folderId}`);
-        } catch (err) {
-            console.error("Error renaming video:", err);
-            return { error: "Video not found" };
-        }
+    try {
+        const image = await prisma.file.update({
+            where: { id: fileId, createdBy: { id: user.id } },
+            data: { name: parsedData.data.name }
+        });
+        revalidatePath(`/app/folders/${image.folderId}`);
+    } catch (err) {
+        console.error("Error renaming image:", err);
+        return { error: "Image not found" };
     }
 
     revalidatePath("/app");
     return { error: null };
 }
 
-export async function updateImageDescription(fileId: string, description: string): Promise<{ error: string | null }> {
+export async function updateFileDescription(fileId: string, description: string): Promise<{ error: string | null }> {
     const { user } = await getCurrentSession();
 
     if (!user) {
-        return { error: "You must be logged in to update image description" };
+        return { error: "You must be logged in to update file description" };
     }
 
-    console.log("Updating image description", fileId, description);
+    console.log("Updating file description", fileId, description);
 
-    const image = await prisma.image.update({
+    const image = await prisma.file.update({
         where: { id: fileId, createdBy: { id: user.id } },
         data: { description }
     });
@@ -379,13 +365,13 @@ export async function updateImageDescription(fileId: string, description: string
     return { error: null };
 }
 
-export async function deleteImage(folderId: string, fileId: string, fileType: string, shareToken?: string, hashPin?: string, tokenType?: string) {
+export async function deleteFile(folderId: string, fileId: string, shareToken?: string, hashPin?: string, tokenType?: string) {
     let validateToken = null;
     if (shareToken) {
         validateToken = await validateShareToken(folderId, shareToken, tokenType === "p" ? "personAccessToken" : "accessToken", hashPin);
 
         if (validateToken.error) {
-            return { error: "You must have a valid share link to delete this image" };
+            return { error: "You must have a valid share link to delete this file" };
         }
 
         if (validateToken.folder === null) {
@@ -393,14 +379,14 @@ export async function deleteImage(folderId: string, fileId: string, fileType: st
         }
 
         if (validateToken.permission === "READ") {
-            return { error: "You do not have permission to delete this image" };
+            return { error: "You do not have permission to delete this file" };
         }
     }
 
     const { user } = await getCurrentSession();
 
     if (!user && !validateToken) {
-        return { error: "You must be logged in to delete images" };
+        return { error: "You must be logged in to delete files" };
     }
 
     // Check if user is authorized to delete this image
@@ -409,83 +395,49 @@ export async function deleteImage(folderId: string, fileId: string, fileType: st
     let file = null;
 
     if (user) {
-        if (fileType === "video") {
-            file = await prisma.video.findUnique({
-                where: {
-                    id: fileId,
-                    createdBy: { id: user.id }
-                },
-                include: {
-                    folder: {
-                        select: {
-                            id: true,
-                            createdBy: true
-                        }
+        file = await prisma.file.findUnique({
+            where: {
+                id: fileId,
+                createdBy: { id: user.id }
+            },
+            include: {
+                folder: {
+                    select: {
+                        id: true,
+                        createdBy: true
                     }
                 }
-            });
-
-            try {
-                await GoogleBucket.file(`${file?.createdById}/${file?.folderId}/${file?.thumbnail}`).delete();
-            } catch (err) {
-                console.error("Error deleting thumbnail:", err);
             }
-        } else if (fileType === "image") {
-            file = await prisma.image.findUnique({
-                where: {
-                    id: fileId,
-                    createdBy: { id: user.id }
-                },
-                include: {
-                    folder: {
-                        select: {
-                            id: true,
-                            createdBy: true
-                        }
-                    }
-                }
-            });
+        });
+
+        try {
+            await GoogleBucket.file(`${file?.createdById}/${file?.folderId}/${file?.thumbnail}`).delete();
+        } catch (err) {
+            console.error("Error deleting thumbnail:", err);
         }
     } else if (validateToken) {
-        if (fileType === "video") {
-            file = await prisma.video.findUnique({
-                where: {
-                    id: fileId,
-                    createdBy: { id: validateToken.folder?.createdById }
-                },
-                include: {
-                    folder: {
-                        select: {
-                            id: true,
-                            createdBy: true
-                        }
+        file = await prisma.file.findUnique({
+            where: {
+                id: fileId,
+                createdBy: { id: validateToken.folder?.createdById }
+            },
+            include: {
+                folder: {
+                    select: {
+                        id: true,
+                        createdBy: true
                     }
                 }
-            });
-
-
-            console.log("File", file);
-
-            try {
-                await GoogleBucket.file(`${file?.createdById}/${file?.folderId}/${file?.thumbnail}`).delete();
-            } catch (err) {
-                console.error("Error deleting thumbnail:", err);
             }
-        } else if (fileType === "image") {
-            file = await prisma.image.findUnique({
-                where: {
-                    id: fileId,
-                    createdBy: { id: validateToken.folder?.createdById }
-                },
-                include: {
-                    folder: {
-                        select: {
-                            id: true,
-                            createdBy: true
-                        }
-                    }
-                }
-            });
+        });
+
+
+        console.log("File", file);
+
+        try {
+            await GoogleBucket.file(`${file?.createdById}/${file?.folderId}/${file?.thumbnail}`).delete();
+        } catch (err) {
+            console.error("Error deleting thumbnail:", err);
         }
     }
 
@@ -500,25 +452,13 @@ export async function deleteImage(folderId: string, fileId: string, fileType: st
     }
 
     if (user) {
-        if (file.type === "video") {
-            await prisma.video.delete({
-                where: { id: fileId }
-            })
-        } else {
-            await prisma.image.delete({
-                where: { id: fileId }
-            })
-        }
+        await prisma.file.delete({
+            where: { id: fileId }
+        })
     } else if (validateToken?.folder && validateToken.permission === FolderTokenPermission.WRITE) {
-        if (file.type === "video") {
-            await prisma.video.delete({
-                where: { id: fileId }
-            })
-        } else {
-            await prisma.image.delete({
-                where: { id: fileId }
-            })
-        }
+        await prisma.file.delete({
+            where: { id: fileId }
+        })
     }
 
     revalidatePath(`/app/folders/${file.folder.id}`);
@@ -526,9 +466,9 @@ export async function deleteImage(folderId: string, fileId: string, fileType: st
     return { error: null };
 }
 
-export async function deleteImages(files: { id: string, type: string }[]) {
+export async function deleteFiles(files: string[]) {
     for (const file of files) {
-        await deleteImage("", file.id, file.type);
+        await deleteFile("", file);
     }
     return { error: null };
 }
@@ -544,7 +484,7 @@ export async function processVideoAfterUpload(
     }
 
     try {
-        const video = await prisma.video.findUnique({
+        const video = await prisma.file.findUnique({
             where: {
                 id: videoId,
                 folderId: folderId,
@@ -587,7 +527,7 @@ export async function processVideoAfterUpload(
         await GoogleBucket.file(`${user.id}/${folderId}/${video.thumbnail}`).save(thumbnailBuffer);
 
         // Update video record with metadata
-        await prisma.video.update({
+        await prisma.file.update({
             where: { id: videoId },
             data: {
                 width: metadata.media?.track.find((track: Track) => track["@type"] === "Video")?.Active_Width || 0,

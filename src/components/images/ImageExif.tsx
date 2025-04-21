@@ -1,4 +1,4 @@
-import { ImageWithFolder } from "@/lib/definitions";
+import { FileWithFolder } from "@/lib/definitions";
 import { Button } from "../ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import exifr from 'exifr';
@@ -11,7 +11,7 @@ import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { getCoordinatesString, getDMSstringWithDirection } from "@/lib/utils";
 
-export default function ImageExif({ children, image }: { children: React.ReactNode, image: ImageWithFolder }) {
+export default function ImageExif({ children, image }: { children: React.ReactNode, image: FileWithFolder }) {
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");

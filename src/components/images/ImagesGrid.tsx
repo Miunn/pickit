@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2, X, Pencil } from "lucide-react";
 import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
 import { CarouselDialog } from "@/components/images/CarouselDialog";
-import { FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments, ImageWithComments, ImageWithFolder, VideoWithComments, VideoWithFolder } from "@/lib/definitions";
+import { FolderWithFilesWithFolderAndComments, FileWithComments, FileWithFolder } from "@/lib/definitions";
 import { cn, formatBytes, getSortedImagesVideosContent } from "@/lib/utils";
 import { ImagesSortMethod } from "../folders/SortImages";
 import { UploadImagesForm } from "./UploadImagesForm";
@@ -17,7 +17,7 @@ import DeleteDescriptionDialog from "../folders/DeleteDescriptionDialog";
 import { closestCenter, DndContext, DragEndEvent, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 
-export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments, sortState: ImagesSortMethod }) => {
+export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithFolderAndComments, sortState: ImagesSortMethod }) => {
     const { user } = useSession();
     const t = useTranslations("images");
     const deleteMultipleTranslations = useTranslations("dialogs.images.deleteMultiple");
@@ -29,26 +29,25 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
     const [selected, setSelected] = useState<string[]>([]);
     const [sizeSelected, setSizeSelected] = useState<number>(0);
 
-    const concatImagesVideos = useMemo(() => folder.images.concat(folder.videos), [folder.images, folder.videos]);
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
-    const [dragOrder, setDragOrder] = useState<string[]>(concatImagesVideos.map(item => item.id));
+    const [dragOrder, setDragOrder] = useState<string[]>(folder.files.map(item => item.id));
     const [activeId, setActiveId] = useState(null);
 
     const [sortStrategy, setSortStrategy] = useState<ImagesSortMethod | 'dragOrder'>(sortState);
-    const [sortedImagesVideos, setSortedImagesVideos] = useState<((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[]>([]);
+    const [sortedFiles, setSortedFiles] = useState<(FileWithFolder & FileWithComments)[]>([]);
 
     useEffect(() => {
         if (sortStrategy !== 'dragOrder') {
-            const sortedItems = getSortedImagesVideosContent(concatImagesVideos, sortState) as ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[];
-            setSortedImagesVideos(sortedItems);
+            const sortedItems = getSortedImagesVideosContent(folder.files, sortState) as (FileWithFolder & FileWithComments)[];
+            setSortedFiles(sortedItems);
             setDragOrder(sortedItems.map(item => item.id));
         }
-    }, [concatImagesVideos, sortState]);
+    }, [folder.files, sortState]);
 
     useEffect(() => {
         if (sortStrategy === 'dragOrder') {
-            const orderedItems = [...concatImagesVideos];
+            const orderedItems = [...folder.files];
             const sortedItems = orderedItems.sort((a, b) => {
                 const aIndex = dragOrder.indexOf(a.id);
                 const bIndex = dragOrder.indexOf(b.id);
@@ -56,9 +55,9 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                 if (bIndex === -1) return -1;
                 return aIndex - bIndex;
             });
-            setSortedImagesVideos(sortedItems);
+            setSortedFiles(sortedItems);
         }
-    }, [concatImagesVideos, dragOrder]);
+    }, [folder.files, dragOrder]);
 
     useEffect(() => {
         setSortStrategy(sortState);
@@ -170,7 +169,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                 : null
             }
             <div className={cn(
-                concatImagesVideos.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,16rem)] gap-3 mx-auto",
+                folder.files.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,16rem)] gap-3 mx-auto",
                 "relative overflow-hidden"
             )}>
                 {folder.description
@@ -193,12 +192,12 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                     : null
                 }
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragMove={handleDragMove}>
-                    <SortableContext items={sortedImagesVideos.map((item) => item.id)}>
-                        {concatImagesVideos.length === 0
+                    <SortableContext items={sortedFiles.map((item) => item.id)}>
+                        {folder.files.length === 0
                             ? <div className={"col-start-1 col-end-3 xl:col-start-2 xl:col-end-4 2xl:col-start-3 2xl:col-end-5 mx-auto mt-6 flex flex-col justify-center items-center max-w-lg"}>
                                 <UploadImagesForm folderId={folder.id} />
                             </div>
-                            : sortedImagesVideos.map((file: (ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments)) => (
+                            : sortedFiles.map((file: FileWithFolder & FileWithComments) => (
                                 <Fragment key={file.id}>
                                     <ImagePreviewGrid
                                         className={`${activeId === file.id ? "opacity-50" : ""}`}
@@ -208,13 +207,13 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                                             if (selecting) {
                                                 if (e?.shiftKey && selected.length > 0) {
                                                     const lastSelectedId = selected[selected.length - 1];
-                                                    const lastSelectedIndex = concatImagesVideos.findIndex((item) => item.id === lastSelectedId);
-                                                    const currentIndex = concatImagesVideos.findIndex((item) => item.id === file.id);
+                                                    const lastSelectedIndex = folder.files.findIndex((item) => item.id === lastSelectedId);
+                                                    const currentIndex = folder.files.findIndex((item) => item.id === file.id);
 
                                                     if (lastSelectedIndex !== -1 && currentIndex !== -1) {
                                                         const start = Math.min(lastSelectedIndex, currentIndex);
                                                         const end = Math.max(lastSelectedIndex, currentIndex);
-                                                        const range = concatImagesVideos.slice(start, end + 1);
+                                                        const range = folder.files.slice(start, end + 1);
 
                                                         const newSelectedIds = range.map((item) => item.id);
                                                         const newSize = range.reduce((acc, item) => acc + item.size, 0);
@@ -230,7 +229,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                                                     setSizeSelected(sizeSelected + file.size);
                                                 }
                                             } else {
-                                                setStartIndex(concatImagesVideos.indexOf(file));
+                                                setStartIndex(folder.files.indexOf(file));
                                                 setCarouselOpen(true);
                                             }
                                         }}
@@ -251,7 +250,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                     <DragOverlay>
                         {activeId
                             ? <ImagePreviewGrid
-                                file={sortedImagesVideos.find((item) => item.id === activeId)!}
+                                file={sortedFiles.find((item) => item.id === activeId)!}
                                 selected={selected}
                                 onClick={() => { }}
                                 onSelect={() => { }}
@@ -262,8 +261,8 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithImagesWith
                 </DndContext>
             </div>
 
-            <CarouselDialog files={concatImagesVideos} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
-            <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
+            <CarouselDialog files={folder.files} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
+            <DeleteMultipleImagesDialog files={folder.files.filter((file) => selected.includes(file.id))} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
                 setSelected([]);
                 setSelecting(false);
             }} />

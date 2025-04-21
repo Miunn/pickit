@@ -3,7 +3,7 @@
 import { useFormatter, useTranslations } from "next-intl";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import React from "react";
-import { ImageWithFolder, VideoWithFolder } from "@/lib/definitions";
+import { FileWithFolder } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
 import { cn, downloadClientImageHandler, formatBytes } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
@@ -17,9 +17,9 @@ import LoadingImage from "../LoadingImage";
 import { useSession } from "@/providers/SessionProvider";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-
+import { FileType } from "@prisma/client";
 export interface ImagePreviewProps {
-    file: ImageWithFolder | VideoWithFolder;
+    file: FileWithFolder;
     selected: string[];
     onClick: (e?: React.MouseEvent) => void;
     onSelect: () => void;
@@ -56,7 +56,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                         <div className={cn(`inline-block w-64 rounded-2xl ${selected.includes(file.id) ? "bg-accent" : ""}`, className)}>
                             <div className={`${selected.includes(file.id) ? "scale-95" : ""}`}>
                                 <div className={`relative h-36 mb-4 flex justify-center items-center group`}>
-                                    {file.type === "video"
+                                    {file.type === FileType.VIDEO
                                         ? <LoadingImage
                                             src={`/api/folders/${file.folderId}/videos/${file.id}/thumbnail?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`}
                                             alt={file.name}
@@ -74,7 +74,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                                             fill
                                         />
                                     }
-                                    {file.type === "video"
+                                    {file.type === FileType.VIDEO
                                         ? <CirclePlay className="absolute left-2 bottom-2 text-white opacity-80 group-hover:opacity-100 transition-all duration-200 ease-in-out" size={25} />
                                         : null
                                     }
@@ -129,17 +129,8 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                         </ContextMenuItem>
                         : null
                     }
-                    {file.type === "image" && file.createdById === user?.id
+                    {file.type === FileType.IMAGE && file.createdById === user?.id
                         ? <ContextMenuItem onClick={async () => {
-                            if (file.type !== "image") {
-                                toast({
-                                    title: t('actions.setAsCover.errors.video-cover-unavailable.title'),
-                                    description: t('actions.setAsCover.errors.video-cover-unavailable.description'),
-                                    variant: "destructive"
-                                });
-                                return;
-                            }
-
                             const r = await changeFolderCover(file.folderId, file.id);
 
                             if (r.error) {

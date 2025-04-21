@@ -1,4 +1,4 @@
-import { ImageWithComments, ImageWithFolder } from "@/lib/definitions";
+import { FileWithComments, FileWithFolder } from "@/lib/definitions";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useTranslations } from "next-intl";
 import ImagesCarousel from "../images/ImagesCarousel";
@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
 import { changeFolderCover } from "@/actions/folders";
 import { toast } from "@/hooks/use-toast";
 
-export default function ChangeCoverFolderDialog({ images, folderId, open, setOpen }: { images: (ImageWithFolder & ImageWithComments)[], folderId: string, open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ChangeCoverFolderDialog({ images, folderId, open, setOpen }: { images: (FileWithFolder & FileWithComments)[], folderId: string, open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const t = useTranslations("dialogs.folders.changeCover");
 
@@ -18,7 +18,7 @@ export default function ChangeCoverFolderDialog({ images, folderId, open, setOpe
     async function submitCover() {
         setLoading(true);
 
-        const image = images.at(current-1);
+        const image = images.at(current);
 
         if (!image) {
             return;
@@ -53,7 +53,7 @@ export default function ChangeCoverFolderDialog({ images, folderId, open, setOpe
                     <DialogDescription>{t("description")}</DialogDescription>
                 </DialogHeader>
 
-                <ImagesCarousel files={images.map((i) => ({ ...i, type: 'image' }))} startIndex={0} currentIndex={current} setCurrentIndex={setCurrent} />
+                <ImagesCarousel files={images} startIndex={0} currentIndex={current} setCurrentIndex={setCurrent} />
 
                 <DialogFooter>
                     <DialogClose asChild>

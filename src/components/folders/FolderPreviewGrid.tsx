@@ -1,6 +1,6 @@
 'use client'
 
-import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, FolderWithVideosCount, ImageWithComments, ImageWithFolder } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCover, FolderWithFilesCount, FileWithComments, FileWithFolder } from "@/lib/definitions";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import React from "react";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
@@ -14,10 +14,11 @@ import ChangeCoverFolderDialog from "./ChangeCoverFolderDialog";
 import { ShareFolderDialog } from "./ShareFolderDialog";
 import FolderPropertiesDialog from "./FolderPropertiesDialogs";
 import DeleteFolderDialog from "./DeleteFolderDialog";
-import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/images";
+import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/files";
 import { downloadClientFolder } from "@/lib/utils";
+import { FileType } from "@prisma/client";
 
-export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccessToken & FolderWithImagesCount & FolderWithVideosCount & FolderWithCover }) {
+export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccessToken & FolderWithFilesCount & FolderWithCover }) {
     const t = useTranslations("folders");
     const dialogsTranslations = useTranslations("dialogs.folders");
     const downloadT = useTranslations("folders.download");
@@ -30,15 +31,15 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
     const [openProperties, setOpenProperties] = React.useState<boolean>(false);
     const [openDelete, setOpenDelete] = React.useState<boolean>(false);
 
-    const [folderImages, setFolderImages] = React.useState<(ImageWithFolder & ImageWithComments)[]>([]);
+    const [folderImages, setFolderImages] = React.useState<(FileWithFolder & FileWithComments)[]>([]);
 
-    const loadImages = React.useCallback(async () => {
+    const loadFiles = React.useCallback(async () => {
         setFolderImages((await getImagesWithFolderAndCommentsFromFolder(folder.id)).images);
     }, [folder.id]);
 
     React.useEffect(() => {
-        loadImages();
-    }, [folder.id, loadImages]);
+        loadFiles();
+    }, [folder.id, loadFiles]);
 
     return (
         <>
@@ -58,7 +59,7 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
                         }
                         <p className="truncate">{folder.name}</p>
                         <div className={"text-sm flex h-4 items-center flex-nowrap"}>
-                            <p className={"opacity-60 text-nowrap"}>{t('filesCount', {count: folder._count.images + folder._count.videos})}</p>
+                            <p className={"opacity-60 text-nowrap"}>{t('filesCount', {count: folder._count.files})}</p>
                             <Separator className="mx-2" orientation="vertical" />
                             <TooltipProvider>
                                 <Tooltip>
@@ -101,7 +102,7 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
             </ContextMenu>
             <RenameFolderDialog folderId={folder.id} folderName={folder.name} openState={openRename}
                 setOpenState={setOpenRename} />
-            <ChangeCoverFolderDialog images={folderImages} folderId={folder.id} open={openChangeCover} setOpen={setOpenChangeCover} />
+            <ChangeCoverFolderDialog images={folderImages.filter((file) => file.type === FileType.IMAGE)} folderId={folder.id} open={openChangeCover} setOpen={setOpenChangeCover} />
             <ShareFolderDialog folder={folder} open={openShare} setOpen={setOpenShare} />
             <FolderPropertiesDialog folder={folder} open={openProperties} setOpen={setOpenProperties} />
             <DeleteFolderDialog folderId={folder.id} folderName={folder.name} openState={openDelete}

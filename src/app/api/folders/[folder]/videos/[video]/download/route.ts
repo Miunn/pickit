@@ -10,7 +10,7 @@ export async function GET(req: NextRequest, { params }: { params: {folder: strin
         return Response.json({ error: "You need to be authenticated or have a magic link to access this resource" }, { status: 400 })
     }
 
-    const video = await prisma.video.findUnique({
+    const video = await prisma.file.findUnique({
         where: {
             id: params.video,
             folderId: params.folder,

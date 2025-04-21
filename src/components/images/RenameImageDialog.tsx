@@ -16,14 +16,12 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
-import { CreateFolderFormSchema } from "@/lib/definitions";
-import { Image, Video } from "@prisma/client";
-import { renameImage } from "@/actions/images";
+import { CreateFolderFormSchema, FileWithFolder } from "@/lib/definitions";
+import { renameFile } from "@/actions/files";
 
-export default function RenameImageDialog({ openState, setOpenState, file }: { openState: boolean, setOpenState: any, file: Image | Video }) {
+export default function RenameImageDialog({ openState, setOpenState, file }: { openState: boolean, setOpenState: any, file: FileWithFolder }) {
 
     const t = useTranslations("dialogs.images.rename");
 
@@ -35,7 +33,7 @@ export default function RenameImageDialog({ openState, setOpenState, file }: { o
     });
 
     async function onSubmit(data: z.infer<typeof CreateFolderFormSchema>) {
-        const d = await renameImage(file.id, file.type, data);
+        const d = await renameFile(file.id, data);
 
         if (d.error) {
             toast({

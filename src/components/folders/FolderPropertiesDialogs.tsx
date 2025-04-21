@@ -1,13 +1,13 @@
 'use client'
 
-import { FolderWithImagesCount } from "@/lib/definitions";
+import { FolderWithFilesCount } from "@/lib/definitions";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useFormatter, useTranslations } from "next-intl";
 import { Label } from "../ui/label";
 import { formatBytes } from "@/lib/utils";
 import { Button } from "../ui/button";
 
-export default function FolderPropertiesDialog({ folder, open, setOpen }: { folder: FolderWithImagesCount, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function FolderPropertiesDialog({ folder, open, setOpen }: { folder: FolderWithFilesCount, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
     const t = useTranslations("dialogs.folders.properties");
     const formatter = useFormatter();
 
@@ -27,7 +27,7 @@ export default function FolderPropertiesDialog({ folder, open, setOpen }: { fold
 
                     <div>
                         <Label>{t('imagesAmount.label')}</Label>
-                        <p>{t('imagesAmount.value', { count: folder._count.images })}</p>
+                        <p>{t('imagesAmount.value', { count: folder._count.files })}</p>
                     </div>
 
                     <div>

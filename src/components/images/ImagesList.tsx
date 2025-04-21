@@ -1,6 +1,6 @@
 'use client'
 
-import { FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments } from "@/lib/definitions";
+import { FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
 import { imagesListViewColumns } from "./views/list/columns";
@@ -13,7 +13,7 @@ import { useTranslations } from "next-intl";
 import { DeleteMultipleImagesDialog } from "./DeleteMultipleImagesDialog";
 import { Select, SelectItem, SelectContent, SelectValue, SelectTrigger } from "../ui/select";
 
-export default function ImagesList({ folder }: { folder: FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments }) {
+export default function ImagesList({ folder }: { folder: FolderWithFilesWithFolderAndComments }) {
     const t = useTranslations("images.views.list.table");
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);
     const [startIndex, setStartIndex] = React.useState<number>(0);
@@ -31,15 +31,15 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
 
     // Ensure folder data is available
     useEffect(() => {
-        if (folder && folder.images && folder.videos) {
+        if (folder && folder.files) {
             setIsLoading(false);
         }
     }, [folder]);
 
     // Prepare data safely
     const tableData = React.useMemo(() => {
-        if (!folder || !folder.images || !folder.videos) return [];
-        return folder.images.concat(folder.videos) || [];
+        if (!folder || !folder.files) return [];
+        return folder.files || [];
     }, [folder]);
 
     const table = useReactTable({
@@ -128,7 +128,7 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
                 ? <div className={"flex justify-between items-center mb-5 bg-gray-50 rounded-2xl w-full p-2"}>
                     <div className={"flex gap-2 items-center"}>
                         <Button variant="ghost" onClick={() => { setRowSelection({}) }} size="icon"><X className={"w-4 h-4"} /></Button>
-                        <h2><span className={"font-semibold"}>{t('selection', { count: Object.keys(rowSelection).length })}</span> - {formatBytes(folder.images?.filter((i) => Object.keys(rowSelection).includes(i.id)).reduce((a, b) => a + b.size, 0) || 0, { decimals: 2, sizeType: "normal" })}</h2>
+                        <h2><span className={"font-semibold"}>{t('selection', { count: Object.keys(rowSelection).length })}</span> - {formatBytes(folder.files?.filter((i) => Object.keys(rowSelection).includes(i.id)).reduce((a, b) => a + b.size, 0) || 0, { decimals: 2, sizeType: "normal" })}</h2>
                     </div>
 
                     <Button variant="outline" onClick={() => {
@@ -224,7 +224,7 @@ export default function ImagesList({ folder }: { folder: FolderWithImagesWithFol
                 </Table>
             </div>
             <CarouselDialog files={tableData} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
-            <DeleteMultipleImagesDialog images={Object.keys(rowSelection)} open={openDeleteSelection} setOpen={setOpenDeleteSelection} onDelete={() => {
+            <DeleteMultipleImagesDialog files={tableData.filter((file) => Object.keys(rowSelection).includes(file.id))} open={openDeleteSelection} setOpen={setOpenDeleteSelection} onDelete={() => {
                 setRowSelection({});
             }} />
         </>
