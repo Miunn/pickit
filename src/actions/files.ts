@@ -203,6 +203,7 @@ export async function finalizeFileUpload(
                     id: fileId,
                     name: verificationData.name.split('.')[0],
                     type: FileType.IMAGE,
+                    position: (await getLastPosition(parentFolderId)) + 1000,
                     size: verificationData.size,
                     folderId: parentFolderId,
                     createdById: session.user.id,
@@ -248,6 +249,7 @@ export async function finalizeFileUpload(
                     name: verificationData.name.split('.')[0],
                     type: FileType.VIDEO,
                     size: verificationData.size,
+                    position: (await getLastPosition(parentFolderId)) + 1000,
                     folderId: parentFolderId,
                     createdById: session.user.id,
                     extension: verificationData.name.split('.').pop() || '',
@@ -362,6 +364,57 @@ export async function updateFileDescription(fileId: string, description: string)
     });
 
     revalidatePath(`/app/folders/${image.folderId}`);
+    return { error: null };
+}
+
+export async function updateFilePosition(fileId: string, previousId: string, nextId: string): Promise<{ error: string | null }> {
+    const { user } = await getCurrentSession();
+
+    if (!user) {
+        return { error: "You must be logged in to update file position" };
+    }
+
+    const file = await prisma.file.findUnique({
+        where: { id: fileId, createdById: user.id }
+    });
+
+    const previousFile = await prisma.file.findUnique({
+        where: { id: previousId, createdById: user.id }
+    });
+
+    const nextFile = await prisma.file.findUnique({
+        where: { id: nextId, createdById: user.id }
+    });
+
+    if (!file || !previousFile || !nextFile) {
+        return { error: "File not found" };
+    }
+
+    if (previousFile.folderId !== file.folderId || nextFile.folderId !== file.folderId) {
+        return { error: "File not found" };
+    }
+
+    if (previousFile.position >= nextFile.position) {
+        return { error: "Previous file position must be less than next file position" };
+    }
+
+    if (nextFile.position - previousFile.position < 2) {
+        await reNormalizePositions(file.folderId);
+        return updateFilePosition(fileId, previousId, nextId);
+    }
+
+    const position = (nextFile.position + previousFile.position) / 2;
+
+    try {
+        await prisma.file.update({
+            where: { id: fileId },
+            data: { position }
+        });
+    } catch (err) {
+        console.error("Error updating file position:", err);
+        return { error: "Failed to update file position" };
+    }
+
     return { error: null };
 }
 
@@ -579,5 +632,27 @@ export async function cleanupOrphanedVerificationFiles(
     } catch (err) {
         console.error("Error cleaning up verification files:", err);
         return { error: "Failed to clean up verification files", cleanedCount: 0 };
+    }
+}
+
+async function getLastPosition(folderId: string) {
+    const file = await prisma.file.findFirst({
+        where: { folderId },
+        orderBy: { position: "desc" }
+    });
+    return file?.position || 0;
+}
+
+async function reNormalizePositions(folderId: string) {
+    const files = await prisma.file.findMany({
+        where: { folderId },
+        orderBy: { position: "asc" }
+    });
+    
+    for (let i = 0; i < files.length; i++) {
+        await prisma.file.update({
+            where: { id: files[i].id },
+            data: { position: i * 1000 }
+        });
     }
 }
