@@ -1547,7 +1547,7 @@
       "label": "Download",
       "ongoing": {
         "title": "Download started",
-        "description": "Your folder is being downloaded. Please wait while we prepare the files for you."
+        "description": "{name} is being downloaded. Please wait while we prepare the files for you."
       },
       "success": "{name} downloaded successfully",
       "empty": "There is no images in this folder to download"

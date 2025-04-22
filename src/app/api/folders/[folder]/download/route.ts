@@ -1,23 +1,20 @@
 import {NextRequest, NextResponse} from "next/server";
 import {prisma} from "@/lib/prisma";
 import JSZip from "jszip";
-import { getCurrentSession } from "@/lib/session";
+import { isAllowedToAccessFile } from "@/lib/dal";
 import { GoogleBucket } from "@/lib/bucket";
 
 export async function GET(req: NextRequest, { params }: { params: {folder: string} }) {
-    const { user } = await getCurrentSession();
+    const shareToken = req.nextUrl.searchParams.get("share");
+    const accessKey = req.nextUrl.searchParams.get("h");
+    const tokenType = req.nextUrl.searchParams.get("t");
 
-    if (!user) {
+    if (!isAllowedToAccessFile(params.folder, shareToken, accessKey, tokenType)) {
         return Response.json({ error: "You need to be authenticated or have a magic link to access this resource" }, { status: 400 })
     }
 
     const images = await prisma.file.findMany({
-        where: {
-            folderId: params.folder,
-            createdBy: {
-                id: user.id as string
-            }
-        }
+        where: { folderId: params.folder }
     });
 
     if (images.length === 0) {

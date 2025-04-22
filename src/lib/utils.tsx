@@ -94,9 +94,9 @@ export const downloadClientImageHandler = async (file: FileWithFolder) => {
 	saveAs(await r.blob(), `${file.name}.${file.extension}`);
 }
 
-export const downloadClientFolder = async (folder: Folder | FolderWithFilesWithFolderAndComments, t: any, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashPinCode?: string) => {
+export const downloadClientFolder = async (folder: Folder | FolderWithFilesWithFolderAndComments, t: any, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashPinCode?: string | null) => {
 	let folderWithImagesAndVideos: FolderWithFilesWithFolderAndComments;
-	if (!('images' in folder) || !('videos' in folder)) {
+	if (!('files' in folder)) {
 		const r = await getFolderFull(folder.id, shareToken, tokenType, hashPinCode);
 
 		if (r.error || !r.folder) {
@@ -123,7 +123,7 @@ export const downloadClientFolder = async (folder: Folder | FolderWithFilesWithF
 				title: "w-full"
 			},
 			description: <div className="w-full">
-				{ t('ongoing.description') }
+				{ t('ongoing.description', { name: folder.name }) }
 				<Progress value={0} className="w-full mt-2" />
 			</div>,
 			dismissible: false
@@ -146,7 +146,7 @@ export const downloadClientFolder = async (folder: Folder | FolderWithFilesWithF
 			{
 				id: "download-progress-toast",
 				description: <div className="w-full">
-					{ t('ongoing.description') }
+					{ t('ongoing.description', { name: folder.name }) }
 					<Progress value={(i + 1) / totalFiles * 100} className="w-full mt-2" />
 				</div>
 			}
@@ -166,7 +166,7 @@ export const downloadClientFolder = async (folder: Folder | FolderWithFilesWithF
 			{
 				id: "download-progress-toast",
 				description: <div className="w-full">
-					{ t('ongoing.description') }
+					{ t('ongoing.description', { name: folder.name }) }
 					<Progress value={(i + 1) / totalFiles * 100} className="w-full mt-2" />
 				</div>
 			}
