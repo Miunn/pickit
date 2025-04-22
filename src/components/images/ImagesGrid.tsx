@@ -40,16 +40,16 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
 
     useEffect(() => {
         if (sortStrategy !== 'dragOrder') {
-            const sortedItems = getSortedImagesVideosContent(folder.files, sortState) as (FileWithFolder & FileWithComments)[];
+            const sortedItems = [...getSortedImagesVideosContent(folder.files, sortState)] as (FileWithFolder & FileWithComments)[];
             setSortedFiles(sortedItems);
-            setDragOrder(sortedItems.map(item => item.id));
+            setDragOrder([...sortedItems.map(item => item.id)]);
         }
     }, [folder.files, sortState]);
 
     useEffect(() => {
         if (sortStrategy === 'dragOrder') {
             const orderedItems = [...folder.files];
-            const sortedItems = orderedItems.sort((a, b) => {
+            const sortedItems = [...orderedItems].sort((a, b) => {
                 const aIndex = dragOrder.indexOf(a.id);
                 const bIndex = dragOrder.indexOf(b.id);
                 if (aIndex === -1) return 1;
@@ -78,6 +78,10 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
             },
         }),
     );
+
+    useEffect(() => {
+        console.log("Use effect sorted files", sortedFiles.map(item => item.size));
+    }, [sortedFiles]);
 
     useEffect(() => {
         if (selected.length === 0) {
