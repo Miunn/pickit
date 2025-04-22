@@ -39,7 +39,7 @@ export default function ImagesList({ folder }: { folder: FolderWithFilesWithFold
     // Prepare data safely
     const tableData = React.useMemo(() => {
         if (!folder || !folder.files) return [];
-        return folder.files || [];
+        return folder.files.sort((a, b) => a.position - b.position) || [];
     }, [folder]);
 
     const table = useReactTable({
