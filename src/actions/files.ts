@@ -399,7 +399,7 @@ export async function updateFilePosition(fileId: string, previousId?: string, ne
         return { error: "File not found" };
     }
 
-    if (previousFile && nextFile && previousFile.position >= nextFile.position) {
+    if (previousFile && nextFile && previousFile.position > nextFile.position) {
         return { error: "Previous file position must be less than next file position" };
     }
 
