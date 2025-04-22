@@ -15,6 +15,7 @@ import ImagesList from "../images/ImagesList";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { useState } from "react";
 import EditDescriptionDialog from "./EditDescriptionDialog";
+import { useSearchParams } from "next/navigation";
 
 export interface FolderContentProps {
     folder: FolderWithCreatedBy & FolderWithFilesWithFolderAndComments & FolderWithAccessToken;
@@ -23,6 +24,11 @@ export interface FolderContentProps {
 }
 
 export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentProps) => {
+    const searchParams = useSearchParams();
+    const shareToken = searchParams.get("share");
+    const tokenType = searchParams.get("t");
+    const hashPinCode = searchParams.get("h");
+
     const t = useTranslations("folders");
     const [viewState, setViewState] = useQueryState<ViewState>('view', {
         defaultValue: defaultView || ViewState.Grid,
@@ -92,7 +98,7 @@ export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentPro
                         ? <UploadImagesDialog folderId={folder.id} />
                         : null}
                     {!!!isGuest ? <ShareFolderDialog folder={folder} /> : null}
-                    <Button variant="outline" onClick={() => downloadClientFolder(folder, downloadT)}>
+                    <Button variant="outline" onClick={() => downloadClientFolder(folder, downloadT, shareToken, tokenType === "accessToken" ? "accessToken" : tokenType === "personAccessToken" ? "personAccessToken" : null, hashPinCode)}>
                         <Download className={"mr-2"} /> {t('actions.download')}
                     </Button>
                 </div>

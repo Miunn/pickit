@@ -58,7 +58,7 @@ export async function getFolderName(id: string): Promise<{
     return { folder: folder, error: null }
 }
 
-export async function getFolderFull(folderId: string, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashedPinCode?: string): Promise<{
+export async function getFolderFull(folderId: string, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashedPinCode?: string | null): Promise<{
     error: string | null,
     folder: (FolderWithCreatedBy & FolderWithFiles & FolderWithFilesWithFolderAndComments & FolderWithAccessToken) | null
     permission?: FolderTokenPermission
