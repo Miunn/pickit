@@ -1,7 +1,7 @@
 "use server"
 
 import { prisma } from "@/lib/prisma";
-import { AccessTokenWithFolder, CreateAccessTokenFormSchema, ImageLightWithFolderName, ImageWithFolder } from "@/lib/definitions";
+import { AccessTokenWithFolder, CreateAccessTokenFormSchema, FileLightWithFolderName, FileWithFolder } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { AccessToken, FolderTokenPermission } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";

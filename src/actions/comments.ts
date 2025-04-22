@@ -1,6 +1,6 @@
 'use server'
 
-import { CreateCommentFormSchema, FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolderAndComments, FolderWithPersonAccessToken } from "@/lib/definitions";
+import { CreateCommentFormSchema, FolderWithAccessToken, FolderWithCreatedBy, FolderWithFilesWithFolderAndCommentsAndCreatedBy, FolderWithPersonAccessToken } from "@/lib/definitions";
 import { getCurrentSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
@@ -9,7 +9,6 @@ import * as bcrypt from "bcryptjs";
 
 export async function createComment(
     fileId: string,
-    fileType: "image" | "video",
     data: z.infer<typeof CreateCommentFormSchema>,
     shareToken?: string | null,
     type?: "accessToken" | "personAccessToken" | null,
@@ -22,13 +21,12 @@ export async function createComment(
     }
 
     let file;
-    if (fileType === "image") {
-        file =  await prisma.image.findUnique({
+        file =  await prisma.file.findUnique({
             where: { id: fileId },
             include: {
                 folder: {
                     include: {
-                        images: { include: { folder: true, comments: { include: { createdBy: true } } } },
+                        files: { include: { folder: true, comments: { include: { createdBy: true } } } },
                         createdBy: true,
                         AccessToken: { omit: { pinCode: false } },
                         PersonAccessToken: { omit: { pinCode: false } }
@@ -36,28 +34,13 @@ export async function createComment(
                 }
             }
         });
-    } else if (fileType === "video") {
-        file = await prisma.video.findUnique({
-            where: { id: fileId },
-            include: {
-                folder: {
-                    include: {
-                        images: { include: { folder: true, comments: { include: { createdBy: true } } } },
-                        createdBy: true,
-                        AccessToken: { omit: { pinCode: false } },
-                        PersonAccessToken: { omit: { pinCode: false } }
-                    }
-                }
-            }
-        });
-    }
 
     if (!file) {
         console.log("File not found");
         return false;
     }
 
-    const folder: FolderWithImagesWithFolderAndComments & FolderWithCreatedBy & FolderWithAccessToken & FolderWithPersonAccessToken = file.folder;
+    const folder: FolderWithFilesWithFolderAndCommentsAndCreatedBy & FolderWithAccessToken & FolderWithPersonAccessToken = file.folder;
     let commentName = "Anonymous";
 
     if (!user || folder.createdById !== user.id) {
@@ -120,21 +103,19 @@ export async function createComment(
                 text: parsedData.data.content,
                 createdBy: { connect: { id: user?.id } },
                 name: commentName,
-                image: fileType === 'image' ? { connect: { id: fileId } } : undefined,
-                video: fileType === 'video' ? { connect: { id: fileId } } : undefined
+                file: { connect: { id: fileId } }
             }
         } else {
             data = {
                 text: parsedData.data.content,
                 name: commentName,
-                image: fileType === 'image' ? { connect: { id: fileId } } : undefined,
-                video: fileType === 'video' ? { connect: { id: fileId } } : undefined
+                file: { connect: { id: fileId } }
             }
         }
 
         const comment = await prisma.comment.create({
             data,
-            include: { image: { include: { folder: true } } }
+            include: { file: { include: { folder: true } } }
         });
         
         if (!comment) {

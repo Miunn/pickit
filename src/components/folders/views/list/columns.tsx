@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { FolderWithAccessToken, FolderWithImages, FolderWithImagesCount, FolderWithImagesWithFolderAndComments, ImageWithComments, ImageWithFolder } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithFilesCount, FileWithComments, FileWithFolder } from "@/lib/definitions";
 import { downloadClientFolder, formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Images, MoreHorizontal } from "lucide-react";
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState, useCallback } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -14,9 +14,9 @@ import FolderPropertiesDialog from "@/components/folders/FolderPropertiesDialogs
 import Link from "next/link";
 import { ShareFolderDialog } from "../../ShareFolderDialog";
 import ChangeCoverFolderDialog from "../../ChangeCoverFolderDialog";
-import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/images";
+import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/files";
 
-export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWithImagesCount>[] = [
+export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWithFilesCount>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -115,7 +115,7 @@ export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWit
         cell: ({ row }) => {
             const t = useTranslations("folders.views.list.columns.actions");
             const downloadT = useTranslations("folders.download");
-            const [folderImages, setFolderImages] = useState<(ImageWithFolder & ImageWithComments)[]>([]);
+            const [folderImages, setFolderImages] = useState<(FileWithFolder & FileWithComments)[]>([]);
 
             const loadImages = useCallback(async () => {
                 setFolderImages((await getImagesWithFolderAndCommentsFromFolder(row.original.id)).images);

@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
-import { ImageWithComments, ImageWithFolder } from "@/lib/definitions";
+import { FileWithComments, FileWithFolder } from "@/lib/definitions";
 import { downloadClientImageHandler, formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import Image from "next/image";
 import RenameImageDialog from "../../RenameImageDialog";
 import { DeleteImageDialog } from "../../DeleteImageDialog";
@@ -14,6 +14,7 @@ import React, { useState, useMemo, useCallback } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { changeFolderCover } from "@/actions/folders";
 import LoadingImage from "@/components/LoadingImage";
+import { FileType } from "@prisma/client";
 
 // Memoized dropdown menu component
 const ImageActionsDropdown = React.memo(({
@@ -88,7 +89,7 @@ const ImageActionsDropdown = React.memo(({
 
 ImageActionsDropdown.displayName = 'ImageActionsDropdown';
 
-export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComments>[] = [
+export const imagesListViewColumns: ColumnDef<FileWithFolder & FileWithComments>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -123,9 +124,9 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
 
             return <div className="truncate font-medium flex items-center gap-2">
                 <div className="relative w-[40px] h-[40px]">
-                    {row.original.type === "video"
+                    {row.original.type === FileType.VIDEO
                         ? <LoadingImage
-                            src={`/api/folders/${row.original.folder?.id || ''}/videos/${row.original.id || ''}/thumbnail`}
+                            src={`/api/folders/${row.original.folder.id}/videos/${row.original.id}/thumbnail`}
                             width={40}
                             height={40}
                             alt={row.getValue("name") || ''}
@@ -137,7 +138,7 @@ export const imagesListViewColumns: ColumnDef<ImageWithFolder & ImageWithComment
                         // blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZjBmMGYwIi8+PC9zdmc+"
                         />
                         : <LoadingImage
-                            src={`/api/folders/${row.original.folder?.id || ''}/images/${row.original.id || ''}`}
+                            src={`/api/folders/${row.original.folder.id}/images/${row.original.id}`}
                             width={40}
                             height={40}
                             alt={row.getValue("name") || ''}

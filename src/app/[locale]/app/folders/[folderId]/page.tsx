@@ -2,11 +2,9 @@ import { FolderContent } from "@/components/folders/FolderContent";
 import { getFolderFull } from "@/actions/folders";
 import { getCurrentSession } from "@/lib/session";
 import UnlockTokenPrompt from "@/components/folders/UnlockTokenPrompt";
-import { ArrowRight, FolderSearch, View } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { getSortedFolderContent } from "@/lib/utils";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
 import { Link, redirect } from "@/i18n/navigation";
 import { ViewState } from "@/components/folders/ViewSelector";
 import { getTranslations } from "next-intl/server";
@@ -90,7 +88,7 @@ export default async function FolderPage({ params, searchParams }: { params: { f
         <>
             {folderData.folder
                 ? <FolderContent
-                    folder={getSortedFolderContent(folderData.folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments & FolderWithAccessToken & FolderWithCreatedBy}
+                    folder={getSortedFolderContent(folderData.folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithFilesWithFolderAndComments & FolderWithAccessToken & FolderWithCreatedBy}
                     defaultView={searchParams.view}
                     isGuest={!session}
                 />

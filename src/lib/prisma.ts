@@ -28,33 +28,7 @@ const prismaClientSingleton = () => {
                     });
                 }
             },
-            image: {
-                create: async ({ args, operation, model, query }) => {
-                    const result = await query(args);
-                    await prisma.folder.update({
-                        where: { id: args.data.folderId },
-                        data: { size: { increment: args.data.size } }
-                    });
-                    await prisma.user.update({
-                        where: { id: args.data.createdById },
-                        data: { usedStorage: { increment: args.data.size } }
-                    });
-                    return result;
-                },
-                delete: async ({ args, operation, model, query }) => {
-                    const result = await query(args);
-                    await prisma.folder.update({
-                        where: { id: result.folderId },
-                        data: { size: { decrement: result.size } }
-                    });
-                    await prisma.user.update({
-                        where: { id: result.createdById },
-                        data: { usedStorage: { decrement: result.size } }
-                    });
-                    return result;
-                }
-            },
-            video: {
+            file: {
                 create: async ({ args, operation, model, query }) => {
                     const result = await query(args);
                     await prisma.folder.update({

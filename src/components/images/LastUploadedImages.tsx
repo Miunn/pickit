@@ -7,9 +7,9 @@ import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleIm
 import React, { Fragment, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { ImageWithComments, ImageWithFolder, VideoWithComments, VideoWithFolder } from "@/lib/definitions";
+import { FileWithComments, FileWithFolder } from "@/lib/definitions";
 
-export const LastUploadedImages = ({ files }: { files: ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[] }) => {
+export const LastUploadedImages = ({ files }: { files: (FileWithFolder & FileWithComments)[] }) => {
     const t = useTranslations("pages.dashboard.images");
 
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);
@@ -99,7 +99,7 @@ export const LastUploadedImages = ({ files }: { files: ((ImageWithFolder & Image
 
             <CarouselDialog files={files} title={"Last uploaded files"} carouselOpen={carouselOpen}
                 setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
-            <DeleteMultipleImagesDialog images={selected} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
+            <DeleteMultipleImagesDialog files={files.filter((file) => selected.includes(file.id))} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
                 setSelected([]);
                 setSizeSelected(0);
                 setSelecting(false);

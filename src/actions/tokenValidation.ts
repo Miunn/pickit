@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { FolderTokenPermission } from "@prisma/client";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
 import * as bcrypt from "bcryptjs";
 
 export async function validateShareToken(
@@ -12,7 +12,7 @@ export async function validateShareToken(
   hashedPinCode?: string | null
 ): Promise<{ 
   error: string | null, 
-  folder: (FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments & FolderWithAccessToken) | null, 
+  folder: (FolderWithCreatedBy & FolderWithFilesWithFolderAndComments & FolderWithAccessToken) | null, 
   permission?: FolderTokenPermission 
 }> {
   if (!prisma) {
@@ -32,13 +32,7 @@ export async function validateShareToken(
       include: {
         folder: {
           include: {
-            images: {
-              include: {
-                folder: true,
-                comments: { include: { createdBy: true } }
-              }
-            },
-            videos: {
+            files: {
               include: {
                 folder: true,
                 comments: { include: { createdBy: true } }
@@ -64,13 +58,7 @@ export async function validateShareToken(
       include: {
         folder: {
           include: {
-            images: {
-              include: {
-                folder: true,
-                comments: { include: { createdBy: true } }
-              }
-            },
-            videos: {
+            files: {
               include: {
                 folder: true,
                 comments: { include: { createdBy: true } }
@@ -117,7 +105,7 @@ export async function getFolderFullFromAccessTokenServer(
   type: "accessToken" | "personAccessToken"
 ): Promise<{ 
   error: string | null, 
-  folder: (FolderWithImagesWithFolderAndComments & FolderWithCreatedBy) | null 
+  folder: (FolderWithFilesWithFolderAndComments & FolderWithCreatedBy) | null 
 }> {
   if (!prisma) {
     return { error: "Database connection error", folder: null };
@@ -137,7 +125,7 @@ export async function getFolderFullFromAccessTokenServer(
       include: {
         folder: { 
           include: { 
-            images: { 
+            files: { 
               include: { 
                 folder: true, 
                 comments: { include: { createdBy: true } } 
@@ -160,7 +148,7 @@ export async function getFolderFullFromAccessTokenServer(
       include: {
         folder: { 
           include: { 
-            images: { 
+            files: { 
               include: { 
                 folder: true, 
                 comments: { include: { createdBy: true } } 

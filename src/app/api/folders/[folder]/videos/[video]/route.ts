@@ -62,7 +62,7 @@ export async function GET(req: NextRequest, { params }: { params: { video: strin
             }
         }
 
-        const video = await prisma.video.findUnique({
+        const video = await prisma.file.findUnique({
             where: {
                 id: params.video,
                 folder: {
@@ -82,7 +82,7 @@ export async function GET(req: NextRequest, { params }: { params: { video: strin
         res.headers.set('Content-Type', `video/${video.extension}`);
         return res;
     } else if (user) {
-        const video = await prisma.video.findUnique({
+        const video = await prisma.file.findUnique({
             where: {
                 id: params.video,
                 createdBy: {

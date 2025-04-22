@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
-import { ImageWithComments, ImageWithFolder, VideoWithComments, VideoWithFolder } from "@/lib/definitions";
+import { FileWithComments, FileWithFolder } from "@/lib/definitions";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Braces, Check, Copy, Download, Expand, ExternalLink, Loader2, Pencil } from "lucide-react";
@@ -12,12 +12,12 @@ import ImageCommentSection from "./ImageCommentSection";
 import { useSearchParams } from "next/navigation";
 import ImageExif from "./ImageExif";
 import EditDescriptionDialog from "./EditDescriptionDialog";
-import { Role } from "@prisma/client";
+import { Role, FileType } from "@prisma/client";
 import { useSession } from "@/providers/SessionProvider";
 import LoadingImage from "../LoadingImage";
 import FullScreenImageCarousel from "./FullScrenImageCarousel";
 
-export default function ImagesCarousel({ files, startIndex, currentIndex, setCurrentIndex }: { files: ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[], startIndex: number, currentIndex?: number, setCurrentIndex?: React.Dispatch<React.SetStateAction<number>> }) {
+export default function ImagesCarousel({ files, startIndex, currentIndex, setCurrentIndex }: { files: (FileWithFolder & FileWithComments)[], startIndex: number, currentIndex?: number, setCurrentIndex?: React.Dispatch<React.SetStateAction<number>> }) {
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
@@ -70,15 +70,15 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                     </Button>
                     <Button variant={"outline"} size={"icon"} type="button" onClick={async () => {
                         setDownloading(true);
-                        await downloadClientImageHandler(files.at(currentIndexState - 1) as ImageWithFolder | VideoWithFolder);
+                        await downloadClientImageHandler(files.at(currentIndexState - 1) as FileWithFolder);
                         setDownloading(false);
                     }} disabled={downloading}>
                         {downloading
                             ? <Loader2 className="w-4 h-4 animate-spin" />
                             : <Download className="w-4 h-4" />}
                     </Button>
-                    <Button className={files.at(currentIndexState - 1)?.type === "video" ? "hidden" : ""} variant={"outline"} size={"icon"} type="button" onClick={async () => {
-                        if (files.at(currentIndexState - 1)?.type === "video") {
+                    <Button className={files.at(currentIndexState - 1)?.type === FileType.VIDEO ? "hidden" : ""} variant={"outline"} size={"icon"} type="button" onClick={async () => {
+                        if (files.at(currentIndexState - 1)?.type === FileType.VIDEO) {
                             toast({
                                 title: t('actions.copy.errors.video-copy-unavailable.title'),
                                 description: t('actions.copy.errors.video-copy-unavailable.description'),
@@ -119,7 +119,7 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                     {files.map((file) => (
                         <CarouselItem key={file.id} className="h-fit">
                             <div className={`${commentSectionOpen ? "h-44" : "h-96"} relative flex justify-center items-center p-2 transition-all duration-300 ease-in-out`}>
-                                {'type' in file && file.type === 'video'
+                                {file.type === FileType.VIDEO
                                     ? <video className={`${commentSectionOpen ? "h-44" : "h-96"} max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out`} controls src={`/api/folders/${file.folder.id}/videos/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} />
                                     : <LoadingImage src={`/api/folders/${file.folder.id}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
                                         alt={file.name} className={`${commentSectionOpen ? "h-44" : "h-96"} max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out`} width={900} height={384} spinnerClassName="w-10 h-10 text-primary" />

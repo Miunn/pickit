@@ -13,12 +13,12 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { deleteImage } from "@/actions/images";
+import { deleteFile } from "@/actions/files";
 import { toast } from "@/hooks/use-toast";
 import { useSearchParams } from "next/navigation";
-import { ImageWithFolder, VideoWithFolder } from "@/lib/definitions";
+import { FileWithFolder } from "@/lib/definitions";
 
-export const DeleteImageDialog = ({ file, children, open, setOpen }: { file: ImageWithFolder | VideoWithFolder, children?: React.ReactNode, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
+export const DeleteImageDialog = ({ file, children, open, setOpen }: { file: FileWithFolder, children?: React.ReactNode, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
     const t = useTranslations("dialogs.images.delete");
     const [deleting, setDeleting] = useState(false);
@@ -43,7 +43,7 @@ export const DeleteImageDialog = ({ file, children, open, setOpen }: { file: Ima
                     </DialogClose>
                     <Button onClick={async () => {
                         setDeleting(true);
-                        const r = await deleteImage(file.folderId, file.id, file.type, searchParams.get("share") || undefined, searchParams.get("h") || undefined, searchParams.get("t") || undefined);
+                        const r = await deleteFile(file.folderId, file.id, searchParams.get("share") || undefined, searchParams.get("h") || undefined, searchParams.get("t") || undefined);
                         setDeleting(false);
                         
                         if (r.error) {

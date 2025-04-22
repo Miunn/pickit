@@ -7,20 +7,20 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { ImageWithFolder, VideoWithFolder, EditDescriptionFormSchema } from "@/lib/definitions";
+import { FileWithFolder, EditDescriptionFormSchema } from "@/lib/definitions";
 import { Textarea } from "../ui/textarea";
-import { updateImageDescription } from "@/actions/images";
+import { updateFileDescription } from "@/actions/files";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-
+import { FileType } from "@prisma/client";
 export default function EditDescriptionDialog({
     file,
     open,
     setOpen,
     children
 }: {
-    file: ImageWithFolder | VideoWithFolder,
+    file: FileWithFolder,
     open?: boolean,
     setOpen?: React.Dispatch<React.SetStateAction<boolean>>,
     children?: React.ReactNode
@@ -39,7 +39,7 @@ export default function EditDescriptionDialog({
 
     const onSubmit = async (data: z.infer<typeof EditDescriptionFormSchema>) => {
         console.log("Updating image description", file.id, data.description);
-        const response = await updateImageDescription(file.id, data.description);
+        const response = await updateFileDescription(file.id, data.description);
 
         if (response.error) {
             toast.error(t('errors.unknown.description'));
@@ -85,7 +85,7 @@ export default function EditDescriptionDialog({
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        {t('form.description.help', { fileType: file.type === 'image' ? t('form.description.fileType.image') : t('form.description.fileType.video') })}
+                                        {t('form.description.help', { fileType: file.type === FileType.IMAGE ? t('form.description.fileType.image') : t('form.description.fileType.video') })}
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

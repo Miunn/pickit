@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { Folder, Image, Video } from "@prisma/client";
-import { FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolderAndComments, FolderWithVideos, FolderWithVideosWithFolderAndComments, ImageWithFolder, VideoWithFolder } from "./definitions";
+import { Folder, File, FileType } from "@prisma/client";
+import { FolderWithCreatedBy, FolderWithFilesWithFolderAndComments, FileWithFolder, FolderWithImages } from "./definitions";
 import { toast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner"
 import { ImagesSortMethod } from "@/components/folders/SortImages";
@@ -71,8 +71,8 @@ export const copyImageToClipboard = async (folderId: string, imageId: string, sh
 	return true;
 }
 
-export const downloadClientImageHandler = async (file: ImageWithFolder | VideoWithFolder) => {
-	const r = await fetch(`/api/folders/${file.folder.id}/${file.type === 'video' ? 'videos' : 'images'}/${file.id}/download`);
+export const downloadClientImageHandler = async (file: FileWithFolder) => {
+	const r = await fetch(`/api/folders/${file.folder.id}/${file.type === FileType.VIDEO ? 'videos' : 'images'}/${file.id}/download`);
 
 	if (r.status === 404) {
 		toast({
@@ -94,8 +94,8 @@ export const downloadClientImageHandler = async (file: ImageWithFolder | VideoWi
 	saveAs(await r.blob(), `${file.name}.${file.extension}`);
 }
 
-export const downloadClientFolder = async (folder: Folder | FolderWithImages | FolderWithVideos, t: any, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashPinCode?: string) => {
-	let folderWithImagesAndVideos: FolderWithImages & FolderWithVideos;
+export const downloadClientFolder = async (folder: Folder | FolderWithFilesWithFolderAndComments, t: any, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashPinCode?: string) => {
+	let folderWithImagesAndVideos: FolderWithFilesWithFolderAndComments;
 	if (!('images' in folder) || !('videos' in folder)) {
 		const r = await getFolderFull(folder.id, shareToken, tokenType, hashPinCode);
 
@@ -110,7 +110,7 @@ export const downloadClientFolder = async (folder: Folder | FolderWithImages | F
 
 		folderWithImagesAndVideos = r.folder;
 	} else {
-		folderWithImagesAndVideos = folder as FolderWithImages & FolderWithVideos;
+		folderWithImagesAndVideos = folder as FolderWithFilesWithFolderAndComments;
 	}
 
 	sonnerToast(
@@ -131,15 +131,15 @@ export const downloadClientFolder = async (folder: Folder | FolderWithImages | F
 	)
 
 	const zip = new JSZip();
-	const totalFiles = folderWithImagesAndVideos.images.length + folderWithImagesAndVideos.videos.length;
+	const totalFiles = folderWithImagesAndVideos.files.length;
 
-	for (let i = 0; i < folderWithImagesAndVideos.images.length; i++) {
-		const image = folderWithImagesAndVideos.images[i];
-		const r = await fetch(`/api/folders/${folder.id}/images/${image.id}/download`);
+	for (let i = 0; i < folderWithImagesAndVideos.files.length; i++) {
+		const file = folderWithImagesAndVideos.files[i];
+		const r = await fetch(`/api/folders/${folder.id}/${file.type === FileType.VIDEO ? 'videos' : 'images'}/${file.id}/download`);
 
 		const buffer = await r.arrayBuffer();
 
-		zip.file(`${image.name}-${image.createdAt.getTime()}.${image.extension}`, buffer);
+		zip.file(`${file.name}-${file.createdAt.getTime()}.${file.extension}`, buffer);
 
 		sonnerToast(
 			<div className="w-full">{ t('ongoing.title') }</div>,
@@ -153,13 +153,13 @@ export const downloadClientFolder = async (folder: Folder | FolderWithImages | F
 		)
 	}
 
-	for (let i = 0; i < folderWithImagesAndVideos.videos.length; i++) {
-		const video = folderWithImagesAndVideos.videos[i];
-		const r = await fetch(`/api/folders/${folder.id}/videos/${video.id}/download`);
+	for (let i = 0; i < folderWithImagesAndVideos.files.length; i++) {
+		const file = folderWithImagesAndVideos.files[i];
+		const r = await fetch(`/api/folders/${folder.id}/${file.type === FileType.VIDEO ? 'videos' : 'images'}/${file.id}/download`);
 
 		const buffer = await r.arrayBuffer();
 
-		zip.file(`${video.name}-${video.createdAt.getTime()}.${video.extension}`, buffer);
+		zip.file(`${file.name}-${file.createdAt.getTime()}.${file.extension}`, buffer);
 
 		sonnerToast(
 			<div className="w-full">{ t('ongoing.title') }</div>,
@@ -184,44 +184,44 @@ export const downloadClientFolder = async (folder: Folder | FolderWithImages | F
 	saveAs(zipData, `${folder.name}.zip`);
 }
 
-export const getSortedFolderContent = (folderContent: FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments, sort: ImagesSortMethod): FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments => {
+export const getSortedFolderContent = (folderContent: FolderWithFilesWithFolderAndComments, sort: ImagesSortMethod): FolderWithFilesWithFolderAndComments => {
 	switch (sort) {
 		case ImagesSortMethod.NameAsc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => a.name.localeCompare(b.name) || a.createdAt.getTime() - b.createdAt.getTime())
+				files: folderContent.files.sort((a, b) => a.name.localeCompare(b.name) || a.createdAt.getTime() - b.createdAt.getTime())
 			}
 		case ImagesSortMethod.NameDesc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => b.name.localeCompare(a.name) || a.createdAt.getTime() - b.createdAt.getTime())
+				files: folderContent.files.sort((a, b) => b.name.localeCompare(a.name) || a.createdAt.getTime() - b.createdAt.getTime())
 			}
 		case ImagesSortMethod.SizeAsc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => a.size - b.size || a.name.localeCompare(b.name))
+				files: folderContent.files.sort((a, b) => a.size - b.size || a.name.localeCompare(b.name))
 			}
 		case ImagesSortMethod.SizeDesc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => b.size - a.size || a.name.localeCompare(b.name))
+				files: folderContent.files.sort((a, b) => b.size - a.size || a.name.localeCompare(b.name))
 			}
 		case ImagesSortMethod.DateAsc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime() || a.name.localeCompare(b.name))
+				files: folderContent.files.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime() || a.name.localeCompare(b.name))
 			}
 		case ImagesSortMethod.DateDesc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime() || a.name.localeCompare(b.name))
+				files: folderContent.files.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime() || a.name.localeCompare(b.name))
 			}
 		default:
 			return folderContent;
 	}
 }
 
-export const getSortedImagesVideosContent = (arr: (Image | Video)[], sort: ImagesSortMethod): (Image | Video)[] => {
+export const getSortedImagesVideosContent = (arr: FileWithFolder[], sort: ImagesSortMethod): FileWithFolder[] => {
 	switch (sort) {
 		case ImagesSortMethod.NameAsc:
 			return arr.sort((a, b) => a.name.localeCompare(b.name) || a.createdAt.getTime() - b.createdAt.getTime())
@@ -235,20 +235,20 @@ export const getSortedImagesVideosContent = (arr: (Image | Video)[], sort: Image
 			return arr.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime() || a.name.localeCompare(b.name))
 		case ImagesSortMethod.DateDesc:
 			return arr.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime() || a.name.localeCompare(b.name))
+		case ImagesSortMethod.PositionAsc:
+			return arr.sort((a, b) => a.position - b.position)
+		case ImagesSortMethod.PositionDesc:
+			return arr.sort((a, b) => b.position - a.position)
 		default:
 			return arr;
 	}
 }
 
 export const getFolderFullFromAccessToken = async (folderId: string, token: string, type: "accessToken" | "personAccessToken"):
-	Promise<{ error: string | null, folder: (FolderWithImagesWithFolderAndComments & FolderWithCreatedBy) | null }> => {
+	Promise<{ error: string | null, folder: (FolderWithFilesWithFolderAndComments & FolderWithCreatedBy) | null }> => {
 	return getFolderFullFromAccessTokenServer(folderId, token, type);
 }
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
-}
-
-export function computeUsedStorage(folders: FolderWithImages[]): number {
-	return folders.reduce((acc, folder) => acc + folder.images.reduce((acc, image) => acc + image.size, 0), 0)
 }

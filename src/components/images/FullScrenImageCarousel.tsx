@@ -1,13 +1,12 @@
-import { FolderWithImagesWithFolderAndComments, VideoWithFolder, VideoWithComments, ImageWithComments, ImageWithFolder } from "@/lib/definitions";
+import { FileWithFolder, FileWithComments } from "@/lib/definitions";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { useTranslations } from "next-intl";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import LoadingImage from "../LoadingImage";
-
+import { FileType } from "@prisma/client";
 export default function FullScreenImageCarousel({ 
     files,
     defaultIndex,
@@ -16,7 +15,7 @@ export default function FullScreenImageCarousel({
     setOpen,
     parentCarouselApi
 }: { 
-    files: ((ImageWithFolder & ImageWithComments) | (VideoWithFolder & VideoWithComments))[],
+    files: (FileWithFolder & FileWithComments)[],
     defaultIndex: number,
     children?: React.ReactNode,
     open?: boolean,
@@ -73,7 +72,7 @@ export default function FullScreenImageCarousel({
                             {files.map((file) => (
                                 <CarouselItem key={file.id} className="h-full">
                                     <div className="relative h-full w-full flex justify-center items-center p-2">
-                                        {'type' in file && file.type === 'video'
+                                        {file.type === FileType.VIDEO
                                             ? <video className="h-full w-full max-h-dvh object-contain" controls src={`/api/folders/${file.folder.id}/videos/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} />
                                             : <LoadingImage src={`/api/folders/${file.folder.id}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
                                                 alt={file.name} className="h-full w-full max-h-dvh object-contain" width={1920} height={1080} spinnerClassName="w-10 h-10 text-primary" />

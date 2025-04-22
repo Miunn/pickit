@@ -1,4 +1,4 @@
-import { ImageWithFolder, VideoWithFolder } from "@/lib/definitions";
+import { FileWithFolder } from "@/lib/definitions";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
@@ -10,8 +10,9 @@ import { toast } from "@/hooks/use-toast";
 import { Check, Loader2 } from "lucide-react";
 import saveAs from "file-saver";
 import { DeleteImageDialog } from "./DeleteImageDialog";
+import { FileType } from "@prisma/client";
 
-export default function ImagePropertiesDialog({ file, open, setOpen }: { file: ImageWithFolder | VideoWithFolder, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ImagePropertiesDialog({ file, open, setOpen }: { file: FileWithFolder, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const t = useTranslations("dialogs.images.properties");
     const formatter = useFormatter();
@@ -23,7 +24,7 @@ export default function ImagePropertiesDialog({ file, open, setOpen }: { file: I
 
     const downloadImageHandler = async () => {
         setIsDownloading(true);
-        const r = await fetch(`/api/folders/${file.folder.id}/${file.type === 'video' ? 'videos' : 'images'}/${file.id}/download`);
+        const r = await fetch(`/api/folders/${file.folder.id}/${file.type === FileType.VIDEO ? 'videos' : 'images'}/${file.id}/download`);
         setIsDownloading(false);
         if (r.status === 404) {
             toast({
