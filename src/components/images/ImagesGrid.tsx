@@ -80,10 +80,6 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
     );
 
     useEffect(() => {
-        console.log("Use effect sorted files", sortedFiles.map(item => item.size));
-    }, [sortedFiles]);
-
-    useEffect(() => {
         if (selected.length === 0) {
             setSelecting(false);
             setSizeSelected(0);
@@ -120,7 +116,6 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
 
     const handleDragEnd = async (event: DragEndEvent) => {
         const { active, over } = event;
-        console.log("drag end", active, over);
         if (!over) return;
 
         const activeId = String(active.id);
@@ -143,17 +138,12 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
                 const oldIndex = currentOrder.indexOf(activeId);
                 const newIndex = currentOrder.indexOf(overId);
 
-                console.log("oldIndex", oldIndex);
-                console.log("newIndex", newIndex);
-
                 if (oldIndex === -1) {
                     // If item wasn't in the order, add it at the new position
                     const newOrder = [...currentOrder];
                     newOrder.splice(newIndex, 0, activeId);
                     return newOrder;
                 }
-
-                console.log("arrayMove", arrayMove(currentOrder, oldIndex, newIndex));
 
                 setSortStrategy('dragOrder');
                 const orderedIds = arrayMove(currentOrder, oldIndex, newIndex);
