@@ -90,6 +90,7 @@
   "pages": {
     "landing": {
       "hero": {
+        "introduction": "Introduction du tri personnalisé de vos fichiers",
         "title": "Sauvegardez des moments de vie",
         "description": "Sauvegardez vos photos, organisez vos albums et partagez vos souvenirs. Ne laissez plus aucun souvenir s'échapper",
         "getStarted": "Commencer",

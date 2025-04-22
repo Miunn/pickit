@@ -34,7 +34,7 @@ export default function ClientPage() {
                                 )}
                             >
                                 <AnimatedShinyText className="inline-flex items-center justify-center transition ease-out text-neutral-200 hover:text-neutral-100 hover:duration-300 dark:text-neutral-300 hover:dark:text-neutral-200 bg-gradient-to-r from-primary to-accent dark:from-primary dark:to-accent">
-                                    <span>✨ Introducing Chat with your albums</span>
+                                    <span>✨ {t('hero.introduction')}</span>
                                     <ArrowRightIcon className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
                                 </AnimatedShinyText>
                             </div>
