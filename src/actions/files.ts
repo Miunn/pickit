@@ -367,7 +367,8 @@ export async function updateFileDescription(fileId: string, description: string)
     return { error: null };
 }
 
-export async function updateFilePosition(fileId: string, previousId: string, nextId: string): Promise<{ error: string | null }> {
+export async function updateFilePosition(fileId: string, previousId?: string, nextId?: string): Promise<{ error: string | null }> {
+    console.log("Updating file position", fileId, previousId, nextId);
     const { user } = await getCurrentSession();
 
     if (!user) {
@@ -378,32 +379,61 @@ export async function updateFilePosition(fileId: string, previousId: string, nex
         where: { id: fileId, createdById: user.id }
     });
 
-    const previousFile = await prisma.file.findUnique({
-        where: { id: previousId, createdById: user.id }
-    });
+    let previousFile = null;
+    let nextFile = null;
 
-    const nextFile = await prisma.file.findUnique({
-        where: { id: nextId, createdById: user.id }
-    });
+    if (previousId) {
+        previousFile = await prisma.file.findUnique({
+            where: { id: previousId, createdById: user.id }
+        });
+    }
 
-    if (!file || !previousFile || !nextFile) {
+    if (nextId) {
+        nextFile = await prisma.file.findUnique({
+            where: { id: nextId, createdById: user.id }
+        });
+    }
+
+    if (!file || (previousId && !previousFile) || (nextId && !nextFile)) {
         return { error: "File not found" };
     }
 
-    if (previousFile.folderId !== file.folderId || nextFile.folderId !== file.folderId) {
+    if ((previousFile && previousFile.folderId !== file.folderId) || (nextFile && nextFile.folderId !== file.folderId)) {
         return { error: "File not found" };
     }
 
-    if (previousFile.position >= nextFile.position) {
+    if (previousFile && nextFile && previousFile.position >= nextFile.position) {
         return { error: "Previous file position must be less than next file position" };
     }
 
-    if (nextFile.position - previousFile.position < 2) {
+    if (nextFile && previousFile && nextFile.position - previousFile.position < 2) {
         await reNormalizePositions(file.folderId);
         return updateFilePosition(fileId, previousId, nextId);
     }
 
-    const position = (nextFile.position + previousFile.position) / 2;
+
+    let position = 1;
+    // Handle start inserting edge case
+    if (!previousFile && nextFile && nextFile.position < 2) {
+        console.log("Re normalizing positions as first file is at position", nextFile.position);
+        await reNormalizePositions(file.folderId);
+        position = 500;
+    } else if (!previousFile && nextFile) {
+        console.log("Set as first with position", nextFile.position / 2);
+        position = nextFile.position / 2;
+    }
+    
+    if (!nextFile && previousFile) {
+        console.log("Set as last with position", previousFile.position + 1000);
+        position = previousFile.position + 1000;
+    }
+
+    if (previousFile && nextFile) {
+        console.log("Set in the middle with position", (nextFile.position + previousFile.position) / 2);
+        position = (nextFile.position + previousFile.position) / 2;
+    }
+
+    console.log("Position", position);
 
     try {
         await prisma.file.update({
@@ -648,11 +678,11 @@ async function reNormalizePositions(folderId: string) {
         where: { folderId },
         orderBy: { position: "asc" }
     });
-    
+
     for (let i = 0; i < files.length; i++) {
         await prisma.file.update({
             where: { id: files[i].id },
-            data: { position: i * 1000 }
+            data: { position: 1000 + i * 1000 }
         });
     }
 }

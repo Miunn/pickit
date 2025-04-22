@@ -16,6 +16,7 @@ import { useSession } from "@/providers/SessionProvider";
 import DeleteDescriptionDialog from "../folders/DeleteDescriptionDialog";
 import { closestCenter, DndContext, DragEndEvent, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
+import { updateFilePosition } from "@/actions/files";
 
 export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithFolderAndComments, sortState: ImagesSortMethod }) => {
     const { user } = useSession();
@@ -31,11 +32,11 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
 
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
-    const [dragOrder, setDragOrder] = useState<string[]>(folder.files.map(item => item.id));
+    const [dragOrder, setDragOrder] = useState<string[]>(folder.files.sort((a, b) => a.position - b.position).map(item => item.id));
     const [activeId, setActiveId] = useState(null);
 
     const [sortStrategy, setSortStrategy] = useState<ImagesSortMethod | 'dragOrder'>(sortState);
-    const [sortedFiles, setSortedFiles] = useState<(FileWithFolder & FileWithComments)[]>([]);
+    const [sortedFiles, setSortedFiles] = useState<(FileWithFolder & FileWithComments)[]>(folder.files.sort((a, b) => a.position - b.position));
 
     useEffect(() => {
         if (sortStrategy !== 'dragOrder') {
@@ -113,7 +114,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
         }
     }
 
-    const handleDragEnd = (event: DragEndEvent) => {
+    const handleDragEnd = async (event: DragEndEvent) => {
         const { active, over } = event;
         console.log("drag end", active, over);
         if (!over) return;
@@ -122,6 +123,18 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
         const overId = String(over.id);
 
         if (activeId !== overId) {
+            const newIndex = dragOrder.indexOf(overId);
+
+            setTimeout(async () => {
+                if (newIndex === 0) {
+                    await updateFilePosition(activeId, undefined, dragOrder[0]);
+                } else if (newIndex === dragOrder.length - 1) {
+                    await updateFilePosition(activeId, dragOrder[newIndex]);
+                } else {
+                    await updateFilePosition(activeId, dragOrder[newIndex - 1], dragOrder[newIndex]);
+                }
+            }, 1000);
+
             setDragOrder((currentOrder) => {
                 const oldIndex = currentOrder.indexOf(activeId);
                 const newIndex = currentOrder.indexOf(overId);
@@ -139,8 +152,9 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
                 console.log("arrayMove", arrayMove(currentOrder, oldIndex, newIndex));
 
                 setSortStrategy('dragOrder');
+                const orderedIds = arrayMove(currentOrder, oldIndex, newIndex);
 
-                return arrayMove(currentOrder, oldIndex, newIndex);
+                return orderedIds;
             });
         }
 
