@@ -62,7 +62,7 @@ export async function GET(req: NextRequest, { params }: { params: { image: strin
             }
         }
 
-        const image = await prisma.image.findUnique({
+        const image = await prisma.file.findUnique({
             where: {
                 id: params.image,
                 folder: {
@@ -82,7 +82,7 @@ export async function GET(req: NextRequest, { params }: { params: { image: strin
         res.headers.set('Content-Type', `image/${image.extension}`);
         return res;
     } else if (user) {
-        const image = await prisma.image.findUnique({
+        const image = await prisma.file.findUnique({
             where: {
                 id: params.image,
                 createdBy: {

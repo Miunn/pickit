@@ -1,4 +1,4 @@
-import { FolderTokenPermission, Prisma } from '@prisma/client';
+import { FolderTokenPermission, Prisma, FileType } from '@prisma/client';
 import { z } from 'zod'
 
 export type SessionPayload = {
@@ -203,7 +203,7 @@ export type SignInFormState =
     | undefined
 
 const userAdministration = Prisma.validator<Prisma.UserDefaultArgs>()({
-    select: { id: true, name: true, email: true, emailVerified: true, emailVerificationDeadline: true, role: true, image: true, usedStorage: true, maxStorage: true, createdAt: true, updatedAt: true, _count: { select: { folders: true, images: true } } }
+    select: { id: true, name: true, email: true, emailVerified: true, emailVerificationDeadline: true, role: true, image: true, usedStorage: true, maxStorage: true, createdAt: true, updatedAt: true, _count: { select: { folders: true, files: true } } }
 });
 
 export type UserAdministration = Prisma.UserGetPayload<typeof userAdministration>
@@ -226,41 +226,35 @@ const folderWithCreatedBy = Prisma.validator<Prisma.FolderDefaultArgs>()({
 
 export type FolderWithCreatedBy = Prisma.FolderGetPayload<typeof folderWithCreatedBy>
 
+const folderWithFiles = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { files: true }
+})
+
+export type FolderWithFiles = Prisma.FolderGetPayload<typeof folderWithFiles>
+
 const folderWithImages = Prisma.validator<Prisma.FolderDefaultArgs>()({
-    include: { images: true }
+    include: { files: { where: { type: FileType.IMAGE } } }
 })
 
 export type FolderWithImages = Prisma.FolderGetPayload<typeof folderWithImages>
 
-const folderWithImagesWithFolder = Prisma.validator<Prisma.FolderDefaultArgs>()({
-    include: { images: { include: { folder: true } } },
+const folderWithFilesWithFolder = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { files: { include: { folder: true } } },
 })
 
-export type FolderWithImagesWithFolder = Prisma.FolderGetPayload<typeof folderWithImagesWithFolder>
+export type FolderWithFilesWithFolder = Prisma.FolderGetPayload<typeof folderWithFilesWithFolder>
 
-const folderWithImagesWithFolderAndComments = Prisma.validator<Prisma.FolderDefaultArgs>()({
-    include: { images: { include: { folder: true, comments: { include: { createdBy: true } } } } },
+const folderWithFilesWithFolderAndComments = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { files: { include: { folder: true, comments: { include: { createdBy: true } } } } },
 })
 
-export type FolderWithImagesWithFolderAndComments = Prisma.FolderGetPayload<typeof folderWithImagesWithFolderAndComments>
+export type FolderWithFilesWithFolderAndComments = Prisma.FolderGetPayload<typeof folderWithFilesWithFolderAndComments>
 
-const folderWithVideos = Prisma.validator<Prisma.FolderDefaultArgs>()({
-    include: { videos: true }
+const folderWithFilesWithFolderAndCommentsAndCreatedBy = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { files: { include: { folder: true, comments: { include: { createdBy: true } } } } },
 })
 
-export type FolderWithVideos = Prisma.FolderGetPayload<typeof folderWithVideos>
-
-const folderWithVideosWithFolder = Prisma.validator<Prisma.FolderDefaultArgs>()({
-    include: { videos: { include: { folder: true } } },
-})
-
-export type FolderWithVideosWithFolder = Prisma.FolderGetPayload<typeof folderWithVideosWithFolder>
-
-const folderWithVideosWithFolderAndComments = Prisma.validator<Prisma.FolderDefaultArgs>()({
-    include: { videos: { include: { folder: true, comments: { include: { createdBy: true } } } } },
-})
-
-export type FolderWithVideosWithFolderAndComments = Prisma.FolderGetPayload<typeof folderWithVideosWithFolderAndComments>
+export type FolderWithFilesWithFolderAndCommentsAndCreatedBy = Prisma.FolderGetPayload<typeof folderWithFilesWithFolderAndCommentsAndCreatedBy>
 
 const folderWithAccessToken = Prisma.validator<Prisma.FolderDefaultArgs>()({
     include: { AccessToken: true }
@@ -274,17 +268,11 @@ const folderWithPersonAccessToken = Prisma.validator<Prisma.FolderDefaultArgs>()
 
 export type FolderWithPersonAccessToken = Prisma.FolderGetPayload<typeof folderWithPersonAccessToken>
 
-const folderWithImagesCount = Prisma.validator<Prisma.FolderDefaultArgs>()({
-    include: { _count: { select: { images: true } } }
+const folderWithFilesCount = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { _count: { select: { files: true } } }
 })
 
-export type FolderWithImagesCount = Prisma.FolderGetPayload<typeof folderWithImagesCount>
-
-const folderWithVideosCount = Prisma.validator<Prisma.FolderDefaultArgs>()({
-    include: { _count: { select: { videos: true } } }
-})
-
-export type FolderWithVideosCount = Prisma.FolderGetPayload<typeof folderWithVideosCount>
+export type FolderWithFilesCount = Prisma.FolderGetPayload<typeof folderWithFilesCount>
 
 const folderWithCover = Prisma.validator<Prisma.FolderDefaultArgs>()({
     include: { cover: true }
@@ -292,35 +280,35 @@ const folderWithCover = Prisma.validator<Prisma.FolderDefaultArgs>()({
 
 export type FolderWithCover = Prisma.FolderGetPayload<typeof folderWithCover>
 
-const imageLight = Prisma.validator<Prisma.ImageDefaultArgs>()({
+const fileLight = Prisma.validator<Prisma.FileDefaultArgs>()({
     select: { id: true, name: true, folder: { select: { id: true, name: true } } }
 })
 
-export type ImageLightWithFolderName = Prisma.ImageGetPayload<typeof imageLight>
+export type FileLightWithFolderName = Prisma.FileGetPayload<typeof fileLight>
 
-const imageWithFolder = Prisma.validator<Prisma.ImageDefaultArgs>()({
+const fileWithFolder = Prisma.validator<Prisma.FileDefaultArgs>()({
     include: { folder: true },
 })
 
-export type ImageWithFolder = Prisma.ImageGetPayload<typeof imageWithFolder>
+export type FileWithFolder = Prisma.FileGetPayload<typeof fileWithFolder>
 
-const imageWithComments = Prisma.validator<Prisma.ImageDefaultArgs>()({
+const fileWithComments = Prisma.validator<Prisma.FileDefaultArgs>()({
     include: { comments: { include: { createdBy: true } } },
 })
 
-export type ImageWithComments = Prisma.ImageGetPayload<typeof imageWithComments>
+export type FileWithComments = Prisma.FileGetPayload<typeof fileWithComments>
 
-const videoWithFolder = Prisma.validator<Prisma.VideoDefaultArgs>()({
-    include: { folder: true },
+const fileWithFolderWithCreatedBy = Prisma.validator<Prisma.FileDefaultArgs>()({
+    include: { folder: { include: { createdBy: true } } },
 })
 
-export type VideoWithFolder = Prisma.VideoGetPayload<typeof videoWithFolder>
+export type FileWithFolderWithCreatedBy = Prisma.FileGetPayload<typeof fileWithFolderWithCreatedBy>
 
-const videoWithComments = Prisma.validator<Prisma.VideoDefaultArgs>()({
+const fileWithCommentsWithCreatedBy = Prisma.validator<Prisma.FileDefaultArgs>()({
     include: { comments: { include: { createdBy: true } } },
 })
 
-export type VideoWithComments = Prisma.VideoGetPayload<typeof videoWithComments>
+export type FileWithCommentsWithCreatedBy = Prisma.FileGetPayload<typeof fileWithCommentsWithCreatedBy>
 
 const accessTokenWithFolder = Prisma.validator<Prisma.AccessTokenDefaultArgs>()({
     include: { folder: true },

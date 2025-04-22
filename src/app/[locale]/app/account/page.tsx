@@ -33,7 +33,7 @@ export default async function AccountPage({ params }: { params: { locale: string
             size: true,
             createdAt: true,
             _count: {
-                select: { images: true }
+                select: { files: true }
             }
         },
     });

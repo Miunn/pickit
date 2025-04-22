@@ -33,13 +33,11 @@ export default async function Home({ params }: { params: { locale: string } }) {
         include: {
             cover: true,
             AccessToken: true,
-            _count: {
-                select: { images: true, videos: true }
-            },
+            _count: { select: { files: true } },
         },
         take: 6,
     });
-    const lastFiles = (await prisma.image.findMany({
+    const lastFiles = (await prisma.file.findMany({
         where: {
             createdBy: { id: user.id }
         },
@@ -48,18 +46,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
         ] as any,
         include: { folder: true, comments: { include: { createdBy: true } } },
         take: 6,
-    })).concat(
-        await prisma.video.findMany({
-            where: {
-                createdBy: { id: user.id }
-            },
-            orderBy: [
-                { updatedAt: 'desc' },
-            ] as any,
-            include: { folder: true, comments: { include: { createdBy: true } } },
-            take: 6,
-        })
-    ).sort((a, b) => {
+    })).sort((a, b) => {
         return (b.updatedAt as Date).getTime() - (a.updatedAt as Date).getTime();
     }).slice(0, 6);
 

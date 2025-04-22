@@ -13,6 +13,8 @@ export enum ImagesSortMethod {
     SizeDesc = "size-desc",
     DateAsc = "date-asc",
     DateDesc = "date-desc",
+    PositionAsc = "position-asc",
+    PositionDesc = "position-desc",
 }
 
 export interface SortImagesProps {

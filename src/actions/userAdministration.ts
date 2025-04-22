@@ -32,7 +32,7 @@ export async function getUsers(): Promise<{
             _count: {
                 select: {
                     folders: true,
-                    images: true
+                    files: true
                 }
             }
         }
@@ -70,7 +70,7 @@ export async function getUser(userId: string): Promise<{
             _count: {
                 select: {
                     folders: true,
-                    images: true
+                    files: true
                 }
             }
         }

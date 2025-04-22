@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { UploadImagesDialog } from "@/components/images/UploadImagesDialog";
 import { ImagesGrid } from "@/components/images/ImagesGrid";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
 import SortImages, { ImagesSortMethod } from "./SortImages";
 import { useQueryState } from 'nuqs'
 import { downloadClientFolder } from "@/lib/utils";
@@ -17,7 +17,7 @@ import { useState } from "react";
 import EditDescriptionDialog from "./EditDescriptionDialog";
 
 export interface FolderContentProps {
-    folder: FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments & FolderWithAccessToken;
+    folder: FolderWithCreatedBy & FolderWithFilesWithFolderAndComments & FolderWithAccessToken;
     defaultView?: ViewState;
     isGuest?: boolean;
 }
