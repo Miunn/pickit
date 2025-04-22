@@ -39,6 +39,10 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
     const [sortedFiles, setSortedFiles] = useState<(FileWithFolder & FileWithComments)[]>(folder.files.sort((a, b) => a.position - b.position));
 
     useEffect(() => {
+        console.log("files init", folder.files.sort((a, b) => a.position - b.position).map(item => item.name));
+    }, [folder.files]);
+
+    useEffect(() => {
         if (sortStrategy !== 'dragOrder') {
             const sortedItems = [...getSortedImagesVideosContent(folder.files, sortState)] as (FileWithFolder & FileWithComments)[];
             setSortedFiles(sortedItems);

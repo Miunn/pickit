@@ -38,7 +38,7 @@ export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentPro
         }
     });
     const [sortState, setSortState] = useQueryState<ImagesSortMethod>('sort', {
-        defaultValue: ImagesSortMethod.DateDesc,
+        defaultValue: ImagesSortMethod.PositionAsc,
         parse: (v) => {
             switch (v) {
                 case "name-asc":
@@ -53,8 +53,12 @@ export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentPro
                     return ImagesSortMethod.DateAsc;
                 case "date-desc":
                     return ImagesSortMethod.DateDesc;
+                case "position-asc":
+                    return ImagesSortMethod.PositionAsc;
+                case "position-desc":
+                    return ImagesSortMethod.PositionDesc;
                 default:
-                    return ImagesSortMethod.DateDesc;
+                    return ImagesSortMethod.PositionAsc;
             }
         }
     });
