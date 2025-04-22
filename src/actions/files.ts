@@ -356,8 +356,6 @@ export async function updateFileDescription(fileId: string, description: string)
         return { error: "You must be logged in to update file description" };
     }
 
-    console.log("Updating file description", fileId, description);
-
     const image = await prisma.file.update({
         where: { id: fileId, createdBy: { id: user.id } },
         data: { description }
@@ -368,7 +366,6 @@ export async function updateFileDescription(fileId: string, description: string)
 }
 
 export async function updateFilePosition(fileId: string, previousId?: string, nextId?: string): Promise<{ error: string | null }> {
-    console.log("Updating file position", fileId, previousId, nextId);
     const { user } = await getCurrentSession();
 
     if (!user) {
@@ -415,25 +412,19 @@ export async function updateFilePosition(fileId: string, previousId?: string, ne
     let position = 1;
     // Handle start inserting edge case
     if (!previousFile && nextFile && nextFile.position < 2) {
-        console.log("Re normalizing positions as first file is at position", nextFile.position);
         await reNormalizePositions(file.folderId);
         position = 500;
     } else if (!previousFile && nextFile) {
-        console.log("Set as first with position", nextFile.position / 2);
         position = nextFile.position / 2;
     }
     
     if (!nextFile && previousFile) {
-        console.log("Set as last with position", previousFile.position + 1000);
         position = previousFile.position + 1000;
     }
 
     if (previousFile && nextFile) {
-        console.log("Set in the middle with position", (nextFile.position + previousFile.position) / 2);
         position = (nextFile.position + previousFile.position) / 2;
     }
-
-    console.log("Position", position);
 
     try {
         await prisma.file.update({
@@ -513,9 +504,6 @@ export async function deleteFile(folderId: string, fileId: string, shareToken?: 
                 }
             }
         });
-
-
-        console.log("File", file);
 
         try {
             await GoogleBucket.file(`${file?.createdById}/${file?.folderId}/${file?.thumbnail}`).delete();

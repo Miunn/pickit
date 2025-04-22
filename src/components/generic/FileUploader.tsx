@@ -148,7 +148,6 @@ export const FileUploader = (props: FileUploaderProps) => {
 
             if (rejectedFiles.length > 0) {
                 rejectedFiles.forEach(({ file, errors }) => {
-                    console.log("errors", errors);
                     errors.forEach(({ code }) => {
                         if (code === 'file-too-large') {
                             toast({
