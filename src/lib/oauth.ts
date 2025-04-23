@@ -19,5 +19,5 @@ export type GoogleClaims = {
 export const googleProvider = new Google(
     process.env.OAUTH_GOOGLE_CLIENT_ID!,
     process.env.OAUTH_GOOGLE_CLIENT_SECRET!,
-    `${process.env.APP_URL}/api/oauth/callback/google`
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/oauth/callback/google`
 )

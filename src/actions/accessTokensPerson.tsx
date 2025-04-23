@@ -123,7 +123,7 @@ export async function createMultiplePersonAccessTokens(folderId: string, data: {
 
     await sendShareFolderEmail(data.map((d, i) => ({ 
         email: d.email, 
-        link: `${process.env.APP_URL}/app/folders/${folderId}?share=${tokens[i]}&t=p`, 
+        link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folderId}?share=${tokens[i]}&t=p`, 
         locked: d.pinCode ? true : false,
         message: message
     })), user.name!, folder.name)
@@ -300,7 +300,7 @@ export async function sendAgainPersonAccessToken(token: string) {
         return { error: "Token not found" }
     }
 
-    await sendShareFolderEmail([{ email: personAccessToken.email, link: `${process.env.APP_URL}/app/folders/${personAccessToken.folderId}?share=${token}&t=p`, locked: personAccessToken.locked }], user.name!, personAccessToken.folder.name)
+    await sendShareFolderEmail([{ email: personAccessToken.email, link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${personAccessToken.folderId}?share=${token}&t=p`, locked: personAccessToken.locked }], user.name!, personAccessToken.folder.name)
 
     return { error: null }
 }

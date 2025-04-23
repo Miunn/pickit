@@ -5,7 +5,7 @@ export async function isValidShareLink(folderId?: string, shareToken?: string | 
         return false;
     }
 
-    const r = await fetch(`${process.env.APP_URL}/api/folders/${folderId}/validate-share?share=${shareToken}&t=${type}`);
+    const r = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${folderId}/validate-share?share=${shareToken}&t=${type}`);
 
     if (!r.ok) {
         return false;
