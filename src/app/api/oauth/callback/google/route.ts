@@ -2,7 +2,7 @@ import { generateSessionToken, createSession, setSessionTokenCookie } from "@/li
 import { GoogleClaims, googleProvider } from "@/lib/oauth";
 import { cookies } from "next/headers";
 import { decodeIdToken } from "arctic";
-
+import { redirect } from "next/navigation";
 import type { OAuth2Tokens } from "arctic";
 import { prisma } from "@/lib/prisma";
 
@@ -14,9 +14,7 @@ export async function GET(request: Request): Promise<Response> {
     const storedState = cookieStore.get("google_oauth_state")?.value ?? null;
     const codeVerifier = cookieStore.get("google_code_verifier")?.value ?? null;
     if (code === null || state === null || storedState === null || codeVerifier === null) {
-        return new Response(null, {
-            status: 400
-        });
+        return redirect("/signin?error=provider-google-invalid-state");
     }
 
     if (state !== storedState) {
