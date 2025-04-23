@@ -159,69 +159,9 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
         setActiveId(null);
     }
 
-    return (
-        <div className="mt-10">
-            {selecting
-                ? <div className={"flex justify-between items-center mb-5 bg-gray-50 dark:bg-primary/30 rounded-2xl w-full p-2"}>
-                    <div className={"flex gap-2 items-center"}>
-                        <Button variant="ghost" onClick={() => {
-                            setSelected([]);
-                            setSizeSelected(0);
-                            setSelecting(false);
-                        }} size="icon"><X className={"w-4 h-4"} /></Button>
-                        <h2><span className={"font-semibold"}>{t('selected', { count: selected.length })}</span> - {formatBytes(sizeSelected, { decimals: 2, sizeType: "normal" })}</h2>
-                    </div>
-
-                    <Button variant="outline" onClick={() => {
-                        setOpenDeleteMultiple(true);
-                    }}>
-                        <Trash2 className={"mr-2"} /> {deleteMultipleTranslations('trigger')}
-                    </Button>
-                </div>
-                : null
-            }
-            {folder.description
-                    ? <div className={cn("block sm:hidden w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto mb-3",
-                        "border border-primary rounded-lg p-4"
-                    )}>
-                        <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>{folder.description}</p>
-                        {folder.createdById === user?.id
-                            ? <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
-                                <EditDescriptionDialog folder={folder}>
-                                    <Button variant="ghost" size="icon"><Pencil className={"w-4 h-4"} /></Button>
-                                </EditDescriptionDialog>
-                                <DeleteDescriptionDialog folder={folder}>
-                                    <Button variant="ghost" size="icon"><Trash2 className={"w-4 h-4"} /></Button>
-                                </DeleteDescriptionDialog>
-                            </div>
-                            : null
-                        }
-                    </div>
-                    : null
-                }
-            <div className={cn(
-                folder.files.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-[repeat(auto-fit,12rem)] sm:grid-cols-[repeat(auto-fill,16rem)] gap-2 sm:gap-3 mx-auto",
-                "relative overflow-hidden"
-            )}>
-                {folder.description
-                    ? <div className={cn("hidden sm:block w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto",
-                        "border border-primary rounded-lg p-4"
-                    )}>
-                        <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>{folder.description}</p>
-                        {folder.createdById === user?.id
-                            ? <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
-                                <EditDescriptionDialog folder={folder}>
-                                    <Button variant="ghost" size="icon"><Pencil className={"w-4 h-4"} /></Button>
-                                </EditDescriptionDialog>
-                                <DeleteDescriptionDialog folder={folder}>
-                                    <Button variant="ghost" size="icon"><Trash2 className={"w-4 h-4"} /></Button>
-                                </DeleteDescriptionDialog>
-                            </div>
-                            : null
-                        }
-                    </div>
-                    : null
-                }
+    const renderGrid = (): React.ReactNode => {
+        if (user?.id === folder.createdById) {
+            return (
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragMove={handleDragMove}>
                     <SortableContext items={sortedFiles.map((item) => item.id)}>
                         {folder.files.length === 0
@@ -290,6 +230,126 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
                         }
                     </DragOverlay>
                 </DndContext>
+            )
+        }
+
+        return (
+            sortedFiles.map((file: FileWithFolder & FileWithComments) => (
+                <Fragment key={file.id}>
+                    <ImagePreviewGrid
+                        className={`${activeId === file.id ? "opacity-50" : ""}`}
+                        file={file}
+                        selected={selected}
+                        onClick={(e) => {
+                            if (selecting) {
+                                if (e?.shiftKey && selected.length > 0) {
+                                    const lastSelectedId = selected[selected.length - 1];
+                                    const lastSelectedIndex = folder.files.findIndex((item) => item.id === lastSelectedId);
+                                    const currentIndex = folder.files.findIndex((item) => item.id === file.id);
+
+                                    if (lastSelectedIndex !== -1 && currentIndex !== -1) {
+                                        const start = Math.min(lastSelectedIndex, currentIndex);
+                                        const end = Math.max(lastSelectedIndex, currentIndex);
+                                        const range = folder.files.slice(start, end + 1);
+
+                                        const newSelectedIds = range.map((item) => item.id);
+                                        const newSize = range.reduce((acc, item) => acc + item.size, 0);
+
+                                        setSelected([...new Set([...selected, ...newSelectedIds])]);
+                                        setSizeSelected(sizeSelected + newSize);
+                                    }
+                                } else if (selected.includes(file.id)) {
+                                    setSelected(selected.filter((id) => id !== file.id));
+                                    setSizeSelected(sizeSelected - file.size);
+                                } else {
+                                    setSelected([...selected, file.id]);
+                                    setSizeSelected(sizeSelected + file.size);
+                                }
+                            } else {
+                                setStartIndex(folder.files.indexOf(file));
+                                setCarouselOpen(true);
+                            }
+                        }}
+                        onSelect={() => {
+                            if (selected.includes(file.id)) {
+                                setSelected(selected.filter((id) => id !== file.id));
+                                setSizeSelected(sizeSelected - file.size);
+                            } else {
+                                setSelecting(true);
+                                setSelected([...selected, file.id]);
+                                setSizeSelected(sizeSelected + file.size);
+                            }
+                        }}
+                    />
+                </Fragment>
+            ))
+        )
+    }
+    
+    return (
+        <div className="mt-10">
+            {selecting
+                ? <div className={"flex justify-between items-center mb-5 bg-gray-50 dark:bg-primary/30 rounded-2xl w-full p-2"}>
+                    <div className={"flex gap-2 items-center"}>
+                        <Button variant="ghost" onClick={() => {
+                            setSelected([]);
+                            setSizeSelected(0);
+                            setSelecting(false);
+                        }} size="icon"><X className={"w-4 h-4"} /></Button>
+                        <h2><span className={"font-semibold"}>{t('selected', { count: selected.length })}</span> - {formatBytes(sizeSelected, { decimals: 2, sizeType: "normal" })}</h2>
+                    </div>
+
+                    <Button variant="outline" onClick={() => {
+                        setOpenDeleteMultiple(true);
+                    }}>
+                        <Trash2 className={"mr-2"} /> {deleteMultipleTranslations('trigger')}
+                    </Button>
+                </div>
+                : null
+            }
+            {folder.description
+                    ? <div className={cn("block sm:hidden w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto mb-3",
+                        "border border-primary rounded-lg p-4"
+                    )}>
+                        <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>{folder.description}</p>
+                        {folder.createdById === user?.id
+                            ? <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
+                                <EditDescriptionDialog folder={folder}>
+                                    <Button variant="ghost" size="icon"><Pencil className={"w-4 h-4"} /></Button>
+                                </EditDescriptionDialog>
+                                <DeleteDescriptionDialog folder={folder}>
+                                    <Button variant="ghost" size="icon"><Trash2 className={"w-4 h-4"} /></Button>
+                                </DeleteDescriptionDialog>
+                            </div>
+                            : null
+                        }
+                    </div>
+                    : null
+                }
+            <div className={cn(
+                folder.files.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-[repeat(auto-fit,12rem)] sm:grid-cols-[repeat(auto-fill,16rem)] gap-2 sm:gap-3 mx-auto",
+                "relative overflow-hidden"
+            )}>
+                {folder.description
+                    ? <div className={cn("hidden sm:block w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto",
+                        "border border-primary rounded-lg p-4"
+                    )}>
+                        <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>{folder.description}</p>
+                        {folder.createdById === user?.id
+                            ? <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
+                                <EditDescriptionDialog folder={folder}>
+                                    <Button variant="ghost" size="icon"><Pencil className={"w-4 h-4"} /></Button>
+                                </EditDescriptionDialog>
+                                <DeleteDescriptionDialog folder={folder}>
+                                    <Button variant="ghost" size="icon"><Trash2 className={"w-4 h-4"} /></Button>
+                                </DeleteDescriptionDialog>
+                            </div>
+                            : null
+                        }
+                    </div>
+                    : null
+                }
+                {renderGrid()}
             </div>
 
             <CarouselDialog files={folder.files} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
