@@ -43,7 +43,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
 
     const { attributes, listeners, setNodeRef, transition, transform } = useSortable({ id: file.id });
     
-    const style = transform ? {
+    const style = file.createdById === user?.id && transform ? {
         transform: CSS.Translate.toString(transform),
         transition
     } : undefined;
