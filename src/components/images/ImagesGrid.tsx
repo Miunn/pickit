@@ -180,12 +180,31 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
                 </div>
                 : null
             }
+            {folder.description
+                    ? <div className={cn("block sm:hidden w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto mb-3",
+                        "border border-primary rounded-lg p-4"
+                    )}>
+                        <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>{folder.description}</p>
+                        {folder.createdById === user?.id
+                            ? <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
+                                <EditDescriptionDialog folder={folder}>
+                                    <Button variant="ghost" size="icon"><Pencil className={"w-4 h-4"} /></Button>
+                                </EditDescriptionDialog>
+                                <DeleteDescriptionDialog folder={folder}>
+                                    <Button variant="ghost" size="icon"><Trash2 className={"w-4 h-4"} /></Button>
+                                </DeleteDescriptionDialog>
+                            </div>
+                            : null
+                        }
+                    </div>
+                    : null
+                }
             <div className={cn(
-                folder.files.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,16rem)] gap-3 mx-auto",
+                folder.files.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-[repeat(auto-fit,15rem)] sm:grid-cols-[repeat(auto-fill,16rem)] gap-2 sm:gap-3 mx-auto",
                 "relative overflow-hidden"
             )}>
                 {folder.description
-                    ? <div className={cn("w-full lg:max-w-64 max-h-[200px] relative group overflow-auto",
+                    ? <div className={cn("hidden sm:block w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto",
                         "border border-primary rounded-lg p-4"
                     )}>
                         <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>{folder.description}</p>
