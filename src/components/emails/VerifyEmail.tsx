@@ -87,7 +87,7 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                                 <tr>
                                     <td align="center">
                                         <Text className="!mb-0 !mt-[4px] !text-[16px] !font-semibold !leading-[24px] !text-gray-500">
-                                            support@echomori.fr
+                                            {process.env.SUPPORT_EMAIL}
                                         </Text>
                                     </td>
                                 </tr>

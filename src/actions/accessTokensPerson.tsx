@@ -124,7 +124,7 @@ export async function createMultiplePersonAccessTokens(folderId: string, data: {
     await sendShareFolderEmail(data.map((d, i) => ({ 
         email: d.email, 
         link: `${process.env.APP_URL}/app/folders/${folderId}?share=${tokens[i]}&t=p`, 
-        locked: false,
+        locked: d.pinCode ? true : false,
         message: message
     })), user.name!, folder.name)
     return { error: null }
