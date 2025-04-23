@@ -53,9 +53,9 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
             <ContextMenu key={file.id} modal={false}>
                 <ContextMenuTrigger asChild>
                     <button ref={setNodeRef} onClick={onClick} className="unset cursor-pointer" style={style} {...listeners} {...attributes}>
-                        <div className={cn(`inline-block w-60 sm:w-64 rounded-2xl ${selected.includes(file.id) ? "bg-accent" : ""}`, className)}>
+                        <div className={cn(`inline-block w-48 sm:w-64 rounded-2xl ${selected.includes(file.id) ? "bg-accent" : ""}`, className)}>
                             <div className={`${selected.includes(file.id) ? "scale-95" : ""}`}>
-                                <div className={`relative h-36 mb-4 flex justify-center items-center group`}>
+                                <div className={`relative h-32 sm:h-36 mb-4 flex justify-center items-center group`}>
                                     {file.type === FileType.VIDEO
                                         ? <LoadingImage
                                             src={`/api/folders/${file.folderId}/videos/${file.id}/thumbnail?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`}
