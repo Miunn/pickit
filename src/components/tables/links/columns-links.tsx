@@ -191,7 +191,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
             const locale = useLocale();
             const [lockOpen, setLockOpen] = useState<boolean>(false);
             const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
-            const link = `${process.env.APP_URL}/${locale}/app/folders/${accessToken.folder.id}?share=${accessToken.token}`;
+            const link = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/app/folders/${accessToken.folder.id}?share=${accessToken.token}`;
             return (
                 <>
                     <DropdownMenu>

@@ -240,7 +240,7 @@ export async function finalizeFileUpload(
             await GoogleBucket.file(`${session.user.id}/${parentFolderId}/${fileId}-thumbnail`).save(thumbnailBuffer);
 
             // Create video record
-            const mediainfo = await mediaInfoFactory({ locateFile: (file) => `${process.env.APP_URL}/mediainfo/${file}` });
+            const mediainfo = await mediaInfoFactory({ locateFile: (file) => `${process.env.NEXT_PUBLIC_APP_URL}/mediainfo/${file}` });
             const metadata = await mediainfo.analyzeData(uploadedBuffer.length, () => uploadedBuffer);
             mediainfo.close();
             const video = await prisma.file.create({
@@ -572,7 +572,7 @@ export async function processVideoAfterUpload(
         const [buffer] = await file.download();
 
         // Process video metadata
-        const mediainfo = await mediaInfoFactory({ locateFile: (file) => `${process.env.APP_URL}/mediainfo/${file}` });
+        const mediainfo = await mediaInfoFactory({ locateFile: (file) => `${process.env.NEXT_PUBLIC_APP_URL}/mediainfo/${file}` });
         const metadata = await mediainfo.analyzeData(buffer.length, () => buffer);
         mediainfo.close();
 

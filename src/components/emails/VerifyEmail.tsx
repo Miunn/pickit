@@ -1,7 +1,7 @@
 import { Body, Button, Column, Font, Head, Html, Img, Link, Row, Section, Tailwind, Text } from "@react-email/components"
 
-const baseUrl = process.env.APP_URL
-    ? process.env.APP_URL
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+    ? process.env.NEXT_PUBLIC_APP_URL
     : 'http://localhost:3000';
 
 export default function VerifyEmail({ name, token }: { name: string, token: string }) {
@@ -33,8 +33,8 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                                 <Section width="100%">
                                     <tr>
                                         <td align="center" valign="middle">
-                                            <Img src={`${baseUrl}/static/favicon.jpg`} alt={process.env.APP_NAME} className="inline-block max-w-[200px] max-h-[40px]" />
-                                            <Text className="inline-block text-[1.5rem] m-0 pl-[10px] font-semibold">{process.env.APP_NAME}</Text>
+                                            <Img src={`${baseUrl}/static/favicon.jpg`} alt={process.env.NEXT_PUBLIC_APP_NAME} className="inline-block max-w-[200px] max-h-[40px]" />
+                                            <Text className="inline-block text-[1.5rem] m-0 pl-[10px] font-semibold">{process.env.NEXT_PUBLIC_APP_NAME}</Text>
                                         </td>
                                     </tr>
                                 </Section>
@@ -46,7 +46,7 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                             }}>
                                 <Text>Bonjour { name },</Text>
 
-                                <Text>Cette adresse a été renseignée au sein d&apos;un compte <strong>{process.env.APP_NAME}</strong>.</Text>
+                                <Text>Cette adresse a été renseignée au sein d&apos;un compte <strong>{process.env.NEXT_PUBLIC_APP_NAME}</strong>.</Text>
 
                                 <Text>Pour vérifier et continuer à utiliser votre compte, veuillez cliquer sur le bouton ci-dessous.</Text>
 
@@ -59,7 +59,7 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                                 <Text>Si vous n&apos;avez pas de compte Echomori ou que vous n&apos;avez pas effectué de changement, vous pouvez ignorer ce message.</Text>
 
                                 <Text>Cordialement,<br />
-                                    L&apos;équipe <strong>{process.env.APP_NAME}</strong></Text>
+                                    L&apos;équipe <strong>{process.env.NEXT_PUBLIC_APP_NAME}</strong></Text>
                             </Column>
                         </Row>
 
@@ -77,7 +77,7 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                                 <tr className="w-full">
                                     <td align="center">
                                         <Text className="!my-[8px] !text-[16px] !font-semibold !leading-[24px] !text-gray-900">
-                                            {process.env.APP_NAME}
+                                            {process.env.NEXT_PUBLIC_APP_NAME}
                                         </Text>
                                         <Text className="!mb-0 !mt-[4px] !text-[16px] !leading-[24px] !text-gray-500">
                                             Upload and share your memories easily
@@ -87,7 +87,7 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                                 <tr>
                                     <td align="center">
                                         <Text className="!mb-0 !mt-[4px] !text-[16px] !font-semibold !leading-[24px] !text-gray-500">
-                                            {process.env.SUPPORT_EMAIL}
+                                            {process.env.NEXT_PUBLIC_SUPPORT_MAIL}
                                         </Text>
                                     </td>
                                 </tr>

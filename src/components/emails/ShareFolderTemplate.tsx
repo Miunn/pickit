@@ -1,7 +1,7 @@
 import { Body, Button, Column, Font, Head, Html, Img, Link, Row, Section, Tailwind, Text } from "@react-email/components";
 
-const baseUrl = process.env.APP_URL
-    ? process.env.APP_URL
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+    ? process.env.NEXT_PUBLIC_APP_URL
     : 'http://localhost:3000';
 
 export default function ShareFolderTemplate({ name, folderName, link, isLocked, message }: { name: string, folderName: string, link: string, isLocked: boolean, message?: string }) {
@@ -33,8 +33,8 @@ export default function ShareFolderTemplate({ name, folderName, link, isLocked, 
                                 <Section width="100%">
                                     <tr>
                                         <td align="center" valign="middle">
-                                            <Img src={`${baseUrl}/static/favicon.jpg`} alt={process.env.APP_NAME} className="inline-block max-w-[200px] max-h-[40px]" />
-                                            <Text className="inline-block text-[1.5rem] m-0 pl-[10px] font-semibold">{process.env.APP_NAME}</Text>
+                                            <Img src={`${baseUrl}/static/favicon.jpg`} alt={process.env.NEXT_PUBLIC_APP_NAME} className="inline-block max-w-[200px] max-h-[40px]" />
+                                            <Text className="inline-block text-[1.5rem] m-0 pl-[10px] font-semibold">{process.env.NEXT_PUBLIC_APP_NAME}</Text>
                                         </td>
                                     </tr>
                                 </Section>
@@ -48,7 +48,7 @@ export default function ShareFolderTemplate({ name, folderName, link, isLocked, 
 
                                 <Text>Bonjour,</Text>
 
-                                <Text><strong>{name}</strong> a partagé le dossier <strong>{folderName}</strong> avec vous sur {process.env.APP_NAME}{
+                                <Text><strong>{name}</strong> a partagé le dossier <strong>{folderName}</strong> avec vous sur {process.env.NEXT_PUBLIC_APP_NAME}{
                                     message ? ` et a ajouté le message suivant :` : '.'
                                 }</Text>
 
@@ -75,7 +75,7 @@ export default function ShareFolderTemplate({ name, folderName, link, isLocked, 
                                 }
 
                                 <Text>Cordialement,<br />
-                                    L&apos;équipe <strong>{process.env.APP_NAME}</strong></Text>
+                                    L&apos;équipe <strong>{process.env.NEXT_PUBLIC_APP_NAME}</strong></Text>
                             </Column>
                         </Row>
 
@@ -93,7 +93,7 @@ export default function ShareFolderTemplate({ name, folderName, link, isLocked, 
                                 <tr className="w-full">
                                     <td align="center">
                                         <Text className="!my-[8px] !text-[16px] !font-semibold !leading-[24px] !text-gray-900">
-                                            {process.env.APP_NAME}
+                                            {process.env.NEXT_PUBLIC_APP_NAME}
                                         </Text>
                                         <Text className="!mb-0 !mt-[4px] !text-[16px] !leading-[24px] !text-gray-500">
                                             Upload and share your memories easily
@@ -103,7 +103,7 @@ export default function ShareFolderTemplate({ name, folderName, link, isLocked, 
                                 <tr>
                                     <td align="center">
                                         <Text className="!mb-0 !mt-[4px] !text-[16px] !font-semibold !leading-[24px] !text-gray-500">
-                                            {process.env.SUPPORT_EMAIL}
+                                            {process.env.NEXT_PUBLIC_SUPPORT_MAIL}
                                         </Text>
                                     </td>
                                 </tr>

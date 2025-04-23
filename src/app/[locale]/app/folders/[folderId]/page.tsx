@@ -80,7 +80,7 @@ export default async function FolderPage({ params, searchParams }: { params: { f
     }
 
     if (searchParams.share) {
-        fetch(`${process.env.APP_URL}/api/tokens/increment?token=${searchParams.share}`)
+        fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/tokens/increment?token=${searchParams.share}`)
     }
 
 
