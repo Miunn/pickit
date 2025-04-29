@@ -34,7 +34,6 @@ export default function ResetPasswordTemplate({ name, token }: { name: string, t
                                     <tr>
                                         <td align="center" valign="middle">
                                             <Img src={`${baseUrl}/static/logo-full-primary.png`} alt={process.env.NEXT_PUBLIC_APP_NAME} className="inline-block max-w-[200px] max-h-[32px]" />
-                                            <Text className="inline-block text-[1.5rem] m-0 pl-[10px] font-semibold">{process.env.NEXT_PUBLIC_APP_NAME}</Text>
                                         </td>
                                     </tr>
                                 </Section>
