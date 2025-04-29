@@ -33,7 +33,7 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                                 <Section width="100%">
                                     <tr>
                                         <td align="center" valign="middle">
-                                            <Img src={`${baseUrl}/static/logo-primary-svg.svg`} alt={process.env.NEXT_PUBLIC_APP_NAME} className="inline-block max-w-[200px] max-h-[40px]" />
+                                            <Img src={`${baseUrl}/static/logo-primary-png.png`} alt={process.env.NEXT_PUBLIC_APP_NAME} className="inline-block max-w-[200px] max-h-[40px]" />
                                             <Text className="inline-block text-[1.5rem] m-0 pl-[10px] font-semibold">{process.env.NEXT_PUBLIC_APP_NAME}</Text>
                                         </td>
                                     </tr>
@@ -68,9 +68,9 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                                 <tr className="w-full">
                                     <td align="center">
                                         <Img
-                                            alt="React Email logo"
+                                            alt={process.env.NEXT_PUBLIC_APP_NAME}
                                             height="42"
-                                            src="https://react.email/static/logo-without-background.png"
+                                            src={`${baseUrl}/static/logo-primary-png.png`}
                                         />
                                     </td>
                                 </tr>
