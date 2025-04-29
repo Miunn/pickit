@@ -51,7 +51,7 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                                 <Text>Pour vérifier et continuer à utiliser votre compte, veuillez cliquer sur le bouton ci-dessous.</Text>
 
                                 <div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
-                                    <Button href={`${baseUrl}/en/account/verify-account/${token}`} className="box-border w-full rounded-[8px] bg-primary px-[12px] py-[12px] text-center font-semibold text-white">
+                                    <Button href={`${baseUrl}/en/account/verify-account/${token}`} className="box-border w-full rounded-[8px] bg-[#1F7551] px-[12px] py-[12px] text-center font-semibold text-white">
                                         Vérifier votre compte
                                     </Button>
                                 </div>
