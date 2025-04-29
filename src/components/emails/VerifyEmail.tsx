@@ -33,7 +33,7 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                                 <Section width="100%">
                                     <tr>
                                         <td align="center" valign="middle">
-                                            <Img src={`${baseUrl}/static/favicon.jpg`} alt={process.env.NEXT_PUBLIC_APP_NAME} className="inline-block max-w-[200px] max-h-[40px]" />
+                                            <Img src={`${baseUrl}/static/logo-primary-svg.svg`} alt={process.env.NEXT_PUBLIC_APP_NAME} className="inline-block max-w-[200px] max-h-[40px]" />
                                             <Text className="inline-block text-[1.5rem] m-0 pl-[10px] font-semibold">{process.env.NEXT_PUBLIC_APP_NAME}</Text>
                                         </td>
                                     </tr>
@@ -51,7 +51,7 @@ export default function VerifyEmail({ name, token }: { name: string, token: stri
                                 <Text>Pour vérifier et continuer à utiliser votre compte, veuillez cliquer sur le bouton ci-dessous.</Text>
 
                                 <div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
-                                    <Button href={`${baseUrl}/en/account/verify-account/${token}`} className="box-border w-full rounded-[8px] bg-primary px-[12px] py-[12px] text-center font-semibold text-white">
+                                    <Button href={`${baseUrl}/en/account/verify-account/${token}`} className="box-border w-full rounded-[8px] bg-[#1F7551] px-[12px] py-[12px] text-center font-semibold text-white">
                                         Vérifier votre compte
                                     </Button>
                                 </div>

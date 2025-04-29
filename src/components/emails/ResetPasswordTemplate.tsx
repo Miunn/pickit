@@ -33,7 +33,7 @@ export default function ResetPasswordTemplate({ name, token }: { name: string, t
                                 <Section width="100%">
                                     <tr>
                                         <td align="center" valign="middle">
-                                            <Img src={`${baseUrl}/static/favicon.jpg`} alt={process.env.NEXT_PUBLIC_APP_NAME} className="inline-block max-w-[200px] max-h-[40px]" />
+                                            <Img src={`${baseUrl}/static/logo-primary-svg.svg`} alt={process.env.NEXT_PUBLIC_APP_NAME} className="inline-block max-w-[200px] max-h-[40px]" />
                                             <Text className="inline-block text-[1.5rem] m-0 pl-[10px] font-semibold">{process.env.NEXT_PUBLIC_APP_NAME}</Text>
                                         </td>
                                     </tr>
@@ -53,7 +53,7 @@ export default function ResetPasswordTemplate({ name, token }: { name: string, t
                                 <Text>Afin de créer un nouveau mot de passe et de récupérer l&lsquo;accès à votre compte, cliquez sur le bouton ci-dessous :</Text>
 
                                 <div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
-                                    <Button href={`${process.env.NEXT_PUBLIC_APP_URL}/en/account/reset/${token}`} className="box-border w-full rounded-[8px] bg-primary px-[12px] py-[12px] text-center font-semibold text-white">
+                                    <Button href={`${process.env.NEXT_PUBLIC_APP_URL}/en/account/reset/${token}`} className="box-border w-full rounded-[8px] bg-[#1F7551] px-[12px] py-[12px] text-center font-semibold text-white">
                                         Réinitialiser votre mot de passe
                                     </Button>
                                 </div>
