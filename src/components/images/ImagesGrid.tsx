@@ -39,7 +39,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
     const [sortedFiles, setSortedFiles] = useState<(FileWithFolder & FileWithComments)[]>(folder.files.sort((a, b) => a.position - b.position));
 
     useEffect(() => {
-        console.log("files init", folder.files.sort((a, b) => a.position - b.position).map(item => item.name));
+        console.log("files init", folder.files.sort((a, b) => a.position - b.position).map(item => item.id));
     }, [folder.files]);
 
     useEffect(() => {
@@ -125,36 +125,49 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
         const activeId = String(active.id);
         const overId = String(over.id);
 
-        if (activeId !== overId) {
-            const newIndex = dragOrder.indexOf(overId);
+        if (activeId === overId) {
+            setActiveId(null);
+            return;
+        };
 
-            setTimeout(async () => {
-                if (newIndex === 0) {
-                    await updateFilePosition(activeId, undefined, dragOrder[0]);
-                } else if (newIndex === dragOrder.length - 1) {
-                    await updateFilePosition(activeId, dragOrder[newIndex]);
+        const activeIndex = dragOrder.indexOf(activeId);
+        const overIndex = dragOrder.indexOf(overId);
+
+
+        setTimeout(async () => {
+            if (overIndex === 0) {
+                // We just dragged to the first position
+                await updateFilePosition(activeId, undefined, dragOrder[0]);
+            } else if (overIndex === dragOrder.length - 1) {
+                // We just dragged to the last position
+                await updateFilePosition(activeId, dragOrder[overIndex - 1], undefined);
+            } else {
+                // We just dragged to the middle
+                // Depending on the direction, we need to update the position of the file
+                if (activeIndex < overIndex) {
+                    await updateFilePosition(activeId, dragOrder[overIndex], dragOrder[overIndex + 1]);
                 } else {
-                    await updateFilePosition(activeId, dragOrder[newIndex - 1], dragOrder[newIndex]);
+                    await updateFilePosition(activeId, dragOrder[overIndex - 1], dragOrder[overIndex]);
                 }
-            }, 1000);
+            }
+        }, 0);
 
-            setDragOrder((currentOrder) => {
-                const oldIndex = currentOrder.indexOf(activeId);
-                const newIndex = currentOrder.indexOf(overId);
+        setDragOrder((currentOrder) => {
+            const oldIndex = currentOrder.indexOf(activeId);
+            const newIndex = currentOrder.indexOf(overId);
 
-                if (oldIndex === -1) {
-                    // If item wasn't in the order, add it at the new position
-                    const newOrder = [...currentOrder];
-                    newOrder.splice(newIndex, 0, activeId);
-                    return newOrder;
-                }
+            if (oldIndex === -1) {
+                // If item wasn't in the order, add it at the new position
+                const newOrder = [...currentOrder];
+                newOrder.splice(newIndex, 0, activeId);
+                return newOrder;
+            }
 
-                setSortStrategy('dragOrder');
-                const orderedIds = arrayMove(currentOrder, oldIndex, newIndex);
+            setSortStrategy('dragOrder');
+            const orderedIds = arrayMove(currentOrder, oldIndex, newIndex);
 
-                return orderedIds;
-            });
-        }
+            return orderedIds;
+        });
 
         setActiveId(null);
     }
@@ -285,7 +298,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
             ))
         )
     }
-    
+
     return (
         <div className="mt-10">
             {selecting
@@ -308,24 +321,24 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
                 : null
             }
             {folder.description
-                    ? <div className={cn("block sm:hidden w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto mb-3",
-                        "border border-primary rounded-lg p-4"
-                    )}>
-                        <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>{folder.description}</p>
-                        {folder.createdById === user?.id
-                            ? <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
-                                <EditDescriptionDialog folder={folder}>
-                                    <Button variant="ghost" size="icon"><Pencil className={"w-4 h-4"} /></Button>
-                                </EditDescriptionDialog>
-                                <DeleteDescriptionDialog folder={folder}>
-                                    <Button variant="ghost" size="icon"><Trash2 className={"w-4 h-4"} /></Button>
-                                </DeleteDescriptionDialog>
-                            </div>
-                            : null
-                        }
-                    </div>
-                    : null
-                }
+                ? <div className={cn("block sm:hidden w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto mb-3",
+                    "border border-primary rounded-lg p-4"
+                )}>
+                    <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>{folder.description}</p>
+                    {folder.createdById === user?.id
+                        ? <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
+                            <EditDescriptionDialog folder={folder}>
+                                <Button variant="ghost" size="icon"><Pencil className={"w-4 h-4"} /></Button>
+                            </EditDescriptionDialog>
+                            <DeleteDescriptionDialog folder={folder}>
+                                <Button variant="ghost" size="icon"><Trash2 className={"w-4 h-4"} /></Button>
+                            </DeleteDescriptionDialog>
+                        </div>
+                        : null
+                    }
+                </div>
+                : null
+            }
             <div className={cn(
                 folder.files.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-[repeat(auto-fit,12rem)] sm:grid-cols-[repeat(auto-fill,16rem)] gap-2 sm:gap-3 mx-auto",
                 "relative overflow-hidden"
