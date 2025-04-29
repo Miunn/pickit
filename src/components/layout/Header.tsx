@@ -13,8 +13,9 @@ import {
     SheetContent,
     SheetTrigger,
 } from "@/components/ui/sheet";
+import LogoImage from "../LogoImage";
 
-export default function Header({ className }: { className?: string  }) {
+export default function Header({ className }: { className?: string }) {
     const t = useTranslations("components.header");
     const locale = useLocale();
     const headerRowRef = React.useRef<HTMLHRElement>(null);
@@ -44,9 +45,9 @@ export default function Header({ className }: { className?: string  }) {
 
     const NavLinks = () => (
         <>
-            <Link href={`/${locale}/features`} className="hover:text-primary transition-colors">{ t('nav.features') }</Link>
-            <Link href={`/${locale}/pricing`} className="hover:text-primary transition-colors">{ t('nav.pricing') }</Link>
-            <Link href={`/${locale}/contact`} className="hover:text-primary transition-colors">{ t('nav.contact') }</Link>
+            <Link href={`/${locale}/features`} className="hover:text-primary transition-colors">{t('nav.features')}</Link>
+            <Link href={`/${locale}/pricing`} className="hover:text-primary transition-colors">{t('nav.pricing')}</Link>
+            <Link href={`/${locale}/contact`} className="hover:text-primary transition-colors">{t('nav.contact')}</Link>
         </>
     );
 
@@ -54,10 +55,8 @@ export default function Header({ className }: { className?: string  }) {
         <header className={cn("flex items-center justify-between py-4", "sticky top-0 z-50 bg-background/90 backdrop-blur", className)}>
             <div className={"w-full grid grid-cols-3 items-center max-w-7xl mx-auto px-4"}>
                 <Link href={`/${locale}`} className="w-fit flex items-center gap-2">
-                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                        <Command className="size-4" />
-                    </div>
-                    <h1 className="text-xl font-bold">Echomori</h1>
+                    <LogoImage size="small" />
+                    <h1 className="text-xl text-primary font-bold">Echomori</h1>
                 </Link>
 
                 <nav className="opacity-0 md:opacity-100 place-self-center">
@@ -69,12 +68,12 @@ export default function Header({ className }: { className?: string  }) {
                 <div className="w-fit place-self-end flex gap-2 items-center justify-end">
                     <div className="hidden md:flex gap-2">
                         <Button asChild>
-                            <Link href={`/${locale}/signin`}>{ t('nav.login') }</Link>
+                            <Link href={`/${locale}/signin`}>{t('nav.login')}</Link>
                         </Button>
                         <SwitchLocale locale={locale} />
                         <SwitchTheme />
                     </div>
-                    
+
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTrigger asChild>
                             <Button variant="ghost" size="icon" className="md:hidden">
@@ -86,7 +85,7 @@ export default function Header({ className }: { className?: string  }) {
                                 <NavLinks />
                                 <div className="flex flex-col gap-4 mt-4">
                                     <Button asChild className="w-full">
-                                        <Link href={`/${locale}/signin`}>{ t('nav.login') }</Link>
+                                        <Link href={`/${locale}/signin`}>{t('nav.login')}</Link>
                                     </Button>
                                     <div className="flex justify-center gap-4 relative">
                                         <div className="relative z-[101]">
