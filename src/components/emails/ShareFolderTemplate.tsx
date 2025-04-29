@@ -61,7 +61,7 @@ export default function ShareFolderTemplate({ name, folderName, link, isLocked, 
                                 <Text>Cliquez sur le bouton ci-dessous pour y accéder et découvrir les photos et vidéos qu&apos;il contient :</Text>
 
                                 <div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
-                                    <Button href={link} className="box-border w-full rounded-[8px] bg-indigo-600 px-[12px] py-[12px] text-center font-semibold text-white">
+                                    <Button href={link} className="box-border w-full rounded-[8px] bg-primary px-[12px] py-[12px] text-center font-semibold text-white">
                                         {folderName}
                                     </Button>
                                 </div>
@@ -84,9 +84,9 @@ export default function ShareFolderTemplate({ name, folderName, link, isLocked, 
                                 <tr className="w-full">
                                     <td align="center">
                                         <Img
-                                            alt="React Email logo"
+                                            alt="Echomori logo"
                                             height="42"
-                                            src="https://react.email/static/logo-without-background.png"
+                                            src={`${baseUrl}/static/logo-primary-svg.svg`}
                                         />
                                     </td>
                                 </tr>

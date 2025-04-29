@@ -19,6 +19,7 @@ import { DialogTrigger } from "./ui/dialog"
 import { UserLight } from "@/lib/definitions"
 import Link from "next/link"
 import { useTranslations } from "next-intl"
+import LogoImage from "./LogoImage"
 
 export interface AppSidebarProps {
   navMainItems: NavMainItems;
@@ -39,11 +40,11 @@ export function AppSidebar({ locale, user, items, ...props }: {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href={`/${locale}/app`}>
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Command className="size-4" />
+                <div className="flex aspect-square items-center justify-center rounded-lg text-sidebar-primary-foreground">
+                  <LogoImage size="small" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{ t('title') }</span>
+                  <span className="truncate text-primary font-semibold">{ t('title') }</span>
                   <span className="truncate text-xs" title={t('message')}>{ t('message') }</span>
                 </div>
               </Link>
