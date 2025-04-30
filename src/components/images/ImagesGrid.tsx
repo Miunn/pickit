@@ -340,7 +340,7 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
                 : null
             }
             <div className={cn(
-                folder.files.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-[repeat(auto-fit,12rem)] sm:grid-cols-[repeat(auto-fill,16rem)] gap-2 sm:gap-3 mx-auto",
+                folder.files.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-[repeat(auto-fill,10rem)] sm:grid-cols-[repeat(auto-fill,16rem)] gap-3 sm:gap-3 mx-auto",
                 "relative overflow-hidden"
             )}>
                 {folder.description
