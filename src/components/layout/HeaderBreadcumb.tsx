@@ -1,6 +1,6 @@
 "use client"
 
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
@@ -13,6 +13,11 @@ export default function HeaderBreadcumb() {
     const locale = useLocale();
     const pathname = usePathname();
     const t = useTranslations('breadcumb');
+
+    const searchParams = useSearchParams();
+    const shareToken = searchParams.get("share");
+    const accessKey = searchParams.get("h");
+    const tokenType = searchParams.get("t");
 
     const [pathDashboard, setPathDashboard] = useState<boolean>(false);
     const [pathListFolders, setPathListFolders] = useState<boolean>(false);
@@ -28,7 +33,7 @@ export default function HeaderBreadcumb() {
     const [adminUser, setAdminUser] = useState<UserAdministration | null>(null);
 
     const getPathFolderName = async (folderId: string) => {
-        const folder = await getFolderName(folderId);
+        const folder = await getFolderName(folderId, shareToken, accessKey, tokenType);
 
         if (folder.folder) {
             setPathFolder(folder.folder);

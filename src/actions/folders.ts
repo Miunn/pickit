@@ -7,6 +7,7 @@ import { FolderTokenPermission } from "@prisma/client";
 import { getCurrentSession } from "@/lib/session";
 import { GoogleBucket } from "@/lib/bucket";
 import { validateShareToken } from "./tokenValidation";
+import { isAllowedToAccessFolder } from "@/lib/dal";
 export async function getLightFolders(): Promise<{
     lightFolders: LightFolder[],
     error?: string | null
@@ -32,23 +33,18 @@ export async function getLightFolders(): Promise<{
     return { lightFolders: folders, error: null }
 }
 
-export async function getFolderName(id: string): Promise<{
+export async function getFolderName(id: string, shareToken?: string | null, accessKey?: string | null, tokenType?: string | null): Promise<{
     folder?: LightFolder | null,
     error?: string | null
 }> {
-    const { user } = await getCurrentSession();
+    const isAllowed = await isAllowedToAccessFolder(id, shareToken, accessKey, tokenType);
 
-    if (!user) {
-        return { folder: null, error: "You must be logged in to get folder name" };
+    if (!isAllowed) {
+        return { folder: null, error: "You are not allowed to access this folder" };
     }
 
     const folder = await prisma.folder.findUnique({
-        where: {
-            id: id,
-            createdBy: {
-                id: user.id as string
-            }
-        },
+        where: { id: id },
         select: {
             id: true,
             name: true
