@@ -440,24 +440,25 @@ export async function updateFilePosition(fileId: string, previousId?: string, ne
 }
 
 export async function deleteFile(folderId: string, fileId: string, shareToken?: string, hashPin?: string, tokenType?: string) {
+    const { user } = await getCurrentSession();
+
     let validateToken = null;
     if (shareToken) {
         validateToken = await validateShareToken(folderId, shareToken, tokenType === "p" ? "personAccessToken" : "accessToken", hashPin);
 
-        if (validateToken.error) {
+        if (validateToken.error && !user) {
             return { error: "You must have a valid share link to delete this file" };
         }
 
-        if (validateToken.folder === null) {
+        if (validateToken.folder === null && !user) {
             return { error: "Folder not found" };
         }
 
-        if (validateToken.permission === "READ") {
+        if (validateToken.permission === "READ" && !user) {
             return { error: "You do not have permission to delete this file" };
         }
     }
 
-    const { user } = await getCurrentSession();
 
     if (!user && !validateToken) {
         return { error: "You must be logged in to delete files" };
@@ -489,7 +490,7 @@ export async function deleteFile(folderId: string, fileId: string, shareToken?: 
         } catch (err) {
             console.error("Error deleting thumbnail:", err);
         }
-    } else if (validateToken) {
+    } else if (validateToken && !validateToken.error) {
         file = await prisma.file.findUnique({
             where: {
                 id: fileId,
