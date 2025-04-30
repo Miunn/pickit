@@ -2,6 +2,22 @@ import { prisma } from "./prisma";
 import { getCurrentSession } from "./session";
 import * as bcrypt from "bcryptjs";
 
+export async function hasFolderOwnerAccess(folderId: string): Promise<boolean> {
+    const { user } = await getCurrentSession();
+
+    if (user) {
+        const folder = await prisma.folder.findUnique({
+            where: { id: folderId, createdBy: { id: user.id } }
+        });
+
+        if (folder) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 export async function isAllowedToAccessFolder(folderId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: string | null): Promise<boolean> {
     const { user } = await getCurrentSession();
 

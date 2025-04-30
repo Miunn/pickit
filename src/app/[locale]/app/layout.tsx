@@ -44,7 +44,7 @@ export default async function LocaleLayout({
     return (
         <NuqsAdapter>
             <SessionProvider values={{ user: user, session: session }}>
-                <SidebarProvider>
+                <SidebarProvider defaultOpen={!!user}>
                     <AppSidebar locale={locale} user={user} items={{
                         navMainItems: [
                             {
