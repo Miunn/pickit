@@ -103,11 +103,13 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                             ? <Check className="w-4 h-4" />
                             : <Copy className="w-4 h-4" />}
                     </Button>
-                    <ImageExif image={files[currentIndexState === 0 ? currentIndexState : currentIndexState - 1]}>
-                        <Button variant={"outline"} size={"icon"} type="button">
-                            <Braces className="w-4 h-4" />
-                        </Button>
-                    </ImageExif>
+                    <div className="hidden sm:block">
+                        <ImageExif image={files[currentIndexState === 0 ? currentIndexState : currentIndexState - 1]}>
+                            <Button variant={"outline"} size={"icon"} type="button">
+                                <Braces className="w-4 h-4" />
+                            </Button>
+                        </ImageExif>
+                    </div>
                 </div>
             </div>
             <Carousel className="w-full h-fit mx-auto max-w-xl mb-2" opts={{
@@ -138,15 +140,15 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                         : files[currentIndexState - 1]?.folder.name}
                 </p>
                 <p className="text-sm text-muted-foreground text-nowrap text-end justify-self-end">
-                    <span>{
+                    <span className="hidden sm:inline-block">{
                         currentIndexState == 0
                             ? `${files[currentIndexState]?.width}x${files[currentIndexState]?.height}`
                             : `${files[currentIndexState - 1]?.width}x${files[currentIndexState - 1]?.height}`
-                    }</span> - <span>{
+                    }</span> <span className="hidden sm:inline-block">-</span> <span className="hidden sm:inline-block">{
                         currentIndexState == 0
                             ? `${formatBytes(files[currentIndexState]?.size, { decimals: 2 })}`
                             : `${formatBytes(files[currentIndexState - 1]?.size, { decimals: 2 })}`
-                    }</span> - <span>{t('slide', { current: currentIndexState, total: count })}</span>
+                    }</span> <span className="hidden sm:inline-block">-</span> <span>{t('slide', { current: currentIndexState, total: count })}</span>
                 </p>
             </div>
 
