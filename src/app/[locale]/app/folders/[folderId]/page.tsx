@@ -10,6 +10,7 @@ import { ViewState } from "@/components/folders/ViewSelector";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { hasFolderOwnerAccess } from "@/lib/dal";
 
 export async function generateMetadata({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { sort?: ImagesSortMethod, view?: ViewState, share?: string, t?: string, h?: string } }): Promise<Metadata> {
     const t = await getTranslations("metadata.folder");

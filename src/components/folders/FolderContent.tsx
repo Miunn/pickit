@@ -13,9 +13,10 @@ import { downloadClientFolder } from "@/lib/utils";
 import ViewSelector, { ViewState } from "./ViewSelector";
 import ImagesList from "../images/ImagesList";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditDescriptionDialog from "./EditDescriptionDialog";
 import { useSearchParams } from "next/navigation";
+import { useSidebar } from "../ui/sidebar";
 
 export interface FolderContentProps {
     folder: FolderWithCreatedBy & FolderWithFilesWithFolderAndComments & FolderWithAccessToken;
