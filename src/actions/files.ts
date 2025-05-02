@@ -10,10 +10,13 @@ import { z } from "zod";
 import { GoogleBucket } from "@/lib/bucket";
 import mediaInfoFactory, { Track } from "mediainfo.js";
 import ffmpeg from "fluent-ffmpeg";
-import { PassThrough } from "stream";
-import crypto from "crypto";
+import { PassThrough, Readable } from "stream";
+import crypto, { randomUUID } from "crypto";
 import { validateShareToken } from "./tokenValidation";
 import { FolderTokenPermission, FileType } from "@prisma/client";
+import fs, { mkdtemp, mkdtempSync, rmdirSync, unlinkSync } from "fs";
+import path from "path";
+import { tmpdir } from "os";
 
 ffmpeg.setFfmpegPath(process.env.FFMPEG_PATH as string);
 
@@ -219,25 +222,17 @@ export async function finalizeFileUpload(
             return { error: null, fileId: image.id };
         } else if (verificationData.type.startsWith("video/")) {
             // Process thumbnail creation
-            const thumbnailBuffer = await new Promise<Buffer>((resolve, reject) => {
-                const inputStream = new PassThrough();
-                const passThrough = new PassThrough();
-                const chunks: Buffer[] = [];
-
-                passThrough.on("data", (chunk) => chunks.push(chunk));
-                passThrough.on("end", () => resolve(Buffer.concat(chunks)));
-                passThrough.on("error", reject);
-
-                inputStream.end(uploadedBuffer);
-                ffmpeg()
-                    .input(inputStream)
-                    .outputOptions("-frames:v 1")
-                    .format("image2")
-                    .pipe(passThrough, { end: true });
-            });
-
-            // Save thumbnail
-            await GoogleBucket.file(`${session.user.id}/${parentFolderId}/${fileId}-thumbnail`).save(thumbnailBuffer);
+            try {
+                const thumbnailBuffer = await extractThumbnailFromBuffer(uploadedBuffer);
+                console.log("Thumbnail buffer created");
+                console.log("Buffer", thumbnailBuffer);
+                // Log buffer size
+                console.log("Thumbnail buffer size:", thumbnailBuffer.length);
+                // Save thumbnail
+                await GoogleBucket.file(`${session.user.id}/${parentFolderId}/${fileId}-thumbnail`).save(thumbnailBuffer);
+            } catch (err) {
+                console.error("Error creating thumbnail:", err);
+            }
 
             // Create video record
             const mediainfo = await mediaInfoFactory({ locateFile: (file) => `${process.env.NEXT_PUBLIC_APP_URL}/mediainfo/${file}` });
@@ -417,7 +412,7 @@ export async function updateFilePosition(fileId: string, previousId?: string, ne
     } else if (!previousFile && nextFile) {
         position = nextFile.position / 2;
     }
-    
+
     if (!nextFile && previousFile) {
         position = previousFile.position + 1000;
     }
@@ -608,13 +603,16 @@ export async function processVideoAfterUpload(
             }
         });
 
+        revalidatePath(`/app/folders/${folderId}`);
+        revalidatePath(`/app/folders`);
+        revalidatePath(`/app`);
+
         return { error: null };
     } catch (err) {
-        console.error("Error processing video:", err);
-        return { error: "Failed to process video" };
+        console.error("Error processing video after upload:", err);
+        return { error: "Failed to process video after upload" };
     }
 }
-
 // Add this function to clean up orphaned verification files
 export async function cleanupOrphanedVerificationFiles(
     parentFolderId: string,
@@ -673,5 +671,45 @@ async function reNormalizePositions(folderId: string) {
             where: { id: files[i].id },
             data: { position: 1000 + i * 1000 }
         });
+    }
+}
+
+async function extractThumbnailFromBuffer(videoBuffer: Buffer): Promise<Buffer> {
+    const tempDir = mkdtempSync(path.join(tmpdir(), 'thumb-'));
+    const inputPath = path.join(tempDir, `input-${randomUUID()}.video`);
+    const outputPath = path.join(tempDir, `thumbnail-${randomUUID()}.jpg`);
+
+    console.log("Temp dir", tempDir);
+    console.log("inputPath", inputPath);
+    console.log("outputPath", outputPath);
+    
+    try {
+        // Write video buffer to a temp file
+        fs.writeFileSync(inputPath, videoBuffer);
+
+        // Run FFmpeg to extract a single frame at timestamp
+        await new Promise((resolve, reject) => {
+            ffmpeg(inputPath)
+                .seekInput('00:00:00')
+                .outputOptions(['-vframes 1'])
+                .output(outputPath)
+                .on('end', resolve)
+                .on('error', reject)
+                .run();
+        });
+
+        // Read and return thumbnail buffer
+        const thumbBuffer = fs.readFileSync(outputPath);
+        return thumbBuffer;
+
+    } finally {
+        // Clean up temp files and directory
+        try {
+            if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+            if (fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
+            fs.rmdirSync(tempDir);
+        } catch (cleanupErr) {
+            console.warn('Temporary file cleanup failed:', cleanupErr);
+        }
     }
 }
