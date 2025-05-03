@@ -9,27 +9,6 @@ import { GoogleBucket } from "@/lib/bucket";
 import { validateShareToken } from "./tokenValidation";
 import { isAllowedToAccessFolder } from "@/lib/dal";
 
-export async function getFolderName(id: string, shareToken?: string | null, accessKey?: string | null, tokenType?: string | null): Promise<{
-    folder?: LightFolder | null,
-    error?: string | null
-}> {
-    const isAllowed = await isAllowedToAccessFolder(id, shareToken, accessKey, tokenType);
-
-    if (!isAllowed) {
-        return { folder: null, error: "You are not allowed to access this folder" };
-    }
-
-    const folder = await prisma.folder.findUnique({
-        where: { id: id },
-        select: {
-            id: true,
-            name: true
-        }
-    });
-
-    return { folder: folder, error: null }
-}
-
 export async function getFolderFull(folderId: string, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashedPinCode?: string | null): Promise<{
     error: string | null,
     folder: (FolderWithCreatedBy & FolderWithFiles & FolderWithFilesWithFolderAndComments & FolderWithAccessToken) | null

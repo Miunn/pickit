@@ -29,6 +29,8 @@ export default async function FoldersPage({ params, searchParams }: { params: { 
         include: {
             cover: true,
             AccessToken: true,
+            files: { include: { folder: true, comments: { include: { createdBy: true } } } },
+            createdBy: true,
             _count: { select: { files: true } }
         },
     });

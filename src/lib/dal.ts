@@ -18,7 +18,18 @@ export async function hasFolderOwnerAccess(folderId: string): Promise<boolean> {
     return false;
 }
 
-export async function isAllowedToAccessFolder(folderId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: string | null): Promise<boolean> {
+/**
+ * Returns 1 for access granted
+ * 2 if a code is needed
+ * 3 if the code is wrong
+ * 0 if unauthorized
+ * @param folderId 
+ * @param shareToken 
+ * @param accessKey 
+ * @param tokenType 
+ * @returns 
+ */
+export async function isAllowedToAccessFolder(folderId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: string | null): Promise<number> {
     const { user } = await getCurrentSession();
 
     if (user) {
@@ -27,7 +38,7 @@ export async function isAllowedToAccessFolder(folderId: string, shareToken?: str
         });
 
         if (folder) {
-            return true;
+            return 1;
         }
     }
 
@@ -52,25 +63,25 @@ export async function isAllowedToAccessFolder(folderId: string, shareToken?: str
         }
 
         if (!access) {
-            return false;
+            return 0;
         }
 
         if (access.locked && access.pinCode) {
             if (!accessKey) {
-                return false;
+                return 2;
             }
 
             const match = bcrypt.compareSync(access.pinCode as string, accessKey || "");
 
             if (!match) {
-                return false;
+                return 3;
             }
         }
 
-        return true;
+        return 1;
     }
 
-    return false;
+    return 0;
 }
 
 export async function isAllowedToAccessFile(fileId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: string | null): Promise<boolean> {

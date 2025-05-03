@@ -17,18 +17,20 @@ import { useEffect, useState } from "react";
 import EditDescriptionDialog from "./EditDescriptionDialog";
 import { useSearchParams } from "next/navigation";
 import { useSidebar } from "../ui/sidebar";
+import { useFolderContext } from "@/context/FolderContext";
 
 export interface FolderContentProps {
-    folder: FolderWithCreatedBy & FolderWithFilesWithFolderAndComments & FolderWithAccessToken;
     defaultView?: ViewState;
     isGuest?: boolean;
 }
 
-export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentProps) => {
+export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const tokenType = searchParams.get("t");
     const hashPinCode = searchParams.get("h");
+
+    const { folder } = useFolderContext();
 
     const t = useTranslations("folders");
     const [viewState, setViewState] = useQueryState<ViewState>('view', {
