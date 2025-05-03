@@ -118,7 +118,7 @@ export default async function FolderPage({ params, searchParams }: { params: { f
                 <BreadcrumbPortal>
                     <HeaderBreadcumb folderName={accessToken.folder.name} />
                 </BreadcrumbPortal>
-                <UnlockTokenPrompt folderId={params.folderId} wrongPin={searchParams.wrongPin} />
+                <UnlockTokenPrompt folderId={params.folderId} wrongPin={hasAccess === 3} />
             </>
         )
     }
