@@ -9,39 +9,6 @@ import { getCurrentSession } from "@/lib/session";
 import ShareFolderTemplate from "@/components/emails/ShareFolderTemplate";
 import { render } from "@react-email/components";
 
-export async function getPersonsAccessTokens(): Promise<{
-    error: string | null,
-    personAccessTokens: PersonAccessTokenWithFolder[]
-}> {
-    const { user } = await getCurrentSession();
-
-    if (!user) {
-        return { error: "unauthorized", personAccessTokens: [] }
-    }
-
-    const personAccessTokens = await prisma.personAccessToken.findMany({
-        where: {
-            folder: {
-                createdBy: {
-                    id: user.id
-                }
-            }
-        },
-        include: {
-            folder: true
-        },
-        orderBy: [
-            {
-                folder: {
-                    name: "asc"
-                }
-            }
-        ]
-    });
-
-    return { error: null, personAccessTokens }
-}
-
 export async function createNewPersonAccessToken(folderId: string, target: string, permission: FolderTokenPermission, expiryDate: Date): Promise<{
     error: string | null,
     personAccessToken?: PersonAccessToken

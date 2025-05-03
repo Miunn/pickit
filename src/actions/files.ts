@@ -20,47 +20,6 @@ import { tmpdir } from "os";
 
 ffmpeg.setFfmpegPath(process.env.FFMPEG_PATH as string);
 
-export async function getLightFiles(): Promise<{
-    error: string | null;
-    lightFiles: FileLightWithFolderName[];
-}> {
-    const { user } = await getCurrentSession();
-
-    if (!user) {
-        return { error: "You must be logged in to get files", lightFiles: [] }
-    }
-
-    const files = await prisma.file.findMany({
-        where: {
-            createdBy: {
-                id: user.id
-            }
-        },
-        select: {
-            id: true,
-            name: true,
-            folder: {
-                select: {
-                    id: true,
-                    name: true
-                }
-            },
-        },
-        orderBy: [
-            {
-                folder: {
-                    name: "asc"
-                },
-            },
-            {
-                name: "asc"
-            }
-        ],
-    });
-
-    return { error: null, lightFiles: files }
-}
-
 export async function initiateFileUpload(
     formData: FormData,
     parentFolderId: string

@@ -7,12 +7,9 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/s
 import { Separator } from "@/components/ui/separator";
 import { Folder, Image, Link } from "lucide-react";
 import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
-import { getLightFolders, getSharedWithMeFolders } from "@/actions/folders";
-import { getLightFiles } from "@/actions/files";
-import { getAccessTokens } from "@/actions/accessTokens";
+import BreadcrumbWrapper from "@/components/layout/BreadcrumbWrapper";
 import UnverifiedEmail from "@/components/layout/UnverifiedEmail";
 import { addDays } from "date-fns";
-import { getPersonsAccessTokens } from "@/actions/accessTokensPerson";
 import SwitchLocale from "@/components/generic/SwitchLocale";
 import { Role } from "@prisma/client";
 import { getCurrentSession } from "@/lib/session";
@@ -20,6 +17,9 @@ import { CommandSearch } from "@/components/CommandSearch";
 import { NuqsAdapter } from 'nuqs/adapters/react'
 import { SwitchTheme } from "@/components/generic/SwitchTheme";
 import SessionProvider from "@/providers/SessionProvider";
+import { prisma } from "@/lib/prisma";
+import { getPathname } from "@/i18n/navigation";
+import { headers } from "next/headers";
 export const metadata: Metadata = {
     title: "Echomori",
     description: "Upload and share images with ease.",
@@ -28,18 +28,61 @@ export const metadata: Metadata = {
 export default async function LocaleLayout({
     children,
     params: { locale },
+    searchParams
 }: Readonly<{
     children: React.ReactNode;
     params: { locale: string };
+    searchParams: { share?: string, h?: string, t?: string };
 }>) {
     const { user, session } = await getCurrentSession();
 
     const t = await getTranslations("sidebar");
-    const folders = (await getLightFolders()).lightFolders;
-    const files = (await getLightFiles()).lightFiles;
-    const accessTokens = (await getAccessTokens()).accessTokens;
-    const personsAccessTokens = (await getPersonsAccessTokens()).personAccessTokens;
-    const sharedWithMeFolders = (await getSharedWithMeFolders()).accessTokens;
+    const folders = user ? await prisma.folder.findMany({
+        where: {
+            createdBy: { id: user.id }
+        },
+        select: {
+            id: true,
+            name: true
+        }
+    }) : [];
+    const files = user ? await prisma.file.findMany({
+        where: { createdBy: { id: user.id } },
+        select: {
+            id: true,
+            name: true,
+            folder: {
+                select: {
+                    id: true,
+                    name: true
+                }
+            },
+        },
+        orderBy: [
+            { folder: { name: "asc" } },
+            { name: "asc" }
+        ],
+    }) : [];
+    const accessTokens = user ? await prisma.accessToken.findMany({
+        where: {
+            folder: {
+                createdBy: { id: user.id }
+            }
+        },
+        include: { folder: true },
+        orderBy: [ { folder: { name: "asc" } } ]
+    }) : [];
+    const personsAccessTokens = user ? await prisma.personAccessToken.findMany({
+        where: {
+            folder: { createdBy: { id: user.id } }
+        },
+        include: { folder: true},
+        orderBy: [ { folder: { name: "asc" } } ]
+    }) : [];
+    const sharedWithMeFolders = user ? await prisma.personAccessToken.findMany({
+        where: { email: user.email },
+        include: { folder: { include: { createdBy: true } } }
+    }) : [];
 
     return (
         <NuqsAdapter>
@@ -111,7 +154,9 @@ export default async function LocaleLayout({
                                 <div className="flex items-center gap-2">
                                     <SidebarTrigger className="-ml-1" />
                                     <Separator orientation="vertical" className="mr-2 h-4" />
-                                    <HeaderBreadcumb />
+                                    <div id="breadcrumb-container">
+                                        <BreadcrumbWrapper />
+                                    </div>
                                 </div>
                                 <div>
                                     <SwitchLocale locale={locale} className="text-xs" />
