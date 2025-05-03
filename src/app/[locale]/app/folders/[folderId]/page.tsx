@@ -1,5 +1,4 @@
 import { FolderContent } from "@/components/folders/FolderContent";
-import { getFolderFull } from "@/actions/folders";
 import { getCurrentSession } from "@/lib/session";
 import UnlockTokenPrompt from "@/components/folders/UnlockTokenPrompt";
 import { getSortedFolderContent } from "@/lib/utils";

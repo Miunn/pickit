@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { FolderWithAccessToken, FolderWithFilesCount, FileWithComments, FileWithFolder } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithFilesCount, FileWithComments, FileWithFolder, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
 import { downloadClientFolder, formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Images, MoreHorizontal } from "lucide-react";
@@ -16,7 +16,7 @@ import { ShareFolderDialog } from "../../ShareFolderDialog";
 import ChangeCoverFolderDialog from "../../ChangeCoverFolderDialog";
 import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/files";
 
-export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWithFilesCount>[] = [
+export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWithFilesCount & FolderWithFilesWithFolderAndComments>[] = [
     {
         id: "select",
         header: ({ table }) => (

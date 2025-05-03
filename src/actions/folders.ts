@@ -2,55 +2,8 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithFiles, FolderWithFilesWithFolder, FolderWithFilesWithFolderAndComments, LightFolder, PersonAccessTokenWithFolderWithCreatedBy } from "@/lib/definitions";
-import { FolderTokenPermission } from "@prisma/client";
 import { getCurrentSession } from "@/lib/session";
 import { GoogleBucket } from "@/lib/bucket";
-import { validateShareToken } from "./tokenValidation";
-import { isAllowedToAccessFolder } from "@/lib/dal";
-
-export async function getFolderFull(folderId: string, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashedPinCode?: string | null): Promise<{
-    error: string | null,
-    folder: (FolderWithCreatedBy & FolderWithFiles & FolderWithFilesWithFolderAndComments & FolderWithAccessToken) | null
-    permission?: FolderTokenPermission
-}> {
-    const { user } = await getCurrentSession();
-
-    if (!user && !shareToken) {
-        return { error: "unauthorized", folder: null };
-    }
-
-    if (shareToken) {
-        const dataFromToken = await validateShareToken(folderId, shareToken, tokenType as "accessToken" | "personAccessToken", hashedPinCode);
-        
-        if (!dataFromToken.error || dataFromToken.error !== "invalid-token" || !user) {
-            return dataFromToken;
-        }
-    }
-
-    if (!user) {
-        return { error: "unauthorized", folder: null };
-    }
-
-    const folder = await prisma.folder.findUnique({
-        where: {
-            id: folderId,
-            createdBy: { id: user.id }
-        },
-        include: {
-            files: {
-                include: {
-                    folder: true,
-                    comments: { include: { createdBy: true } }
-                },
-            },
-            createdBy: true,
-            AccessToken: true
-        }
-    });
-
-    return { error: null, folder: folder };
-}
 
 export async function createFolder(name: string): Promise<{
     folder: { id: string; name: string; coverId: string | null; createdById: string; createdAt: Date; updatedAt: Date; } | null,

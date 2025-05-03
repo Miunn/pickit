@@ -1,6 +1,6 @@
 'use client'
 
-import { FolderWithAccessToken, FolderWithCover, FolderWithFilesCount, FileWithComments, FileWithFolder, FolderWithFilesWithFolderAndComments, FolderWithFiles } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCover, FolderWithFilesCount, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import React from "react";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
