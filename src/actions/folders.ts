@@ -8,30 +8,6 @@ import { getCurrentSession } from "@/lib/session";
 import { GoogleBucket } from "@/lib/bucket";
 import { validateShareToken } from "./tokenValidation";
 import { isAllowedToAccessFolder } from "@/lib/dal";
-export async function getLightFolders(): Promise<{
-    lightFolders: LightFolder[],
-    error?: string | null
-}> {
-    const { user } = await getCurrentSession();
-
-    if (!user) {
-        return { lightFolders: [], error: "You must be logged in to create a folders" };
-    }
-
-    const folders = await prisma.folder.findMany({
-        where: {
-            createdBy: {
-                id: user.id as string
-            }
-        },
-        select: {
-            id: true,
-            name: true
-        }
-    });
-
-    return { lightFolders: folders, error: null }
-}
 
 export async function getFolderName(id: string, shareToken?: string | null, accessKey?: string | null, tokenType?: string | null): Promise<{
     folder?: LightFolder | null,
@@ -95,24 +71,6 @@ export async function getFolderFull(folderId: string, shareToken?: string | null
     });
 
     return { error: null, folder: folder };
-}
-
-export async function getSharedWithMeFolders(): Promise<{
-    accessTokens: PersonAccessTokenWithFolderWithCreatedBy[],
-    error?: string | null
-}> {
-    const { user } = await getCurrentSession();
-
-    if (!user) {
-        return { accessTokens: [], error: "unauthorized" };
-    }
-
-    const accessTokens = await prisma.personAccessToken.findMany({
-        where: { email: user.email },
-        include: { folder: { include: { createdBy: true } } }
-    });
-
-    return { accessTokens: accessTokens, error: null }
 }
 
 export async function createFolder(name: string): Promise<{

@@ -11,6 +11,8 @@ import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { hasFolderOwnerAccess } from "@/lib/dal";
+import BreadcrumbPortal from "@/components/layout/BreadcrumbPortal";
+import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
 
 export async function generateMetadata({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { sort?: ImagesSortMethod, view?: ViewState, share?: string, t?: string, h?: string } }): Promise<Metadata> {
     const t = await getTranslations("metadata.folder");
@@ -68,7 +70,6 @@ export async function generateMetadata({ params, searchParams }: { params: { fol
 }
 
 export default async function FolderPage({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { sort?: ImagesSortMethod, view?: ViewState, share?: string, t?: string, h?: string } }) {
-
     const { session } = await getCurrentSession();
     const folderData = (await getFolderFull(params.folderId, searchParams.share, searchParams.t === "p" ? "personAccessToken" : "accessToken", searchParams.h));
 
@@ -84,9 +85,11 @@ export default async function FolderPage({ params, searchParams }: { params: { f
         fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/tokens/increment?token=${searchParams.share}`)
     }
 
-
     return (
         <>
+            <BreadcrumbPortal>
+                <HeaderBreadcumb folderName={folderData.folder?.name} />
+            </BreadcrumbPortal>
             {folderData.folder
                 ? <FolderContent
                     folder={getSortedFolderContent(folderData.folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithFilesWithFolderAndComments & FolderWithAccessToken & FolderWithCreatedBy}

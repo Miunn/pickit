@@ -1,241 +1,117 @@
-"use client"
+'use client';
 
-import { usePathname, useSearchParams } from "next/navigation";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
 import { useEffect, useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
-import { getFolderName } from "@/actions/folders";
+import { usePathname } from "next/navigation";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
 import { UserAdministration } from "@/lib/definitions";
 import { getUser } from "@/actions/userAdministration";
+import { useTranslations } from "next-intl";
 
-export default function HeaderBreadcumb() {
+type BreadcrumbPath = {
+    type: 'dashboard' | 'folders' | 'images' | 'folder' | 'links' | 'account' | 'administration' | 'administrationUsers';
+    folderId?: string;
+    folderName?: string;
+    userId?: string;
+};
 
-    const locale = useLocale();
-    const pathname = usePathname();
-    const t = useTranslations('breadcumb');
+function getCurrentPath(pathname: string, folderName?: string): { path: BreadcrumbPath | null; userId?: string } {
+    const tokens = pathname.split("/").filter(path => path && !(new RegExp("^(en|fr)$").test(path)));
+    
+    if (tokens[0] !== "app") return { path: null };
 
-    const searchParams = useSearchParams();
-    const shareToken = searchParams.get("share");
-    const accessKey = searchParams.get("h");
-    const tokenType = searchParams.get("t");
+    const pathMap: Record<string, BreadcrumbPath> = {
+        '': { type: 'dashboard' },
+        'folders': { type: 'folders' },
+        'images': { type: 'images' },
+        'links': { type: 'links' },
+        'account': { type: 'account' },
+        'administration': { type: 'administration' },
+    };
 
-    const [pathDashboard, setPathDashboard] = useState<boolean>(false);
-    const [pathListFolders, setPathListFolders] = useState<boolean>(false);
-    const [pathListImages, setPathListImages] = useState<boolean>(false);
-    const [pathFolder, setPathFolder] = useState<{ id: string; name: string; } | null>(null);
-    const [pathLinks, setPathLinks] = useState<boolean>(false);
-
-    const [pathAccount, setPathAccount] = useState<boolean>(false);
-
-    const [pathAdministration, setPathAdministration] = useState<boolean>(false);
-    const [pathAdministrationUsers, setPathAdministrationUsers] = useState<boolean>(false);
-
-    const [adminUser, setAdminUser] = useState<UserAdministration | null>(null);
-
-    const getPathFolderName = async (folderId: string) => {
-        const folder = await getFolderName(folderId, shareToken, accessKey, tokenType);
-
-        if (folder.folder) {
-            setPathFolder(folder.folder);
-        }
+    if (tokens.length === 1) {
+        return { path: pathMap[''] };
+    } else if (tokens.length === 2) {
+        return { path: pathMap[tokens[1]] || null };
+    } else if (tokens[1] === 'folders' && tokens[2]) {
+        return { path: { type: 'folder', folderId: tokens[2], folderName } };
+    } else if (tokens[1] === 'administration' && tokens[2] === 'users' && tokens[3]) {
+        return { 
+            path: { type: 'administrationUsers', userId: tokens[3] },
+            userId: tokens[3]
+        };
     }
 
+    return { path: null };
+}
+
+function renderBreadcrumbItem(type: string, locale: string, isCurrent: boolean = false) {
+    return isCurrent ? (
+        <BreadcrumbItem>
+            <BreadcrumbPage>{type}</BreadcrumbPage>
+        </BreadcrumbItem>
+    ) : (
+        <BreadcrumbItem className="hidden lg:block">
+            <BreadcrumbLink href={`/${locale}/app/${type.toLowerCase() === 'dashboard' ? '' : type.toLowerCase()}`}>
+                {type}
+            </BreadcrumbLink>
+        </BreadcrumbItem>
+    );
+}
+
+export default function HeaderBreadcumb({ folderName }: { folderName?: string }) {
+    const pathname = usePathname();
+    const t = useTranslations('breadcumb');
+    const [adminUser, setAdminUser] = useState<UserAdministration | null>(null);
+    const locale = pathname.split('/')[1] || 'en';
+
+    const { path: currentPath, userId } = getCurrentPath(pathname, folderName);
+
     useEffect(() => {
-        const tokens = pathname.split("/").filter(path => path && !(new RegExp("^(en|fr)$").test(path)));
-
-        if (tokens[0] === "app" && tokens.length === 1) {
-            setPathDashboard(true);
-
-            setPathListFolders(false);
-            setPathListImages(false);
-            setPathFolder(null);
-            setPathLinks(false);
-            setPathAccount(false);
-            setPathAdministration(false);
-            setPathAdministrationUsers(false);
-        }
-
-        if (tokens[0] === "app" && tokens[1] === "folders" && tokens.length === 2) {
-            setPathListFolders(true);
-
-            setPathDashboard(false);
-            setPathListImages(false);
-            setPathFolder(null);
-            setPathLinks(false);
-            setPathAccount(false);
-            setPathAdministration(false);
-            setPathAdministrationUsers(false);
-        }
-
-        if (tokens[0] === "app" && tokens[1] === "images" && tokens.length === 2) {
-            setPathListImages(true);
-
-            setPathDashboard(false);
-            setPathListFolders(false);
-            setPathFolder(null);
-            setPathLinks(false);
-            setPathAccount(false);
-            setPathAdministration(false);
-            setPathAdministrationUsers(false);
-        }
-
-        if (tokens[0] === "app" && tokens[1] === "folders" && tokens[2]) {
-            getPathFolderName(tokens[2]);
-
-            setPathDashboard(false);
-            setPathListFolders(false);
-            setPathListImages(false);
-            setPathLinks(false);
-            setPathAccount(false);
-            setPathAdministration(false);
-            setPathAdministrationUsers(false);
-        }
-
-        if (tokens[0] === "app" && tokens[1] === "links" && tokens.length === 2) {
-            setPathLinks(true);
-
-            setPathDashboard(false);
-            setPathListFolders(false);
-            setPathListImages(false);
-            setPathFolder(null);
-            setPathAccount(false);
-            setPathAdministration(false);
-            setPathAdministrationUsers(false);
-        }
-
-        if (tokens[0] === "app" && tokens[1] === "account" && tokens.length === 2) {
-            setPathAccount(true);
-
-            setPathDashboard(false);
-            setPathListFolders(false);
-            setPathListImages(false);
-            setPathFolder(null);
-            setPathLinks(false);
-            setPathAdministration(false);
-            setPathAdministrationUsers(false);
-        }
-
-        if (tokens[0] === "app" && tokens[1] === "administration" && tokens.length === 2) {
-            setPathAdministration(true);
-
-            setPathDashboard(false);
-            setPathListFolders(false);
-            setPathListImages(false);
-            setPathFolder(null);
-            setPathLinks(false);
-            setPathAccount(false);
-            setPathAdministrationUsers(false);
-        }
-
-        if (tokens[0] === "app" && tokens[1] === "administration" && tokens[2] === "users" && tokens.length === 4) {
-            getUser(tokens[3]).then((r) => {
-                if (r.error) {
-                    return
+        if (userId) {
+            const fetchUser = async () => {
+                const user = await getUser(userId);
+                if (!user.error) {
+                    setAdminUser(user.user);
                 }
-
-                setAdminUser(r.user)
-            });
-            setPathAdministrationUsers(true);
-
-            setPathDashboard(false);
-            setPathListFolders(false);
-            setPathListImages(false);
-            setPathFolder(null);
-            setPathLinks(false);
-            setPathAccount(false);
-            setPathAdministration(false);
+            };
+            fetchUser();
         }
-    }, [pathname]);
+    }, [userId]);
 
     return (
         <Breadcrumb>
             <BreadcrumbList>
-                {pathDashboard ? (
+                {currentPath && (
                     <>
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>{t('dashboard')}</BreadcrumbPage>
-                        </BreadcrumbItem>
+                        {renderBreadcrumbItem(t('dashboard'), locale, currentPath.type === 'dashboard')}
+                        
+                        {currentPath.type !== 'dashboard' && (
+                            <>
+                                <BreadcrumbSeparator className="hidden lg:block" />
+                                {currentPath.type === 'folder' ? (
+                                    <>
+                                        {renderBreadcrumbItem(t('folders'), locale)}
+                                        <BreadcrumbSeparator className="hidden md:block" />
+                                        <BreadcrumbItem>
+                                            <BreadcrumbPage>{folderName}</BreadcrumbPage>
+                                        </BreadcrumbItem>
+                                    </>
+                                ) : currentPath.type === 'administrationUsers' ? (
+                                    <>
+                                        {renderBreadcrumbItem(t('administration'), locale)}
+                                        <BreadcrumbSeparator className="hidden lg:block" />
+                                        <BreadcrumbItem>
+                                            <BreadcrumbPage>{adminUser?.name}</BreadcrumbPage>
+                                        </BreadcrumbItem>
+                                    </>
+                                ) : (
+                                    renderBreadcrumbItem(t(currentPath.type), locale, true)
+                                )}
+                            </>
+                        )}
                     </>
-                ) : (
-                    <BreadcrumbItem className="hidden lg:block">
-                        <BreadcrumbLink href={`/${locale}/app`}>
-                            {t('dashboard')}
-                        </BreadcrumbLink>
-                    </BreadcrumbItem>
                 )}
-                {pathListFolders ? (
-                    <>
-                        <BreadcrumbSeparator className="hidden lg:block" />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>{t('folders')}</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </>
-                ) : null}
-                {pathListImages ? (
-                    <>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>{t('images')}</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </>
-                ) : null}
-                {pathFolder ? (
-                    <>
-                        <BreadcrumbSeparator className="hidden lg:block" />
-                        <BreadcrumbItem className="hidden md:block">
-                            <BreadcrumbLink href="/app/folders">{t('folders')}</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className="hidden md:block" />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>{pathFolder.name}</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </>
-                ) : null}
-                {pathLinks ? (
-                    <>
-                        <BreadcrumbSeparator className="hidden lg:block" />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>{t('links')}</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </>
-                ) : null}
-                {pathAccount ? (
-                    <>
-                        <BreadcrumbSeparator className="hidden lg:block" />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>{t('account')}</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </>
-                ) : null}
-
-                {pathAdministration ? (
-                    <>
-                        <BreadcrumbSeparator className="hidden lg:block" />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>{t('administration')}</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </>
-                ) : null}
-
-                {pathAdministrationUsers ? (
-                    <>
-                        <BreadcrumbSeparator className="hidden lg:block" />
-                        <BreadcrumbItem className="hidden md:block">
-                            <BreadcrumbLink href="/app/administration">
-                                {t('administration')}
-                            </BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className="hidden lg:block" />
-                        <BreadcrumbItem className="hidden lg:block">
-                            <BreadcrumbList>{t('administrationUsers')}</BreadcrumbList>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className="hidden md:block" />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>{ adminUser?.name }</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </>
-                ) : null}
             </BreadcrumbList>
         </Breadcrumb>
-    )
+    );
 }

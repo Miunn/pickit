@@ -1,11 +1,9 @@
-import { getAccessTokens } from "@/actions/accessTokens";
-import { getLightFolders } from "@/actions/folders";
-import { getPersonsAccessTokens } from "@/actions/accessTokensPerson";
 import { getTranslations } from "next-intl/server";
 import { getCurrentSession } from "@/lib/session";
 import { redirect } from "@/i18n/navigation";
 import LinksContent from "@/components/accessTokens/LinksContent";
 import { Metadata } from "next";
+import { prisma } from "@/lib/prisma";
 
 export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations("metadata.links");
@@ -22,11 +20,24 @@ export default async function LinksPage({ params, searchParams }: { params: { lo
         return redirect({ href: `/signin`, locale: params.locale });
     }
 
-    const t = await getTranslations("pages.links");
-    const accessTokens = (await getAccessTokens()).accessTokens;
-    const personsAccessTokens = (await getPersonsAccessTokens()).personAccessTokens;
+    const accessTokens = await prisma.accessToken.findMany({
+        where: { folder: { createdBy: { id: user.id } } },
+        include: { folder: true },
+        orderBy: [ { folder: { name: "asc" } } ]
+    });
+    const personsAccessTokens = await prisma.personAccessToken.findMany({
+        where: { folder: { createdBy: { id: user.id } } },
+        include: { folder: true },
+        orderBy: [ { folder: { name: "asc" } } ]
+    });
 
-    const lightFolders = (await getLightFolders()).lightFolders
+    const lightFolders = await prisma.folder.findMany({
+        where: { createdBy: { id: user.id } },
+        select: {
+            id: true,
+            name: true
+        }
+    });
 
     const defaultSelectedAccessTokenIndex = accessTokens.map((act) => act.id).indexOf(searchParams.l || "");
     const defaultSelectedPersonAccessTokenIndex = personsAccessTokens.map((act) => act.id).indexOf(searchParams.l || "");

@@ -7,39 +7,6 @@ import { AccessToken, FolderTokenPermission } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { getCurrentSession } from "@/lib/session";
 
-export async function getAccessTokens(): Promise<{
-    error: string | null,
-    accessTokens: AccessTokenWithFolder[]
-}> {
-    const { user } = await getCurrentSession();
-
-    if (!user) {
-        return { error: "You must be logged in to get links", accessTokens: [] }
-    }
-
-    const links = await prisma.accessToken.findMany({
-        where: {
-            folder: {
-                createdBy: {
-                    id: user.id
-                }
-            }
-        },
-        include: {
-            folder: true
-        },
-        orderBy: [
-            {
-                folder: {
-                    name: "asc"
-                }
-            }
-        ]
-    });
-
-    return { error: null, accessTokens: links }
-}
-
 export async function createNewAccessToken(folderId: string, permission: FolderTokenPermission, expiryDate: Date): Promise<{
     error: string | null,
     accessToken?: AccessToken
