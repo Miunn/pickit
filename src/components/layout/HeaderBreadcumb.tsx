@@ -58,25 +58,12 @@ function renderBreadcrumbItem(type: string, locale: string, isCurrent: boolean =
     );
 }
 
-export default function HeaderBreadcumb({ folderName }: { folderName?: string }) {
+export default function HeaderBreadcumb({ folderName, adminUser }: { folderName?: string, adminUser?: UserAdministration }) {
     const pathname = usePathname();
     const t = useTranslations('breadcumb');
-    const [adminUser, setAdminUser] = useState<UserAdministration | null>(null);
     const locale = pathname.split('/')[1] || 'en';
 
-    const { path: currentPath, userId } = getCurrentPath(pathname, folderName);
-
-    useEffect(() => {
-        if (userId) {
-            const fetchUser = async () => {
-                const user = await getUser(userId);
-                if (!user.error) {
-                    setAdminUser(user.user);
-                }
-            };
-            fetchUser();
-        }
-    }, [userId]);
+    const { path: currentPath } = getCurrentPath(pathname, folderName);
 
     return (
         <Breadcrumb>

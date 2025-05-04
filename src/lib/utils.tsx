@@ -1,14 +1,13 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { Folder, File, FileType } from "@prisma/client";
-import { FolderWithCreatedBy, FolderWithFilesWithFolderAndComments, FileWithFolder, FolderWithImages } from "./definitions";
+import { FileType } from "@prisma/client";
+import { FolderWithFilesWithFolderAndComments, FileWithFolder } from "./definitions";
 import { toast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner"
 import { ImagesSortMethod } from "@/components/folders/SortImages";
 import saveAs from "file-saver";
 import JSZip from "jszip";
 import { Progress } from "@/components/ui/progress";
-import { getFolderFullFromAccessTokenServer } from "@/actions/tokenValidation";
 
 export function formatBytes(
 	bytes: number,
@@ -203,11 +202,6 @@ export const getSortedImagesVideosContent = (arr: FileWithFolder[], sort: Images
 		default:
 			return arr;
 	}
-}
-
-export const getFolderFullFromAccessToken = async (folderId: string, token: string, type: "accessToken" | "personAccessToken"):
-	Promise<{ error: string | null, folder: (FolderWithFilesWithFolderAndComments & FolderWithCreatedBy) | null }> => {
-	return getFolderFullFromAccessTokenServer(folderId, token, type);
 }
 
 export function cn(...inputs: ClassValue[]) {
