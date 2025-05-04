@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import * as bcrypt from "bcryptjs";
+import { isAllowedToDeleteComment } from "@/lib/dal";
 
 export async function createComment(
     fileId: string,
@@ -21,19 +22,19 @@ export async function createComment(
     }
 
     let file;
-        file =  await prisma.file.findUnique({
-            where: { id: fileId },
-            include: {
-                folder: {
-                    include: {
-                        files: { include: { folder: true, comments: { include: { createdBy: true } } } },
-                        createdBy: true,
-                        AccessToken: { omit: { pinCode: false } },
-                        PersonAccessToken: { omit: { pinCode: false } }
-                    }
+    file = await prisma.file.findUnique({
+        where: { id: fileId },
+        include: {
+            folder: {
+                include: {
+                    files: { include: { folder: true, comments: { include: { createdBy: true } } } },
+                    createdBy: true,
+                    AccessToken: { omit: { pinCode: false } },
+                    PersonAccessToken: { omit: { pinCode: false } }
                 }
             }
-        });
+        }
+    });
 
     if (!file) {
         return false;
@@ -121,7 +122,7 @@ export async function createComment(
             data,
             include: { file: { include: { folder: true } } }
         });
-        
+
         if (!comment) {
             console.log("Comment creation failed");
             return false;
@@ -135,6 +136,24 @@ export async function createComment(
     }
 }
 
-export async function deleteComment(commentId: string) {
+export async function deleteComment(commentId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
+    const isAllowed = await isAllowedToDeleteComment(commentId, shareToken, accessKey, tokenType);
 
+    if (!isAllowed) {
+        return false;
+    }
+
+    try {
+        const comment = await prisma.comment.delete({ where: { id: commentId }, include: { file: { include: { folder: { select: { id: true } } } } } });
+
+        if (!comment) {
+            return false;
+        }
+
+        revalidatePath(`/app/folders/${comment.file.folder.id}`);
+        return true;
+    } catch (e) {
+        console.log("Error deleting comment", e);
+        return false;
+    }
 }
