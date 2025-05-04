@@ -1,4 +1,3 @@
-import { getUser } from "@/actions/userAdministration";
 import AccountForm from "@/components/account/accountForm";
 import BreadcrumbPortal from "@/components/layout/BreadcrumbPortal";
 import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
