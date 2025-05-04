@@ -158,29 +158,6 @@ export async function changePassword(id: string, oldPassword: string, newPasswor
     return { error: null };
 }
 
-export async function getUserVerificationRequest(id: string): Promise<{
-    error: string | null,
-    token: VerifyEmailRequest | null,
-}> {
-    const { user } = await getCurrentSession();
-
-    if (!user) {
-        return { error: "You must be logged in to fetch user info", token: null };
-    }
-
-    if (user.id !== id) {
-        return { error: "You can't retreive another user's info", token: null };
-    }
-
-    const tokenData = await prisma.verifyEmailRequest.findFirst({
-        where: {
-            userId: id
-        }
-    });
-
-    return { error: null, token: tokenData };
-}
-
 export async function verifyAccount(token: string): Promise<{
     error: string | null,
     user: { name: string } | null
