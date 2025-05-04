@@ -25,14 +25,11 @@ export default async function Home({ params }: { params: { locale: string } }) {
         where: {
             createdBy: { id: user.id }
         },
-        orderBy: [
-            {
-                updatedAt: 'desc',
-            },
-        ] as any,
+        orderBy: [ { updatedAt: 'desc' } ],
         include: {
             cover: true,
             AccessToken: true,
+            files: { include: { folder: true, comments: { include: { createdBy: true } } } },
             _count: { select: { files: true } },
         },
         take: 6,
@@ -41,9 +38,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
         where: {
             createdBy: { id: user.id }
         },
-        orderBy: [
-            { updatedAt: 'desc' },
-        ] as any,
+        orderBy: [ { updatedAt: 'desc' } ],
         include: { folder: true, comments: { include: { createdBy: true } } },
         take: 6,
     })).sort((a, b) => {

@@ -17,6 +17,7 @@ import { FolderTokenPermission, FileType } from "@prisma/client";
 import fs, { mkdtemp, mkdtempSync, rmdirSync, unlinkSync } from "fs";
 import path from "path";
 import { tmpdir } from "os";
+import { isAllowedToAccessFile } from "@/lib/dal";
 
 ffmpeg.setFfmpegPath(process.env.FFMPEG_PATH as string);
 
@@ -393,108 +394,42 @@ export async function updateFilePosition(fileId: string, previousId?: string, ne
     return { error: null };
 }
 
-export async function deleteFile(folderId: string, fileId: string, shareToken?: string, hashPin?: string, tokenType?: string) {
-    const { user } = await getCurrentSession();
+export async function deleteFile(fileId: string, shareToken?: string, hashPin?: string, tokenType?: string) {
+    const isAllowed = await isAllowedToAccessFile(fileId, shareToken, hashPin, tokenType);
 
-    let validateToken = null;
-    if (shareToken) {
-        validateToken = await validateShareToken(folderId, shareToken, tokenType === "p" ? "personAccessToken" : "accessToken", hashPin);
-
-        if (validateToken.error && !user) {
-            return { error: "You must have a valid share link to delete this file" };
-        }
-
-        if (validateToken.folder === null && !user) {
-            return { error: "Folder not found" };
-        }
-
-        if (validateToken.permission === "READ" && !user) {
-            return { error: "You do not have permission to delete this file" };
-        }
-    }
-
-
-    if (!user && !validateToken) {
-        return { error: "You must be logged in to delete files" };
+    if (!isAllowed) {
+        return { error: "You do not have permission to delete this file" };
     }
 
     // Check if user is authorized to delete this image
     // (User was the creator of the folder containing the image)
 
-    let file = null;
-
-    if (user) {
-        file = await prisma.file.findUnique({
-            where: {
-                id: fileId,
-                createdBy: { id: user.id }
-            },
-            include: {
-                folder: {
-                    select: {
-                        id: true,
-                        createdBy: true
-                    }
-                }
-            }
-        });
-
-        try {
-            await GoogleBucket.file(`${file?.createdById}/${file?.folderId}/${file?.thumbnail}`).delete();
-        } catch (err) {
-            console.error("Error deleting thumbnail:", err);
-        }
-    } else if (validateToken && !validateToken.error) {
-        file = await prisma.file.findUnique({
-            where: {
-                id: fileId,
-                createdBy: { id: validateToken.folder?.createdById }
-            },
-            include: {
-                folder: {
-                    select: {
-                        id: true,
-                        createdBy: true
-                    }
-                }
-            }
-        });
-
-        try {
-            await GoogleBucket.file(`${file?.createdById}/${file?.folderId}/${file?.thumbnail}`).delete();
-        } catch (err) {
-            console.error("Error deleting thumbnail:", err);
-        }
-    }
+    const file = await prisma.file.findUnique({
+        where: { id: fileId }
+    });
 
     if (!file) {
         return { error: "File not found" };
     }
 
-    try {
-        const r = await GoogleBucket.file(`${file.createdById}/${file.folderId}/${file.id}`).delete();
-    } catch (err) {
-        console.error("Error deleting file:", err);
+    if (file.type === FileType.VIDEO) {
+        await GoogleBucket.file(`${file.createdById}/${file.folderId}/${file.thumbnail}`).delete();
     }
 
-    if (user) {
-        await prisma.file.delete({
-            where: { id: fileId }
-        })
-    } else if (validateToken?.folder && validateToken.permission === FolderTokenPermission.WRITE) {
-        await prisma.file.delete({
-            where: { id: fileId }
-        })
-    }
+    await GoogleBucket.file(`${file.createdById}/${file.folderId}/${file.id}`).delete();
 
-    revalidatePath(`/app/folders/${file.folder.id}`);
+    await prisma.file.delete({
+        where: { id: fileId }
+    });
+
+    revalidatePath(`/app/folders/${file.folderId}`);
     revalidatePath(`/app/folders`);
     return { error: null };
 }
 
 export async function deleteFiles(files: string[]) {
     for (const file of files) {
-        await deleteFile("", file);
+        await deleteFile(file);
     }
     return { error: null };
 }

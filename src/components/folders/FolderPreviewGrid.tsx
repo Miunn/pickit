@@ -1,6 +1,6 @@
 'use client'
 
-import { FolderWithAccessToken, FolderWithCover, FolderWithFilesCount, FileWithComments, FileWithFolder } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCover, FolderWithFilesCount, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import React from "react";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
@@ -14,11 +14,10 @@ import ChangeCoverFolderDialog from "./ChangeCoverFolderDialog";
 import { ShareFolderDialog } from "./ShareFolderDialog";
 import FolderPropertiesDialog from "./FolderPropertiesDialogs";
 import DeleteFolderDialog from "./DeleteFolderDialog";
-import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/files";
 import { downloadClientFolder } from "@/lib/utils";
 import { FileType } from "@prisma/client";
 
-export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccessToken & FolderWithFilesCount & FolderWithCover }) {
+export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments }) {
     const t = useTranslations("folders");
     const dialogsTranslations = useTranslations("dialogs.folders");
     const downloadT = useTranslations("folders.download");
@@ -30,16 +29,6 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
     const [openShare, setOpenShare] = React.useState<boolean>(false);
     const [openProperties, setOpenProperties] = React.useState<boolean>(false);
     const [openDelete, setOpenDelete] = React.useState<boolean>(false);
-
-    const [folderImages, setFolderImages] = React.useState<(FileWithFolder & FileWithComments)[]>([]);
-
-    const loadFiles = React.useCallback(async () => {
-        setFolderImages((await getImagesWithFolderAndCommentsFromFolder(folder.id)).images);
-    }, [folder.id]);
-
-    React.useEffect(() => {
-        loadFiles();
-    }, [folder.id, loadFiles]);
 
     return (
         <>
@@ -92,9 +81,9 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
                         </Link>
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenRename(true)}>{dialogsTranslations('rename.trigger')}</ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenChangeCover(true)} disabled={folderImages.length === 0}>{dialogsTranslations('changeCover.trigger')}</ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenChangeCover(true)} disabled={folder.files.length === 0}>{dialogsTranslations('changeCover.trigger')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenShare(true)}>{dialogsTranslations('share.trigger')}</ContextMenuItem>
-                    <ContextMenuItem onClick={() => downloadClientFolder(folder, downloadT)} disabled={folderImages.length === 0}>{t('actions.download')}</ContextMenuItem>
+                    <ContextMenuItem onClick={() => downloadClientFolder(folder, downloadT)} disabled={folder.files.length === 0}>{t('actions.download')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenProperties(true)}>{t('actions.properties')}</ContextMenuItem>
                     <ContextMenuSeparator />
                     <ContextMenuItem onClick={() => setOpenDelete(true)} className="text-red-600 focus:text-red-600 font-semibold">{dialogsTranslations('delete.trigger')}</ContextMenuItem>
@@ -102,7 +91,7 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
             </ContextMenu>
             <RenameFolderDialog folderId={folder.id} folderName={folder.name} openState={openRename}
                 setOpenState={setOpenRename} />
-            <ChangeCoverFolderDialog images={folderImages.filter((file) => file.type === FileType.IMAGE)} folderId={folder.id} open={openChangeCover} setOpen={setOpenChangeCover} />
+            <ChangeCoverFolderDialog images={folder.files.filter((file) => file.type === FileType.IMAGE)} folderId={folder.id} open={openChangeCover} setOpen={setOpenChangeCover} />
             <ShareFolderDialog folder={folder} open={openShare} setOpen={setOpenShare} />
             <FolderPropertiesDialog folder={folder} open={openProperties} setOpen={setOpenProperties} />
             <DeleteFolderDialog folderId={folder.id} folderName={folder.name} openState={openDelete}

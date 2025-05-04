@@ -1,11 +1,11 @@
 import { Separator } from "@/components/ui/separator";
 import AccountForm from "@/components/account/accountForm";
-import getMe from "@/actions/user";
 import ReviewFolders from "@/components/account/reviewFolders";
 import { prisma } from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { Metadata } from "next";
+import { getCurrentSession } from "@/lib/session";
 
 export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations("metadata.account");
@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AccountPage({ params }: { params: { locale: string } }) {
 
-    const user = (await getMe()).user;
+    const { user } = await getCurrentSession();
 
     if (!user) {
         return redirect({ href: '/signin', locale: params.locale });

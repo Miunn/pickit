@@ -5,9 +5,9 @@ import HeaderBreadcumb from './HeaderBreadcumb';
 
 export default function BreadcrumbWrapper() {
     const pathname = usePathname();
-    const isFolderPage = pathname?.includes('/app/folders/');
+    const shouldHideDefaultBreadcrumb = pathname?.includes('/app/folders/') || pathname?.includes('/app/administration/users/');
 
-    if (isFolderPage) return null;
+    if (shouldHideDefaultBreadcrumb) return null;
 
     return <HeaderBreadcumb />;
 } 
