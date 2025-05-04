@@ -157,3 +157,7 @@ export async function isAllowedToAccessFile(fileId: string, shareToken?: string 
 
     return false;
 }
+
+export async function isAllowedToDeleteComment(commentId: string) {
+    
+}
