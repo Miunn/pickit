@@ -17,11 +17,6 @@ export function Comment({ comment }: { comment: CommentType }) {
     const formatter = useFormatter();
     const t = useTranslations("components.images.comments.comment.dropdown");
     const [openDelete, setOpenDelete] = useState(false);
-
-    console.log("user", user);
-    console.log("token", token);
-    console.log("comment", comment);
-    console.log("comment create uid", comment.createdById === user?.id);
     
     return (
         <div className="relative">
