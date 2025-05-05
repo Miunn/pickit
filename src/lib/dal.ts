@@ -1,3 +1,5 @@
+import { PersonAccessToken } from "@prisma/client";
+import { AccessToken } from "@prisma/client";
 import { prisma } from "./prisma";
 import { getCurrentSession } from "./session";
 import * as bcrypt from "bcryptjs";
@@ -156,4 +158,49 @@ export async function isAllowedToAccessFile(fileId: string, shareToken?: string 
     }
 
     return false;
+}
+
+export async function isAllowedToDeleteComment(commentId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
+    const comment = await prisma.comment.findUnique({
+        where: { id: commentId },
+        include: { file: { select: { id: true } } }
+    });
+
+    if (!comment) {
+        return false;
+    }
+
+    if (comment.createdById) {
+        const { user } = await getCurrentSession();
+
+        if (!user) {
+            return false;
+        }
+
+        return comment.createdById === user.id;
+    }
+
+    if (comment.createdByEmail) {
+        if (!shareToken || !isAllowedToAccessFile(comment.fileId, shareToken, accessKey, tokenType) || tokenType !== "personAccessToken") {
+            return false;
+        }
+
+        const token = await getToken(shareToken, "personAccessToken") as PersonAccessToken;
+
+        if (!token || !token.email) {
+            return false;
+        }
+
+        return token.email === comment.createdByEmail;
+    }
+
+    return false;
+}
+
+async function getToken(shareToken: string, tokenType: "accessToken" | "personAccessToken"): Promise<AccessToken | PersonAccessToken | null> {
+    if (tokenType === "accessToken") {
+        return await prisma.accessToken.findUnique({ where: { token: shareToken } });
+    } else {
+        return await prisma.personAccessToken.findUnique({ where: { token: shareToken } });
+    }
 }

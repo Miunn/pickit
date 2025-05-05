@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import * as bcrypt from "bcryptjs";
+import { isAllowedToDeleteComment } from "@/lib/dal";
 
 export async function createComment(
     fileId: string,
@@ -21,27 +22,27 @@ export async function createComment(
     }
 
     let file;
-        file =  await prisma.file.findUnique({
-            where: { id: fileId },
-            include: {
-                folder: {
-                    include: {
-                        files: { include: { folder: true, comments: { include: { createdBy: true } } } },
-                        createdBy: true,
-                        AccessToken: { omit: { pinCode: false } },
-                        PersonAccessToken: { omit: { pinCode: false } }
-                    }
+    file = await prisma.file.findUnique({
+        where: { id: fileId },
+        include: {
+            folder: {
+                include: {
+                    files: { include: { folder: true, comments: { include: { createdBy: true } } } },
+                    createdBy: true,
+                    AccessToken: { omit: { pinCode: false } },
+                    PersonAccessToken: { omit: { pinCode: false } }
                 }
             }
-        });
+        }
+    });
 
     if (!file) {
-        console.log("File not found");
         return false;
     }
 
     const folder: FolderWithFilesWithFolderAndCommentsAndCreatedBy & FolderWithAccessToken & FolderWithPersonAccessToken = file.folder;
     let commentName = "Anonymous";
+    let createdByEmail = null;
 
     if (!user || folder.createdById !== user.id) {
         if (!shareToken || !type || (type !== "accessToken" && type !== "personAccessToken")) {
@@ -67,6 +68,7 @@ export async function createComment(
                 }
             }
             commentName = accessToken.email.split("@")[0];
+            createdByEmail = accessToken.email;
         } else {
             const accessToken = folder.AccessToken.find(a => a.token === shareToken && a.expires >= new Date());
 
@@ -88,6 +90,7 @@ export async function createComment(
         }
     } else {
         commentName = user.name;
+        createdByEmail = user.email;
     }
 
     const parsedData = CreateCommentFormSchema.safeParse(data);
@@ -102,6 +105,7 @@ export async function createComment(
             data = {
                 text: parsedData.data.content,
                 createdBy: { connect: { id: user?.id } },
+                createdByEmail,
                 name: commentName,
                 file: { connect: { id: fileId } }
             }
@@ -109,6 +113,7 @@ export async function createComment(
             data = {
                 text: parsedData.data.content,
                 name: commentName,
+                createdByEmail,
                 file: { connect: { id: fileId } }
             }
         }
@@ -117,7 +122,7 @@ export async function createComment(
             data,
             include: { file: { include: { folder: true } } }
         });
-        
+
         if (!comment) {
             console.log("Comment creation failed");
             return false;
@@ -127,6 +132,28 @@ export async function createComment(
         return true;
     } catch (e) {
         console.log("Error creating comment", e);
+        return false;
+    }
+}
+
+export async function deleteComment(commentId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
+    const isAllowed = await isAllowedToDeleteComment(commentId, shareToken, accessKey, tokenType);
+
+    if (!isAllowed) {
+        return false;
+    }
+
+    try {
+        const comment = await prisma.comment.delete({ where: { id: commentId }, include: { file: { include: { folder: { select: { id: true } } } } } });
+
+        if (!comment) {
+            return false;
+        }
+
+        revalidatePath(`/app/folders/${comment.file.folder.id}`);
+        return true;
+    } catch (e) {
+        console.log("Error deleting comment", e);
         return false;
     }
 }
