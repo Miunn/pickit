@@ -318,6 +318,12 @@ const fileWithCommentsWithCreatedBy = Prisma.validator<Prisma.FileDefaultArgs>()
 
 export type FileWithCommentsWithCreatedBy = Prisma.FileGetPayload<typeof fileWithCommentsWithCreatedBy>
 
+const commentWithCreatedBy = Prisma.validator<Prisma.CommentDefaultArgs>()({
+    include: { createdBy: true }
+})
+
+export type CommentWithCreatedBy = Prisma.CommentGetPayload<typeof commentWithCreatedBy>
+
 const accessTokenWithFolder = Prisma.validator<Prisma.AccessTokenDefaultArgs>()({
     include: { folder: true },
 })

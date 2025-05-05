@@ -22,7 +22,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { z } from "zod";
-
+import { useFolderContext } from "@/context/FolderContext";
 type FormData = z.infer<typeof EditCommentFormSchema>;
 
 export default function EditCommentDialog({ comment, open, setOpen, children }: { 
@@ -31,6 +31,7 @@ export default function EditCommentDialog({ comment, open, setOpen, children }: 
     setOpen?: React.Dispatch<React.SetStateAction<boolean>>,
     children?: React.ReactNode 
 }) {
+    const { folder, setFolder } = useFolderContext();
     const t = useTranslations("dialogs.comments.edit");
     const [editing, setEditing] = useState(false);
     const searchParams = useSearchParams();
@@ -61,6 +62,26 @@ export default function EditCommentDialog({ comment, open, setOpen, children }: 
             });
             return;
         }
+
+        setFolder({
+            ...folder,
+            files: folder.files.map((file) => {
+                if (file.id === comment.fileId) {
+                    return {
+                        ...file,
+                        comments: file.comments.map((c) => {
+                            if (c.id === comment.id) {
+                                return r;
+                            }
+
+                            return c;
+                        })
+                    }
+                }
+
+                return file;
+            })
+        });
 
         if (setOpen) {
             setOpen(false);
