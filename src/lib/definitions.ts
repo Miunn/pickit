@@ -106,6 +106,14 @@ export const CreateCommentFormSchema = z.object({
     })
 });
 
+export const EditCommentFormSchema = z.object({
+    content: z.string().min(1, {
+        message: "Comment must be at least 1 character long"
+    }).max(255, {
+        message: "Comment must be at most 255 characters long"
+    })
+});
+
 export const LockFolderFormSchema = z.object({
     pin: z.string().min(8, {
         message: "PIN must be 6 characters long"

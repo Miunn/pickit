@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import * as bcrypt from "bcryptjs";
 import { isAllowedToDeleteComment } from "@/lib/dal";
+import { EditCommentFormSchema } from "@/lib/definitions";
 
 export async function createComment(
     fileId: string,
@@ -154,6 +155,43 @@ export async function deleteComment(commentId: string, shareToken?: string | nul
         return true;
     } catch (e) {
         console.log("Error deleting comment", e);
+        return false;
+    }
+}
+
+export async function updateComment(
+    commentId: string,
+    text: string,
+    shareToken?: string | null,
+    accessKey?: string | null,
+    tokenType?: "accessToken" | "personAccessToken" | null
+): Promise<boolean> {
+    const isAllowed = await isAllowedToDeleteComment(commentId, shareToken, accessKey, tokenType);
+
+    if (!isAllowed) {
+        return false;
+    }
+
+    const result = EditCommentFormSchema.safeParse({ content: text });
+    if (!result.success) {
+        return false;
+    }
+
+    try {
+        const comment = await prisma.comment.update({
+            where: { id: commentId },
+            data: { text: result.data.content },
+            include: { file: { include: { folder: { select: { id: true } } } } }
+        });
+
+        if (!comment) {
+            return false;
+        }
+
+        revalidatePath(`/app/folders/${comment.file.folder.id}`);
+        return true;
+    } catch (e) {
+        console.log("Error updating comment", e);
         return false;
     }
 }

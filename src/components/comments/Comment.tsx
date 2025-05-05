@@ -9,6 +9,7 @@ import { useState } from "react";
 import DeleteCommentDialog from "./DeleteCommentDialog";
 import { useSession } from "@/providers/SessionProvider";
 import { useFolderContext } from "@/context/FolderContext";
+import EditCommentDialog from "./EditCommentDialog";
 
 export function Comment({ comment }: { comment: CommentType }) {
     const { user } = useSession();
@@ -17,7 +18,8 @@ export function Comment({ comment }: { comment: CommentType }) {
     const formatter = useFormatter();
     const t = useTranslations("components.images.comments.comment.dropdown");
     const [openDelete, setOpenDelete] = useState(false);
-    
+    const [openEdit, setOpenEdit] = useState(false);
+
     return (
         <div className="relative">
             <p className="text-sm font-semibold flex items-center gap-2">
@@ -41,12 +43,19 @@ export function Comment({ comment }: { comment: CommentType }) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                        <DropdownMenuItem onClick={() => setOpenDelete(true)}>{t("delete")}</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setOpenEdit(true)}>{t("edit")}</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-destructive font-semibold">{t("delete")}</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             ) : null}
 
-            <DeleteCommentDialog 
+            <EditCommentDialog
+                comment={comment}
+                open={openEdit}
+                setOpen={setOpenEdit}
+            />
+
+            <DeleteCommentDialog
                 comment={comment} 
                 open={openDelete} 
                 setOpen={setOpenDelete}
