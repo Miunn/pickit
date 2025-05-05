@@ -95,20 +95,21 @@ export default async function FolderPage({ params, searchParams }: { params: { f
         }
     });
 
-    if (hasAccess === 2 || hasAccess === 3) {
-        let accessToken;
-        if (searchParams.t === "p") {
-            accessToken = await prisma.personAccessToken.findUnique({
-                where: { token: searchParams.share },
-                include: { folder: true }
-            });
-        } else {
-            accessToken = await prisma.accessToken.findUnique({
-                where: { token: searchParams.share },
-                include: { folder: true }
-            });
-        }
+    let accessToken = null;
 
+    if (searchParams.share && searchParams.t === "p") {
+        accessToken = await prisma.personAccessToken.findUnique({
+            where: { token: searchParams.share },
+            include: { folder: true }
+        });
+    } else if (searchParams.share) {
+        accessToken = await prisma.accessToken.findUnique({
+            where: { token: searchParams.share },
+            include: { folder: true }
+        });
+    }
+
+    if (hasAccess === 2 || hasAccess === 3) {
         if (!accessToken) {
             return redirect({ href: `/links/invalid/${searchParams.share}`, locale: params.locale });
         }
@@ -136,7 +137,10 @@ export default async function FolderPage({ params, searchParams }: { params: { f
             <BreadcrumbPortal>
                 <HeaderBreadcumb folderName={folder.name} />
             </BreadcrumbPortal>
-            <FolderProvider folderData={getSortedFolderContent(folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments}>
+            <FolderProvider
+                folderData={getSortedFolderContent(folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments}
+                tokenData={accessToken}
+            >
                 <FolderContent
                     defaultView={searchParams.view}
                     isGuest={!session}

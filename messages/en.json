@@ -472,6 +472,11 @@
         "privacy": {
           "trigger": "How we handle your comments ?",
           "content": "If you are logged in, your name will appear above your comment.<br />If you are not logged in but this folder has been shared with you by e-mail, the first part of your e-mail address will appear above your comment.<br />If you are not logged in and this file has been shared with you via a link, your comment will be anonymous.<br /><br />Comments are only shared with people who have access to the folder."
+        },        
+        "comment": {
+          "dropdown": {
+            "delete": "Delete"
+          }
         }
       },
       "uploadImagesForm": {
@@ -1235,6 +1240,27 @@
             "title": "User deleted",
             "description": "The user has been deleted successfully"
           }
+        }
+      }
+    },
+    "comments": {
+      "delete": {
+        "title": "Delete comment",
+        "description": "Are you sure you want to delete this comment? This action cannot be undone.",
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Delete",
+          "submitting": "Deleting..."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't delete comment",
+            "description": "An unknown error happened while deleting the comment"
+          }
+        },
+        "success": {
+          "title": "Comment deleted",
+          "description": "The comment has been deleted successfully"
         }
       }
     }

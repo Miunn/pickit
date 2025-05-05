@@ -1,0 +1,61 @@
+import { Comment as CommentType } from "@prisma/client";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useFormatter, useTranslations } from "next-intl";
+import { Button } from "../ui/button";
+import { Ellipsis } from "lucide-react";
+import { DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { DropdownMenu } from "../ui/dropdown-menu";
+import { useState } from "react";
+import DeleteCommentDialog from "./DeleteCommentDialog";
+import { useSession } from "@/providers/SessionProvider";
+import { useFolderContext } from "@/context/FolderContext";
+
+export function Comment({ comment }: { comment: CommentType }) {
+    const { user } = useSession();
+    const { token } = useFolderContext();
+
+    const formatter = useFormatter();
+    const t = useTranslations("components.images.comments.comment.dropdown");
+    const [openDelete, setOpenDelete] = useState(false);
+
+    console.log("user", user);
+    console.log("token", token);
+    console.log("comment", comment);
+    console.log("comment create uid", comment.createdById === user?.id);
+    
+    return (
+        <div className="relative">
+            <p className="text-sm font-semibold flex items-center gap-2">
+                {comment.name}
+                <Tooltip>
+                    <TooltipTrigger>
+                        <span className="font-light text-gray-500">{formatter.relativeTime(comment.createdAt, new Date())}</span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <span className="capitalize">{formatter.dateTime(comment.createdAt, { weekday: "long", day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "numeric" })}</span>
+                    </TooltipContent>
+                </Tooltip>
+            </p>
+            <p className="text-sm">{comment.text}</p>
+
+            {comment.createdById === user?.id || (token && 'email' in token && comment.createdByEmail === token.email) ? (
+                <DropdownMenu>
+                    <DropdownMenuTrigger className="absolute top-0 right-0" asChild>
+                        <Button variant="ghost" size="icon" className="w-6 h-6 p-0">
+                            <Ellipsis className="size-4" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                        <DropdownMenuItem onClick={() => setOpenDelete(true)}>{t("delete")}</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            ) : null}
+
+            <DeleteCommentDialog 
+                comment={comment} 
+                open={openDelete} 
+                setOpen={setOpenDelete}
+            />
+        </div>
+    )
+}
