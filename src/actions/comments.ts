@@ -1,12 +1,13 @@
 'use server'
 
-import { CreateCommentFormSchema, FolderWithAccessToken, FolderWithCreatedBy, FolderWithFilesWithFolderAndCommentsAndCreatedBy, FolderWithPersonAccessToken } from "@/lib/definitions";
+import { CommentWithCreatedBy, CreateCommentFormSchema, FolderWithAccessToken, FolderWithCreatedBy, FolderWithFilesWithFolderAndCommentsAndCreatedBy, FolderWithPersonAccessToken } from "@/lib/definitions";
 import { getCurrentSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import * as bcrypt from "bcryptjs";
 import { isAllowedToDeleteComment } from "@/lib/dal";
+import { EditCommentFormSchema } from "@/lib/definitions";
 
 export async function createComment(
     fileId: string,
@@ -14,11 +15,11 @@ export async function createComment(
     shareToken?: string | null,
     type?: "accessToken" | "personAccessToken" | null,
     h?: string | null
-): Promise<boolean> {
+): Promise<CommentWithCreatedBy | null> {
     const { user } = await getCurrentSession();
 
     if (!user && (!shareToken || !type)) {
-        return false;
+        return null;
     }
 
     let file;
@@ -37,7 +38,7 @@ export async function createComment(
     });
 
     if (!file) {
-        return false;
+        return null;
     }
 
     const folder: FolderWithFilesWithFolderAndCommentsAndCreatedBy & FolderWithAccessToken & FolderWithPersonAccessToken = file.folder;
@@ -46,25 +47,25 @@ export async function createComment(
 
     if (!user || folder.createdById !== user.id) {
         if (!shareToken || !type || (type !== "accessToken" && type !== "personAccessToken")) {
-            return false;
+            return null;
         }
 
         if (type === "personAccessToken") {
             const accessToken = folder.PersonAccessToken.find(a => a.token === shareToken && a.expires >= new Date());
 
             if (!accessToken) {
-                return false;
+                return null;
             }
 
             if (accessToken.locked) {
                 if (!h) {
-                    return false;
+                    return null;
                 }
 
                 const match = bcrypt.compareSync(accessToken.pinCode as string, h);
 
                 if (!match) {
-                    return false;
+                    return null;
                 }
             }
             commentName = accessToken.email.split("@")[0];
@@ -73,18 +74,18 @@ export async function createComment(
             const accessToken = folder.AccessToken.find(a => a.token === shareToken && a.expires >= new Date());
 
             if (!accessToken) {
-                return false;
+                return null;
             }
 
             if (accessToken.locked) {
                 if (!h) {
-                    return false;
+                    return null;
                 }
 
                 const match = bcrypt.compareSync(accessToken.pinCode as string, h);
 
                 if (!match) {
-                    return false;
+                    return null;
                 }
             }
         }
@@ -96,7 +97,7 @@ export async function createComment(
     const parsedData = CreateCommentFormSchema.safeParse(data);
 
     if (!parsedData.success) {
-        return false;
+        return null;
     }
 
     try {
@@ -120,19 +121,19 @@ export async function createComment(
 
         const comment = await prisma.comment.create({
             data,
-            include: { file: { include: { folder: true } } }
+            include: { file: { include: { folder: true } }, createdBy: true }
         });
 
         if (!comment) {
             console.log("Comment creation failed");
-            return false;
+            return null;
         }
 
         revalidatePath(`/app/folders/${folder.id}`);
-        return true;
+        return comment;
     } catch (e) {
         console.log("Error creating comment", e);
-        return false;
+        return null;
     }
 }
 
@@ -155,5 +156,42 @@ export async function deleteComment(commentId: string, shareToken?: string | nul
     } catch (e) {
         console.log("Error deleting comment", e);
         return false;
+    }
+}
+
+export async function updateComment(
+    commentId: string,
+    text: string,
+    shareToken?: string | null,
+    accessKey?: string | null,
+    tokenType?: "accessToken" | "personAccessToken" | null
+): Promise<CommentWithCreatedBy | null> {
+    const isAllowed = await isAllowedToDeleteComment(commentId, shareToken, accessKey, tokenType);
+
+    if (!isAllowed) {
+        return null;
+    }
+
+    const result = EditCommentFormSchema.safeParse({ content: text });
+    if (!result.success) {
+        return null;
+    }
+
+    try {
+        const comment = await prisma.comment.update({
+            where: { id: commentId },
+            data: { text: result.data.content },
+            include: { file: { include: { folder: { select: { id: true } } } }, createdBy: true }
+        });
+
+        if (!comment) {
+            return null;
+        }
+
+        revalidatePath(`/app/folders/${comment.file.folder.id}`);
+        return comment;
+    } catch (e) {
+        console.log("Error updating comment", e);
+        return null;
     }
 }

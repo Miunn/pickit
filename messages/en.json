@@ -472,10 +472,11 @@
         "privacy": {
           "trigger": "How we handle your comments ?",
           "content": "If you are logged in, your name will appear above your comment.<br />If you are not logged in but this folder has been shared with you by e-mail, the first part of your e-mail address will appear above your comment.<br />If you are not logged in and this file has been shared with you via a link, your comment will be anonymous.<br /><br />Comments are only shared with people who have access to the folder."
-        },        
+        },
         "comment": {
           "dropdown": {
-            "delete": "Delete"
+            "delete": "Delete",
+            "edit": "Edit"
           }
         }
       },
@@ -1252,15 +1253,41 @@
           "submit": "Delete",
           "submitting": "Deleting..."
         },
-        "errors": {
-          "unknown": {
-            "title": "Can't delete comment",
-            "description": "An unknown error happened while deleting the comment"
-          }
-        },
         "success": {
           "title": "Comment deleted",
-          "description": "The comment has been deleted successfully"
+          "description": "The comment has been successfully deleted."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Error",
+            "description": "An error occurred while deleting the comment."
+          }
+        }
+      },
+      "edit": {
+        "title": "Edit comment",
+        "description": "Edit your comment below.",
+        "content": {
+          "placeholder": "Write your comment here..."
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Save",
+          "submitting": "Saving..."
+        },
+        "success": {
+          "title": "Comment updated",
+          "description": "The comment has been successfully updated."
+        },
+        "errors": {
+          "empty": {
+            "title": "Empty comment",
+            "description": "Please write something in your comment."
+          },
+          "unknown": {
+            "title": "Error",
+            "description": "An error occurred while updating the comment."
+          }
         }
       }
     }

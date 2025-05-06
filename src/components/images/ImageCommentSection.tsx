@@ -12,15 +12,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 import { useSearchParams } from "next/navigation";
 import { Comment } from "../comments/Comment";
-
+import { useFolderContext } from "@/context/FolderContext";
 export default function ImageCommentSection({ file, className, open, setOpen }: { file: FileWithComments, className?: string, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
-
     const t = useTranslations("components.images.comments");
-    const formatter = useFormatter();
     const createCommentForm = useForm<z.infer<typeof CreateCommentFormSchema>>({
         resolver: zodResolver(CreateCommentFormSchema),
         defaultValues: {
@@ -28,6 +26,8 @@ export default function ImageCommentSection({ file, className, open, setOpen }: 
         }
     })
     const searchParams = useSearchParams();
+
+    const { folder, setFolder } = useFolderContext();
 
     async function submitComment(data: z.infer<typeof CreateCommentFormSchema>) {
         const r = await createComment(file.id, data, searchParams.get("share"), searchParams.get("t") === "p" ? "personAccessToken" : "accessToken", searchParams.get("h"));
@@ -40,6 +40,20 @@ export default function ImageCommentSection({ file, className, open, setOpen }: 
             });
             return;
         }
+
+        setFolder({
+            ...folder,
+            files: folder.files.map((file) => {
+                if (file.id === file.id) {
+                    return {
+                        ...file,
+                        comments: [...file.comments, r]
+                    }
+                }
+
+                return file;
+            })
+        })
 
         toast({
             title: t('success.title'),

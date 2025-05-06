@@ -474,6 +474,7 @@
         },
         "comment": {
           "dropdown": {
+            "edit": "Modifier",
             "delete": "Supprimer"
           }
         }
@@ -1248,17 +1249,43 @@
         "actions": {
           "cancel": "Annuler",
           "submit": "Supprimer",
-          "submitting": "Suppression..."
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de supprimer le commentaire",
-            "description": "Une erreur inconnue est survenue lors de la suppression du commentaire"
-          }
+          "submitting": "Suppression en cours..."
         },
         "success": {
           "title": "Commentaire supprimé",
-          "description": "Le commentaire a été supprimé avec succès"
+          "description": "Le commentaire a été supprimé avec succès."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Erreur",
+            "description": "Une erreur est survenue lors de la suppression du commentaire."
+          }
+        }
+      },
+      "edit": {
+        "title": "Modifier le commentaire",
+        "description": "Modifiez votre commentaire ci-dessous.",
+        "content": {
+          "placeholder": "Écrivez votre commentaire ici..."
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Enregistrer",
+          "submitting": "Enregistrement en cours..."
+        },
+        "success": {
+          "title": "Commentaire mis à jour",
+          "description": "Le commentaire a été mis à jour avec succès."
+        },
+        "errors": {
+          "empty": {
+            "title": "Commentaire vide",
+            "description": "Veuillez écrire quelque chose dans votre commentaire."
+          },
+          "unknown": {
+            "title": "Erreur",
+            "description": "Une erreur est survenue lors de la mise à jour du commentaire."
+          }
         }
       }
     }
