@@ -1,17 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="dataSourceStorageLocal" created-in="WS-233.11799.229">
-    <data-source name="Pickit" uuid="89338cd0-caaf-4b40-be25-bc40134dad08">
-      <database-info product="MySQL" version="8.0.35" jdbc-version="4.2" driver-name="MySQL Connector/J" driver-version="mysql-connector-j-8.2.0 (Revision: 06a1f724497fd81c6a659131fda822c9e5085b6c)" dbms="MYSQL" exact-version="8.0.35" exact-driver-version="8.2">
-        <extra-name-characters>#@</extra-name-characters>
-        <identifier-quote-string>`</identifier-quote-string>
+  <component name="dataSourceStorageLocal" created-in="DB-251.25410.75">
+    <data-source name="Local dev" uuid="db4135cb-c750-4390-b01c-78cbf6e92578">
+      <database-info product="PostgreSQL" version="17.4 (Debian 17.4-1.pgdg120+2)" jdbc-version="4.2" driver-name="PostgreSQL JDBC Driver" driver-version="42.7.3" dbms="POSTGRES" exact-version="17.4" exact-driver-version="42.7">
+        <identifier-quote-string>&quot;</identifier-quote-string>
       </database-info>
-      <case-sensitivity plain-identifiers="exact" quoted-identifiers="exact" />
+      <case-sensitivity plain-identifiers="lower" quoted-identifiers="exact" />
       <secret-storage>master_key</secret-storage>
-      <user-name>pickitConnector</user-name>
+      <user-name>pickit_connector</user-name>
       <schema-mapping>
         <introspection-scope>
-          <node kind="schema" qname="@" />
+          <node negative="1">
+            <node kind="database" qname="@" />
+            <node kind="database" qname="pickitdata">
+              <node kind="schema" qname="public" />
+            </node>
+          </node>
+        </introspection-scope>
+      </schema-mapping>
+    </data-source>
+    <data-source name="Staging" uuid="8587b7c2-595c-4f62-9985-e6a8c7767895">
+      <database-info product="PostgreSQL" version="17.2 (Debian 17.2-1.pgdg120+1)" jdbc-version="4.2" driver-name="PostgreSQL JDBC Driver" driver-version="42.7.3" dbms="POSTGRES" exact-version="17.2" exact-driver-version="42.7">
+        <identifier-quote-string>&quot;</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="lower" quoted-identifiers="exact" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>echomori_connector</user-name>
+      <schema-mapping>
+        <introspection-scope>
+          <node kind="database" qname="echomoridata">
+            <node kind="schema">
+              <name qname="@" />
+              <name qname="public" />
+            </node>
+          </node>
+        </introspection-scope>
+      </schema-mapping>
+    </data-source>
+    <data-source name="Production" uuid="27ff650f-71ca-44f2-858f-886b2b67a877">
+      <database-info product="PostgreSQL" version="17.2 (Debian 17.2-1.pgdg120+1)" jdbc-version="4.2" driver-name="PostgreSQL JDBC Driver" driver-version="42.7.3" dbms="POSTGRES" exact-version="17.2" exact-driver-version="42.7">
+        <identifier-quote-string>&quot;</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="lower" quoted-identifiers="exact" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>echomori_connector</user-name>
+      <schema-mapping>
+        <introspection-scope>
+          <node negative="1">
+            <node kind="database" qname="@">
+              <node kind="schema" qname="@" />
+            </node>
+            <node kind="database" qname="echomoridata">
+              <node kind="schema" qname="public" />
+            </node>
+          </node>
         </introspection-scope>
       </schema-mapping>
     </data-source>
