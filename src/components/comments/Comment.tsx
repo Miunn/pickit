@@ -13,7 +13,7 @@ import EditCommentDialog from "./EditCommentDialog";
 
 export function Comment({ comment }: { comment: CommentType }) {
     const { user } = useSession();
-    const { token } = useFolderContext();
+    const { folder, token, setFolder } = useFolderContext();
 
     const formatter = useFormatter();
     const t = useTranslations("components.images.comments.comment.dropdown");
@@ -59,6 +59,12 @@ export function Comment({ comment }: { comment: CommentType }) {
                 comment={comment} 
                 open={openDelete} 
                 setOpen={setOpenDelete}
+                onDelete={() => {
+                    setFolder({
+                        ...folder,
+                        files: folder.files.map((file) => ({ ...file, comments: file.comments.filter((c) => c.id !== comment.id) }))
+                    })
+                }}
             />
         </div>
     )
