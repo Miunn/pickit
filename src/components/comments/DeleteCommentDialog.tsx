@@ -17,11 +17,12 @@ import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Comment } from "@prisma/client";
 
-export default function DeleteCommentDialog({ comment, open, setOpen, children }: { 
+export default function DeleteCommentDialog({ comment, open, setOpen, children, onDelete }: { 
     comment: Comment, 
     open?: boolean, 
     setOpen?: React.Dispatch<React.SetStateAction<boolean>>,
-    children?: React.ReactNode 
+    children?: React.ReactNode,
+    onDelete?: () => void
 }) {
     const t = useTranslations("dialogs.comments.delete");
     const [deleting, setDeleting] = useState(false);
@@ -48,6 +49,10 @@ export default function DeleteCommentDialog({ comment, open, setOpen, children }
 
         if (setOpen) {
             setOpen(false);
+        }
+
+        if (onDelete) {
+            onDelete();
         }
 
         toast({
