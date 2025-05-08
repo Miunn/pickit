@@ -43,7 +43,7 @@ export const DeleteImageDialog = ({ file, children, open, setOpen }: { file: Fil
                     </DialogClose>
                     <Button onClick={async () => {
                         setDeleting(true);
-                        const r = await deleteFile(file.folderId, file.id, searchParams.get("share") || undefined, searchParams.get("h") || undefined, searchParams.get("t") || undefined);
+                        const r = await deleteFile(file.id, searchParams.get("share") || undefined, searchParams.get("h") || undefined, searchParams.get("t") || undefined);
                         setDeleting(false);
                         
                         if (r.error) {

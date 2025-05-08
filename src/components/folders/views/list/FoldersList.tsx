@@ -1,6 +1,6 @@
 'use client'
 
-import { FolderWithAccessToken, FolderWithCover, FolderWithFilesCount } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCover, FolderWithFilesCount, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
 import { flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import React from "react";
 import { ChevronDownIcon, ChevronUpIcon, Trash2, X } from "lucide-react";
@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { foldersListViewColumns } from "./columns";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-export default function FoldersList({ folders }: { folders: (FolderWithAccessToken & FolderWithFilesCount & FolderWithCover)[] }) {
+export default function FoldersList({ folders }: { folders: (FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments)[] }) {
 
     const t = useTranslations("folders.views.list.table");
     const [openDeleteSelection, setOpenDeleteSelection] = React.useState<boolean>(false);

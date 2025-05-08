@@ -1,3 +1,5 @@
+import { PersonAccessToken } from "@prisma/client";
+import { AccessToken } from "@prisma/client";
 import { prisma } from "./prisma";
 import { getCurrentSession } from "./session";
 import * as bcrypt from "bcryptjs";
@@ -18,7 +20,18 @@ export async function hasFolderOwnerAccess(folderId: string): Promise<boolean> {
     return false;
 }
 
-export async function isAllowedToAccessFolder(folderId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: string | null): Promise<boolean> {
+/**
+ * Returns 1 for access granted
+ * 2 if a code is needed
+ * 3 if the code is wrong
+ * 0 if unauthorized
+ * @param folderId 
+ * @param shareToken 
+ * @param accessKey 
+ * @param tokenType 
+ * @returns 
+ */
+export async function isAllowedToAccessFolder(folderId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: string | null): Promise<number> {
     const { user } = await getCurrentSession();
 
     if (user) {
@@ -27,7 +40,7 @@ export async function isAllowedToAccessFolder(folderId: string, shareToken?: str
         });
 
         if (folder) {
-            return true;
+            return 1;
         }
     }
 
@@ -52,25 +65,25 @@ export async function isAllowedToAccessFolder(folderId: string, shareToken?: str
         }
 
         if (!access) {
-            return false;
+            return 0;
         }
 
         if (access.locked && access.pinCode) {
             if (!accessKey) {
-                return false;
+                return 2;
             }
 
             const match = bcrypt.compareSync(access.pinCode as string, accessKey || "");
 
             if (!match) {
-                return false;
+                return 3;
             }
         }
 
-        return true;
+        return 1;
     }
 
-    return false;
+    return 0;
 }
 
 export async function isAllowedToAccessFile(fileId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: string | null): Promise<boolean> {
@@ -145,4 +158,49 @@ export async function isAllowedToAccessFile(fileId: string, shareToken?: string 
     }
 
     return false;
+}
+
+export async function isAllowedToDeleteComment(commentId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
+    const comment = await prisma.comment.findUnique({
+        where: { id: commentId },
+        include: { file: { select: { id: true } } }
+    });
+
+    if (!comment) {
+        return false;
+    }
+
+    if (comment.createdById) {
+        const { user } = await getCurrentSession();
+
+        if (!user) {
+            return false;
+        }
+
+        return comment.createdById === user.id;
+    }
+
+    if (comment.createdByEmail) {
+        if (!shareToken || !isAllowedToAccessFile(comment.fileId, shareToken, accessKey, tokenType) || tokenType !== "personAccessToken") {
+            return false;
+        }
+
+        const token = await getToken(shareToken, "personAccessToken") as PersonAccessToken;
+
+        if (!token || !token.email) {
+            return false;
+        }
+
+        return token.email === comment.createdByEmail;
+    }
+
+    return false;
+}
+
+async function getToken(shareToken: string, tokenType: "accessToken" | "personAccessToken"): Promise<AccessToken | PersonAccessToken | null> {
+    if (tokenType === "accessToken") {
+        return await prisma.accessToken.findUnique({ where: { token: shareToken } });
+    } else {
+        return await prisma.personAccessToken.findUnique({ where: { token: shareToken } });
+    }
 }

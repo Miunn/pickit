@@ -7,20 +7,18 @@ import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import { createComment } from "@/actions/comments";
 import { toast } from "@/hooks/use-toast";
-import React from "react";
+import React, { Fragment } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 import { useSearchParams } from "next/navigation";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-
+import { Comment } from "../comments/Comment";
+import { useFolderContext } from "@/context/FolderContext";
 export default function ImageCommentSection({ file, className, open, setOpen }: { file: FileWithComments, className?: string, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
-
     const t = useTranslations("components.images.comments");
-    const formatter = useFormatter();
     const createCommentForm = useForm<z.infer<typeof CreateCommentFormSchema>>({
         resolver: zodResolver(CreateCommentFormSchema),
         defaultValues: {
@@ -28,6 +26,8 @@ export default function ImageCommentSection({ file, className, open, setOpen }: 
         }
     })
     const searchParams = useSearchParams();
+
+    const { folder, setFolder } = useFolderContext();
 
     async function submitComment(data: z.infer<typeof CreateCommentFormSchema>) {
         const r = await createComment(file.id, data, searchParams.get("share"), searchParams.get("t") === "p" ? "personAccessToken" : "accessToken", searchParams.get("h"));
@@ -40,6 +40,20 @@ export default function ImageCommentSection({ file, className, open, setOpen }: 
             });
             return;
         }
+
+        setFolder({
+            ...folder,
+            files: folder.files.map((file) => {
+                if (file.id === file.id) {
+                    return {
+                        ...file,
+                        comments: [...file.comments, r]
+                    }
+                }
+
+                return file;
+            })
+        })
 
         toast({
             title: t('success.title'),
@@ -91,21 +105,10 @@ export default function ImageCommentSection({ file, className, open, setOpen }: 
                 <ScrollArea className="flex max-h-64 flex-col px-2 mt-4">
                     {file.comments.sort((a, b) => {
                         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-                    }).map((comment) => (
-                        <div key={comment.id}>
-                            <p className="text-sm font-semibold flex items-center gap-2">
-                                {comment.name}
-                                <Tooltip>
-                                    <TooltipTrigger>
-                                        <span className="font-light text-gray-500">{formatter.relativeTime(comment.createdAt, new Date())}</span>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <span className="capitalize">{formatter.dateTime(comment.createdAt, { weekday: "long", day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "numeric" })}</span>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </p>
-                            <p className="text-sm">{comment.text}</p>
-                        </div>
+                    }).map((commentData) => (
+                        <Fragment key={commentData.id}>
+                            <Comment comment={commentData} />
+                        </Fragment>
                     ))}
                 </ScrollArea>
             </CollapsibleContent>

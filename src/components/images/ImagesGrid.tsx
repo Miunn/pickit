@@ -36,29 +36,24 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
     const [activeId, setActiveId] = useState(null);
 
     const [sortStrategy, setSortStrategy] = useState<ImagesSortMethod | 'dragOrder'>(sortState);
-    const [sortedFiles, setSortedFiles] = useState<(FileWithFolder & FileWithComments)[]>(folder.files.sort((a, b) => a.position - b.position));
-
-    useEffect(() => {
+    const sortedFiles = useMemo(() => {
         if (sortStrategy !== 'dragOrder') {
             const sortedItems = [...getSortedImagesVideosContent(folder.files, sortState)] as (FileWithFolder & FileWithComments)[];
-            setSortedFiles(sortedItems);
             setDragOrder([...sortedItems.map(item => item.id)]);
+            return sortedItems;
         }
-    }, [folder.files, sortState]);
 
-    useEffect(() => {
-        if (sortStrategy === 'dragOrder') {
-            const orderedItems = [...folder.files];
+
+        const orderedItems = [...folder.files];
             const sortedItems = [...orderedItems].sort((a, b) => {
                 const aIndex = dragOrder.indexOf(a.id);
                 const bIndex = dragOrder.indexOf(b.id);
                 if (aIndex === -1) return 1;
                 if (bIndex === -1) return -1;
                 return aIndex - bIndex;
-            });
-            setSortedFiles(sortedItems);
-        }
-    }, [folder.files, dragOrder]);
+        });
+        return sortedItems;
+    }, [folder, sortState, sortStrategy]);
 
     useEffect(() => {
         setSortStrategy(sortState);

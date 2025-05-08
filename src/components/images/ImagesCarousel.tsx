@@ -27,11 +27,9 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
 
     const t = useTranslations("components.images.carousel");
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
-    const [count, setCount] = useState(files.length);
-
-    const [internalCurrentIndex, setInternalCurrentIndex] = useState<number>(startIndex);
-    const currentIndexState = currentIndex ?? internalCurrentIndex;
-    const setCurrentIndexState = setCurrentIndex ?? setInternalCurrentIndex;
+    const [currentIndexInternalState, setCurrentIndexInternalState] = useState<number>(currentIndex ?? 0);
+    const currentIndexState = currentIndex ?? currentIndexInternalState;
+    const setCurrentIndexState = setCurrentIndex ?? setCurrentIndexInternalState;
 
     const [downloading, setDownloading] = useState<boolean>(false);
     const [copied, setCopied] = useState<boolean>(false);
@@ -41,44 +39,39 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
     useEffect(() => {
         if (!carouselApi) return;
 
-        setCount(carouselApi.scrollSnapList().length);
-        setCurrentIndexState(carouselApi.selectedScrollSnap() + 1);
+        setCurrentIndexInternalState(carouselApi.selectedScrollSnap());
 
         carouselApi.on("select", () => {
-            setCurrentIndexState(carouselApi.selectedScrollSnap() + 1);
+            setCurrentIndexInternalState(carouselApi.selectedScrollSnap());
         })
-    }, [carouselApi, setCurrentIndexState]);
+    }, [carouselApi, setCurrentIndexInternalState]);
 
     return (
         <div className={"w-full overflow-hidden p-2 mx-auto"}>
             <div className="max-w-full flex justify-between items-center mb-2 gap-2 px-2">
-                <p className="font-semibold truncate">{
-                    currentIndexState == 0
-                        ? files[currentIndexState]?.name
-                        : files[currentIndexState - 1]?.name
-                }</p>
+                <p className="font-semibold truncate">{files[currentIndexState]?.name}</p>
                 <div className="flex gap-2">
-                    <FullScreenImageCarousel files={files} defaultIndex={currentIndexState - 1} parentCarouselApi={carouselApi}>
+                    <FullScreenImageCarousel files={files} defaultIndex={currentIndexState} parentCarouselApi={carouselApi}>
                         <Button variant={"outline"} size={"icon"} type="button">
                             <Expand className="w-4 h-4" />
                         </Button>
                     </FullScreenImageCarousel>
                     <Button variant={"outline"} size={"icon"} type="button" asChild>
-                        <Link href={`/api/folders/${files.at(currentIndexState - 1)?.folderId}/images/${files.at(currentIndexState - 1)?.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} target="_blank">
+                        <Link href={`/api/folders/${files.at(currentIndexState)?.folderId}/images/${files.at(currentIndexState)?.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} target="_blank">
                             <ExternalLink className="w-4 h-4" />
                         </Link>
                     </Button>
                     <Button variant={"outline"} size={"icon"} type="button" onClick={async () => {
                         setDownloading(true);
-                        await downloadClientImageHandler(files.at(currentIndexState - 1) as FileWithFolder);
+                        await downloadClientImageHandler(files.at(currentIndexState) as FileWithFolder);
                         setDownloading(false);
                     }} disabled={downloading}>
                         {downloading
                             ? <Loader2 className="w-4 h-4 animate-spin" />
                             : <Download className="w-4 h-4" />}
                     </Button>
-                    <Button className={files.at(currentIndexState - 1)?.type === FileType.VIDEO ? "hidden" : ""} variant={"outline"} size={"icon"} type="button" onClick={async () => {
-                        if (files.at(currentIndexState - 1)?.type === FileType.VIDEO) {
+                    <Button className={files.at(currentIndexState)?.type === FileType.VIDEO ? "hidden" : ""} variant={"outline"} size={"icon"} type="button" onClick={async () => {
+                        if (files.at(currentIndexState)?.type === FileType.VIDEO) {
                             toast({
                                 title: t('actions.copy.errors.video-copy-unavailable.title'),
                                 description: t('actions.copy.errors.video-copy-unavailable.description'),
@@ -86,7 +79,7 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                             });
                             return;
                         }
-                        await copyImageToClipboard(files.at(currentIndexState - 1)?.folderId || '', files.at(currentIndexState - 1)?.id || '', shareToken || '', shareHashPin || '', tokenType);
+                        await copyImageToClipboard(files.at(currentIndexState)?.folderId || '', files.at(currentIndexState)?.id || '', shareToken || '', shareHashPin || '', tokenType);
 
                         setCopied(true);
                         toast({
@@ -104,7 +97,7 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                             : <Copy className="w-4 h-4" />}
                     </Button>
                     <div className="hidden sm:block">
-                        <ImageExif image={files[currentIndexState === 0 ? currentIndexState : currentIndexState - 1]}>
+                        <ImageExif image={files[currentIndexState]}>
                             <Button variant={"outline"} size={"icon"} type="button">
                                 <Braces className="w-4 h-4" />
                             </Button>
@@ -135,30 +128,24 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
             </Carousel>
             <div className="w-full grid grid-cols-2 items-center px-2">
                 <p className="truncate">
-                    {currentIndexState == 0
-                        ? files[currentIndexState]?.folder.name
-                        : files[currentIndexState - 1]?.folder.name}
+                    {files[currentIndexState]?.folder.name}
                 </p>
                 <p className="text-sm text-muted-foreground text-nowrap text-end justify-self-end">
                     <span className="hidden sm:inline-block">{
-                        currentIndexState == 0
-                            ? `${files[currentIndexState]?.width}x${files[currentIndexState]?.height}`
-                            : `${files[currentIndexState - 1]?.width}x${files[currentIndexState - 1]?.height}`
+                        `${files[currentIndexState]?.width}x${files[currentIndexState]?.height}`
                     }</span> <span className="hidden sm:inline-block">-</span> <span className="hidden sm:inline-block">{
-                        currentIndexState == 0
-                            ? `${formatBytes(files[currentIndexState]?.size, { decimals: 2 })}`
-                            : `${formatBytes(files[currentIndexState - 1]?.size, { decimals: 2 })}`
-                    }</span> <span className="hidden sm:inline-block">-</span> <span>{t('slide', { current: currentIndexState, total: count })}</span>
+                        `${formatBytes(files[currentIndexState]?.size, { decimals: 2 })}`
+                    }</span> <span className="hidden sm:inline-block">-</span> <span>{t('slide', { current: currentIndexState + 1, total: files.length })}</span>
                 </p>
             </div>
 
             <div className="w-full px-2 py-2 flex justify-between items-start gap-4">
-                <p className={cn("text-sm text-muted-foreground flex-1 whitespace-pre-wrap line-clamp-5", files[currentIndexState === 0 ? currentIndexState : currentIndexState - 1].description ? "" : "italic")}>
-                    {files[currentIndexState === 0 ? currentIndexState : currentIndexState - 1].description || t('noDescription')}
+                <p className={cn("text-sm text-muted-foreground flex-1 whitespace-pre-wrap line-clamp-5", files[currentIndexState].description ? "" : "italic")}>
+                    {files[currentIndexState].description || t('noDescription')}
                 </p>
 
-                {user?.role.includes(Role.ADMIN) || user?.id === files[currentIndexState === 0 ? currentIndexState : currentIndexState - 1].folder.createdById
-                    ? <EditDescriptionDialog file={files[currentIndexState === 0 ? currentIndexState : currentIndexState - 1]}>
+                {user?.role.includes(Role.ADMIN) || user?.id === files[currentIndexState].folder.createdById
+                    ? <EditDescriptionDialog file={files[currentIndexState]}>
                         <Button variant={"outline"} size={"icon"} type="button">
                             <Pencil className="w-4 h-4" />
                         </Button>
@@ -170,7 +157,7 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                 className="py-2 transition-all duration-1000 ease-in-out"
                 open={commentSectionOpen}
                 setOpen={setCommentSectionOpen}
-                file={files[currentIndexState === 0 ? currentIndexState : currentIndexState - 1]}
+                file={files[currentIndexState]}
             />
         </div>
     )

@@ -471,6 +471,12 @@
         "privacy": {
           "trigger": "Comment sont traités vos commentaires ?",
           "content": "Si vous êtes connecté, votre nom apparaitra au dessus de votre commentaire.<br />Si vous n'êtes pas connecté mais que ce dossier vous a été partagé par e-mail, la première partie de votre adresse e-mail apparaitra au dessus de votre commentaire.<br />Si vous n'êtes pas connecté et que ce dossier vous a été partagé par un lien, votre commentaire sera anonyme.<br /><br />Les commentaires ne sont partagés qu'aux personnes ayant accès au dossier."
+        },
+        "comment": {
+          "dropdown": {
+            "edit": "Modifier",
+            "delete": "Supprimer"
+          }
         }
       },
       "uploadImagesForm": {
@@ -1232,6 +1238,53 @@
           "success": {
             "title": "Utilisateur supprimé",
             "description": "L'utilisateur a été supprimé avec succès"
+          }
+        }
+      }
+    },
+    "comments": {
+      "delete": {
+        "title": "Supprimer le commentaire",
+        "description": "Êtes-vous sûr de vouloir supprimer ce commentaire ? Cette action est irréversible.",
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Supprimer",
+          "submitting": "Suppression en cours..."
+        },
+        "success": {
+          "title": "Commentaire supprimé",
+          "description": "Le commentaire a été supprimé avec succès."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Erreur",
+            "description": "Une erreur est survenue lors de la suppression du commentaire."
+          }
+        }
+      },
+      "edit": {
+        "title": "Modifier le commentaire",
+        "description": "Modifiez votre commentaire ci-dessous.",
+        "content": {
+          "placeholder": "Écrivez votre commentaire ici..."
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Enregistrer",
+          "submitting": "Enregistrement en cours..."
+        },
+        "success": {
+          "title": "Commentaire mis à jour",
+          "description": "Le commentaire a été mis à jour avec succès."
+        },
+        "errors": {
+          "empty": {
+            "title": "Commentaire vide",
+            "description": "Veuillez écrire quelque chose dans votre commentaire."
+          },
+          "unknown": {
+            "title": "Erreur",
+            "description": "Une erreur est survenue lors de la mise à jour du commentaire."
           }
         }
       }
