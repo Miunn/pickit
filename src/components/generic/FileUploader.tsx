@@ -196,7 +196,7 @@ export const FileUploader = (props: FileUploaderProps) => {
         <div className={"relative w-full flex flex-col gap-6 overflow-hidden"}>
             <Dropzone
                 onDrop={onDrop}
-                accept={accept}
+                // accept={accept}
                 maxSize={maxSize}
                 maxFiles={maxFileCount}
                 multiple={maxFileCount > 1 || multiple}
