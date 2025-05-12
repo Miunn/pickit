@@ -1,7 +1,7 @@
 'use client'
 
 import { ImagePreviewGrid } from "@/components/images/ImagePreviewGrid";
-import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Trash2, X, Pencil } from "lucide-react";
@@ -17,9 +17,12 @@ import DeleteDescriptionDialog from "../folders/DeleteDescriptionDialog";
 import { closestCenter, DndContext, DragEndEvent, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { updateFilePosition } from "@/actions/files";
+import { useFolderContext } from "@/context/FolderContext";
 
-export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithFolderAndComments, sortState: ImagesSortMethod }) => {
+export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     const { user } = useSession();
+    const { folder, setFolder } = useFolderContext();
+
     const t = useTranslations("images");
     const deleteMultipleTranslations = useTranslations("dialogs.images.deleteMultiple");
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
@@ -32,31 +35,35 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
 
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
-    const [dragOrder, setDragOrder] = useState<string[]>(folder.files.sort((a, b) => a.position - b.position).map(item => item.id));
     const [activeId, setActiveId] = useState(null);
 
     const [sortStrategy, setSortStrategy] = useState<ImagesSortMethod | 'dragOrder'>(sortState);
-    const sortedFiles = useMemo(() => {
+
+    const getSortedFiles = useCallback((files: (FileWithFolder & FileWithComments)[]) => {
         if (sortStrategy !== 'dragOrder') {
-            const sortedItems = [...getSortedImagesVideosContent(folder.files, sortState)] as (FileWithFolder & FileWithComments)[];
-            setDragOrder([...sortedItems.map(item => item.id)]);
+            const sortedItems = [...getSortedImagesVideosContent(files, sortState)] as (FileWithFolder & FileWithComments)[];
             return sortedItems;
         }
 
 
         const orderedItems = [...folder.files];
-            const sortedItems = [...orderedItems].sort((a, b) => {
-                const aIndex = dragOrder.indexOf(a.id);
-                const bIndex = dragOrder.indexOf(b.id);
-                if (aIndex === -1) return 1;
-                if (bIndex === -1) return -1;
-                return aIndex - bIndex;
+        const sortedItems = [...orderedItems].sort((a, b) => {
+            const aIndex = files.findIndex((file) => file.id === a.id);
+            const bIndex = files.findIndex((file) => file.id === b.id);
+            if (aIndex === -1) return 1;
+            if (bIndex === -1) return -1;
+            return aIndex - bIndex;
         });
         return sortedItems;
-    }, [folder, sortState, sortStrategy]);
+    }, [sortState, sortStrategy]);
+
+    const defaultSortedFiles = useMemo(() => getSortedFiles(folder.files), [getSortedFiles]);
+
+    const [sortedFiles, setSortedFiles] = useState<(FileWithFolder & FileWithComments)[]>(defaultSortedFiles);
 
     useEffect(() => {
         setSortStrategy(sortState);
+        setSortedFiles(getSortedFiles(folder.files));
     }, [sortState]);
 
     const sensors = useSensors(
@@ -121,43 +128,57 @@ export const ImagesGrid = ({ folder, sortState }: { folder: FolderWithFilesWithF
             return;
         };
 
-        const activeIndex = dragOrder.indexOf(activeId);
-        const overIndex = dragOrder.indexOf(overId);
-
+        const activeIndex = sortedFiles.findIndex((file) => file.id === activeId);
+        const overIndex = sortedFiles.findIndex((file) => file.id === overId);
 
         setTimeout(async () => {
+            let newPosition: number | undefined;
+            console.log("Files positions:", folder.files.map((file) => ({ name: file.name, position: file.position, id: file.id })));
             if (overIndex === 0) {
                 // We just dragged to the first position
-                await updateFilePosition(activeId, undefined, dragOrder[0]);
-            } else if (overIndex === dragOrder.length - 1) {
+                console.log("Dragging to the first position", activeId, sortedFiles[0].id);
+                newPosition = (await updateFilePosition(activeId, undefined, sortedFiles[0].id)).newPosition;
+            } else if (overIndex === sortedFiles.length - 1) {
                 // We just dragged to the last position
-                await updateFilePosition(activeId, dragOrder[overIndex - 1], undefined);
+                console.log("Dragging to the last position", activeId, sortedFiles[sortedFiles.length - 1].id);
+                newPosition = (await updateFilePosition(activeId, sortedFiles[sortedFiles.length - 2].id, undefined)).newPosition;
             } else {
                 // We just dragged to the middle
                 // Depending on the direction, we need to update the position of the file
                 if (activeIndex < overIndex) {
-                    await updateFilePosition(activeId, dragOrder[overIndex], dragOrder[overIndex + 1]);
+                    newPosition = (await updateFilePosition(activeId, sortedFiles[overIndex].id, sortedFiles[overIndex + 1].id)).newPosition;
                 } else {
-                    await updateFilePosition(activeId, dragOrder[overIndex - 1], dragOrder[overIndex]);
+                    newPosition = (await updateFilePosition(activeId, sortedFiles[overIndex - 1].id, sortedFiles[overIndex].id)).newPosition;
                 }
+            }
+
+            if (newPosition) {
+                console.log("New position:", newPosition);
+                console.log("New files order:", folder.files.map((file) => file.id === activeId ? { ...file, position: newPosition } : file).map((file) => file.name));
+                setFolder({
+                    ...folder,
+                    files: folder.files.map((file) => file.id === activeId ? { ...file, position: newPosition } : file)
+                });
             }
         }, 0);
 
-        setDragOrder((currentOrder) => {
-            const oldIndex = currentOrder.indexOf(activeId);
-            const newIndex = currentOrder.indexOf(overId);
+        setSortedFiles((currentOrder) => {
+            const oldIndex = currentOrder.findIndex((file) => file.id === activeId);
+            const newIndex = currentOrder.findIndex((file) => file.id === overId);
 
             if (oldIndex === -1) {
                 // If item wasn't in the order, add it at the new position
                 const newOrder = [...currentOrder];
-                newOrder.splice(newIndex, 0, activeId);
+                newOrder.splice(newIndex, 0, currentOrder.find((file) => file.id === activeId)!);
                 return newOrder;
             }
 
             setSortStrategy('dragOrder');
-            const orderedIds = arrayMove(currentOrder, oldIndex, newIndex);
+            const orderedFiles = arrayMove(currentOrder, oldIndex, newIndex);
 
-            return orderedIds;
+            console.log("Ordered IDs:", orderedFiles);
+
+            return orderedFiles;
         });
 
         setActiveId(null);

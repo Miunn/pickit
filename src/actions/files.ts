@@ -320,7 +320,7 @@ export async function updateFileDescription(fileId: string, description: string)
     return { error: null };
 }
 
-export async function updateFilePosition(fileId: string, previousId?: string, nextId?: string): Promise<{ error: string | null }> {
+export async function updateFilePosition(fileId: string, previousId?: string, nextId?: string): Promise<{ error: string | null, newPosition?: number }> {
     const { user } = await getCurrentSession();
 
     if (!user) {
@@ -391,7 +391,7 @@ export async function updateFilePosition(fileId: string, previousId?: string, ne
         return { error: "Failed to update file position" };
     }
 
-    return { error: null };
+    return { error: null, newPosition: position };
 }
 
 export async function deleteFile(fileId: string, shareToken?: string, hashPin?: string, tokenType?: string) {
