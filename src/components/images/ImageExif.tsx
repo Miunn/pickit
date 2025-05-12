@@ -37,13 +37,13 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                 </DialogTrigger>
                 : null
             }
-            <DialogContent className="flex flex-col gap-0 p-0 max-h-[min(640px,80vh)] sm:max-w-lg [&>button:last-child]:hidden">
+            <DialogContent className="flex flex-col gap-0 p-0 max-h-[min(680px,80vh)] sm:max-w-3xl">
                 <DialogHeader className="border-b space-y-0 text-left px-6 py-4">
                     <DialogTitle>{t('title')}</DialogTitle>
                     <DialogDescription className="hidden sm:block">{t('description', { name: `${image.name}.${image.extension}` })}</DialogDescription>
                 </DialogHeader>
                 <div className="overflow-y-auto">
-                    <div className="w-full grid grid-cols-2 sm:grid-cols-4 gap-y-6 gap-x-6 sm:my-12 p-6">
+                    <div className="w-full grid grid-cols-2 sm:grid-cols-3 gap-y-6 gap-x-6 p-6">
                         <div>
                             <Label>{t('width.label')}</Label>
                             <TooltipProvider>
