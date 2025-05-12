@@ -989,7 +989,8 @@
           "altitude": {
             "label": "Altitude"
           }
-        }
+        },
+        "close": "Fermer"
       },
       "rename": {
         "title": "Renommer l'image",
