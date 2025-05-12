@@ -96,12 +96,14 @@ export default function FileOptions({ file, fullScreenCarouselFiles, currentInde
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                     <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
-                        <FullScreenImageCarousel files={fullScreenCarouselFiles} defaultIndex={currentIndexState} parentCarouselApi={carouselApi}>
-                            <>
-                                <Expand size={16} className="opacity-60 mr-2" aria-hidden="true" />
-                                {t('expand')}
-                            </>
-                        </FullScreenImageCarousel>
+                        <div onClick={(e) => e.stopPropagation()} className="w-full flex items-center">
+                            <FullScreenImageCarousel files={fullScreenCarouselFiles} defaultIndex={currentIndexState} parentCarouselApi={carouselApi}>
+                                <div className="w-full flex items-center">
+                                    <Expand size={16} className="opacity-60 mr-2" aria-hidden="true" />
+                                    {t('expand')}
+                                </div>
+                            </FullScreenImageCarousel>
+                        </div>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                         <Link href={`/api/folders/${file.folderId}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} target="_blank">
@@ -120,7 +122,7 @@ export default function FileOptions({ file, fullScreenCarouselFiles, currentInde
                         {t('download')}
                     </DropdownMenuItem>
                     {file.type !== FileType.VIDEO
-                        ? <DropdownMenuItem  onClick={async () => {
+                        ? <DropdownMenuItem onClick={async (e) => {
                             if (file.type === FileType.VIDEO) {
                                 toast({
                                     title: t('copy.errors.video-copy-unavailable.title'),
@@ -130,14 +132,14 @@ export default function FileOptions({ file, fullScreenCarouselFiles, currentInde
                                 return;
                             }
                             await copyImageToClipboard(file.folderId || '', file.id || '', shareToken || '', shareHashPin || '', tokenType);
-        
+
                             setCopied(true);
                             toast({
                                 title: t('copy.success.title'),
                                 description: t('copy.success.description'),
                                 duration: 2000
                             });
-        
+
                             setTimeout(() => {
                                 setCopied(false);
                             }, 2000);
@@ -148,13 +150,15 @@ export default function FileOptions({ file, fullScreenCarouselFiles, currentInde
                             {t('copy.title')}
                         </DropdownMenuItem>
                         : null}
-                    <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
-                        <ImageExif image={file}>
-                            <>
-                                <Braces size={16} className="opacity-60 mr-2" aria-hidden="true" />
-                                {t('metadata')}
-                            </>
-                        </ImageExif>
+                    <DropdownMenuItem>
+                        <div onClick={(e) => e.stopPropagation()} className="w-full flex items-center">
+                            <ImageExif image={file}>
+                                <div className="w-full flex items-center">
+                                    <Braces size={16} className="opacity-60 mr-2" aria-hidden="true" />
+                                    {t('metadata')}
+                                </div>
+                            </ImageExif>
+                        </div>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
