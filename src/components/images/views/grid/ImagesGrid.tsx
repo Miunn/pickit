@@ -1,23 +1,23 @@
 'use client'
 
-import { ImagePreviewGrid } from "@/components/images/ImagePreviewGrid";
+import { ImagePreviewGrid } from "@/components/images/views/grid/ImagePreviewGrid";
 import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Trash2, X, Pencil } from "lucide-react";
 import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
-import { CarouselDialog } from "@/components/images/CarouselDialog";
-import { FolderWithFilesWithFolderAndComments, FileWithComments, FileWithFolder } from "@/lib/definitions";
+import { CarouselDialog } from "@/components/images/carousel/CarouselDialog";
+import { FileWithComments, FileWithFolder } from "@/lib/definitions";
 import { cn, formatBytes, getSortedImagesVideosContent } from "@/lib/utils";
-import { ImagesSortMethod } from "../folders/SortImages";
-import { UploadImagesForm } from "./UploadImagesForm";
-import EditDescriptionDialog from "../folders/EditDescriptionDialog";
+import { UploadImagesForm } from "@/components/images/upload/UploadImagesForm";
 import { useSession } from "@/providers/SessionProvider";
-import DeleteDescriptionDialog from "../folders/DeleteDescriptionDialog";
 import { closestCenter, DndContext, DragEndEvent, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { updateFilePosition } from "@/actions/files";
 import { useFolderContext } from "@/context/FolderContext";
+import { ImagesSortMethod } from "@/components/folders/SortImages";
+import EditDescriptionDialog from "@/components/folders/EditDescriptionDialog";
+import DeleteDescriptionDialog from "@/components/folders/DeleteDescriptionDialog";
 
 export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     const { user } = useSession();

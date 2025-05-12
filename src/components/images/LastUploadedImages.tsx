@@ -2,7 +2,7 @@
 
 import { ImageOff, Trash2, X } from "lucide-react";
 import { ImagePreviewGrid } from "@/components/images/ImagePreviewGrid";
-import { CarouselDialog } from "@/components/images/CarouselDialog";
+import { CarouselDialog } from "@/components/images/carousel/CarouselDialog";
 import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
 import React, { Fragment, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";

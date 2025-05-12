@@ -434,16 +434,23 @@
         "slide": "Slide {current} of {total}",
         "noDescription": "No description",
         "actions": {
+          "expand": "Expand",
+          "openInNew": "Open in new",
+          "download": "Download",
           "copy": {
-            "title": "Image copied",
-            "description": "Image has been copied to your clipboard",
+            "title": "Copy",
+            "success": {
+              "title": "Image copied",
+              "description": "Image has been copied to your clipboard"
+            },
             "errors": {
               "video-copy-unavailable": {
                 "title": "Impossible to copy video",
                 "description": "Video copying is not available. Please use the download button to download the video"
               }
             }
-          }
+          },
+          "metadata": "Metadata"
         }
       },
       "comments": {

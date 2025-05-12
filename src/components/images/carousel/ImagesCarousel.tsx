@@ -1,21 +1,17 @@
 import { useEffect, useState } from "react";
-import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
+import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../../ui/carousel";
 import { FileWithComments, FileWithFolder } from "@/lib/definitions";
-import Image from "next/image";
-import { Button } from "../ui/button";
-import { Braces, Check, Copy, Download, Expand, ExternalLink, Loader2, Pencil } from "lucide-react";
-import Link from "next/link";
-import { toast } from "@/hooks/use-toast";
+import { Button } from "../../ui/button";
+import { Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { cn, copyImageToClipboard, downloadClientImageHandler, formatBytes } from "@/lib/utils";
+import { cn, formatBytes } from "@/lib/utils";
 import ImageCommentSection from "./ImageCommentSection";
 import { useSearchParams } from "next/navigation";
-import ImageExif from "./ImageExif";
-import EditDescriptionDialog from "./EditDescriptionDialog";
+import EditDescriptionDialog from "../EditDescriptionDialog";
 import { Role, FileType } from "@prisma/client";
 import { useSession } from "@/providers/SessionProvider";
-import LoadingImage from "../LoadingImage";
-import FullScreenImageCarousel from "./FullScrenImageCarousel";
+import LoadingImage from "../../LoadingImage";
+import FileOptions from "./FileOptions";
 
 export default function ImagesCarousel({ files, startIndex, currentIndex, setCurrentIndex }: { files: (FileWithFolder & FileWithComments)[], startIndex: number, currentIndex?: number, setCurrentIndex?: React.Dispatch<React.SetStateAction<number>> }) {
     const searchParams = useSearchParams();
@@ -50,60 +46,7 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
         <div className={"w-full overflow-hidden p-2 mx-auto"}>
             <div className="max-w-full flex justify-between items-center mb-2 gap-2 px-2">
                 <p className="font-semibold truncate">{files[currentIndexState]?.name}</p>
-                <div className="flex gap-2">
-                    <FullScreenImageCarousel files={files} defaultIndex={currentIndexState} parentCarouselApi={carouselApi}>
-                        <Button variant={"outline"} size={"icon"} type="button">
-                            <Expand className="w-4 h-4" />
-                        </Button>
-                    </FullScreenImageCarousel>
-                    <Button variant={"outline"} size={"icon"} type="button" asChild>
-                        <Link href={`/api/folders/${files.at(currentIndexState)?.folderId}/images/${files.at(currentIndexState)?.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} target="_blank">
-                            <ExternalLink className="w-4 h-4" />
-                        </Link>
-                    </Button>
-                    <Button variant={"outline"} size={"icon"} type="button" onClick={async () => {
-                        setDownloading(true);
-                        await downloadClientImageHandler(files.at(currentIndexState) as FileWithFolder);
-                        setDownloading(false);
-                    }} disabled={downloading}>
-                        {downloading
-                            ? <Loader2 className="w-4 h-4 animate-spin" />
-                            : <Download className="w-4 h-4" />}
-                    </Button>
-                    <Button className={files.at(currentIndexState)?.type === FileType.VIDEO ? "hidden" : ""} variant={"outline"} size={"icon"} type="button" onClick={async () => {
-                        if (files.at(currentIndexState)?.type === FileType.VIDEO) {
-                            toast({
-                                title: t('actions.copy.errors.video-copy-unavailable.title'),
-                                description: t('actions.copy.errors.video-copy-unavailable.description'),
-                                variant: "destructive",
-                            });
-                            return;
-                        }
-                        await copyImageToClipboard(files.at(currentIndexState)?.folderId || '', files.at(currentIndexState)?.id || '', shareToken || '', shareHashPin || '', tokenType);
-
-                        setCopied(true);
-                        toast({
-                            title: t('actions.copy.title'),
-                            description: t('actions.copy.description'),
-                            duration: 2000
-                        });
-
-                        setTimeout(() => {
-                            setCopied(false);
-                        }, 2000);
-                    }}>
-                        {copied
-                            ? <Check className="w-4 h-4" />
-                            : <Copy className="w-4 h-4" />}
-                    </Button>
-                    <div className="hidden sm:block">
-                        <ImageExif image={files[currentIndexState]}>
-                            <Button variant={"outline"} size={"icon"} type="button">
-                                <Braces className="w-4 h-4" />
-                            </Button>
-                        </ImageExif>
-                    </div>
-                </div>
+                <FileOptions file={files[currentIndexState]} fullScreenCarouselFiles={files} currentIndexState={currentIndexState} carouselApi={carouselApi} />
             </div>
             <Carousel className="w-full h-fit mx-auto max-w-xl mb-2" opts={{
                 align: "center",

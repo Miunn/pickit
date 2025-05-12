@@ -1,11 +1,11 @@
 import { FileWithFolder, FileWithComments } from "@/lib/definitions";
-import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
+import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../../ui/carousel";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "../../ui/dialog";
 import { useTranslations } from "next-intl";
 import { Cross2Icon } from "@radix-ui/react-icons";
-import LoadingImage from "../LoadingImage";
+import LoadingImage from "../../LoadingImage";
 import { FileType } from "@prisma/client";
 export default function FullScreenImageCarousel({ 
     files,
@@ -15,7 +15,7 @@ export default function FullScreenImageCarousel({
     setOpen,
     parentCarouselApi
 }: { 
-    files: (FileWithFolder & FileWithComments)[],
+    files: FileWithFolder[],
     defaultIndex: number,
     children?: React.ReactNode,
     open?: boolean,

@@ -1,17 +1,17 @@
 'use client'
 
 import { FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../ui/table";
 import { flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
-import { imagesListViewColumns } from "./views/list/columns";
+import { imagesListViewColumns } from "./columns";
 import React, { useEffect, useRef, useState } from "react";
 import { ChevronDownIcon, ChevronLeft, ChevronRight, ChevronUpIcon, Loader2, Trash2, X } from "lucide-react";
 import { cn, formatBytes } from "@/lib/utils";
-import { CarouselDialog } from "./CarouselDialog";
-import { Button } from "../ui/button";
+import { CarouselDialog } from "../../carousel/CarouselDialog";
+import { Button } from "../../../ui/button";
 import { useTranslations } from "next-intl";
-import { DeleteMultipleImagesDialog } from "./DeleteMultipleImagesDialog";
-import { Select, SelectItem, SelectContent, SelectValue, SelectTrigger } from "../ui/select";
+import { DeleteMultipleImagesDialog } from "../../DeleteMultipleImagesDialog";
+import { Select, SelectItem, SelectContent, SelectValue, SelectTrigger } from "../../../ui/select";
 import { useFolderContext } from "@/context/FolderContext";
 export default function ImagesList() {
     const t = useTranslations("images.views.list.table");
