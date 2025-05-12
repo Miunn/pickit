@@ -1,9 +1,8 @@
-import { FileWithFolder, FileWithComments } from "@/lib/definitions";
+import { FileWithFolder } from "@/lib/definitions";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../../ui/carousel";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Dialog, DialogContent, DialogTrigger } from "../../ui/dialog";
-import { useTranslations } from "next-intl";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import LoadingImage from "../../LoadingImage";
 import { FileType } from "@prisma/client";
@@ -26,7 +25,6 @@ export default function FullScreenImageCarousel({
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
     const tokenType = searchParams.get("t") === "p" ? "personAccessToken" : "accessToken";
-    const t = useTranslations("dialogs.images.carousel");
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
     const [showLeftNav, setShowLeftNav] = useState(false);
     const [showRightNav, setShowRightNav] = useState(false);

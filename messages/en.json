@@ -990,7 +990,8 @@
           "altitude": {
             "label": "Altitude"
           }
-        }
+        },
+        "close": "Close"
       },
       "rename": {
         "trigger": "Rename",
