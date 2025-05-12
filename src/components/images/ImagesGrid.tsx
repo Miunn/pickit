@@ -35,7 +35,6 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
 
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
-    const [dragOrder, setDragOrder] = useState<string[]>(folder.files.sort((a, b) => a.position - b.position).map(item => item.id));
     const [activeId, setActiveId] = useState(null);
 
     const [sortStrategy, setSortStrategy] = useState<ImagesSortMethod | 'dragOrder'>(sortState);
@@ -43,15 +42,14 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     const getSortedFiles = useCallback((files: (FileWithFolder & FileWithComments)[]) => {
         if (sortStrategy !== 'dragOrder') {
             const sortedItems = [...getSortedImagesVideosContent(files, sortState)] as (FileWithFolder & FileWithComments)[];
-            setDragOrder([...sortedItems.map(item => item.id)]);
             return sortedItems;
         }
 
 
         const orderedItems = [...folder.files];
         const sortedItems = [...orderedItems].sort((a, b) => {
-            const aIndex = dragOrder.indexOf(a.id);
-            const bIndex = dragOrder.indexOf(b.id);
+            const aIndex = files.findIndex((file) => file.id === a.id);
+            const bIndex = files.findIndex((file) => file.id === b.id);
             if (aIndex === -1) return 1;
             if (bIndex === -1) return -1;
             return aIndex - bIndex;

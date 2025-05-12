@@ -12,9 +12,10 @@ import { Button } from "../ui/button";
 import { useTranslations } from "next-intl";
 import { DeleteMultipleImagesDialog } from "./DeleteMultipleImagesDialog";
 import { Select, SelectItem, SelectContent, SelectValue, SelectTrigger } from "../ui/select";
-
-export default function ImagesList({ folder }: { folder: FolderWithFilesWithFolderAndComments }) {
+import { useFolderContext } from "@/context/FolderContext";
+export default function ImagesList() {
     const t = useTranslations("images.views.list.table");
+    const { folder } = useFolderContext();
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);
     const [startIndex, setStartIndex] = React.useState<number>(0);
     const [openDeleteSelection, setOpenDeleteSelection] = React.useState<boolean>(false);

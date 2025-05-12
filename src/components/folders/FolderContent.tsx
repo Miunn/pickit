@@ -238,8 +238,8 @@ export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
 
             <div className="flex-1 overflow-auto">
                 {viewState === ViewState.List
-                    ? <ImagesList folder={folder} />
-                    : <ImagesGrid folder={folder} sortState={sortState} />
+                    ? <ImagesList />
+                    : <ImagesGrid sortState={sortState} />
                 }
             </div>
         </div>
