@@ -1,21 +1,21 @@
 import { ArrowUpDown, Loader2 } from "lucide-react";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { CreateCommentFormSchema, FileWithComments } from "@/lib/definitions";
-import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
-import { ScrollArea } from "../ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { createComment } from "@/actions/comments";
 import { toast } from "@/hooks/use-toast";
 import React, { Fragment } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useTranslations } from "next-intl";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { useSearchParams } from "next/navigation";
-import { Comment } from "../comments/Comment";
+import { Comment } from "@/components/comments/Comment";
 import { useFolderContext } from "@/context/FolderContext";
 export default function ImageCommentSection({ file, className, open, setOpen }: { file: FileWithComments, className?: string, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
     const t = useTranslations("components.images.comments");

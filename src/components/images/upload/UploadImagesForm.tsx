@@ -4,16 +4,15 @@ import { UploadImagesFormSchema } from "@/lib/definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { FileUploader } from "../generic/FileUploader";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { FileUploader } from "@/components/generic/FileUploader";
 import { useSearchParams } from "next/navigation";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner"
 import { initiateFileUpload, finalizeFileUpload } from "@/actions/files";
-import { Progress } from "../ui/progress";
-import { formatBytes } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 
 interface UploadImagesFormProps {

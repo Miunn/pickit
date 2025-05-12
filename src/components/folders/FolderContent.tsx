@@ -3,20 +3,18 @@
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, Download, LayoutGrid, List, MoreHorizontal, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { UploadImagesDialog } from "@/components/images/UploadImagesDialog";
-import { ImagesGrid } from "@/components/images/ImagesGrid";
+import { UploadImagesDialog } from "@/components/images/upload/UploadImagesDialog";
+import { ImagesGrid } from "@/components/images/views/grid/ImagesGrid";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
 import SortImages, { ImagesSortMethod } from "./SortImages";
 import { useQueryState } from 'nuqs'
 import { downloadClientFolder } from "@/lib/utils";
 import ViewSelector, { ViewState } from "./ViewSelector";
-import ImagesList from "../images/ImagesList";
+import ImagesList from "../images/views/list/ImagesList";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import EditDescriptionDialog from "./EditDescriptionDialog";
 import { useSearchParams } from "next/navigation";
-import { useSidebar } from "../ui/sidebar";
 import { useFolderContext } from "@/context/FolderContext";
 
 export interface FolderContentProps {

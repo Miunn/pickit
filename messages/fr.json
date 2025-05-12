@@ -434,16 +434,23 @@
         "slide": "Image {current} sur {total}",
         "noDescription": "Aucune description",
         "actions": {
+          "expand": "Etendre",
+          "openInNew": "Ouvrir dans un nouvel onglet",
+          "download": "Télécharger",
           "copy": {
-            "title": "Image copiée",
-            "description": "L'image a été copiée dans votre presse-papiers",
+            "title": "Copier",
+            "success": {
+              "title": "Image copiée",
+              "description": "L'image a été copiée dans votre presse-papiers"
+            },
             "errors": {
               "video-copy-unavailable": {
                 "title": "Impossible to copy video",
                 "description": "Video copying is not available. Please use the download button to download the video"
               }
             }
-          }
+          },
+          "metadata": "Métadonnées"
         }
       },
       "comments": {
@@ -982,7 +989,8 @@
           "altitude": {
             "label": "Altitude"
           }
-        }
+        },
+        "close": "Fermer"
       },
       "rename": {
         "title": "Renommer l'image",

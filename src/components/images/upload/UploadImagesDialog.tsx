@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ImageUp } from "lucide-react";
 import { useState } from "react";
-import { UploadImagesForm } from "./UploadImagesForm";
+import { UploadImagesForm } from "@/components/images/upload/UploadImagesForm";
 
 export const UploadImagesDialog = ({ folderId, open, setOpen }: { folderId: string, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
     const t = useTranslations("images.dialog.upload");

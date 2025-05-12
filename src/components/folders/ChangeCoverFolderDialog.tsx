@@ -1,7 +1,7 @@
 import { FileWithComments, FileWithFolder } from "@/lib/definitions";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useTranslations } from "next-intl";
-import ImagesCarousel from "../images/ImagesCarousel";
+import ImagesCarousel from "../images/carousel/ImagesCarousel";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
