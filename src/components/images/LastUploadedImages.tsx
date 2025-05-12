@@ -1,7 +1,7 @@
 "use client";
 
 import { ImageOff, Trash2, X } from "lucide-react";
-import { ImagePreviewGrid } from "@/components/images/ImagePreviewGrid";
+import { ImagePreviewGrid } from "@/components/images/views/grid/ImagePreviewGrid";
 import { CarouselDialog } from "@/components/images/carousel/CarouselDialog";
 import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
 import React, { Fragment, useEffect, useState } from "react";
