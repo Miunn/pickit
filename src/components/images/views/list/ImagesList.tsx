@@ -15,7 +15,7 @@ import { Select, SelectItem, SelectContent, SelectValue, SelectTrigger } from ".
 import { useFolderContext } from "@/context/FolderContext";
 export default function ImagesList() {
     const t = useTranslations("images.views.list.table");
-    const { folder } = useFolderContext();
+    const { folder, setFolder } = useFolderContext();
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);
     const [startIndex, setStartIndex] = React.useState<number>(0);
     const [openDeleteSelection, setOpenDeleteSelection] = React.useState<boolean>(false);
@@ -224,7 +224,12 @@ export default function ImagesList() {
                     </TableBody>
                 </Table>
             </div>
-            <CarouselDialog files={tableData} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
+            <CarouselDialog files={tableData} setFiles={(files) => {
+                setFolder({
+                    ...folder,
+                    files: files
+                });
+            }} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteMultipleImagesDialog files={tableData.filter((file) => Object.keys(rowSelection).includes(file.id))} open={openDeleteSelection} setOpen={setOpenDeleteSelection} onDelete={() => {
                 setRowSelection({});
             }} />

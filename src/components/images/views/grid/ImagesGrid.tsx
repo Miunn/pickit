@@ -377,7 +377,12 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                 {renderGrid()}
             </div>
 
-            <CarouselDialog files={folder.files} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
+            <CarouselDialog files={folder.files} setFiles={(files) => {
+                setFolder({
+                    ...folder,
+                    files: files
+                });
+            }} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteMultipleImagesDialog files={folder.files.filter((file) => selected.includes(file.id))} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
                 setSelected([]);
                 setSelecting(false);

@@ -18,12 +18,14 @@ export default function EditDescriptionDialog({
     file,
     open,
     setOpen,
-    children
+    children,
+    onSuccess
 }: {
     file: FileWithFolder,
     open?: boolean,
     setOpen?: React.Dispatch<React.SetStateAction<boolean>>,
-    children?: React.ReactNode
+    children?: React.ReactNode,
+    onSuccess?: (newDescription: string) => void
 }) {
     const t = useTranslations("dialogs.images.editDescription");
     const [internalOpen, setInternalOpen] = useState(false);
@@ -38,7 +40,6 @@ export default function EditDescriptionDialog({
     });
 
     const onSubmit = async (data: z.infer<typeof EditDescriptionFormSchema>) => {
-        console.log("Updating image description", file.id, data.description);
         const response = await updateFileDescription(file.id, data.description);
 
         if (response.error) {
@@ -48,6 +49,7 @@ export default function EditDescriptionDialog({
 
         toast.success(t('success.description'));
         setOpenState(false);
+        onSuccess?.(data.description);
     };
 
     return (
