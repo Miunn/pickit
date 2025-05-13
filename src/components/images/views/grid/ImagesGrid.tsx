@@ -21,7 +21,7 @@ import DeleteDescriptionDialog from "@/components/folders/DeleteDescriptionDialo
 import { useFilesContext } from "@/context/FilesContext";
 export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     const { user } = useSession();
-    const { folder, setFolder } = useFolderContext();
+    const { folder } = useFolderContext();
     const { files, setFiles } = useFilesContext();
 
     const t = useTranslations("images");
