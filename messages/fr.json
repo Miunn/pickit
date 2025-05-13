@@ -677,7 +677,8 @@
         "success": {
           "title": "Couverture du dossier mise à jour",
           "description": "La couverture du dossier a été mise à jour avec succès"
-        }
+        },
+        "slide": "Image {current} sur {total}"
       },
       "editDescription": {
         "trigger": "Modifier la description",

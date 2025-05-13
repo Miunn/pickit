@@ -13,7 +13,7 @@ import { useSession } from "@/providers/SessionProvider";
 import LoadingImage from "../../LoadingImage";
 import FileOptions from "./FileOptions";
 
-export default function ImagesCarousel({ files, startIndex, currentIndex, setCurrentIndex }: { files: (FileWithFolder & FileWithComments)[], startIndex: number, currentIndex?: number, setCurrentIndex?: React.Dispatch<React.SetStateAction<number>> }) {
+export default function ImagesCarousel({ files, setFiles, startIndex, currentIndex }: { files: (FileWithFolder & FileWithComments)[], setFiles?: (files: (FileWithFolder & FileWithComments)[]) => void, startIndex: number, currentIndex?: number }) {
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
@@ -25,10 +25,6 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
     const [currentIndexInternalState, setCurrentIndexInternalState] = useState<number>(currentIndex ?? 0);
     const currentIndexState = currentIndex ?? currentIndexInternalState;
-    const setCurrentIndexState = setCurrentIndex ?? setCurrentIndexInternalState;
-
-    const [downloading, setDownloading] = useState<boolean>(false);
-    const [copied, setCopied] = useState<boolean>(false);
 
     const [commentSectionOpen, setCommentSectionOpen] = useState<boolean>(false);
 
@@ -88,7 +84,16 @@ export default function ImagesCarousel({ files, startIndex, currentIndex, setCur
                 </p>
 
                 {user?.role.includes(Role.ADMIN) || user?.id === files[currentIndexState].folder.createdById
-                    ? <EditDescriptionDialog file={files[currentIndexState]}>
+                    ? <EditDescriptionDialog file={files[currentIndexState]} onSuccess={(description) => {
+                        if (setFiles) {
+                            setFiles(files.map((file) => {
+                                if (file.id === files[currentIndexState].id) {
+                                    return { ...file, description: description };
+                            }
+                                return file;
+                            }));
+                        }
+                    }}>
                         <Button variant={"outline"} size={"icon"} type="button">
                             <Pencil className="w-4 h-4" />
                         </Button>

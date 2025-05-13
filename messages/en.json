@@ -678,7 +678,8 @@
         "success": {
           "title": "Folder's cover changed",
           "description": "The folder's cover has been changed successfully"
-        }
+        },
+        "slide": "Slide {current} of {total}"
       },
       "editDescription": {
         "trigger": "Edit description",
