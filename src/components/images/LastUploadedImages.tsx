@@ -5,11 +5,11 @@ import { ImagePreviewGrid } from "@/components/images/views/grid/ImagePreviewGri
 import { CarouselDialog } from "@/components/images/carousel/CarouselDialog";
 import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
 import React, { Fragment, useEffect, useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { FileWithComments, FileWithFolder } from "@/lib/definitions";
-
-export const LastUploadedImages = ({ files }: { files: (FileWithFolder & FileWithComments)[] }) => {
+import { useFilesContext } from "@/context/FilesContext";
+export const LastUploadedImages = () => {
+    const { files } = useFilesContext();
     const t = useTranslations("pages.dashboard.images");
 
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);
@@ -36,7 +36,7 @@ export const LastUploadedImages = ({ files }: { files: (FileWithFolder & FileWit
                         <Button variant="ghost" onClick={() => {
                             setSelected([]);
                             setSelecting(false);
-                        }} size="icon"><X className={"w-4 h-4"} /></Button>
+                        }} size="icon"><X className={"size-4"} /></Button>
                         <h2 className={"font-semibold"}>{t('selected', { count: selected.length })}</h2>
                     </div>
 
@@ -77,7 +77,7 @@ export const LastUploadedImages = ({ files }: { files: (FileWithFolder & FileWit
                                         setSizeSelected(sizeSelected + file.size);
                                     }
                                 } else {
-                                    setStartIndex(files.indexOf(file));
+                                    setStartIndex(index);
                                     setCarouselOpen(true);
                                 }
                             }}
@@ -97,7 +97,7 @@ export const LastUploadedImages = ({ files }: { files: (FileWithFolder & FileWit
                 }
             </div>
 
-            <CarouselDialog files={files} title={"Last uploaded files"} carouselOpen={carouselOpen}
+            <CarouselDialog title={"Last uploaded files"} carouselOpen={carouselOpen}
                 setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteMultipleImagesDialog files={files.filter((file) => selected.includes(file.id))} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
                 setSelected([]);

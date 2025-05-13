@@ -18,10 +18,11 @@ import { useFolderContext } from "@/context/FolderContext";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
 import EditDescriptionDialog from "@/components/folders/EditDescriptionDialog";
 import DeleteDescriptionDialog from "@/components/folders/DeleteDescriptionDialog";
-
+import { useFilesContext } from "@/context/FilesContext";
 export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     const { user } = useSession();
-    const { folder, setFolder } = useFolderContext();
+    const { folder } = useFolderContext();
+    const { files, setFiles } = useFilesContext();
 
     const t = useTranslations("images");
     const deleteMultipleTranslations = useTranslations("dialogs.images.deleteMultiple");
@@ -46,7 +47,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
         }
 
 
-        const orderedItems = [...folder.files];
+        const orderedItems = [...files];
         const sortedItems = [...orderedItems].sort((a, b) => {
             const aIndex = files.findIndex((file) => file.id === a.id);
             const bIndex = files.findIndex((file) => file.id === b.id);
@@ -57,13 +58,13 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
         return sortedItems;
     }, [sortState, sortStrategy]);
 
-    const defaultSortedFiles = useMemo(() => getSortedFiles(folder.files), [getSortedFiles]);
+    const defaultSortedFiles = useMemo(() => getSortedFiles(files), [getSortedFiles]);
 
     const [sortedFiles, setSortedFiles] = useState<(FileWithFolder & FileWithComments)[]>(defaultSortedFiles);
 
     useEffect(() => {
         setSortStrategy(sortState);
-        setSortedFiles(getSortedFiles(folder.files));
+        setSortedFiles(getSortedFiles(files));
     }, [sortState]);
 
     const sensors = useSensors(
@@ -133,7 +134,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
 
         setTimeout(async () => {
             let newPosition: number | undefined;
-            console.log("Files positions:", folder.files.map((file) => ({ name: file.name, position: file.position, id: file.id })));
+            console.log("Files positions:", files.map((file) => ({ name: file.name, position: file.position, id: file.id })));
             if (overIndex === 0) {
                 // We just dragged to the first position
                 console.log("Dragging to the first position", activeId, sortedFiles[0].id);
@@ -154,11 +155,8 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
 
             if (newPosition) {
                 console.log("New position:", newPosition);
-                console.log("New files order:", folder.files.map((file) => file.id === activeId ? { ...file, position: newPosition } : file).map((file) => file.name));
-                setFolder({
-                    ...folder,
-                    files: folder.files.map((file) => file.id === activeId ? { ...file, position: newPosition } : file)
-                });
+                console.log("New files order:", files.map((file) => file.id === activeId ? { ...file, position: newPosition } : file).map((file) => file.name));
+                setFiles(files.map((file) => file.id === activeId ? { ...file, position: newPosition } : file));
             }
         }, 0);
 
@@ -189,7 +187,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             return (
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragMove={handleDragMove}>
                     <SortableContext items={sortedFiles.map((item) => item.id)}>
-                        {folder.files.length === 0
+                        {files.length === 0
                             ? <div className={"col-start-1 col-end-3 xl:col-start-2 xl:col-end-4 2xl:col-start-3 2xl:col-end-5 mx-auto mt-6 flex flex-col justify-center items-center max-w-lg"}>
                                 <UploadImagesForm folderId={folder.id} />
                             </div>
@@ -203,13 +201,13 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                                             if (selecting) {
                                                 if (e?.shiftKey && selected.length > 0) {
                                                     const lastSelectedId = selected[selected.length - 1];
-                                                    const lastSelectedIndex = folder.files.findIndex((item) => item.id === lastSelectedId);
-                                                    const currentIndex = folder.files.findIndex((item) => item.id === file.id);
+                                                    const lastSelectedIndex = files.findIndex((item) => item.id === lastSelectedId);
+                                                    const currentIndex = files.findIndex((item) => item.id === file.id);
 
                                                     if (lastSelectedIndex !== -1 && currentIndex !== -1) {
                                                         const start = Math.min(lastSelectedIndex, currentIndex);
                                                         const end = Math.max(lastSelectedIndex, currentIndex);
-                                                        const range = folder.files.slice(start, end + 1);
+                                                        const range = files.slice(start, end + 1);
 
                                                         const newSelectedIds = range.map((item) => item.id);
                                                         const newSize = range.reduce((acc, item) => acc + item.size, 0);
@@ -225,7 +223,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                                                     setSizeSelected(sizeSelected + file.size);
                                                 }
                                             } else {
-                                                setStartIndex(folder.files.indexOf(file));
+                                                setStartIndex(files.indexOf(file));
                                                 setCarouselOpen(true);
                                             }
                                         }}
@@ -269,13 +267,13 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                             if (selecting) {
                                 if (e?.shiftKey && selected.length > 0) {
                                     const lastSelectedId = selected[selected.length - 1];
-                                    const lastSelectedIndex = folder.files.findIndex((item) => item.id === lastSelectedId);
-                                    const currentIndex = folder.files.findIndex((item) => item.id === file.id);
+                                    const lastSelectedIndex = files.findIndex((item) => item.id === lastSelectedId);
+                                    const currentIndex = files.findIndex((item) => item.id === file.id);
 
                                     if (lastSelectedIndex !== -1 && currentIndex !== -1) {
                                         const start = Math.min(lastSelectedIndex, currentIndex);
                                         const end = Math.max(lastSelectedIndex, currentIndex);
-                                        const range = folder.files.slice(start, end + 1);
+                                        const range = files.slice(start, end + 1);
 
                                         const newSelectedIds = range.map((item) => item.id);
                                         const newSize = range.reduce((acc, item) => acc + item.size, 0);
@@ -291,7 +289,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                                     setSizeSelected(sizeSelected + file.size);
                                 }
                             } else {
-                                setStartIndex(folder.files.indexOf(file));
+                                setStartIndex(files.indexOf(file));
                                 setCarouselOpen(true);
                             }
                         }}
@@ -352,7 +350,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                 : null
             }
             <div className={cn(
-                folder.files.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-[repeat(auto-fill,10rem)] sm:grid-cols-[repeat(auto-fill,16rem)] gap-3 sm:gap-3 mx-auto",
+                files.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-[repeat(auto-fill,10rem)] sm:grid-cols-[repeat(auto-fill,16rem)] gap-3 sm:gap-3 mx-auto",
                 "relative overflow-hidden"
             )}>
                 {folder.description
@@ -377,13 +375,8 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                 {renderGrid()}
             </div>
 
-            <CarouselDialog files={folder.files} setFiles={(files) => {
-                setFolder({
-                    ...folder,
-                    files: files
-                });
-            }} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
-            <DeleteMultipleImagesDialog files={folder.files.filter((file) => selected.includes(file.id))} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
+            <CarouselDialog title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
+            <DeleteMultipleImagesDialog files={files.filter((file) => selected.includes(file.id))} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
                 setSelected([]);
                 setSelecting(false);
             }} />

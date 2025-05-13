@@ -1,9 +1,10 @@
-import {prisma} from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import DashboardContent from "@/components/layout/DashboardContent";
 import { getCurrentSession } from "@/lib/session";
 import { redirect } from "@/i18n/navigation";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { FilesProvider } from "@/context/FilesContext";
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
     const t = await getTranslations("metadata.dashboard")
@@ -25,7 +26,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
         where: {
             createdBy: { id: user.id }
         },
-        orderBy: [ { updatedAt: 'desc' } ],
+        orderBy: [{ updatedAt: 'desc' }],
         include: {
             cover: true,
             AccessToken: true,
@@ -38,7 +39,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
         where: {
             createdBy: { id: user.id }
         },
-        orderBy: [ { updatedAt: 'desc' } ],
+        orderBy: [{ updatedAt: 'desc' }],
         include: { folder: true, comments: { include: { createdBy: true } } },
         take: 6,
     })).sort((a, b) => {
@@ -46,6 +47,8 @@ export default async function Home({ params }: { params: { locale: string } }) {
     }).slice(0, 6);
 
     return (
-        <DashboardContent lastFolders={lastFolders} lastFiles={lastFiles} />
+        <FilesProvider filesData={lastFiles}>
+            <DashboardContent lastFolders={lastFolders} />
+        </FilesProvider>
     );
 }
