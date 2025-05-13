@@ -10,10 +10,12 @@ import DeleteCommentDialog from "./DeleteCommentDialog";
 import { useSession } from "@/providers/SessionProvider";
 import { useFolderContext } from "@/context/FolderContext";
 import EditCommentDialog from "./EditCommentDialog";
+import { useFilesContext } from "@/context/FilesContext";
 
 export function Comment({ comment }: { comment: CommentType }) {
     const { user } = useSession();
-    const { folder, token, setFolder } = useFolderContext();
+    const { token } = useFolderContext();
+    const { files, setFiles } = useFilesContext();
 
     const formatter = useFormatter();
     const t = useTranslations("components.images.comments.comment.dropdown");
@@ -60,10 +62,7 @@ export function Comment({ comment }: { comment: CommentType }) {
                 open={openDelete} 
                 setOpen={setOpenDelete}
                 onDelete={() => {
-                    setFolder({
-                        ...folder,
-                        files: folder.files.map((file) => ({ ...file, comments: file.comments.filter((c) => c.id !== comment.id) }))
-                    })
+                    setFiles(files.map((file) => ({ ...file, comments: file.comments.filter((c) => c.id !== comment.id) })))
                 }}
             />
         </div>

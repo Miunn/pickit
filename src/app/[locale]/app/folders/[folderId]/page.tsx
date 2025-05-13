@@ -13,6 +13,7 @@ import { hasFolderOwnerAccess, isAllowedToAccessFolder } from "@/lib/dal";
 import BreadcrumbPortal from "@/components/layout/BreadcrumbPortal";
 import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
 import { FolderProvider } from "@/context/FolderContext";
+import { FilesProvider } from "@/context/FilesContext";
 
 export async function generateMetadata({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { sort?: ImagesSortMethod, view?: ViewState, share?: string, t?: string, h?: string } }): Promise<Metadata> {
     const t = await getTranslations("metadata.folder");
@@ -141,10 +142,9 @@ export default async function FolderPage({ params, searchParams }: { params: { f
                 folderData={getSortedFolderContent(folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments}
                 tokenData={accessToken}
             >
-                <FolderContent
-                    defaultView={searchParams.view}
-                    isGuest={!session}
-                />
+                <FilesProvider filesData={folder.files}>
+                    <FolderContent defaultView={searchParams.view} isGuest={!session} />
+                </FilesProvider>
             </FolderProvider>
         </>
     )

@@ -5,14 +5,13 @@ import React from "react";
 import ImagesCarousel from "./ImagesCarousel";
 import { FileWithComments, FileWithFolder } from "@/lib/definitions";
 import { useTranslations } from "next-intl";
+import { useFilesContext } from "@/context/FilesContext";
 
-export const CarouselDialog = ({ files, title, carouselOpen, setCarouselOpen, startIndex, setFiles }: {
-    files: (FileWithFolder & FileWithComments)[],
+export const CarouselDialog = ({ title, carouselOpen, setCarouselOpen, startIndex }: {
     title: string,
     carouselOpen: any,
     setCarouselOpen: React.Dispatch<React.SetStateAction<boolean>>,
     startIndex: number,
-    setFiles?: (files: (FileWithFolder & FileWithComments)[]) => void
 }) => {
     const t = useTranslations("dialogs.images.carousel");
 
@@ -24,7 +23,7 @@ export const CarouselDialog = ({ files, title, carouselOpen, setCarouselOpen, st
                     <DialogDescription>{t('description')}</DialogDescription>
                 </DialogHeader>
 
-                <ImagesCarousel files={files} startIndex={startIndex} setFiles={setFiles} />
+                <ImagesCarousel startIndex={startIndex} />
             </DialogContent>
         </Dialog>
     )
