@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from "next/server";
 import {prisma} from "@/lib/prisma";
-import { GoogleBucket } from "@/lib/bucket";
+import { generateV4DownloadUrl, GoogleBucket } from "@/lib/bucket";
 import { isAllowedToAccessFile } from "@/lib/dal";
 
 export async function GET(req: NextRequest, { params }: { params: {folder: string, image: string} }) {
@@ -23,15 +23,6 @@ export async function GET(req: NextRequest, { params }: { params: {folder: strin
         return Response.json({ error: "No images found in this folder" }, { status: 404 });
     }
 
-    console.log("Starting fetching google");
-    const file = GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`);
-    console.log("Got google file");
-    const [buffer] = await file.download();
-    const res = new NextResponse(buffer);
-    console.log("Got buffer");
-    res.headers.set('Content-Type', 'image/' + image.extension);
-    res.headers.set('Content-Disposition', `attachment; filename=${image.name}.${image.extension}`);
-    res.headers.set('Content-Length', buffer.length.toString());
-    console.log("Returning response");
-    return res;
+    const signedUrl = await generateV4DownloadUrl(`${image.createdById}/${image.folderId}/${image.id}`);
+    return NextResponse.json({ url: signedUrl });
 }

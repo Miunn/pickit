@@ -8,6 +8,8 @@ import { ImagesSortMethod } from "@/components/folders/SortImages";
 import saveAs from "file-saver";
 import JSZip from "jszip";
 import { Progress } from "@/components/ui/progress";
+import axios, { AxiosRequestConfig } from "axios";
+import { Loader2 } from "lucide-react";
 
 export function formatBytes(
 	bytes: number,
@@ -92,9 +94,15 @@ export const downloadClientImageHandler = async (file: FileWithFolder) => {
 	saveAs(await r.blob(), `${file.name}.${file.extension}`);
 }
 
-export const downloadClientFolder = async (folder: FolderWithFilesWithFolderAndComments, t: any, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashPinCode?: string | null) => {
+export const downloadClientFiles = async (translations: (key: string, params?: Record<string, string | number>) => string, files: FileWithFolder[], title: string, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashPinCode?: string | null) => {
+	const zip = new JSZip();
+	const totalFiles = files.length;
+	const totalSizes = files.reduce((acc, file) => acc + file.size, 0);
+	console.log("Total sizes", totalSizes);
+	let downloadedSize = 0;
+
 	sonnerToast(
-		<div className="w-full">{ t('ongoing.title') }</div>,
+		<div className="w-full">{translations('ongoing.title', { name: title })}</div>,
 		{
 			id: "download-progress-toast",
 			duration: Infinity,
@@ -103,45 +111,70 @@ export const downloadClientFolder = async (folder: FolderWithFilesWithFolderAndC
 				title: "w-full"
 			},
 			description: <div className="w-full">
-				{ t('ongoing.description', { name: folder.name }) }
+				<p className="flex justify-between items-center gap-2 relative">
+					<span className="flex-1 truncate">{translations('ongoing.description.name', { name: `${files[0].name}.${files[0].extension}` })}</span>
+					<span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> {translations('ongoing.description.progress', { currentPercentage: 0, count: 1, total: totalFiles })}</span>
+				</p>
 				<Progress value={0} className="w-full mt-2" />
 			</div>,
 			dismissible: false
 		}
 	)
 
-	const zip = new JSZip();
-	const totalFiles = folder.files.length;
+	for (let i = 0; i < files.length; i++) {
+		const file = files[i];
 
-	for (let i = 0; i < folder.files.length; i++) {
-		const file = folder.files[i];
-		const r = await fetch(`/api/folders/${folder.id}/${file.type === FileType.VIDEO ? 'videos' : 'images'}/${file.id}/download`);
+		const axiosConfig: AxiosRequestConfig = {
+			responseType: "blob",
+			onDownloadProgress: (progressEvent) => {
+				if (progressEvent.total) {
+					sonnerToast(
+						<div className="w-full">{translations('ongoing.title', { name: title })}</div>,
+						{
+							id: "download-progress-toast",
+							description: <div className="w-full">
+								<p className="flex justify-between items-center gap-2 relative">
+									<span className="flex-1 truncate">{translations('ongoing.description.name', { name: `${file.name}.${file.extension}` })}</span>
+									<span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> {translations('ongoing.description.progress', { currentPercentage: (progressEvent.loaded / progressEvent.total * 100).toFixed(2), count: i + 1, total: totalFiles })}</span>
+								</p>
+								<Progress value={(downloadedSize + progressEvent.loaded) / totalSizes * 100} className="w-full mt-2" />
+							</div>,
+						}
+					)
+				}
+			},
+		};
 
-		const buffer = await r.arrayBuffer();
+		const signedUrl = await fetch(`/api/folders/${file.folderId}/${file.type === FileType.VIDEO ? 'videos' : 'images'}/${file.id}/download-url?share=${shareToken}&h=${hashPinCode}&t=${tokenType === "personAccessToken" ? "p" : "a"}`);
+		const signedUrlData = await signedUrl.json();
+		const r = await axios.get(signedUrlData.url, axiosConfig);
+
+		const buffer = await r.data.arrayBuffer();
 
 		zip.file(`${file.name}-${file.createdAt.getTime()}.${file.extension}`, buffer);
-
-		sonnerToast(
-			<div className="w-full">{ t('ongoing.title') }</div>,
-			{
-				id: "download-progress-toast",
-				description: <div className="w-full">
-					{ t('ongoing.description', { name: folder.name }) }
-					<Progress value={(i + 1) / totalFiles * 100} className="w-full mt-2" />
-				</div>
-			}
-		)
+		downloadedSize += buffer.byteLength;
 	}
 
 	const zipData = await zip.generateAsync({ type: "blob" });
 
-	setTimeout(() => {
-		sonnerToast.dismiss("download-progress-toast");
-	}, 1000);
+	sonnerToast(
+		<div className="w-full">{translations('success.title', { name: title })}</div>,
+		{
+			id: "download-progress-toast",
+			duration: 5000,
+			classNames: {
+				content: "w-full",
+				title: "w-full"
+			},
+			description: <div className="w-full">
+				{translations('success.description', { name: title })}
+				<Progress value={100} className="w-full mt-2" />
+			</div>,
+			dismissible: true
+		}
+	)
 
-	sonnerToast.success(t('success', { name: folder.name }));
-
-	saveAs(zipData, `${folder.name}.zip`);
+	saveAs(zipData, `${title}.zip`);
 }
 
 export const getSortedFolderContent = (folderContent: FolderWithFilesWithFolderAndComments, sort: ImagesSortMethod): FolderWithFilesWithFolderAndComments => {

@@ -42,15 +42,16 @@ function getCurrentPath(pathname: string, folderName?: string): { path: Breadcru
     return { path: null };
 }
 
-function renderBreadcrumbItem(type: string, locale: string, isCurrent: boolean = false) {
+function renderBreadcrumbItem(type: 'dashboard' | 'folders' | 'images' | 'folder' | 'links' | 'account' | 'administration' | 'administrationUsers', locale: string, isCurrent: boolean = false) {
+    const t = useTranslations('breadcumb');
     return isCurrent ? (
         <BreadcrumbItem>
-            <BreadcrumbPage>{type}</BreadcrumbPage>
+            <BreadcrumbPage>{t(type)}</BreadcrumbPage>
         </BreadcrumbItem>
     ) : (
         <BreadcrumbItem className="hidden lg:block">
             <BreadcrumbLink href={`/${locale}/app/${type.toLowerCase() === 'dashboard' ? '' : type.toLowerCase()}`}>
-                {type}
+                {t(type)}
             </BreadcrumbLink>
         </BreadcrumbItem>
     );
@@ -68,14 +69,14 @@ export default function HeaderBreadcumb({ folderName, adminUser }: { folderName?
             <BreadcrumbList>
                 {currentPath && (
                     <>
-                        {renderBreadcrumbItem(t('dashboard'), locale, currentPath.type === 'dashboard')}
+                        {renderBreadcrumbItem('dashboard', locale, currentPath.type === 'dashboard')}
                         
                         {currentPath.type !== 'dashboard' && (
                             <>
                                 <BreadcrumbSeparator className="hidden lg:block" />
                                 {currentPath.type === 'folder' ? (
                                     <>
-                                        {renderBreadcrumbItem(t('folders'), locale)}
+                                        {renderBreadcrumbItem('folders', locale)}
                                         <BreadcrumbSeparator className="hidden md:block" />
                                         <BreadcrumbItem>
                                             <BreadcrumbPage>{folderName}</BreadcrumbPage>
@@ -83,14 +84,14 @@ export default function HeaderBreadcumb({ folderName, adminUser }: { folderName?
                                     </>
                                 ) : currentPath.type === 'administrationUsers' ? (
                                     <>
-                                        {renderBreadcrumbItem(t('administration'), locale)}
+                                        {renderBreadcrumbItem('administration', locale)}
                                         <BreadcrumbSeparator className="hidden lg:block" />
                                         <BreadcrumbItem>
                                             <BreadcrumbPage>{adminUser?.name}</BreadcrumbPage>
                                         </BreadcrumbItem>
                                     </>
                                 ) : (
-                                    renderBreadcrumbItem(t(currentPath.type), locale, true)
+                                    renderBreadcrumbItem(currentPath.type, locale, true)
                                 )}
                             </>
                         )}

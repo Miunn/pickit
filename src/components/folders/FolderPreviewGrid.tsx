@@ -14,13 +14,13 @@ import ChangeCoverFolderDialog from "./ChangeCoverFolderDialog";
 import { ShareFolderDialog } from "./ShareFolderDialog";
 import FolderPropertiesDialog from "./FolderPropertiesDialogs";
 import DeleteFolderDialog from "./DeleteFolderDialog";
-import { downloadClientFolder } from "@/lib/utils";
+import { downloadClientFiles } from "@/lib/utils";
 import { FileType } from "@prisma/client";
 
 export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments }) {
     const t = useTranslations("folders");
     const dialogsTranslations = useTranslations("dialogs.folders");
-    const downloadT = useTranslations("folders.download");
+    const downloadT = useTranslations("components.download");
     const format = useFormatter();
     const locale = useLocale();
 
@@ -83,7 +83,7 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
                     <ContextMenuItem onClick={() => setOpenRename(true)}>{dialogsTranslations('rename.trigger')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenChangeCover(true)} disabled={folder.files.length === 0}>{dialogsTranslations('changeCover.trigger')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenShare(true)}>{dialogsTranslations('share.trigger')}</ContextMenuItem>
-                    <ContextMenuItem onClick={() => downloadClientFolder(folder, downloadT)} disabled={folder.files.length === 0}>{t('actions.download')}</ContextMenuItem>
+                    <ContextMenuItem onClick={() => downloadClientFiles(downloadT, folder.files, folder.name)} disabled={folder.files.length === 0}>{t('actions.download')}</ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenProperties(true)}>{t('actions.properties')}</ContextMenuItem>
                     <ContextMenuSeparator />
                     <ContextMenuItem onClick={() => setOpenDelete(true)} className="text-red-600 focus:text-red-600 font-semibold">{dialogsTranslations('delete.trigger')}</ContextMenuItem>
