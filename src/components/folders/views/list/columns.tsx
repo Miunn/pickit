@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { FolderWithAccessToken, FolderWithFilesCount, FileWithComments, FileWithFolder, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
-import { downloadClientFolder, formatBytes } from "@/lib/utils";
+import { downloadClientFiles, formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Images, MoreHorizontal } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
@@ -15,6 +15,7 @@ import Link from "next/link";
 import { ShareFolderDialog } from "../../ShareFolderDialog";
 import ChangeCoverFolderDialog from "../../ChangeCoverFolderDialog";
 import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/files";
+import { useSearchParams } from "next/navigation";
 
 export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWithFilesCount & FolderWithFilesWithFolderAndComments>[] = [
     {
@@ -114,7 +115,8 @@ export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWit
         id: "actions",
         cell: ({ row }) => {
             const t = useTranslations("folders.views.list.columns.actions");
-            const downloadT = useTranslations("folders.download");
+            const downloadT = useTranslations("components.download");
+            const searchParams = useSearchParams();
             const [folderImages, setFolderImages] = useState<(FileWithFolder & FileWithComments)[]>([]);
 
             const loadImages = useCallback(async () => {
@@ -151,7 +153,7 @@ export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWit
                                 : t('select')
                             }
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => downloadClientFolder(row.original, downloadT)}>{t('download')}</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, row.original.files, row.original.name, searchParams.get("share"), searchParams.get("t") === "p" ? "personAccessToken" : "accessToken", searchParams.get("h"))}>{t('download')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenShare(true)}>{t('share')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenChangeCover(true)}>{t('changeCover')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenRename(true)}>{t('rename')}</DropdownMenuItem>

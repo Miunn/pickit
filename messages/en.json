@@ -656,6 +656,19 @@
       "copyright": {
         "text": "© 2025 Echomori. All rights reserved."
       }
+    },
+    "download": {
+      "ongoing": {
+        "title": "{name} - Downloading",
+        "description": {
+          "name": "{name}",
+          "progress": "{currentPercentage}% - {count} / {total}"
+        }
+      },
+      "success": {
+        "title": "{name} - Downloaded",
+        "description": "{name} has been downloaded successfully"
+      }
     }
   },
   "dialogs": {

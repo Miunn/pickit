@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import {prisma} from "@/lib/prisma";
+import { generateV4DownloadUrl } from "@/lib/bucket";
 import { isAllowedToAccessFile } from "@/lib/dal";
-import { GoogleBucket } from "@/lib/bucket";
 
 export async function GET(req: NextRequest, { params }: { params: {folder: string, video: string} }) {
     const shareToken = req.nextUrl.searchParams.get("share");
@@ -23,15 +23,6 @@ export async function GET(req: NextRequest, { params }: { params: {folder: strin
         return Response.json({ error: "No videos found in this folder" }, { status: 404 });
     }
 
-    console.log("Starting fetching google");
-    const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.id}`);
-    console.log("Got google file");
-    const [buffer] = await file.download();
-    console.log("Got buffer");
-    const res = new NextResponse(buffer);
-    res.headers.set('Content-Type', 'video/' + video.extension);
-    res.headers.set('Content-Disposition', `attachment; filename=${video.name}.${video.extension}`);
-    res.headers.set('Content-Length', buffer.length.toString());
-    console.log("Returning response");
-    return res;
+    const signedUrl = await generateV4DownloadUrl(`${video.createdById}/${video.folderId}/${video.id}`);
+    return NextResponse.json({ url: signedUrl });
 }

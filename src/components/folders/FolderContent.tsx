@@ -8,7 +8,7 @@ import { ImagesGrid } from "@/components/images/views/grid/ImagesGrid";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
 import SortImages, { ImagesSortMethod } from "./SortImages";
 import { useQueryState } from 'nuqs'
-import { downloadClientFolder } from "@/lib/utils";
+import { downloadClientFiles } from "@/lib/utils";
 import ViewSelector, { ViewState } from "./ViewSelector";
 import ImagesList from "../images/views/list/ImagesList";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "../ui/dropdown-menu";
@@ -16,6 +16,7 @@ import { useState } from "react";
 import EditDescriptionDialog from "./EditDescriptionDialog";
 import { useSearchParams } from "next/navigation";
 import { useFolderContext } from "@/context/FolderContext";
+import { useFilesContext } from "@/context/FilesContext";
 
 export interface FolderContentProps {
     defaultView?: ViewState;
@@ -29,6 +30,7 @@ export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
     const hashPinCode = searchParams.get("h");
 
     const { folder } = useFolderContext();
+    const { files } = useFilesContext();
 
     const t = useTranslations("folders");
     const [viewState, setViewState] = useQueryState<ViewState>('view', {
@@ -74,7 +76,7 @@ export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
     const [openShare, setOpenShare] = useState(false);
     const [openEditDescription, setOpenEditDescription] = useState(false);
 
-    const downloadT = useTranslations("folders.download");
+    const downloadT = useTranslations("components.download");
 
     return (
         <div>
@@ -99,7 +101,7 @@ export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
                         ? <UploadImagesDialog folderId={folder.id} />
                         : null}
                     {!!!isGuest ? <ShareFolderDialog folder={folder} /> : null}
-                    <Button variant="outline" onClick={() => downloadClientFolder(folder, downloadT, shareToken, tokenType === "accessToken" ? "accessToken" : tokenType === "personAccessToken" ? "personAccessToken" : null, hashPinCode)}>
+                    <Button variant="outline" onClick={() => downloadClientFiles(downloadT, files, folder.name, shareToken, tokenType === "accessToken" ? "accessToken" : tokenType === "personAccessToken" ? "personAccessToken" : null, hashPinCode)}>
                         <Download className={"mr-2"} /> {t('actions.download')}
                     </Button>
                 </div>
@@ -128,7 +130,7 @@ export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
                                     {t('share.label')}
                                 </DropdownMenuItem>
                                 : null}
-                            <DropdownMenuItem onClick={() => downloadClientFolder(folder, downloadT)}>
+                            <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, files, folder.name, shareToken, tokenType === "accessToken" ? "accessToken" : tokenType === "personAccessToken" ? "personAccessToken" : null, hashPinCode)}>
                                 {t('download.label')}
                             </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -224,7 +226,7 @@ export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
                                 {t('share.label')}
                             </DropdownMenuItem>
                             : null}
-                        <DropdownMenuItem onClick={() => downloadClientFolder(folder, downloadT)}>
+                        <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, files, folder.name, shareToken, tokenType === "accessToken" ? "accessToken" : tokenType === "personAccessToken" ? "personAccessToken" : null, hashPinCode)}>
                             {t('download.label')}
                         </DropdownMenuItem>
                     </DropdownMenuContent>
