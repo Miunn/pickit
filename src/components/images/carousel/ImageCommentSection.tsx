@@ -16,7 +16,8 @@ import { useTranslations } from "next-intl";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { useSearchParams } from "next/navigation";
 import { Comment } from "@/components/comments/Comment";
-import { useFolderContext } from "@/context/FolderContext";
+import { useFilesContext } from "@/context/FilesContext";
+
 export default function ImageCommentSection({ file, className, open, setOpen }: { file: FileWithComments, className?: string, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
     const t = useTranslations("components.images.comments");
     const createCommentForm = useForm<z.infer<typeof CreateCommentFormSchema>>({
@@ -27,7 +28,7 @@ export default function ImageCommentSection({ file, className, open, setOpen }: 
     })
     const searchParams = useSearchParams();
 
-    const { folder, setFolder } = useFolderContext();
+    const { files, setFiles } = useFilesContext();
 
     async function submitComment(data: z.infer<typeof CreateCommentFormSchema>) {
         const r = await createComment(file.id, data, searchParams.get("share"), searchParams.get("t") === "p" ? "personAccessToken" : "accessToken", searchParams.get("h"));
@@ -41,19 +42,16 @@ export default function ImageCommentSection({ file, className, open, setOpen }: 
             return;
         }
 
-        setFolder({
-            ...folder,
-            files: folder.files.map((file) => {
-                if (file.id === file.id) {
-                    return {
-                        ...file,
-                        comments: [...file.comments, r]
-                    }
+        setFiles(files.map((file) => {
+            if (file.id === file.id) {
+                return {
+                    ...file,
+                    comments: [...file.comments, r]
                 }
+            }
 
-                return file;
-            })
-        })
+            return file;
+        }))
 
         toast({
             title: t('success.title'),
@@ -66,7 +64,7 @@ export default function ImageCommentSection({ file, className, open, setOpen }: 
     return (
         <Collapsible className={cn("w-full", className)} open={open} onOpenChange={setOpen}>
             <CollapsibleTrigger className="w-full flex justify-between items-center gap-2 font-semibold cursor-pointer bg-background hover:bg-accent transition-colors px-2 py-1 rounded-md">
-                <span>{ t('trigger', { count: file.comments.length }) }</span> <ArrowUpDown />
+                <span>{t('trigger', { count: file.comments.length })}</span> <ArrowUpDown />
             </CollapsibleTrigger>
             <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsibleLeave data-[state=open]:animate-collapsibleEnter">
                 <Form {...createCommentForm}>
@@ -76,9 +74,9 @@ export default function ImageCommentSection({ file, className, open, setOpen }: 
                             control={createCommentForm.control}
                             render={({ field }) => (
                                 <FormItem className="w-full px-2">
-                                    <FormLabel>{ t('form.text.label') }</FormLabel>
+                                    <FormLabel>{t('form.text.label')}</FormLabel>
                                     <FormControl>
-                                        <Textarea placeholder={ t('form.text.placeholder') } className="resize-none" {...field} />
+                                        <Textarea placeholder={t('form.text.placeholder')} className="resize-none" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -88,7 +86,7 @@ export default function ImageCommentSection({ file, className, open, setOpen }: 
                             <HoverCard>
                                 <HoverCardTrigger>
                                     <FormDescription className="hover:underline cursor-pointer">
-                                        { t('privacy.trigger') }
+                                        {t('privacy.trigger')}
                                     </FormDescription>
                                 </HoverCardTrigger>
                                 <HoverCardContent className="w-96">
@@ -96,8 +94,8 @@ export default function ImageCommentSection({ file, className, open, setOpen }: 
                                 </HoverCardContent>
                             </HoverCard>
                             {createCommentForm.formState.isSubmitting
-                                ? <Button variant="secondary" className="px-6 rounded-full" disabled><Loader2 className="animate-spin w-4 h-4 mr-2" /> { t('actions.submitting') }</Button>
-                                : <Button variant="secondary" className="px-6 rounded-full">{ t('actions.submit') }</Button>
+                                ? <Button variant="secondary" className="px-6 rounded-full" disabled><Loader2 className="animate-spin w-4 h-4 mr-2" /> {t('actions.submitting')}</Button>
+                                : <Button variant="secondary" className="px-6 rounded-full">{t('actions.submit')}</Button>
                             }
                         </div>
                     </form>

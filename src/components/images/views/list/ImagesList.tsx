@@ -13,9 +13,12 @@ import { useTranslations } from "next-intl";
 import { DeleteMultipleImagesDialog } from "../../DeleteMultipleImagesDialog";
 import { Select, SelectItem, SelectContent, SelectValue, SelectTrigger } from "../../../ui/select";
 import { useFolderContext } from "@/context/FolderContext";
+import { useFilesContext } from "@/context/FilesContext";
+
 export default function ImagesList() {
     const t = useTranslations("images.views.list.table");
     const { folder, setFolder } = useFolderContext();
+    const { files } = useFilesContext();
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);
     const [startIndex, setStartIndex] = React.useState<number>(0);
     const [openDeleteSelection, setOpenDeleteSelection] = React.useState<boolean>(false);
@@ -32,16 +35,16 @@ export default function ImagesList() {
 
     // Ensure folder data is available
     useEffect(() => {
-        if (folder && folder.files) {
+        if (folder && files) {
             setIsLoading(false);
         }
     }, [folder]);
 
     // Prepare data safely
     const tableData = React.useMemo(() => {
-        if (!folder || !folder.files) return [];
-        return folder.files.sort((a, b) => a.position - b.position) || [];
-    }, [folder]);
+        if (!folder || !files) return [];
+        return files.sort((a, b) => a.position - b.position) || [];
+    }, [folder, files]);
 
     const table = useReactTable({
         data: tableData,
@@ -129,7 +132,7 @@ export default function ImagesList() {
                 ? <div className={"flex justify-between items-center mb-5 bg-gray-50 rounded-2xl w-full p-2"}>
                     <div className={"flex gap-2 items-center"}>
                         <Button variant="ghost" onClick={() => { setRowSelection({}) }} size="icon"><X className={"w-4 h-4"} /></Button>
-                        <h2><span className={"font-semibold"}>{t('selection', { count: Object.keys(rowSelection).length })}</span> - {formatBytes(folder.files?.filter((i) => Object.keys(rowSelection).includes(i.id)).reduce((a, b) => a + b.size, 0) || 0, { decimals: 2, sizeType: "normal" })}</h2>
+                        <h2><span className={"font-semibold"}>{t('selection', { count: Object.keys(rowSelection).length })}</span> - {formatBytes(files?.filter((i) => Object.keys(rowSelection).includes(i.id)).reduce((a, b) => a + b.size, 0) || 0, { decimals: 2, sizeType: "normal" })}</h2>
                     </div>
 
                     <Button variant="outline" onClick={() => {
@@ -224,12 +227,7 @@ export default function ImagesList() {
                     </TableBody>
                 </Table>
             </div>
-            <CarouselDialog files={tableData} setFiles={(files) => {
-                setFolder({
-                    ...folder,
-                    files: files
-                });
-            }} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
+            <CarouselDialog title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteMultipleImagesDialog files={tableData.filter((file) => Object.keys(rowSelection).includes(file.id))} open={openDeleteSelection} setOpen={setOpenDeleteSelection} onDelete={() => {
                 setRowSelection({});
             }} />

@@ -10,15 +10,25 @@ import DeleteCommentDialog from "./DeleteCommentDialog";
 import { useSession } from "@/providers/SessionProvider";
 import { useFolderContext } from "@/context/FolderContext";
 import EditCommentDialog from "./EditCommentDialog";
+import { useFilesContext } from "@/context/FilesContext";
 
 export function Comment({ comment }: { comment: CommentType }) {
     const { user } = useSession();
-    const { folder, token, setFolder } = useFolderContext();
+    const token = (() => {
+        try {
+            return useFolderContext().token;
+        } catch (error) {
+            return undefined;
+        }
+    })();
+    const { files, setFiles } = useFilesContext();
 
     const formatter = useFormatter();
     const t = useTranslations("components.images.comments.comment.dropdown");
     const [openDelete, setOpenDelete] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
+
+    const canEditComment = comment.createdById === user?.id || (token && 'email' in token && comment.createdByEmail === token.email);
 
     return (
         <div className="relative">
@@ -35,16 +45,16 @@ export function Comment({ comment }: { comment: CommentType }) {
             </p>
             <p className="text-sm">{comment.text}</p>
 
-            {comment.createdById === user?.id || (token && 'email' in token && comment.createdByEmail === token.email) ? (
+            {canEditComment ? (
                 <DropdownMenu>
                     <DropdownMenuTrigger className="absolute top-0 right-0" asChild>
                         <Button variant="ghost" size="icon" className="w-6 h-6 p-0">
                             <Ellipsis className="size-4" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => setOpenEdit(true)}>{t("edit")}</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-destructive font-semibold">{t("delete")}</DropdownMenuItem>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem onClick={() => setOpenEdit(true)}>{t("edit")}</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-destructive font-semibold">{t("delete")}</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             ) : null}
@@ -60,10 +70,7 @@ export function Comment({ comment }: { comment: CommentType }) {
                 open={openDelete} 
                 setOpen={setOpenDelete}
                 onDelete={() => {
-                    setFolder({
-                        ...folder,
-                        files: folder.files.map((file) => ({ ...file, comments: file.comments.filter((c) => c.id !== comment.id) }))
-                    })
+                    setFiles(files.map((file) => ({ ...file, comments: file.comments.filter((c) => c.id !== comment.id) })))
                 }}
             />
         </div>
