@@ -7,6 +7,7 @@ import { getMessages } from 'next-intl/server';
 import { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
 import NextTopLoader from 'nextjs-toploader';
+import Head from 'next/head';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -28,6 +29,9 @@ export default async function LocaleLayout({ children, params }: Props) {
 
     return (
         <html lang={params.locale} suppressHydrationWarning>
+            <Head>
+                <meta name="theme-color" content="#1f7551" />
+            </Head>
             <body className={inter.className}>
                 <ThemeProvider
                     attribute="class"
