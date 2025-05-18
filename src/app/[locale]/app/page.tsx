@@ -12,6 +12,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     return {
         title: t("title"),
         description: t("description"),
+        themeColor: "#1f7551",
     }
 }
 
