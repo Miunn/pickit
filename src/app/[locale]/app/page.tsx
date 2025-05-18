@@ -40,7 +40,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
             createdBy: { id: user.id }
         },
         orderBy: [{ updatedAt: 'desc' }],
-        include: { folder: true, comments: { include: { createdBy: true } } },
+        include: { folder: true, comments: { include: { createdBy: true } }, likes: true },
         take: 6,
     })).sort((a, b) => {
         return (b.updatedAt as Date).getTime() - (a.updatedAt as Date).getTime();

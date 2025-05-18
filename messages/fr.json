@@ -668,6 +668,11 @@
         "title": "{name} - Téléchargement terminé",
         "description": "{name} a été téléchargé avec succès"
       }
+    },
+    "files": {
+      "likeButton": {
+        "cannotLike": "Vous devez être connecté pour aimer des fichiers"
+      }
     }
   },
   "dialogs": {
