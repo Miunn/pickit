@@ -13,11 +13,11 @@ import ffmpeg from "fluent-ffmpeg";
 import { PassThrough, Readable } from "stream";
 import crypto, { randomUUID } from "crypto";
 import { validateShareToken } from "./tokenValidation";
-import { FolderTokenPermission, FileType } from "@prisma/client";
+import { FileType, PersonAccessToken, FileLike } from "@prisma/client";
 import fs, { mkdtemp, mkdtempSync, rmdirSync, unlinkSync } from "fs";
 import path from "path";
 import { tmpdir } from "os";
-import { isAllowedToAccessFile } from "@/lib/dal";
+import { canLikeFile, getToken, isAllowedToAccessFile } from "@/lib/dal";
 
 ffmpeg.setFfmpegPath(process.env.FFMPEG_PATH as string);
 
@@ -318,6 +318,66 @@ export async function updateFileDescription(fileId: string, description: string)
 
     revalidatePath(`/app/folders/${image.folderId}`);
     return { error: null };
+}
+
+export async function likeFile(fileId: string, shareToken?: string | null, accessKey?: string | null): Promise<{ error: string | null, like?: FileLike, liked?: boolean }> {
+    if (!canLikeFile(fileId, shareToken, accessKey, "personAccessToken")) {
+        return { error: "You do not have permission to like this file" };
+    }
+    
+    const file = await prisma.file.findUnique({
+        where: { id: fileId }
+    });
+
+    if (!file) {
+        return { error: "File not found" };
+    }
+
+    const { user } = await getCurrentSession();
+
+    if (user) {
+        const existingLike = await prisma.fileLike.findFirst({
+            where: { fileId, createdById: user.id }
+        });
+
+        if (existingLike) {
+            const like = await prisma.fileLike.delete({ where: { id: existingLike.id } });
+            return { error: null, like: like, liked: false };
+        }
+
+        const file = await prisma.file.update({
+            where: { id: fileId },
+            data: { likes: { create: { createdById: user.id, createdByEmail: user.email } } },
+            select: { likes: true }
+        });
+
+        return { error: null, like: file.likes[file.likes.length - 1], liked: true };
+    } else if (shareToken) {
+        const token = await getToken(shareToken, "personAccessToken") as PersonAccessToken;
+
+        if (!token) {
+            return { error: "Invalid share token" };
+        }
+
+        const existingLike = await prisma.fileLike.findFirst({
+            where: { fileId, createdByEmail: token.email }
+        });
+
+        if (existingLike) {
+            const like = await prisma.fileLike.delete({ where: { id: existingLike.id } });
+            return { error: null, like: like, liked: false };
+        }
+
+        const like = await prisma.file.update({
+            where: { id: fileId },
+            data: { likes: { create: { createdByEmail: token.email } } },
+            select: { likes: true }
+        });
+
+        return { error: null, like: like.likes[like.likes.length - 1], liked: true };
+    } else {
+        return { error: "You don't have permission to like this file" };
+    }
 }
 
 export async function updateFilePosition(fileId: string, previousId?: string, nextId?: string): Promise<{ error: string | null, newPosition?: number }> {

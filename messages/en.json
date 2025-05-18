@@ -669,6 +669,11 @@
         "title": "{name} - Downloaded",
         "description": "{name} has been downloaded successfully"
       }
+    },
+    "files": {
+      "likeButton": {
+        "cannotLike": "You must be logged in to like a file"
+      }
     }
   },
   "dialogs": {

@@ -4,16 +4,17 @@ import UnlockTokenPrompt from "@/components/folders/UnlockTokenPrompt";
 import { getSortedFolderContent } from "@/lib/utils";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
 import { FolderWithAccessToken, FolderWithCover, FolderWithCreatedBy, FolderWithFilesCount, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
-import { Link, redirect } from "@/i18n/navigation";
+import { redirect } from "@/i18n/navigation";
 import { ViewState } from "@/components/folders/ViewSelector";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { hasFolderOwnerAccess, isAllowedToAccessFolder } from "@/lib/dal";
+import { isAllowedToAccessFolder } from "@/lib/dal";
 import BreadcrumbPortal from "@/components/layout/BreadcrumbPortal";
 import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
 import { FolderProvider } from "@/context/FolderContext";
 import { FilesProvider } from "@/context/FilesContext";
+import { TokenProvider } from "@/context/TokenContext";
 
 export async function generateMetadata({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { sort?: ImagesSortMethod, view?: ViewState, share?: string, t?: string, h?: string } }): Promise<Metadata> {
     const t = await getTranslations("metadata.folder");
@@ -88,7 +89,8 @@ export default async function FolderPage({ params, searchParams }: { params: { f
             files: {
                 include: {
                     folder: true,
-                    comments: { include: { createdBy: true } }
+                    comments: { include: { createdBy: true } },
+                    likes: true
                 },
             },
             createdBy: true,
@@ -142,9 +144,11 @@ export default async function FolderPage({ params, searchParams }: { params: { f
                 folderData={getSortedFolderContent(folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments}
                 tokenData={accessToken}
             >
-                <FilesProvider filesData={folder.files}>
-                    <FolderContent defaultView={searchParams.view} isGuest={!session} />
-                </FilesProvider>
+                <TokenProvider token={accessToken}>
+                    <FilesProvider filesData={folder.files}>
+                        <FolderContent defaultView={searchParams.view} isGuest={!session} />
+                    </FilesProvider>
+                </TokenProvider>
             </FolderProvider>
         </>
     )
