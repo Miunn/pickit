@@ -190,6 +190,48 @@
       "title": "Echomori - Compte",
       "headline": "Votre compte",
       "subtitle": "Gérer les paramètres de votre compte"
+    },
+    "pricing": {
+      "title": "Choisissez un plan qui vous convient",
+      "description": "Un abonnement transparent que vous pouvez toujours ajustez plus tard",
+      "getStarted": "Commencer",
+      "monthlyLabel": "Mensuel",
+      "yearlyLabel": "Annuel",
+      "monthly": "/ mois",
+      "yearly": "/ an",
+      "cards": {
+        "free": {
+          "title": "Gratuit",
+          "description": "Pour sauvegarder quelques photos et vidéos",
+          "features": [
+            "5Go de stockage",
+            "10 albums",
+            "20 liens de partage",
+            "Gestion des liens de partage"
+          ]
+        },
+        "efficient": {
+          "title": "Efficient",
+          "description": "Idéal pour les hobbyistes",
+          "features": [
+            "100Go de stockage",
+            "100 albums",
+            "200 liens de partage",
+            "Expiration des liens",
+            "Protection par mot de passe"
+          ]
+        },
+        "pro": {
+          "title": "Pro",
+          "description": "Lorsque vous avez besoin de stocker plus de fichiers",
+          "features": [
+            "Tout dans Efficient plus",
+            "1To de stockage",
+            "1000 albums",
+            "500 liens de partage"
+          ]
+        }
+      }
     }
   },
   "components": {

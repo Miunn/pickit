@@ -62,7 +62,7 @@
     "input-otp": "^1.4.1",
     "lucide-react": "^0.451.0",
     "mediainfo.js": "^0.3.4",
-    "motion": "^12.5.0",
+    "motion": "^12.12.1",
     "next": "^14.2.24",
     "next-csrf": "^0.2.1",
     "next-intl": "^3.26.5",
