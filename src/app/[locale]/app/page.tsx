@@ -5,6 +5,7 @@ import { redirect } from "@/i18n/navigation";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { FilesProvider } from "@/context/FilesContext";
+import { TokenProvider } from "@/context/TokenContext";
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
     const t = await getTranslations("metadata.dashboard")
@@ -47,8 +48,10 @@ export default async function Home({ params }: { params: { locale: string } }) {
     }).slice(0, 6);
 
     return (
-        <FilesProvider filesData={lastFiles}>
-            <DashboardContent lastFolders={lastFolders} />
-        </FilesProvider>
+        <TokenProvider token={null}>
+            <FilesProvider filesData={lastFiles}>
+                <DashboardContent lastFolders={lastFolders} />
+            </FilesProvider>
+        </TokenProvider>
     );
 }
