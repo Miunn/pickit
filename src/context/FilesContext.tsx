@@ -53,6 +53,10 @@ export const FilesProvider = ({ children, filesData }: { children: React.ReactNo
     }
 
     const canUserLikeFile = (file: FileWithLikes) => {
+        if (user?.id === file.createdById) {
+            return true;
+        }
+        
         if (!user && !token) {
             return false;
         }
