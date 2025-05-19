@@ -14,7 +14,6 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
     title: "Echomori",
     description: "Upload and share images with ease.",
-    themeColor: "#1f7551",
 };
 
 export const viewport: Viewport = {
