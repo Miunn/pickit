@@ -13,8 +13,6 @@ export default async function InvalidTokenPage({ params }: { params: { token: st
 
     return (
         <div className={"min-h-screen flex flex-col"}>
-            <Header />
-
             <div className="mt-[10%] flex flex-col items-center">
                 <FolderSearch className="w-28 h-28 text-red-500" />
                 <h3 className="text-3xl text-center mb-3 text-red-600">{t("title")}</h3>
