@@ -199,7 +199,7 @@ export async function isAllowedToDeleteComment(commentId: string, shareToken?: s
 
 export async function canLikeFile(fileId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
     // Only email-shared people and owners can like files
-    return isAllowedToAccessFile(fileId, shareToken, accessKey, "personAccessToken");
+    return await isAllowedToAccessFile(fileId, shareToken, accessKey, "personAccessToken");
 }
 
 export async function canLikeComment(commentId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
