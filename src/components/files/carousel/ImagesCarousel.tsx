@@ -9,7 +9,7 @@ import { useSearchParams } from "next/navigation";
 import EditDescriptionDialog from "../EditDescriptionDialog";
 import { Role, FileType } from "@prisma/client";
 import { useSession } from "@/providers/SessionProvider";
-import LoadingImage from "../../LoadingImage";
+import LoadingImage from "../LoadingImage";
 import FileOptions from "./FileOptions";
 import { useFilesContext } from "@/context/FilesContext";
 import { likeFile } from "@/actions/files";

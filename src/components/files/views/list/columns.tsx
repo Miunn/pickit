@@ -13,7 +13,7 @@ import ImagePropertiesDialog from "../../ImagePropertiesDialog";
 import React, { useState, useMemo, useCallback } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { changeFolderCover } from "@/actions/folders";
-import LoadingImage from "@/components/LoadingImage";
+import LoadingImage from "@/components/files/LoadingImage";
 import { FileType } from "@prisma/client";
 
 // Memoized dropdown menu component
