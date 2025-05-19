@@ -63,7 +63,7 @@ export async function generateMetadata({ params, searchParams }: { params: { fol
             images: [
                 {
                     alt: "Echomori",
-                    url: `${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folderId}/og?${searchParams.share ? `share=${searchParams.share}` : ""}${searchParams.t ? `t=${searchParams.t}` : ""}${searchParams.h ? `h=${searchParams.h}` : ""}`,
+                    url: `${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folderId}/og?${searchParams.share ? `share=${searchParams.share}` : ""}&${searchParams.t ? `t=${searchParams.t}` : ""}&${searchParams.h ? `h=${searchParams.h}` : ""}`,
                     type: "image/png",
                     width: 1200,
                     height: 630
