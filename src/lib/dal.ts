@@ -197,7 +197,41 @@ export async function isAllowedToDeleteComment(commentId: string, shareToken?: s
     return false;
 }
 
-async function getToken(shareToken: string, tokenType: "accessToken" | "personAccessToken"): Promise<AccessToken | PersonAccessToken | null> {
+export async function canLikeFile(fileId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
+    // Only email-shared people and owners can like files
+    return isAllowedToAccessFile(fileId, shareToken, accessKey, "personAccessToken");
+}
+
+export async function canLikeComment(commentId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
+    const comment = await prisma.comment.findUnique({
+        where: { id: commentId },
+        include: { file: { select: { id: true, folderId: true } } }
+    });
+
+    if (!comment) {
+        return false;
+    }
+
+    const { user } = await getCurrentSession();
+
+    if (user) {
+        return isAllowedToAccessFile(comment.fileId);
+    }
+
+    if (!shareToken || tokenType !== "personAccessToken") {
+        return false;
+    }
+
+    const token = await getToken(shareToken, "personAccessToken");
+
+    if (!token) {
+        return false;
+    }
+
+    return isAllowedToAccessFile(comment.fileId, shareToken, accessKey, "personAccessToken");
+}
+
+export async function getToken(shareToken: string, tokenType: "accessToken" | "personAccessToken"): Promise<AccessToken | PersonAccessToken | null> {
     if (tokenType === "accessToken") {
         return await prisma.accessToken.findUnique({ where: { token: shareToken } });
     } else {

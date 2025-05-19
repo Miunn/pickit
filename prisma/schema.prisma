@@ -75,6 +75,7 @@ model File {
   updatedAt     DateTime @updatedAt
 
   comments Comment[]
+  likes    FileLike[]
 }
 
 model Comment {
@@ -88,6 +89,30 @@ model Comment {
   name           String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  likes CommentLike[]
+}
+
+model FileLike {
+  id        String   @id @default(cuid())
+  file      File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  fileId    String
+  createdBy User?     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById String?
+  createdByEmail String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CommentLike {
+  id        String   @id @default(cuid())
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String
+  createdBy User?     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById String?
+  createdByEmail String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model AccessToken {
@@ -145,6 +170,8 @@ model User {
   folders  Folder[]  @relation("UserFolders")
   files    File[]    @relation("UserFiles")
   comments Comment[]
+  likes    FileLike[]
+  commentLikes CommentLike[]
 }
 
 model VerifyEmailRequest {

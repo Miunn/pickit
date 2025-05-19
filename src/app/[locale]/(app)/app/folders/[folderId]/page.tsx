@@ -4,52 +4,46 @@ import UnlockTokenPrompt from "@/components/folders/UnlockTokenPrompt";
 import { getSortedFolderContent } from "@/lib/utils";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
 import { FolderWithAccessToken, FolderWithCover, FolderWithCreatedBy, FolderWithFilesCount, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
-import { Link, redirect } from "@/i18n/navigation";
+import { redirect } from "@/i18n/navigation";
 import { ViewState } from "@/components/folders/ViewSelector";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { hasFolderOwnerAccess, isAllowedToAccessFolder } from "@/lib/dal";
+import { isAllowedToAccessFolder } from "@/lib/dal";
 import BreadcrumbPortal from "@/components/layout/BreadcrumbPortal";
 import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
 import { FolderProvider } from "@/context/FolderContext";
 import { FilesProvider } from "@/context/FilesContext";
+import { TokenProvider } from "@/context/TokenContext";
+import { folder } from "jszip";
 
 export async function generateMetadata({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { sort?: ImagesSortMethod, view?: ViewState, share?: string, t?: string, h?: string } }): Promise<Metadata> {
     const t = await getTranslations("metadata.folder");
-    const { user } = await getCurrentSession();
-    let folderName: { name: string } | null = null;
-    if (!user) {
-        if (!searchParams.share) {
-            return {
+    let folderNameAndDescription: { name: string, description?: string | null } | null = null;
+    if (!searchParams.share) {
+        return {
+            title: t("title", { folderName: "Folder" }),
+            description: t("description", { folderName: "Folder" }),
+            openGraph: {
                 title: t("title", { folderName: "Folder" }),
                 description: t("description", { folderName: "Folder" }),
-                openGraph: {
-                    title: t("title", { folderName: "Folder" }),
-                    description: t("description", { folderName: "Folder" }),
-                }
             }
         }
-
-        if (searchParams.t === "p") {
-            folderName = await prisma.personAccessToken.findUnique({
-                where: { token: searchParams.share },
-                select: { folder: { select: { name: true } } }
-            }).then(result => result ? { name: result.folder.name } : null);
-        } else {
-            folderName = await prisma.accessToken.findUnique({
-                where: { token: searchParams.share },
-                select: { folder: { select: { name: true } } }
-            }).then(result => result ? { name: result.folder.name } : null);
-        }
-    } else {
-        folderName = await prisma.folder.findUnique({
-            where: { id: params.folderId, createdBy: { id: user.id } },
-            select: { name: true }
-        });
     }
 
-    if (!folderName) {
+    if (searchParams.t === "p") {
+        folderNameAndDescription = await prisma.personAccessToken.findUnique({
+            where: { token: searchParams.share },
+            select: { folder: { select: { name: true, description: true } } }
+        }).then(result => result ? { name: result.folder.name, description: result.folder.description } : null);
+    } else {
+        folderNameAndDescription = await prisma.accessToken.findUnique({
+            where: { token: searchParams.share },
+            select: { folder: { select: { name: true, description: true } } }
+        }).then(result => result ? { name: result.folder.name, description: result.folder.description } : null);
+    }
+
+    if (!folderNameAndDescription) {
         return {
             title: t("title", { folderName: "Folder" }),
             description: t("description", { folderName: "Folder" }),
@@ -61,11 +55,11 @@ export async function generateMetadata({ params, searchParams }: { params: { fol
     }
 
     return {
-        title: t("title", { folderName: folderName.name }),
-        description: t("description", { folderName: folderName.name }),
+        title: t("title", { folderName: folderNameAndDescription.name }),
+        description: folderNameAndDescription.description ? folderNameAndDescription.description : t("description", { folderName: folderNameAndDescription.name }),
         openGraph: {
-            title: t("openGraph.title", { folderName: folderName.name }),
-            description: t("openGraph.description", { folderName: folderName.name }),
+            title: t("openGraph.title", { folderName: folderNameAndDescription.name }),
+            description: folderNameAndDescription.description ? folderNameAndDescription.description : t("openGraph.description", { folderName: folderNameAndDescription.name }),
         }
     }
 }
@@ -88,7 +82,8 @@ export default async function FolderPage({ params, searchParams }: { params: { f
             files: {
                 include: {
                     folder: true,
-                    comments: { include: { createdBy: true } }
+                    comments: { include: { createdBy: true } },
+                    likes: true
                 },
             },
             createdBy: true,
@@ -142,9 +137,11 @@ export default async function FolderPage({ params, searchParams }: { params: { f
                 folderData={getSortedFolderContent(folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments}
                 tokenData={accessToken}
             >
-                <FilesProvider filesData={folder.files}>
-                    <FolderContent defaultView={searchParams.view} isGuest={!session} />
-                </FilesProvider>
+                <TokenProvider token={accessToken}>
+                    <FilesProvider filesData={folder.files}>
+                        <FolderContent defaultView={searchParams.view} isGuest={!session} />
+                    </FilesProvider>
+                </TokenProvider>
             </FolderProvider>
         </>
     )

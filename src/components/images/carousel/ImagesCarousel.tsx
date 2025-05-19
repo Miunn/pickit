@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../../ui/carousel";
-import { FileWithComments, FileWithFolder } from "@/lib/definitions";
 import { Button } from "../../ui/button";
-import { Pencil } from "lucide-react";
+import { Heart, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn, formatBytes } from "@/lib/utils";
 import ImageCommentSection from "./ImageCommentSection";
@@ -13,9 +12,12 @@ import { useSession } from "@/providers/SessionProvider";
 import LoadingImage from "../../LoadingImage";
 import FileOptions from "./FileOptions";
 import { useFilesContext } from "@/context/FilesContext";
+import { likeFile } from "@/actions/files";
+import { toast } from "sonner";
+import FileLikeButton from "../FileLikeButton";
 
 export default function ImagesCarousel({ startIndex, currentIndex }: { startIndex: number, currentIndex?: number }) {
-    const { files, setFiles } = useFilesContext();
+    const { files, setFiles, hasUserLikedFile } = useFilesContext();
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
@@ -85,20 +87,24 @@ export default function ImagesCarousel({ startIndex, currentIndex }: { startInde
                     {files[currentIndexState].description || t('noDescription')}
                 </p>
 
-                {user?.role.includes(Role.ADMIN) || user?.id === files[currentIndexState].folder.createdById
-                    ? <EditDescriptionDialog file={files[currentIndexState]} onSuccess={(description) => {
-                        setFiles(files.map((file) => {
-                            if (file.id === files[currentIndexState].id) {
-                                return { ...file, description: description };
-                            }
-                            return file;
-                        }));
-                    }}>
-                        <Button variant={"outline"} size={"icon"} type="button">
-                            <Pencil className="size-4" />
-                        </Button>
-                    </EditDescriptionDialog>
-                    : null}
+                <div className="flex items-center gap-2">
+                    <FileLikeButton file={files[currentIndexState]} />
+
+                    {user?.role.includes(Role.ADMIN) || user?.id === files[currentIndexState].folder.createdById
+                        ? <EditDescriptionDialog file={files[currentIndexState]} onSuccess={(description) => {
+                            setFiles(files.map((file) => {
+                                if (file.id === files[currentIndexState].id) {
+                                    return { ...file, description: description };
+                                }
+                                return file;
+                            }));
+                        }}>
+                            <Button variant={"outline"} size={"icon"} type="button">
+                                <Pencil className="size-4" />
+                            </Button>
+                        </EditDescriptionDialog>
+                        : null}
+                </div>
             </div>
 
             <ImageCommentSection
