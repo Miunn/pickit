@@ -41,9 +41,6 @@ export default async function Image({ params, searchParams }: { params: { folder
         )
     }
 
-    console.log("Opengraph image logged in", folder.cover.id);
-    console.log("Url", `${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folderId}/images/${folder.cover.id}?${searchParams?.share ? `share=${searchParams.share}` : ""}${searchParams?.t ? `t=${searchParams.t}` : ""}${searchParams?.h ? `h=${searchParams.h}` : ""}`)
-
     return new ImageResponse(
         <div style={{
             width: `${size.width}px`,
