@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import "../../globals.css";
+import "../../../globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { getTranslations } from "next-intl/server";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Folder, Image, Link } from "lucide-react";
-import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
 import BreadcrumbWrapper from "@/components/layout/BreadcrumbWrapper";
 import UnverifiedEmail from "@/components/layout/UnverifiedEmail";
 import { addDays } from "date-fns";
@@ -18,8 +17,7 @@ import { NuqsAdapter } from 'nuqs/adapters/react'
 import { SwitchTheme } from "@/components/generic/SwitchTheme";
 import SessionProvider from "@/providers/SessionProvider";
 import { prisma } from "@/lib/prisma";
-import { getPathname } from "@/i18n/navigation";
-import { headers } from "next/headers";
+
 export const metadata: Metadata = {
     title: "Echomori",
     description: "Upload and share images with ease.",
