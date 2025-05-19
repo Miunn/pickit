@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Dialog, DialogContent, DialogTrigger } from "../../ui/dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
-import LoadingImage from "../../LoadingImage";
+import LoadingImage from "../LoadingImage";
 import { FileType } from "@prisma/client";
 export default function FullScreenImageCarousel({ 
     files,

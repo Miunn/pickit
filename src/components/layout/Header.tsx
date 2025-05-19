@@ -13,7 +13,7 @@ import {
     SheetContent,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import LogoImage from "../LogoImage";
+import LogoImage from "../generic/LogoImage";
 
 export default function Header({ className }: { className?: string }) {
     const t = useTranslations("components.header");

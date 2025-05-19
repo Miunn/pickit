@@ -10,7 +10,7 @@ import { toast } from "@/hooks/use-toast";
 import { useSearchParams } from "next/navigation";
 import { changeFolderCover } from "@/actions/folders";
 import { CirclePlay } from "lucide-react";
-import LoadingImage from "@/components/LoadingImage";
+import LoadingImage from "@/components/files/LoadingImage";
 import { useSession } from "@/providers/SessionProvider";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";

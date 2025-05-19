@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { FileUploader } from "@/components/generic/FileUploader";
+import { FileUploader } from "@/components/files/FileUploader";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -34,10 +34,6 @@ interface FinalizeUploadResult {
 
 export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) {
     const t = useTranslations("components.images.uploadImagesForm");
-    const searchParams = useSearchParams();
-    const shareToken = searchParams.get("share");
-    const shareHashPin = searchParams.get("h");
-    const tokenType = searchParams.get("t") === "p" ? "personAccessToken" : "accessToken";
 
     const uploadImageForm = useForm<z.infer<typeof UploadImagesFormSchema>>({
         resolver: zodResolver(UploadImagesFormSchema),
@@ -45,16 +41,10 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
             images: []
         }
     });
-
-    const [files, setFiles] = useState<File[]>([]);
-    const [isUploading, setIsUploading] = useState(false);
-    const [showUploadModal, setShowUploadModal] = useState(false);
-
     
     const onSubmit = async (data: z.infer<typeof UploadImagesFormSchema>) => {
         if (!data.images || data.images.length === 0) return;
 
-        setIsUploading(true);
         toast(
             <div className="w-full">
                 {t('ongoing.title')}
@@ -161,16 +151,12 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
 
             toast.success(t('success', { count: successfulUploads.length }));
 
-            setFiles([]);
-            setShowUploadModal(false);
             if (onUpload) {
                 onUpload();
             }
         } catch (error) {
             console.error("Upload error:", error);
             toast.error("An error occurred during upload");
-        } finally {
-            setIsUploading(false);
         }
     };
 

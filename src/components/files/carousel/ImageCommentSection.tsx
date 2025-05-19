@@ -15,7 +15,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { useTranslations } from "next-intl";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { useSearchParams } from "next/navigation";
-import { Comment } from "@/components/comments/Comment";
+import { Comment } from "@/components/files/comments/Comment";
 import { useFilesContext } from "@/context/FilesContext";
 
 export default function ImageCommentSection({ file, className, open, setOpen }: { file: FileWithComments, className?: string, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
