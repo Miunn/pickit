@@ -5,12 +5,14 @@ import { redirect } from "@/i18n/navigation";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { FilesProvider } from "@/context/FilesContext";
+import { TokenProvider } from "@/context/TokenContext";
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
     const t = await getTranslations("metadata.dashboard")
     return {
         title: t("title"),
         description: t("description"),
+        themeColor: "#1f7551",
     }
 }
 
@@ -40,15 +42,17 @@ export default async function Home({ params }: { params: { locale: string } }) {
             createdBy: { id: user.id }
         },
         orderBy: [{ updatedAt: 'desc' }],
-        include: { folder: true, comments: { include: { createdBy: true } } },
+        include: { folder: true, comments: { include: { createdBy: true } }, likes: true },
         take: 6,
     })).sort((a, b) => {
         return (b.updatedAt as Date).getTime() - (a.updatedAt as Date).getTime();
     }).slice(0, 6);
 
     return (
-        <FilesProvider filesData={lastFiles}>
-            <DashboardContent lastFolders={lastFolders} />
-        </FilesProvider>
+        <TokenProvider token={null}>
+            <FilesProvider filesData={lastFiles}>
+                <DashboardContent lastFolders={lastFolders} />
+            </FilesProvider>
+        </TokenProvider>
     );
 }

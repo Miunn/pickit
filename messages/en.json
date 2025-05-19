@@ -190,6 +190,47 @@
       "title": "Echomori - Account",
       "headline": "Your account",
       "subtitle": "Manage your account settings"
+    },
+    "pricing": {
+      "title": "Choose a plan that's right for you",
+      "description": "A transparent subscription that you can always adjust later",
+      "getStarted": "Get started",
+      "monthlyLabel": "Monthly",
+      "yearlyLabel": "Yearly",
+      "monthly": "{price} / month",
+      "yearly": "{price} / year",
+      "cards": {
+        "free": {
+          "title": "Basic",
+          "description": "To save a few photos and videos",
+          "features": [
+            "5Go of storage",
+            "10 albums",
+            "20 sharing links"
+          ]
+        },
+        "efficient": {
+          "title": "Efficient",
+          "description": "Ideal for hobbyists",
+          "features": [
+            "50Go of storage",
+            "100 albums",
+            "200 sharing links",
+            "Expiration date",
+            "Password protection"
+          ]
+        },
+        "pro": {
+          "title": "Pro",
+          "description": "When you need to scale your albums",
+          "features": [
+            "Everything in Efficient plus",
+            "1To of storage",
+            "1000 albums",
+            "500 sharing links"
+          ]
+        }
+      }
     }
   },
   "components": {
@@ -668,6 +709,11 @@
       "success": {
         "title": "{name} - Downloaded",
         "description": "{name} has been downloaded successfully"
+      }
+    },
+    "files": {
+      "likeButton": {
+        "cannotLike": "You must be logged in to like a file"
       }
     }
   },

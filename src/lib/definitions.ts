@@ -318,11 +318,23 @@ const fileWithCommentsWithCreatedBy = Prisma.validator<Prisma.FileDefaultArgs>()
 
 export type FileWithCommentsWithCreatedBy = Prisma.FileGetPayload<typeof fileWithCommentsWithCreatedBy>
 
+const fileWithLikes = Prisma.validator<Prisma.FileDefaultArgs>()({
+    include: { likes: true }
+})
+
+export type FileWithLikes = Prisma.FileGetPayload<typeof fileWithLikes>
+
 const commentWithCreatedBy = Prisma.validator<Prisma.CommentDefaultArgs>()({
     include: { createdBy: true }
 })
 
 export type CommentWithCreatedBy = Prisma.CommentGetPayload<typeof commentWithCreatedBy>
+
+const commentWithLikes = Prisma.validator<Prisma.CommentDefaultArgs>()({
+    include: { likes: true }
+})
+
+export type CommentWithLikes = Prisma.CommentGetPayload<typeof commentWithLikes>
 
 const accessTokenWithFolder = Prisma.validator<Prisma.AccessTokenDefaultArgs>()({
     include: { folder: true },

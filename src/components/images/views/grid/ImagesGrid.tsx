@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2, X, Pencil } from "lucide-react";
 import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
 import { CarouselDialog } from "@/components/images/carousel/CarouselDialog";
-import { FileWithComments, FileWithFolder } from "@/lib/definitions";
+import { FileWithComments, FileWithFolder, FileWithLikes } from "@/lib/definitions";
 import { cn, formatBytes, getSortedImagesVideosContent } from "@/lib/utils";
 import { UploadImagesForm } from "@/components/images/upload/UploadImagesForm";
 import { useSession } from "@/providers/SessionProvider";
@@ -40,9 +40,9 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
 
     const [sortStrategy, setSortStrategy] = useState<ImagesSortMethod | 'dragOrder'>(sortState);
 
-    const getSortedFiles = useCallback((files: (FileWithFolder & FileWithComments)[]) => {
+    const getSortedFiles = useCallback((files: (FileWithFolder & FileWithComments & FileWithLikes)[]) => {
         if (sortStrategy !== 'dragOrder') {
-            const sortedItems = [...getSortedImagesVideosContent(files, sortState)] as (FileWithFolder & FileWithComments)[];
+            const sortedItems = [...getSortedImagesVideosContent(files, sortState)] as (FileWithFolder & FileWithComments & FileWithLikes)[];
             return sortedItems;
         }
 
@@ -60,7 +60,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
 
     const defaultSortedFiles = useMemo(() => getSortedFiles(files), [getSortedFiles]);
 
-    const [sortedFiles, setSortedFiles] = useState<(FileWithFolder & FileWithComments)[]>(defaultSortedFiles);
+    const [sortedFiles, setSortedFiles] = useState<(FileWithFolder & FileWithComments & FileWithLikes)[]>(defaultSortedFiles);
 
     useEffect(() => {
         setSortStrategy(sortState);
@@ -191,7 +191,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                             ? <div className={"col-start-1 col-end-3 xl:col-start-2 xl:col-end-4 2xl:col-start-3 2xl:col-end-5 mx-auto mt-6 flex flex-col justify-center items-center max-w-lg"}>
                                 <UploadImagesForm folderId={folder.id} />
                             </div>
-                            : sortedFiles.map((file: FileWithFolder & FileWithComments) => (
+                            : sortedFiles.map((file: FileWithFolder & FileWithComments & FileWithLikes) => (
                                 <Fragment key={file.id}>
                                     <ImagePreviewGrid
                                         className={`${activeId === file.id ? "opacity-50" : ""}`}
@@ -257,7 +257,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
         }
 
         return (
-            sortedFiles.map((file: FileWithFolder & FileWithComments) => (
+            sortedFiles.map((file: FileWithFolder & FileWithComments & FileWithLikes) => (
                 <Fragment key={file.id}>
                     <ImagePreviewGrid
                         className={`${activeId === file.id ? "opacity-50" : ""}`}

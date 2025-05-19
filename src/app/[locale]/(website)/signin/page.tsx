@@ -32,7 +32,7 @@ export default async function LoginPage({ params, searchParams }: { params: { lo
     const t = await getTranslations('auth');
 
     return (
-        <main className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <Tabs defaultValue={searchParams.side === "register" ? "register" : "login"}>
                 <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="login">{t("signInTab")}</TabsTrigger>
@@ -45,6 +45,6 @@ export default async function LoginPage({ params, searchParams }: { params: { lo
                     <SignupForm locale={params.locale} />
                 </TabsContent>
             </Tabs>
-        </main>
+        </div>
     )
 }
