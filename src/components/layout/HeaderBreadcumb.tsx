@@ -42,20 +42,7 @@ function getCurrentPath(pathname: string, folderName?: string): { path: Breadcru
     return { path: null };
 }
 
-function renderBreadcrumbItem(type: 'dashboard' | 'folders' | 'images' | 'folder' | 'links' | 'account' | 'administration' | 'administrationUsers', locale: string, isCurrent: boolean = false) {
-    const t = useTranslations('breadcumb');
-    return isCurrent ? (
-        <BreadcrumbItem>
-            <BreadcrumbPage>{t(type)}</BreadcrumbPage>
-        </BreadcrumbItem>
-    ) : (
-        <BreadcrumbItem className="hidden lg:block">
-            <BreadcrumbLink href={`/${locale}/app/${type.toLowerCase() === 'dashboard' ? '' : type.toLowerCase()}`}>
-                {t(type)}
-            </BreadcrumbLink>
-        </BreadcrumbItem>
-    );
-}
+
 
 export default function HeaderBreadcumb({ folderName, adminUser }: { folderName?: string, adminUser?: UserAdministration }) {
     const pathname = usePathname();
@@ -63,6 +50,20 @@ export default function HeaderBreadcumb({ folderName, adminUser }: { folderName?
     const locale = pathname.split('/')[1] || 'en';
 
     const { path: currentPath } = getCurrentPath(pathname, folderName);
+
+    const renderBreadcrumbItem = (type: 'dashboard' | 'folders' | 'images' | 'folder' | 'links' | 'account' | 'administration' | 'administrationUsers', locale: string, isCurrent: boolean = false) => {
+        return isCurrent ? (
+            <BreadcrumbItem>
+                <BreadcrumbPage>{t(type)}</BreadcrumbPage>
+            </BreadcrumbItem>
+        ) : (
+            <BreadcrumbItem className="hidden lg:block">
+                <BreadcrumbLink href={`/${locale}/app/${type.toLowerCase() === 'dashboard' ? '' : type.toLowerCase()}`}>
+                    {t(type)}
+                </BreadcrumbLink>
+            </BreadcrumbItem>
+        );
+    }
 
     return (
         <Breadcrumb>
