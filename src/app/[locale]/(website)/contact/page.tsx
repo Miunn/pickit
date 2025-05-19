@@ -1,6 +1,4 @@
-import ContactForm from "@/components/ContactForm";
-import Footer from "@/components/layout/Footer";
-import Header from "@/components/layout/Header";
+import ContactForm from "@/components/pages/contact/ContactForm";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import WorldMap from "@/components/ui/world-map";
