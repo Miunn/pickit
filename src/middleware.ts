@@ -1,7 +1,6 @@
 import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse, URLPattern } from 'next/server';
 import { routing } from './i18n/routing';
-import { isValidShareLink } from './lib/checkLinks';
 
 const locales = ['en', 'fr'];
 const defaultLocale = 'en';
@@ -40,12 +39,9 @@ export default async function middleware(req: NextRequest) {
         return NextResponse.redirect(redirectUrl);
     }
 
-    if (req.nextUrl.searchParams.get("share") && await isValidShareLink(params(req.url).folderId, req.nextUrl.searchParams.get("share"), req.nextUrl.searchParams.get("t"))) {
-        await fetch(`${process.env.APP_URL}/api/tokens/increment?token=${req.nextUrl.searchParams.get("share")}`);
-    }
-
     if (req.method === "GET") {
 		const response = handleI18nRouting(req);
+		response.headers.set("X-Pathname", pathname);
 		const token = req.cookies.get("session")?.value ?? null;
 		if (token !== null) {
 			// Only extend cookie expiration on GET requests since we can be sure
@@ -64,7 +60,11 @@ export default async function middleware(req: NextRequest) {
 
     // ########################### CSRF Protection ###################################
     if (req.method === "GET") {
-		return NextResponse.next();
+		const reqHeaders = new Headers(req.headers);
+		reqHeaders.set("X-Pathname", pathname);
+		return NextResponse.next({
+			headers: reqHeaders
+		});
 	}
 	const originHeader = req.headers.get("Origin");
 	// NOTE: You may need to use `X-Forwarded-Host` instead

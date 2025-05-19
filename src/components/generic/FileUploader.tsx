@@ -148,7 +148,6 @@ export const FileUploader = (props: FileUploaderProps) => {
 
             if (rejectedFiles.length > 0) {
                 rejectedFiles.forEach(({ file, errors }) => {
-                    console.log("errors", errors);
                     errors.forEach(({ code }) => {
                         if (code === 'file-too-large') {
                             toast({
@@ -197,7 +196,7 @@ export const FileUploader = (props: FileUploaderProps) => {
         <div className={"relative w-full flex flex-col gap-6 overflow-hidden"}>
             <Dropzone
                 onDrop={onDrop}
-                accept={accept}
+                // accept={accept}
                 maxSize={maxSize}
                 maxFiles={maxFileCount}
                 multiple={maxFileCount > 1 || multiple}
@@ -205,7 +204,7 @@ export const FileUploader = (props: FileUploaderProps) => {
             >
                 {({getRootProps, getInputProps, isDragActive}) => (
                     <div {...getRootProps()}
-                         className={cn("group relative grid h-52 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2 text-center transition hover:bg-muted/25",
+                         className={cn("group relative grid min-h-52 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2 text-center transition hover:bg-muted/25",
                              "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                              isDragActive && "border-muted-foreground/50",
                              isDisabled && "pointer-events-none opacity-60",
@@ -237,9 +236,9 @@ export const FileUploader = (props: FileUploaderProps) => {
                                     <p className="font-medium text-muted-foreground">
                                         {t('title')}
                                     </p>
-                                    <p className="text-sm text-muted-foreground/70">
+                                    {/* <p className="text-sm text-muted-foreground/70">
                                         {t('description', {count: maxFileCount, maxSize: formatBytes(maxSize)})}
-                                    </p>
+                                    </p> */}
                                 </div>
                             </div>
                         )}

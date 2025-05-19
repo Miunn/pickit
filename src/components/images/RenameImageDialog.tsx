@@ -16,18 +16,14 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
-import { CreateFolderFormSchema } from "@/lib/definitions";
-import { Image, Video } from "@prisma/client";
-import { renameImage } from "@/actions/images";
+import { CreateFolderFormSchema, FileWithFolder } from "@/lib/definitions";
+import { renameFile } from "@/actions/files";
 
-export default function RenameImageDialog({ openState, setOpenState, file }: { openState: boolean, setOpenState: any, file: Image | Video }) {
+export default function RenameImageDialog({ openState, setOpenState, file }: { openState: boolean, setOpenState: any, file: FileWithFolder }) {
 
     const t = useTranslations("dialogs.images.rename");
-
-    const [loading, setLoading] = useState(false);
 
     const form = useForm<z.infer<typeof CreateFolderFormSchema>>({
         resolver: zodResolver(CreateFolderFormSchema),
@@ -36,34 +32,25 @@ export default function RenameImageDialog({ openState, setOpenState, file }: { o
         }
     });
 
-    function onSubmit(data: z.infer<typeof CreateFolderFormSchema>) {
-        setLoading(true);
-        renameImage(file.id, file.type, data).then(d => {
-            setLoading(false);
+    async function onSubmit(data: z.infer<typeof CreateFolderFormSchema>) {
+        const d = await renameFile(file.id, data);
 
-            if (d.error) {
-                toast({
-                    title: t('errors.unknown.title'),
-                    description: t('errors.unknown.description'),
-                    variant: "destructive"
-                });
-            }
-
-            form.reset();
-            toast({
-                title: t('success.title'),
-                description: t('success.description'),
-            });
-
-            setOpenState(false);
-        }).catch((r) => {
-            setLoading(false);
+        if (d.error) {
             toast({
                 title: t('errors.unknown.title'),
                 description: t('errors.unknown.description'),
                 variant: "destructive"
             });
+            return;
+        }
+
+        form.reset();
+        toast({
+            title: t('success.title'),
+            description: t('success.description'),
         });
+
+        setOpenState(false);
     }
 
     return (
@@ -94,7 +81,7 @@ export default function RenameImageDialog({ openState, setOpenState, file }: { o
                             <DialogClose asChild>
                                 <Button type={"button"} variant="outline">{t('actions.cancel')}</Button>
                             </DialogClose>
-                            {loading
+                            {form.formState.isSubmitting
                                 ? <Button disabled={true}><Loader2 className={"mr-2 animate-spin"} /> {t('actions.submitting')}</Button>
                                 : <Button type={"submit"}>{t('actions.submit')}</Button>
                             }

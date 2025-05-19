@@ -9,13 +9,19 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
+import { Link } from "@/i18n/navigation";
 import { PersonAccessTokenWithFolder } from "@/lib/definitions"
-import { FolderTokenPermission } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, BadgeCheck, BadgeMinus, CircleHelp, Eye, Lock, LockOpen, MoreHorizontal, Pencil, PencilOff } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
 import { useState } from "react";
+
+// Define the permission values as constants
+const PERMISSIONS = {
+    READ: 'READ' as const,
+    WRITE: 'WRITE' as const,
+    ADMIN: 'ADMIN' as const,
+} as const;
 
 export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
     {
@@ -76,21 +82,23 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
         accessorKey: "permission",
         header: () => {
             const t = useTranslations("dataTables.people.columns.permission");
-
-            return (
-                <p>{t('header')}</p>
-            )
+            return <p>{t('header')}</p>
         },
         cell: ({ row }) => {
             const t = useTranslations("dataTables.people.columns.permission");
             const permission: string = row.getValue("permission");
-            if (permission === FolderTokenPermission.READ) {
+            if (permission === PERMISSIONS.READ) {
                 return <Badge className="bg-blue-600 hover:bg-blue-700 flex gap-2 w-fit"><PencilOff /> {t('read')}</Badge>
-            } else if (permission === "WRITE") {
-                return <Badge className="bg-orange-600 hover:bg-orange-700 flex gap-2 w-fit"><Pencil /> {t('write')}</Badge>
             }
+            if (permission === PERMISSIONS.WRITE) {
+                return <Badge className="bg-green-600 hover:bg-green-700 flex gap-2 w-fit"><Pencil /> {t('write')}</Badge>
+            }
+            if (permission === PERMISSIONS.ADMIN) {
+                return <Badge className="bg-purple-600 hover:bg-purple-700 flex gap-2 w-fit"><BadgeCheck /> {t('admin')}</Badge>
+            }
+            return <Badge className="bg-gray-600 hover:bg-gray-700 flex gap-2 w-fit"><BadgeMinus /> {t('none')}</Badge>
         },
-        size: 100
+        size: 340
     },
     {
         accessorKey: "isActive",
@@ -207,7 +215,6 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
             const locale = useLocale();
             const [lockOpen, setLockOpen] = useState<boolean>(false);
             const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
-            const link = `${process.env.APP_URL}/${locale}/app/folders/${accessToken.folder.id}?share=${accessToken.token}`;
             return (
                 <>
                     <DropdownMenu>
@@ -220,7 +227,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                         <DropdownMenuContent align="end" className="min-w-40">
                             <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
                             <DropdownMenuItem asChild>
-                                <Link href={`${process.env.APP_URL}/${locale}/app/folders/${accessToken.folder.id}`} className="cursor-default">
+                                <Link href={`/app/folders/${accessToken.folder.id}`} className="cursor-default">
                                     {t('open')}
                                 </Link>
                             </DropdownMenuItem>

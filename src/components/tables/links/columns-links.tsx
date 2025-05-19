@@ -191,7 +191,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
             const locale = useLocale();
             const [lockOpen, setLockOpen] = useState<boolean>(false);
             const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
-            const link = `${process.env.APP_URL}/${locale}/app/folders/${accessToken.folder.id}?share=${accessToken.token}`;
+            const link = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/app/folders/${accessToken.folder.id}?share=${accessToken.token}`;
             return (
                 <>
                     <DropdownMenu>
@@ -256,7 +256,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                                 : <DropdownMenuItem onClick={() => setLockOpen(true)}>{t('lock')}</DropdownMenuItem>
                             }
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => setDeleteOpen(true)} className="text-red-600 focus:text-red-600 font-semibold">{t('delete')}</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setDeleteOpen(true)} className="text-red-600 focus:text-red-600 font-semibold">{t('delete.label')}</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <LockTokenDialog tokenId={accessToken.id} tokenType="accessToken" openState={lockOpen} setOpenState={setLockOpen} />

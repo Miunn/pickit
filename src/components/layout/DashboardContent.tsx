@@ -5,12 +5,11 @@ import FolderPreviewGrid from "@/components/folders/FolderPreviewGrid";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { LastUploadedImages } from "@/components/images/LastUploadedImages";
-import { FolderWithAccessToken, FolderWithCover, FolderWithImagesCount, FolderWithVideosCount, ImageWithComments, ImageWithFolder, VideoWithComments, VideoWithFolder } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithCover, FolderWithFilesCount, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
 import CreateFolderDialog from "../folders/CreateFolderDialog";
 
-export default function DashboardContent({ lastFolders, lastFiles }: { lastFolders: (FolderWithAccessToken & FolderWithImagesCount & FolderWithVideosCount & FolderWithCover)[], lastFiles: ((ImageWithFolder & ImageWithComments) | VideoWithFolder & VideoWithComments)[] }) {
-
+export default function DashboardContent({ lastFolders }: { lastFolders: (FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments)[] }) {
     const t = useTranslations("pages.dashboard");
 
     const [openCreateFolder, setOpenCreateFolder] = React.useState(false);
@@ -33,7 +32,7 @@ export default function DashboardContent({ lastFolders, lastFiles }: { lastFolde
                     }
                 </div>
 
-                <LastUploadedImages files={lastFiles} />
+                <LastUploadedImages />
             </ContextMenuTrigger>
             <ContextMenuContent>
                 <ContextMenuItem onClick={() => setOpenCreateFolder(true)}>{t('contextMenu.createFolder')}</ContextMenuItem>

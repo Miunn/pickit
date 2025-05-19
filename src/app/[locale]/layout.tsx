@@ -4,14 +4,20 @@ import { NextIntlClientProvider } from 'next-intl';
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as SonnerToaster } from "@/components/ui/sonner"
 import { getMessages } from 'next-intl/server';
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 import { ThemeProvider } from 'next-themes';
-
+import NextTopLoader from 'nextjs-toploader';
+import { PricingProvider } from '@/context/PricingContext';
+import Head from 'next/head';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
     title: "Echomori",
     description: "Upload and share images with ease.",
+};
+
+export const viewport: Viewport = {
+    themeColor: "#1f7551",
 };
 
 type Props = {
@@ -27,17 +33,23 @@ export default async function LocaleLayout({ children, params }: Props) {
 
     return (
         <html lang={params.locale} suppressHydrationWarning>
+            <Head>
+                <meta name="theme-color" content="#1f7551" />
+            </Head>
             <body className={inter.className}>
                 <ThemeProvider
                     attribute="class"
                     defaultTheme="system"
                     enableSystem={true}
                     disableTransitionOnChange={true}>
-                <NextIntlClientProvider messages={messages}>
-                    {children}
-                    <Toaster />
-                    <SonnerToaster richColors />
-                </NextIntlClientProvider>
+                    <NextTopLoader color='#30b57e' showSpinner={false} />
+                    <NextIntlClientProvider messages={messages}>
+                        <PricingProvider>
+                            {children}
+                            <Toaster />
+                            <SonnerToaster richColors />
+                        </PricingProvider>
+                    </NextIntlClientProvider>
                 </ThemeProvider>
             </body>
         </html>

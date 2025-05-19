@@ -1,18 +1,15 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { Folder, FolderTokenPermission, Image, Video } from "@prisma/client";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImages, FolderWithImagesWithFolderAndComments, FolderWithVideos, FolderWithVideosWithFolderAndComments, ImageWithFolder, UploadImagesFormSchema, VideoWithFolder } from "./definitions";
+import { FileType } from "@prisma/client";
+import { FolderWithFilesWithFolderAndComments, FileWithFolder } from "./definitions";
 import { toast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner"
-import { prisma } from "./prisma";
-import * as bcrypt from "bcryptjs";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
 import saveAs from "file-saver";
 import JSZip from "jszip";
 import { Progress } from "@/components/ui/progress";
-import { getFolderFull } from "@/actions/folders";
-import sharp from "sharp";
-import mediaInfoFactory, { MediaInfoResult } from 'mediainfo.js';
+import axios, { AxiosRequestConfig } from "axios";
+import { Loader2 } from "lucide-react";
 
 export function formatBytes(
 	bytes: number,
@@ -30,8 +27,27 @@ export function formatBytes(
 	return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${sizeType === "accurate" ? accurateSizes[i] ?? "Bytest" : sizes[i] ?? "B"}`
 }
 
+export const convertDDtoDMS = (dd: number): { degrees: number, minutes: number, seconds: number } => {
+	const abs = Math.abs(dd);
+	const degrees = Math.floor(abs);
+	const minutes = Math.floor((abs - degrees) * 60);
+	const seconds = Math.floor((abs - degrees - minutes / 60) * 3600);
+
+	return { degrees, minutes, seconds };
+}
+
+export const getDMSstringWithDirection = (degrees: number, minutes: number, seconds: number, direction: "N" | "S" | "E" | "W"): string => {
+	return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+}
+
+export const getCoordinatesString = (latitude: number, longitude: number): string => {
+	const latitudeDMS = convertDDtoDMS(latitude);
+	const longitudeDMS = convertDDtoDMS(longitude);
+
+	return `${getDMSstringWithDirection(latitudeDMS.degrees, latitudeDMS.minutes, latitudeDMS.seconds, latitude < 0 ? "S" : "N")}, ${getDMSstringWithDirection(longitudeDMS.degrees, longitudeDMS.minutes, longitudeDMS.seconds, longitude < 0 ? "W" : "E")}`;
+}
+
 export const switchLocaleUrl = (url: string, locale: string): string => {
-	console.log(url)
 	// Remove the locale from the url
 	url = url.replace(/\/[a-z]{2}\/?/, "/");
 
@@ -55,8 +71,8 @@ export const copyImageToClipboard = async (folderId: string, imageId: string, sh
 	return true;
 }
 
-export const downloadClientImageHandler = async (file: ImageWithFolder | VideoWithFolder) => {
-	const r = await fetch(`/api/folders/${file.folder.id}/${file.type === 'video' ? 'videos' : 'images'}/${file.id}/download`);
+export const downloadClientImageHandler = async (file: FileWithFolder) => {
+	const r = await fetch(`/api/folders/${file.folder.id}/${file.type === FileType.VIDEO ? 'videos' : 'images'}/${file.id}/download`);
 
 	if (r.status === 404) {
 		toast({
@@ -78,27 +94,15 @@ export const downloadClientImageHandler = async (file: ImageWithFolder | VideoWi
 	saveAs(await r.blob(), `${file.name}.${file.extension}`);
 }
 
-export const downloadClientFolder = async (folder: Folder | FolderWithImages | FolderWithVideos, t: any, shareToken?: string, tokenType?: "accessToken" | "personAccessToken", hashPinCode?: string) => {
-	let folderWithImagesAndVideos: FolderWithImages & FolderWithVideos;
-	if (!('images' in folder) || !('videos' in folder)) {
-		const r = await getFolderFull(folder.id, shareToken, tokenType, hashPinCode);
-
-		if (r.error || !r.folder) {
-			toast({
-				title: "Error",
-				description: r.error,
-				variant: "destructive"
-			});
-			return;
-		}
-
-		folderWithImagesAndVideos = r.folder;
-	} else {
-		folderWithImagesAndVideos = folder as FolderWithImages & FolderWithVideos;
-	}
+export const downloadClientFiles = async (translations: (key: string, params?: Record<string, string | number>) => string, files: FileWithFolder[], title: string, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashPinCode?: string | null) => {
+	const zip = new JSZip();
+	const totalFiles = files.length;
+	const totalSizes = files.reduce((acc, file) => acc + file.size, 0);
+	console.log("Total sizes", totalSizes);
+	let downloadedSize = 0;
 
 	sonnerToast(
-		<div className="w-full">{ t('ongoing.title') }</div>,
+		<div className="w-full">{translations('ongoing.title', { name: title })}</div>,
 		{
 			id: "download-progress-toast",
 			duration: Infinity,
@@ -107,105 +111,110 @@ export const downloadClientFolder = async (folder: Folder | FolderWithImages | F
 				title: "w-full"
 			},
 			description: <div className="w-full">
-				{ t('ongoing.description') }
+				<p className="flex justify-between items-center gap-2 relative">
+					<span className="flex-1 truncate">{translations('ongoing.description.name', { name: `${files[0].name}.${files[0].extension}` })}</span>
+					<span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> {translations('ongoing.description.progress', { currentPercentage: 0, count: 1, total: totalFiles })}</span>
+				</p>
 				<Progress value={0} className="w-full mt-2" />
 			</div>,
 			dismissible: false
 		}
 	)
 
-	const zip = new JSZip();
-	const totalFiles = folderWithImagesAndVideos.images.length + folderWithImagesAndVideos.videos.length;
+	for (let i = 0; i < files.length; i++) {
+		const file = files[i];
 
-	for (let i = 0; i < folderWithImagesAndVideos.images.length; i++) {
-		const image = folderWithImagesAndVideos.images[i];
-		const r = await fetch(`/api/folders/${folder.id}/images/${image.id}/download`);
+		const axiosConfig: AxiosRequestConfig = {
+			responseType: "blob",
+			onDownloadProgress: (progressEvent) => {
+				if (progressEvent.total) {
+					sonnerToast(
+						<div className="w-full">{translations('ongoing.title', { name: title })}</div>,
+						{
+							id: "download-progress-toast",
+							description: <div className="w-full">
+								<p className="flex justify-between items-center gap-2 relative">
+									<span className="flex-1 truncate">{translations('ongoing.description.name', { name: `${file.name}.${file.extension}` })}</span>
+									<span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> {translations('ongoing.description.progress', { currentPercentage: (progressEvent.loaded / progressEvent.total * 100).toFixed(2), count: i + 1, total: totalFiles })}</span>
+								</p>
+								<Progress value={(downloadedSize + progressEvent.loaded) / totalSizes * 100} className="w-full mt-2" />
+							</div>,
+						}
+					)
+				}
+			},
+		};
 
-		const buffer = await r.arrayBuffer();
+		const signedUrl = await fetch(`/api/folders/${file.folderId}/${file.type === FileType.VIDEO ? 'videos' : 'images'}/${file.id}/download-url?share=${shareToken}&h=${hashPinCode}&t=${tokenType === "personAccessToken" ? "p" : "a"}`);
+		const signedUrlData = await signedUrl.json();
+		const r = await axios.get(signedUrlData.url, axiosConfig);
 
-		zip.file(`${image.name}-${image.createdAt.getTime()}.${image.extension}`, buffer);
+		const buffer = await r.data.arrayBuffer();
 
-		sonnerToast(
-			<div className="w-full">{ t('ongoing.title') }</div>,
-			{
-				id: "download-progress-toast",
-				description: <div className="w-full">
-					{ t('ongoing.description') }
-					<Progress value={(i + 1) / totalFiles * 100} className="w-full mt-2" />
-				</div>
-			}
-		)
-	}
-
-	for (let i = 0; i < folderWithImagesAndVideos.videos.length; i++) {
-		const video = folderWithImagesAndVideos.videos[i];
-		const r = await fetch(`/api/folders/${folder.id}/videos/${video.id}/download`);
-
-		const buffer = await r.arrayBuffer();
-
-		zip.file(`${video.name}-${video.createdAt.getTime()}.${video.extension}`, buffer);
-
-		sonnerToast(
-			<div className="w-full">{ t('ongoing.title') }</div>,
-			{
-				id: "download-progress-toast",
-				description: <div className="w-full">
-					{ t('ongoing.description') }
-					<Progress value={(i + 1) / totalFiles * 100} className="w-full mt-2" />
-				</div>
-			}
-		)
+		zip.file(`${file.name}-${file.createdAt.getTime()}.${file.extension}`, buffer);
+		downloadedSize += buffer.byteLength;
 	}
 
 	const zipData = await zip.generateAsync({ type: "blob" });
 
-	setTimeout(() => {
-		sonnerToast.dismiss("download-progress-toast");
-	}, 1000);
+	sonnerToast(
+		<div className="w-full">{translations('success.title', { name: title })}</div>,
+		{
+			id: "download-progress-toast",
+			duration: 5000,
+			classNames: {
+				content: "w-full",
+				title: "w-full"
+			},
+			description: <div className="w-full">
+				{translations('success.description', { name: title })}
+				<Progress value={100} className="w-full mt-2" />
+			</div>,
+			dismissible: true
+		}
+	)
 
-	sonnerToast.success(t('success', { name: folder.name }));
-
-	saveAs(zipData, `${folder.name}.zip`);
+	saveAs(zipData, `${title}.zip`);
 }
 
-export const getSortedFolderContent = (folderContent: FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments, sort: ImagesSortMethod): FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments => {
+export const getSortedFolderContent = (folderContent: FolderWithFilesWithFolderAndComments, sort: ImagesSortMethod): FolderWithFilesWithFolderAndComments => {
 	switch (sort) {
 		case ImagesSortMethod.NameAsc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => a.name.localeCompare(b.name) || a.createdAt.getTime() - b.createdAt.getTime())
+				files: folderContent.files.sort((a, b) => a.name.localeCompare(b.name) || a.createdAt.getTime() - b.createdAt.getTime())
 			}
 		case ImagesSortMethod.NameDesc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => b.name.localeCompare(a.name) || a.createdAt.getTime() - b.createdAt.getTime())
+				files: folderContent.files.sort((a, b) => b.name.localeCompare(a.name) || a.createdAt.getTime() - b.createdAt.getTime())
 			}
 		case ImagesSortMethod.SizeAsc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => a.size - b.size || a.name.localeCompare(b.name))
+				files: folderContent.files.sort((a, b) => a.size - b.size || a.name.localeCompare(b.name))
 			}
 		case ImagesSortMethod.SizeDesc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => b.size - a.size || a.name.localeCompare(b.name))
+				files: folderContent.files.sort((a, b) => b.size - a.size || a.name.localeCompare(b.name))
 			}
 		case ImagesSortMethod.DateAsc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime() || a.name.localeCompare(b.name))
+				files: folderContent.files.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime() || a.name.localeCompare(b.name))
 			}
 		case ImagesSortMethod.DateDesc:
 			return {
 				...folderContent,
-				images: folderContent.images.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime() || a.name.localeCompare(b.name))
+				files: folderContent.files.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime() || a.name.localeCompare(b.name))
 			}
 		default:
 			return folderContent;
 	}
 }
 
-export const getSortedImagesVideosContent = (arr: (Image | Video)[], sort: ImagesSortMethod): (Image | Video)[] => {
+export const getSortedImagesVideosContent = (arr: FileWithFolder[], sort: ImagesSortMethod): FileWithFolder[] => {
 	switch (sort) {
 		case ImagesSortMethod.NameAsc:
 			return arr.sort((a, b) => a.name.localeCompare(b.name) || a.createdAt.getTime() - b.createdAt.getTime())
@@ -219,149 +228,15 @@ export const getSortedImagesVideosContent = (arr: (Image | Video)[], sort: Image
 			return arr.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime() || a.name.localeCompare(b.name))
 		case ImagesSortMethod.DateDesc:
 			return arr.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime() || a.name.localeCompare(b.name))
+		case ImagesSortMethod.PositionAsc:
+			return arr.sort((a, b) => a.position - b.position)
+		case ImagesSortMethod.PositionDesc:
+			return arr.sort((a, b) => b.position - a.position)
 		default:
 			return arr;
 	}
 }
 
-export const validateShareToken = async (folderId: string, token: string, type: "accessToken" | "personAccessToken", hashedPinCode?: string | null): Promise<{ error: string | null, folder: (FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments & FolderWithAccessToken) | null, permission?: FolderTokenPermission }> => {
-	let accessToken;
-	if (type === "accessToken") {
-		accessToken = await prisma.accessToken.findUnique({
-			where: {
-				token: token,
-				folderId: folderId,
-				expires: {
-					gte: new Date()
-				}
-			},
-			include: {
-				folder: {
-					include: {
-						images: {
-							include: {
-								folder: true,
-								comments: { include: { createdBy: true } }
-							}
-						},
-						videos: {
-							include: {
-								folder: true,
-								comments: { include: { createdBy: true } }
-							}
-						},
-						createdBy: true
-					}
-				}
-			},
-			omit: {
-				pinCode: false
-			}
-		});
-	} else if (type === "personAccessToken") {
-		accessToken = await prisma.personAccessToken.findUnique({
-			where: {
-				token: token,
-				folderId: folderId,
-				expires: {
-					gte: new Date()
-				}
-			},
-			include: {
-				folder: {
-					include: {
-						images: {
-							include: {
-								folder: true,
-								comments: { include: { createdBy: true } }
-							}
-						},
-						videos: {
-							include: {
-								folder: true,
-								comments: { include: { createdBy: true } }
-							}
-						},
-						createdBy: true
-					}
-				}
-			},
-			omit: {
-				pinCode: false
-			}
-		});
-	} else {
-		return { error: "invalid-token-type", folder: null };
-	}
-
-	if (!accessToken) {
-		return { error: "invalid-token", folder: null };
-	}
-
-	if (accessToken.locked && !hashedPinCode) {
-		return { error: "code-needed", folder: null };
-	}
-
-	if (accessToken.locked) {
-		if (!hashedPinCode) {
-			return { error: "wrong-pin", folder: null };
-		}
-
-		const match = bcrypt.compareSync(accessToken.pinCode as string, hashedPinCode);
-
-		if (!match) {
-			return { error: "wrong-pin", folder: null };
-		}
-	}
-
-	return { error: null, folder: { ...accessToken.folder, AccessToken: [] }, permission: accessToken.permission };
-}
-
-export const getFolderFullFromAccessToken = async (folderId: string, token: string, type: "accessToken" | "personAccessToken"):
-	Promise<{ error: string | null, folder: (FolderWithImagesWithFolderAndComments & FolderWithCreatedBy) | null }> => {
-	let accessToken;
-
-	if (type === "accessToken") {
-		accessToken = await prisma.accessToken.findUnique({
-			where: {
-				token: token,
-				folderId: folderId,
-				expires: {
-					gte: new Date()
-				}
-			},
-			include: {
-				folder: { include: { images: { include: { folder: true, comments: { include: { createdBy: true } } } }, createdBy: true } }
-			}
-		});
-	} else if (type === "personAccessToken") {
-		accessToken = await prisma.personAccessToken.findUnique({
-			where: {
-				token: token,
-				folderId: folderId,
-				expires: {
-					gte: new Date()
-				}
-			},
-			include: {
-				folder: { include: { images: { include: { folder: true, comments: { include: { createdBy: true } } } }, createdBy: true } }
-			}
-		});
-	} else {
-		return { error: "invalid-token-type", folder: null };
-	}
-
-	if (!accessToken) {
-		return { error: "invalid-token", folder: null };
-	}
-
-	return { error: null, folder: accessToken.folder };
-}
-
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
-}
-
-export function computeUsedStorage(folders: FolderWithImages[]): number {
-	return folders.reduce((acc, folder) => acc + folder.images.reduce((acc, image) => acc + image.size, 0), 0)
 }

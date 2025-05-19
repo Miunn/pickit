@@ -9,39 +9,6 @@ import { getCurrentSession } from "@/lib/session";
 import ShareFolderTemplate from "@/components/emails/ShareFolderTemplate";
 import { render } from "@react-email/components";
 
-export async function getPersonsAccessTokens(): Promise<{
-    error: string | null,
-    personAccessTokens: PersonAccessTokenWithFolder[]
-}> {
-    const { user } = await getCurrentSession();
-
-    if (!user) {
-        return { error: "unauthorized", personAccessTokens: [] }
-    }
-
-    const personAccessTokens = await prisma.personAccessToken.findMany({
-        where: {
-            folder: {
-                createdBy: {
-                    id: user.id
-                }
-            }
-        },
-        include: {
-            folder: true
-        },
-        orderBy: [
-            {
-                folder: {
-                    name: "asc"
-                }
-            }
-        ]
-    });
-
-    return { error: null, personAccessTokens }
-}
-
 export async function createNewPersonAccessToken(folderId: string, target: string, permission: FolderTokenPermission, expiryDate: Date): Promise<{
     error: string | null,
     personAccessToken?: PersonAccessToken
@@ -123,8 +90,8 @@ export async function createMultiplePersonAccessTokens(folderId: string, data: {
 
     await sendShareFolderEmail(data.map((d, i) => ({ 
         email: d.email, 
-        link: `${process.env.APP_URL}/app/folders/${folderId}?share=${tokens[i]}&t=p`, 
-        locked: false,
+        link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folderId}?share=${tokens[i]}&t=p`, 
+        locked: d.pinCode ? true : false,
         message: message
     })), user.name!, folder.name)
     return { error: null }
@@ -300,7 +267,7 @@ export async function sendAgainPersonAccessToken(token: string) {
         return { error: "Token not found" }
     }
 
-    await sendShareFolderEmail([{ email: personAccessToken.email, link: `${process.env.APP_URL}/app/folders/${personAccessToken.folderId}?share=${token}&t=p`, locked: personAccessToken.locked }], user.name!, personAccessToken.folder.name)
+    await sendShareFolderEmail([{ email: personAccessToken.email, link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${personAccessToken.folderId}?share=${token}&t=p`, locked: personAccessToken.locked }], user.name!, personAccessToken.folder.name)
 
     return { error: null }
 }

@@ -134,7 +134,7 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
         },
         cell: ({ row }) => {
             const t = useTranslations("dataTables.users.columns.usedStorage");
-            const usedStorage: string = formatBytes(row.getValue("usedStorage"));
+            const usedStorage: string = formatBytes(Number(row.getValue("usedStorage")));
             return <p>{t('count', { count: usedStorage })}</p>
         }
     },

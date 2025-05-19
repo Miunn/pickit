@@ -34,7 +34,7 @@ import { unlockAccessToken } from "@/actions/accessTokens";
 import LockTokenDialog from "./LockTokenDialog";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "../ui/input-otp";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 
 export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWithAccessToken, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
@@ -171,7 +171,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                 }
                             </Label>
                             <Input className="hidden sm:block" placeholder={t('links.link.placeholder')} disabled={true}
-                                value={`${typeof window !== 'undefined' ? window.location.origin : process.env.APP_URL}/app/folders/${folder.id}?share=${token.token}`} />
+                                value={`${typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folder.id}?share=${token.token}`} />
                             <div className="flex items-center gap-2">
                                 {token.locked
                                     ? <Button variant={"outline"} size={"icon"} onClick={() => unlockAccessToken(token.id)}><Lock className="w-4 h-4" /></Button>
@@ -181,7 +181,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                                         setOpenLockToken(true);
                                     }}><Unlock className="w-4 h-4" /></Button>
                                 }
-                                <Button onClick={() => copyToClipboard(`${typeof window !== 'undefined' ? window.location.origin : process.env.APP_URL}/app/folders/${folder.id}?share=${token.token}`)} className="text-start flex-1 sm:flex-none">
+                                <Button onClick={() => copyToClipboard(`${typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folder.id}?share=${token.token}`)} className="text-start flex-1 sm:flex-none">
                                     {t('links.link.copy')}
                                 </Button>
                             </div>

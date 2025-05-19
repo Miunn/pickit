@@ -1,6 +1,6 @@
 "use server"
 
-import { RequestPasswordResetFormSchema, UserLight } from "@/lib/definitions";
+import { RequestPasswordResetFormSchema } from "@/lib/definitions";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import * as bcrypt from "bcryptjs";
@@ -12,42 +12,6 @@ import { render } from "@react-email/components";
 import VerifyEmail from "@/components/emails/VerifyEmail";
 import ResetPasswordTemplate from "@/components/emails/ResetPasswordTemplate";
 import { z } from "zod";
-
-export default async function getMe(): Promise<{
-    error: string | null,
-    user: UserLight | null
-}> {
-    const { user } = await getCurrentSession();
-
-    if (!user) {
-        return { error: "You must be logged in to fetch user info", user: null };
-    }
-
-    const userLight = await prisma.user.findUnique({
-        where: {
-            id: user.id
-        },
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            emailVerified: true,
-            emailVerificationDeadline: true,
-            role: true,
-            image: true,
-            usedStorage: true,
-            maxStorage: true,
-            createdAt: true,
-            updatedAt: true
-        }
-    });
-
-    if (!userLight) {
-        return { error: "User not found", user: null };
-    }
-
-    return { error: null, user: userLight };
-}
 
 export async function updateUser(id: string, name?: string, email?: string) {
     const { user } = await getCurrentSession();
@@ -192,29 +156,6 @@ export async function changePassword(id: string, oldPassword: string, newPasswor
 
     revalidatePath("/app/account");
     return { error: null };
-}
-
-export async function getUserVerificationRequest(id: string): Promise<{
-    error: string | null,
-    token: VerifyEmailRequest | null,
-}> {
-    const { user } = await getCurrentSession();
-
-    if (!user) {
-        return { error: "You must be logged in to fetch user info", token: null };
-    }
-
-    if (user.id !== id) {
-        return { error: "You can't retreive another user's info", token: null };
-    }
-
-    const tokenData = await prisma.verifyEmailRequest.findFirst({
-        where: {
-            userId: id
-        }
-    });
-
-    return { error: null, token: tokenData };
 }
 
 export async function verifyAccount(token: string): Promise<{

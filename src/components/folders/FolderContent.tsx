@@ -1,27 +1,37 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
-import { ArrowDown, ArrowUp, Download, LayoutGrid, List, MoreHorizontal } from "lucide-react";
+import { ArrowDown, ArrowUp, Download, LayoutGrid, List, MoreHorizontal, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { UploadImagesDialog } from "@/components/images/UploadImagesDialog";
-import { ImagesGrid } from "@/components/images/ImagesGrid";
+import { UploadImagesDialog } from "@/components/images/upload/UploadImagesDialog";
+import { ImagesGrid } from "@/components/images/views/grid/ImagesGrid";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
-import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithImagesWithFolderAndComments, FolderWithVideosWithFolderAndComments } from "@/lib/definitions";
 import SortImages, { ImagesSortMethod } from "./SortImages";
 import { useQueryState } from 'nuqs'
-import { downloadClientFolder } from "@/lib/utils";
+import { downloadClientFiles } from "@/lib/utils";
 import ViewSelector, { ViewState } from "./ViewSelector";
-import ImagesList from "../images/ImagesList";
+import ImagesList from "../images/views/list/ImagesList";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { useState } from "react";
+import EditDescriptionDialog from "./EditDescriptionDialog";
+import { useSearchParams } from "next/navigation";
+import { useFolderContext } from "@/context/FolderContext";
+import { useFilesContext } from "@/context/FilesContext";
 
 export interface FolderContentProps {
-    folder: FolderWithCreatedBy & FolderWithImagesWithFolderAndComments & FolderWithVideosWithFolderAndComments & FolderWithAccessToken;
     defaultView?: ViewState;
     isGuest?: boolean;
 }
 
-export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentProps) => {
+export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
+    const searchParams = useSearchParams();
+    const shareToken = searchParams.get("share");
+    const tokenType = searchParams.get("t");
+    const hashPinCode = searchParams.get("h");
+
+    const { folder } = useFolderContext();
+    const { files } = useFilesContext();
+
     const t = useTranslations("folders");
     const [viewState, setViewState] = useQueryState<ViewState>('view', {
         defaultValue: defaultView || ViewState.Grid,
@@ -37,7 +47,7 @@ export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentPro
         }
     });
     const [sortState, setSortState] = useQueryState<ImagesSortMethod>('sort', {
-        defaultValue: ImagesSortMethod.DateDesc,
+        defaultValue: ImagesSortMethod.PositionAsc,
         parse: (v) => {
             switch (v) {
                 case "name-asc":
@@ -52,27 +62,36 @@ export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentPro
                     return ImagesSortMethod.DateAsc;
                 case "date-desc":
                     return ImagesSortMethod.DateDesc;
+                case "position-asc":
+                    return ImagesSortMethod.PositionAsc;
+                case "position-desc":
+                    return ImagesSortMethod.PositionDesc;
                 default:
-                    return ImagesSortMethod.DateDesc;
+                    return ImagesSortMethod.PositionAsc;
             }
         }
     });
 
     const [openUpload, setOpenUpload] = useState(false);
     const [openShare, setOpenShare] = useState(false);
+    const [openEditDescription, setOpenEditDescription] = useState(false);
 
-    const downloadT = useTranslations("folders.download");
+    const downloadT = useTranslations("components.download");
 
     return (
         <div>
             <h3 className={"mb-2 flex justify-between items-center"}>
                 <p className="font-semibold">{folder.name} {
                     isGuest
-                        ? <span className="font-normal text-sm">- Shared by {folder.createdBy.name}</span>
+                        ? <span className="font-normal text-sm">- {t('sharedBy', { name: folder.createdBy.name })}</span>
                         : null
                 }</p>
 
-                <div className={"hidden lg:flex gap-4"}>
+                <div className={"hidden xl:flex gap-4"}>
+                    {!folder.description
+                        ? <Button variant="outline" onClick={() => setOpenEditDescription(true)}><Pencil className={"size-4 mr-2"} /> {t('addDescription')}</Button>
+                        : null
+                    }
                     <ViewSelector viewState={viewState} setViewState={setViewState} />
                     {viewState === ViewState.Grid
                         ? <SortImages sortState={sortState} setSortState={setSortState} />
@@ -82,9 +101,40 @@ export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentPro
                         ? <UploadImagesDialog folderId={folder.id} />
                         : null}
                     {!!!isGuest ? <ShareFolderDialog folder={folder} /> : null}
-                    <Button variant="outline" onClick={() => downloadClientFolder(folder, downloadT)}>
+                    <Button variant="outline" onClick={() => downloadClientFiles(downloadT, files, folder.name, shareToken, tokenType === "accessToken" ? "accessToken" : tokenType === "personAccessToken" ? "personAccessToken" : null, hashPinCode)}>
                         <Download className={"mr-2"} /> {t('actions.download')}
                     </Button>
+                </div>
+                <div className="hidden lg:flex xl:hidden gap-4">
+                    <ViewSelector viewState={viewState} setViewState={setViewState} />
+                    {viewState === ViewState.Grid
+                        ? <SortImages sortState={sortState} setSortState={setSortState} />
+                        : null
+                    }
+                    {!!!isGuest
+                        ? <UploadImagesDialog folderId={folder.id} />
+                        : null}
+                    <DropdownMenu modal={false}>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size={"icon"}>
+                                <MoreHorizontal className="w-4 h-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            {!folder.description
+                                ? <DropdownMenuItem onClick={() => setOpenEditDescription(true)}>{t('addDescription')}</DropdownMenuItem>
+                                : null
+                            }
+                            {!!!isGuest
+                                ? <DropdownMenuItem onClick={() => setOpenShare(true)}>
+                                    {t('share.label')}
+                                </DropdownMenuItem>
+                                : null}
+                            <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, files, folder.name, shareToken, tokenType === "accessToken" ? "accessToken" : tokenType === "personAccessToken" ? "personAccessToken" : null, hashPinCode)}>
+                                {t('download.label')}
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
                 <DropdownMenu modal={false}>
                     <DropdownMenuTrigger className="lg:hidden">
@@ -176,19 +226,20 @@ export const FolderContent = ({ folder, defaultView, isGuest }: FolderContentPro
                                 {t('share.label')}
                             </DropdownMenuItem>
                             : null}
-                        <DropdownMenuItem onClick={() => downloadClientFolder(folder, downloadT)}>
+                        <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, files, folder.name, shareToken, tokenType === "accessToken" ? "accessToken" : tokenType === "personAccessToken" ? "personAccessToken" : null, hashPinCode)}>
                             {t('download.label')}
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
+                <EditDescriptionDialog open={openEditDescription} setOpen={setOpenEditDescription} folder={folder} />
                 <UploadImagesDialog open={openUpload} setOpen={setOpenUpload} folderId={folder.id} />
                 <ShareFolderDialog open={openShare} setOpen={setOpenShare} folder={folder} />
             </h3>
 
             <div className="flex-1 overflow-auto">
                 {viewState === ViewState.List
-                    ? <ImagesList folder={folder} />
-                    : <ImagesGrid folder={folder} sortState={sortState} />
+                    ? <ImagesList />
+                    : <ImagesGrid sortState={sortState} />
                 }
             </div>
         </div>

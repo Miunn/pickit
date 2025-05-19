@@ -1,8 +1,57 @@
 {
-  "DashboardPage": {
-    "newFolder": "New folder",
-    "uploadImages": "Upload",
-    "manageLinks": "Manage links"
+  "metadata": {
+    "landing": {
+      "title": "Echomori - Save moments of life",
+      "description": "Save your memories and share them to your loved ones, don't let them fade away"
+    },
+    "signin": {
+      "title": "Sign in - Echomori",
+      "description": "Sign in to your Echomori account"
+    },
+    "signup": {
+      "title": "Sign up - Echomori",
+      "description": "Sign up to your Echomori account"
+    },
+    "verifyEmail": {
+      "title": "Verify email - Echomori",
+      "description": "Verify your email address to access your Echomori account"
+    },
+    "forgotPassword": {
+      "title": "Forgot password - Echomori",
+      "description": "Reset the password of your Echomori account"
+    },
+    "resetPassword": {
+      "title": "Reset password - Echomori",
+      "description": "Reset the password of your Echomori account"
+    },
+    "dashboard": {
+      "title": "Dashboard - Echomori",
+      "description": "Dashboard"
+    },
+    "folders": {
+      "title": "Folders - Echomori",
+      "description": "Folders"
+    },
+    "folder": {
+      "title": "{folderName} - Echomori",
+      "description": "Check hosted photos and videos from {folderName}",
+      "openGraph": {
+        "title": "{folderName} - Echomori",
+        "description": "Check hosted photos and videos from {folderName}"
+      }
+    },
+    "links": {
+      "title": "Links - Echomori",
+      "description": "Links"
+    },
+    "account": {
+      "title": "Account - Echomori",
+      "description": "Account"
+    },
+    "contact": {
+      "title": "Contact - Echomori",
+      "description": "Contact"
+    }
   },
   "auth": {
     "signInTab": "Login",
@@ -41,6 +90,7 @@
   "pages": {
     "landing": {
       "hero": {
+        "introduction": "Introducing Custom ordering of your files",
         "title": "Save moments of life",
         "description": "Save your memories and share them to your loved ones, don't let them fade away",
         "getStarted": "Get started",
@@ -140,6 +190,47 @@
       "title": "Echomori - Account",
       "headline": "Your account",
       "subtitle": "Manage your account settings"
+    },
+    "pricing": {
+      "title": "Choose a plan that's right for you",
+      "description": "A transparent subscription that you can always adjust later",
+      "getStarted": "Get started",
+      "monthlyLabel": "Monthly",
+      "yearlyLabel": "Yearly",
+      "monthly": "{price} / month",
+      "yearly": "{price} / year",
+      "cards": {
+        "free": {
+          "title": "Basic",
+          "description": "To save a few photos and videos",
+          "features": [
+            "5Go of storage",
+            "10 albums",
+            "20 sharing links"
+          ]
+        },
+        "efficient": {
+          "title": "Efficient",
+          "description": "Ideal for hobbyists",
+          "features": [
+            "50Go of storage",
+            "100 albums",
+            "200 sharing links",
+            "Expiration date",
+            "Password protection"
+          ]
+        },
+        "pro": {
+          "title": "Pro",
+          "description": "When you need to scale your albums",
+          "features": [
+            "Everything in Efficient plus",
+            "1To of storage",
+            "1000 albums",
+            "500 sharing links"
+          ]
+        }
+      }
     }
   },
   "components": {
@@ -382,17 +473,25 @@
       },
       "carousel": {
         "slide": "Slide {current} of {total}",
+        "noDescription": "No description",
         "actions": {
+          "expand": "Expand",
+          "openInNew": "Open in new",
+          "download": "Download",
           "copy": {
-            "title": "Image copied",
-            "description": "Image has been copied to your clipboard",
+            "title": "Copy",
+            "success": {
+              "title": "Image copied",
+              "description": "Image has been copied to your clipboard"
+            },
             "errors": {
               "video-copy-unavailable": {
                 "title": "Impossible to copy video",
                 "description": "Video copying is not available. Please use the download button to download the video"
               }
             }
-          }
+          },
+          "metadata": "Metadata"
         }
       },
       "comments": {
@@ -421,6 +520,12 @@
         "privacy": {
           "trigger": "How we handle your comments ?",
           "content": "If you are logged in, your name will appear above your comment.<br />If you are not logged in but this folder has been shared with you by e-mail, the first part of your e-mail address will appear above your comment.<br />If you are not logged in and this file has been shared with you via a link, your comment will be anonymous.<br /><br />Comments are only shared with people who have access to the folder."
+        },
+        "comment": {
+          "dropdown": {
+            "delete": "Delete",
+            "edit": "Edit"
+          }
         }
       },
       "uploadImagesForm": {
@@ -428,6 +533,7 @@
         "ongoing": {
           "title": "Upload in progress"
         },
+        "success": "{count, plural, one {# file uploaded} other {# files uploaded}} successfully",
         "actions": {
           "submit": "Upload",
           "submitting": "Uploading"
@@ -591,6 +697,24 @@
       "copyright": {
         "text": "© 2025 Echomori. All rights reserved."
       }
+    },
+    "download": {
+      "ongoing": {
+        "title": "{name} - Downloading",
+        "description": {
+          "name": "{name}",
+          "progress": "{currentPercentage}% - {count} / {total}"
+        }
+      },
+      "success": {
+        "title": "{name} - Downloaded",
+        "description": "{name} has been downloaded successfully"
+      }
+    },
+    "files": {
+      "likeButton": {
+        "cannotLike": "You must be logged in to like a file"
+      }
     }
   },
   "dialogs": {
@@ -613,6 +737,53 @@
         "success": {
           "title": "Folder's cover changed",
           "description": "The folder's cover has been changed successfully"
+        },
+        "slide": "Slide {current} of {total}"
+      },
+      "editDescription": {
+        "trigger": "Edit description",
+        "title": "Edit folder's description",
+        "description": "Change the description for {folder}",
+        "form": {
+          "description": {
+            "label": "Description",
+            "placeholder": "This is a description",
+            "description": "The description will be displayed next to the uploaded images and videos"
+          }
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Save",
+          "submitting": "Saving"
+        },
+        "success": {
+          "title": "Folder's description changed",
+          "description": "The folder's description has been changed successfully"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't change folder's description",
+            "description": "An unknown error happened while changing the folder's description"
+          }
+        }
+      },
+      "deleteDescription": {
+        "title": "Delete description",
+        "description": "Are you sure you want to delete the description for {name}? This action cannot be undone.",
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Delete",
+          "submitting": "Deleting..."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't delete description",
+            "description": "An unknown error happened while deleting the description"
+          }
+        },
+        "success": {
+          "title": "Description deleted",
+          "description": "The description has been deleted successfully"
         }
       },
       "properties": {
@@ -867,13 +1038,20 @@
           "label": "White balance"
         },
         "gps": {
+          "coordinates": {
+            "label": "GPS coordinates"
+          },
           "latitude": {
             "label": "Latitude"
           },
           "longitude": {
             "label": "Longitude"
+          },
+          "altitude": {
+            "label": "Altitude"
           }
-        }
+        },
+        "close": "Close"
       },
       "rename": {
         "trigger": "Rename",
@@ -950,7 +1128,7 @@
       "deleteMultiple": {
         "trigger": "Delete",
         "title": "Delete images",
-        "description": "Are you sure you want to delete {n} images ? This action cannot be undone.",
+        "description": "Are you sure you want to delete {n, plural, =1 {image} other {# images}} ? This action cannot be undone.",
         "actions": {
           "submit": "Delete",
           "submitting": "Deleting...",
@@ -965,6 +1143,55 @@
         "success": {
           "title": "Images deleted",
           "description": "{n, plural, one {# image} other {# images}} have been deleted successfully"
+        }
+      },
+      "editDescription": {
+        "title": "Edit Description",
+        "description": "Edit the description for {name}",
+        "form": {
+          "description": {
+            "label": "Description",
+            "placeholder": "Enter a description for this file",
+            "help": "Remember the context and what this {fileType} represents",
+            "fileType": {
+              "image": "image",
+              "video": "video"
+            }
+          }
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Save",
+          "submitting": "Saving..."
+        },
+        "success": {
+          "title": "Success",
+          "description": "Description updated successfully"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Error",
+            "description": "An error occurred while updating the description"
+          }
+        }
+      },
+      "deleteDescription": {
+        "title": "Delete Description",
+        "description": "Are you sure you want to delete the description for {name}? This action cannot be undone.",
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Delete",
+          "submitting": "Deleting..."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Can't delete description",
+            "description": "An unknown error happened while deleting the description"
+          }
+        },
+        "success": {
+          "title": "Description deleted",
+          "description": "The description has been deleted successfully"
         }
       }
     },
@@ -1081,6 +1308,53 @@
           "success": {
             "title": "User deleted",
             "description": "The user has been deleted successfully"
+          }
+        }
+      }
+    },
+    "comments": {
+      "delete": {
+        "title": "Delete comment",
+        "description": "Are you sure you want to delete this comment? This action cannot be undone.",
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Delete",
+          "submitting": "Deleting..."
+        },
+        "success": {
+          "title": "Comment deleted",
+          "description": "The comment has been successfully deleted."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Error",
+            "description": "An error occurred while deleting the comment."
+          }
+        }
+      },
+      "edit": {
+        "title": "Edit comment",
+        "description": "Edit your comment below.",
+        "content": {
+          "placeholder": "Write your comment here..."
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Save",
+          "submitting": "Saving..."
+        },
+        "success": {
+          "title": "Comment updated",
+          "description": "The comment has been successfully updated."
+        },
+        "errors": {
+          "empty": {
+            "title": "Empty comment",
+            "description": "Please write something in your comment."
+          },
+          "unknown": {
+            "title": "Error",
+            "description": "An error occurred while updating the comment."
           }
         }
       }
@@ -1327,7 +1601,9 @@
     }
   },
   "folders": {
+    "sharedBy": "Shared by {name}",
     "filesCount": "{count, plural, one {# file} other {# files}}",
+    "addDescription": "Add a description",
     "page": {
       "title": "Folders",
       "subtitle": "Your created folders"
@@ -1392,7 +1668,7 @@
       "label": "Download",
       "ongoing": {
         "title": "Download started",
-        "description": "Your folder is being downloaded. Please wait while we prepare the files for you."
+        "description": "{name} is being downloaded. Please wait while we prepare the files for you."
       },
       "success": "{name} downloaded successfully",
       "empty": "There is no images in this folder to download"
@@ -1511,6 +1787,11 @@
     "page": {
       "title": "Manage your access links"
     }
+  },
+  "invalidToken": {
+    "title": "Invalid or expired token",
+    "description": "It seems this link doesn't lead to a valid folder. Please check the link or contact the owner.",
+    "goBack": "Go back to the home page"
   },
   "NotFoundPage": {
     "description": "This page could not be found"

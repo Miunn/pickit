@@ -16,6 +16,7 @@ datasource db {
 enum FolderTokenPermission {
   READ
   WRITE
+  ADMIN
 }
 
 enum Role {
@@ -25,17 +26,24 @@ enum Role {
 
 enum PasswordResetRequestStatus {
   PENDING
+  USED
+  EXPIRED
   SUCCESS
   ERROR
+}
+
+enum FileType {
+  IMAGE
+  VIDEO
 }
 
 model Folder {
   id                String              @id @default(cuid())
   name              String
-  images            Image[]             @relation("FolderImages")
-  videos            Video[]             @relation("FolderVideos")
+  description       String?
+  files             File[]              @relation("FolderFiles")
   size              Int                 @default(0)
-  cover             Image?              @relation(fields: [coverId], references: [id])
+  cover             File?               @relation(fields: [coverId], references: [id])
   coverId           String?             @unique
   createdBy         User                @relation("UserFolders", fields: [createdById], references: [id], onDelete: Cascade)
   createdById       String
@@ -45,57 +53,66 @@ model Folder {
   PersonAccessToken PersonAccessToken[]
 }
 
-model Image {
-  id          String   @id @default(cuid())
-  name        String
-  size        Int
-  extension   String
-  width       Int
-  height      Int
-  type        String   @default("image")
-  folder      Folder   @relation("FolderImages", fields: [folderId], references: [id], onDelete: Cascade)
-  folderId    String
-  folderCover Folder?
-  createdBy   User     @relation("UserImages", fields: [createdById], references: [id], onDelete: Cascade)
-  createdById String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model File {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  size          Int
+  extension     String
+  width         Int      @default(0)
+  height        Int      @default(0)
+  duration      Int      @default(0)
+  thumbnail     String?
+  type          FileType @default(IMAGE)
+  position      Int      @default(0)
+  folder        Folder   @relation("FolderFiles", fields: [folderId], references: [id], onDelete: Cascade)
+  folderId      String
+  folderCover   Folder?
+  folderCoverId String?
+  createdBy     User     @relation("UserFiles", fields: [createdById], references: [id], onDelete: Cascade)
+  createdById   String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   comments Comment[]
-}
-
-model Video {
-  id          String   @id @default(cuid())
-  name        String
-  size        Int
-  extension   String
-  width       Int      @default(0)
-  height      Int      @default(0)
-  duration    Int      @default(0)
-  thumbnail   String?
-  type        String   @default("video")
-  folder      Folder   @relation("FolderVideos", fields: [folderId], references: [id], onDelete: Cascade)
-  folderId    String
-  createdBy   User     @relation("UserVideos", fields: [createdById], references: [id], onDelete: Cascade)
-  createdById String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  comments Comment[]
+  likes    FileLike[]
 }
 
 model Comment {
-  id          String   @id @default(cuid())
-  text        String
-  image       Image?   @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  video       Video?   @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  imageId     String?
-  videoId     String?
-  createdBy   User?    @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  id             String   @id @default(cuid())
+  text           String
+  file           File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  fileId         String
+  createdBy      User?    @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById    String?
+  createdByEmail String?
+  name           String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  likes CommentLike[]
+}
+
+model FileLike {
+  id        String   @id @default(cuid())
+  file      File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  fileId    String
+  createdBy User?     @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdById String?
-  name        String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdByEmail String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CommentLike {
+  id        String   @id @default(cuid())
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String
+  createdBy User?     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById String?
+  createdByEmail String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model AccessToken {
@@ -151,9 +168,10 @@ model User {
   passwordResetRequest PasswordResetRequest?
 
   folders  Folder[]  @relation("UserFolders")
-  images   Image[]   @relation("UserImages")
-  videos   Video[]   @relation("UserVideos")
+  files    File[]    @relation("UserFiles")
   comments Comment[]
+  likes    FileLike[]
+  commentLikes CommentLike[]
 }
 
 model VerifyEmailRequest {
@@ -166,8 +184,8 @@ model VerifyEmailRequest {
 }
 
 model PasswordResetRequest {
-  id      String   @id @default(cuid())
-  token   String   @unique @default(uuid(4))
+  id      String                     @id @default(cuid())
+  token   String                     @unique @default(uuid(4))
   expires DateTime
   status  PasswordResetRequestStatus @default(PENDING)
 

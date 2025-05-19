@@ -26,12 +26,12 @@ import {
 } from "@/components/ui/command"
 import NextLink from "next/link"
 import { useTranslations } from "next-intl"
-import { ImageLightWithFolderName, LightFolder } from "@/lib/definitions"
+import { FileLightWithFolderName, LightFolder } from "@/lib/definitions"
 import { useRouter } from "next/navigation"
 import { SignOut } from "@/actions/authActions"
 import CreateFolderDialog from "./folders/CreateFolderDialog"
 
-export function CommandSearch({ folders, images }: { folders: LightFolder[], images: ImageLightWithFolderName[] }) {
+export function CommandSearch({ folders, files }: { folders: LightFolder[], files: FileLightWithFolderName[] }) {
     const router = useRouter();
     const [open, setOpen] = React.useState(false);
 
@@ -101,14 +101,14 @@ export function CommandSearch({ folders, images }: { folders: LightFolder[], ima
                             </CommandItem>
                         ))}
                     </CommandGroup>
-                    {images.length > 0
+                    {files.length > 0
                         ? <>
                             <CommandSeparator />
                             <CommandGroup heading={t('sections.images')}>
-                                {images.map((image) => (
-                                    <CommandItem key={image.id} value={`${image.name} - ${image.id}`} onSelect={() => runCommand(() => router.push(`/app/folders/${image.folder.id}`))}>
+                                {files.map((file) => (
+                                    <CommandItem key={file.id} value={`${file.name} - ${file.id}`} onSelect={() => runCommand(() => router.push(`/app/folders/${file.folder.id}`))}>
                                         <Image />
-                                        <span>{image.folder.name} - {image.name}</span>
+                                        <span>{file.folder.name} - {file.name}</span>
                                     </CommandItem>
                                 ))}
                             </CommandGroup>

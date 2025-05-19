@@ -1,8 +1,57 @@
 {
-  "app": {
-    "newFolder": "New folder",
-    "uploadImages": "Upload",
-    "manageLinks": "Manage links"
+  "metadata": {
+    "landing": {
+      "title": "Echomori - Sauvegardez des moments de vie",
+      "description": "Sauvegardez vos photos, organisez vos albums et partagez vos souvenirs. Ne laissez plus aucun souvenir s'échapper"
+    },
+    "signin": {
+      "title": "Connexion - Echomori",
+      "description": "Connexion à votre compte Echomori"
+    },
+    "signup": {
+      "title": "Création de compte - Echomori",
+      "description": "Création de compte Echomori"
+    },
+    "verifyEmail": {
+      "title": "Vérification de l'adresse mail - Echomori",
+      "description": "Vérifier votre adresse mail pour accéder à votre compte Echomori"
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié - Echomori",
+      "description": "Réinitialiser le mot de passe de votre compte Echomori"
+    },
+    "resetPassword": {
+      "title": "Réinitialiser le mot de passe - Echomori",
+      "description": "Réinitialiser le mot de passe de votre compte Echomori"
+    },
+    "dashboard": {
+      "title": "Tableau de bord - Echomori",
+      "description": "Tableau de bord"
+    },
+    "folders": {
+      "title": "Dossiers - Echomori",
+      "description": "Dossiers"
+    },
+    "folder": {
+      "title": "{folderName} - Echomori",
+      "description": "Gérer votre dossier",
+      "openGraph": {
+        "title": "{folderName} - Echomori",
+        "description": "Voir les photos et vidéos hébergées dans {folderName}"
+      }
+    },
+    "links": {
+      "title": "Liens - Echomori",
+      "description": "Liens"
+    },
+    "account": {
+      "title": "Compte - Echomori",
+      "description": "Compte"
+    },
+    "contact": {
+      "title": "Contact - Echomori",
+      "description": "Contact"
+    }
   },
   "auth": {
     "signInTab": "Se connecter",
@@ -41,6 +90,7 @@
   "pages": {
     "landing": {
       "hero": {
+        "introduction": "Introduction du tri personnalisé de vos fichiers",
         "title": "Sauvegardez des moments de vie",
         "description": "Sauvegardez vos photos, organisez vos albums et partagez vos souvenirs. Ne laissez plus aucun souvenir s'échapper",
         "getStarted": "Commencer",
@@ -140,6 +190,48 @@
       "title": "Echomori - Compte",
       "headline": "Votre compte",
       "subtitle": "Gérer les paramètres de votre compte"
+    },
+    "pricing": {
+      "title": "Choisissez un plan qui vous convient",
+      "description": "Un abonnement transparent que vous pouvez toujours ajustez plus tard",
+      "getStarted": "Commencer",
+      "monthlyLabel": "Mensuel",
+      "yearlyLabel": "Annuel",
+      "monthly": "/ mois",
+      "yearly": "/ an",
+      "cards": {
+        "free": {
+          "title": "Gratuit",
+          "description": "Pour sauvegarder quelques photos et vidéos",
+          "features": [
+            "5Go de stockage",
+            "10 albums",
+            "20 liens de partage",
+            "Gestion des liens de partage"
+          ]
+        },
+        "efficient": {
+          "title": "Efficient",
+          "description": "Idéal pour les hobbyistes",
+          "features": [
+            "100Go de stockage",
+            "100 albums",
+            "200 liens de partage",
+            "Expiration des liens",
+            "Protection par mot de passe"
+          ]
+        },
+        "pro": {
+          "title": "Pro",
+          "description": "Lorsque vous avez besoin de stocker plus de fichiers",
+          "features": [
+            "Tout dans Efficient plus",
+            "1To de stockage",
+            "1000 albums",
+            "500 liens de partage"
+          ]
+        }
+      }
     }
   },
   "components": {
@@ -345,7 +437,7 @@
       }
     },
     "fileUploader": {
-      "title": "Déplacer et déposer vos fichiers ici ou cliquez pour les télécharger",
+      "title": "Déplacer et déposer vos fichiers ici ou cliquez pour les importer",
       "dragActiveTitle": "Déposez vos fichiers ici",
       "description": "Vous pouvez télécharger {count, plural, one {un fichier} other {vos images}} jusqu'à {maxSize} {count, plural, one {} other {chacune}}",
       "remove": "Supprimer",
@@ -382,17 +474,25 @@
       },
       "carousel": {
         "slide": "Image {current} sur {total}",
+        "noDescription": "Aucune description",
         "actions": {
+          "expand": "Etendre",
+          "openInNew": "Ouvrir dans un nouvel onglet",
+          "download": "Télécharger",
           "copy": {
-            "title": "Image copiée",
-            "description": "L'image a été copiée dans votre presse-papiers",
+            "title": "Copier",
+            "success": {
+              "title": "Image copiée",
+              "description": "L'image a été copiée dans votre presse-papiers"
+            },
             "errors": {
               "video-copy-unavailable": {
                 "title": "Impossible to copy video",
                 "description": "Video copying is not available. Please use the download button to download the video"
               }
             }
-          }
+          },
+          "metadata": "Métadonnées"
         }
       },
       "comments": {
@@ -420,6 +520,12 @@
         "privacy": {
           "trigger": "Comment sont traités vos commentaires ?",
           "content": "Si vous êtes connecté, votre nom apparaitra au dessus de votre commentaire.<br />Si vous n'êtes pas connecté mais que ce dossier vous a été partagé par e-mail, la première partie de votre adresse e-mail apparaitra au dessus de votre commentaire.<br />Si vous n'êtes pas connecté et que ce dossier vous a été partagé par un lien, votre commentaire sera anonyme.<br /><br />Les commentaires ne sont partagés qu'aux personnes ayant accès au dossier."
+        },
+        "comment": {
+          "dropdown": {
+            "edit": "Modifier",
+            "delete": "Supprimer"
+          }
         }
       },
       "uploadImagesForm": {
@@ -427,6 +533,7 @@
         "ongoing": {
           "title": "Importation en cours"
         },
+        "success": "{count, plural, one {# fichier importé} other {# fichiers importés}} avec succès",
         "actions": {
           "submit": "Importer",
           "submitting": "Importation..."
@@ -590,6 +697,24 @@
       "copyright": {
         "text": "© 2025 Echomori. Tous droits réservés."
       }
+    },
+    "download": {
+      "ongoing": {
+        "title": "{name} - Téléchargement en cours",
+        "description": {
+          "name": "{name}",
+          "progress": "{currentPercentage}% - {count} / {total}"
+        }
+      },
+      "success": {
+        "title": "{name} - Téléchargement terminé",
+        "description": "{name} a été téléchargé avec succès"
+      }
+    },
+    "files": {
+      "likeButton": {
+        "cannotLike": "Vous devez être connecté pour aimer des fichiers"
+      }
     }
   },
   "dialogs": {
@@ -612,6 +737,53 @@
         "success": {
           "title": "Couverture du dossier mise à jour",
           "description": "La couverture du dossier a été mise à jour avec succès"
+        },
+        "slide": "Image {current} sur {total}"
+      },
+      "editDescription": {
+        "trigger": "Modifier la description",
+        "title": "Modifier la description du dossier",
+        "description": "Changez la description pour {folder}",
+        "form": {
+          "description": {
+            "label": "Description",
+            "placeholder": "Souvenirs du voyage en famille à Cancun pendant les vacances d'été 2025",
+            "description": "La description sera affichée à côté des images et vidéos importées"
+          }
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Enregistrer",
+          "submitting": "Enregistrement"
+        },
+        "success": {
+          "title": "Description du dossier modifiée",
+          "description": "La description du dossier a été modifiée avec succès"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de modifier la description du dossier",
+            "description": "Une erreur inconnue est survenue lors de la modification de la description du dossier"
+          }
+        }
+      },
+      "deleteDescription": {
+        "title": "Supprimer la description",
+        "description": "Êtes-vous sûr de vouloir supprimer la description de {name} ? Cette action est irréversible.",
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Supprimer",
+          "submitting": "Suppression..."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de supprimer la description",
+            "description": "Une erreur inconnue est survenue lors de la suppression de la description"
+          }
+        },
+        "success": {
+          "title": "Description supprimée",
+          "description": "La description a été supprimée avec succès"
         }
       },
       "create": {
@@ -866,13 +1038,20 @@
           "label": "Balance des blancs"
         },
         "gps": {
+          "coordinates": {
+            "label": "Coordonnées GPS"
+          },
           "latitude": {
             "label": "Latitude"
           },
           "longitude": {
             "label": "Longitude"
+          },
+          "altitude": {
+            "label": "Altitude"
           }
-        }
+        },
+        "close": "Fermer"
       },
       "rename": {
         "title": "Renommer l'image",
@@ -948,7 +1127,7 @@
       "deleteMultiple": {
         "trigger": "Supprimer",
         "title": "Supprimer les images",
-        "description": "Êtes-vous sûr de vouloir supprimer {n} images ? Cette action est irréversible.",
+        "description": "Êtes-vous sûr de vouloir supprimer {n, plural, =1 {image} other {# images}} ? Cette action est irréversible.",
         "actions": {
           "submit": "Supprimer",
           "submitting": "Suppression...",
@@ -963,6 +1142,55 @@
         "success": {
           "title": "Images supprimées",
           "description": "{n, plural, zero {aucune image n'a été supprimée} one {# image a été supprimée} other {# images ont été supprimées}} avec succès"
+        }
+      },
+      "editDescription": {
+        "title": "Modifier la description",
+        "description": "Modifier la description de {name}",
+        "form": {
+          "description": {
+            "label": "Description",
+            "placeholder": "Entrez une description pour ce fichier",
+            "help": "Rappelez-vous le contexte et ce que ce {fileType} représente",
+            "fileType": {
+              "image": "image",
+              "video": "vidéo"
+            }
+          }
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Enregistrer",
+          "submitting": "Enregistrement..."
+        },
+        "success": {
+          "title": "Succès",
+          "description": "Description mise à jour avec succès"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Erreur",
+            "description": "Une erreur s'est produite lors de la mise à jour de la description"
+          }
+        }
+      },
+      "deleteDescription": {
+        "title": "Supprimer la description",
+        "description": "Êtes-vous sûr de vouloir supprimer la description de {name} ? Cette action est irréversible.",
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Supprimer",
+          "submitting": "Suppression..."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de supprimer la description",
+            "description": "Une erreur inconnue est survenue lors de la suppression de la description"
+          }
+        },
+        "success": {
+          "title": "Description supprimée",
+          "description": "La description a été supprimée avec succès"
         }
       }
     },
@@ -1079,6 +1307,53 @@
           "success": {
             "title": "Utilisateur supprimé",
             "description": "L'utilisateur a été supprimé avec succès"
+          }
+        }
+      }
+    },
+    "comments": {
+      "delete": {
+        "title": "Supprimer le commentaire",
+        "description": "Êtes-vous sûr de vouloir supprimer ce commentaire ? Cette action est irréversible.",
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Supprimer",
+          "submitting": "Suppression en cours..."
+        },
+        "success": {
+          "title": "Commentaire supprimé",
+          "description": "Le commentaire a été supprimé avec succès."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Erreur",
+            "description": "Une erreur est survenue lors de la suppression du commentaire."
+          }
+        }
+      },
+      "edit": {
+        "title": "Modifier le commentaire",
+        "description": "Modifiez votre commentaire ci-dessous.",
+        "content": {
+          "placeholder": "Écrivez votre commentaire ici..."
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Enregistrer",
+          "submitting": "Enregistrement en cours..."
+        },
+        "success": {
+          "title": "Commentaire mis à jour",
+          "description": "Le commentaire a été mis à jour avec succès."
+        },
+        "errors": {
+          "empty": {
+            "title": "Commentaire vide",
+            "description": "Veuillez écrire quelque chose dans votre commentaire."
+          },
+          "unknown": {
+            "title": "Erreur",
+            "description": "Une erreur est survenue lors de la mise à jour du commentaire."
           }
         }
       }
@@ -1260,7 +1535,13 @@
           },
           "lock": "Vérouiller",
           "unlock": "Dévérouiller",
-          "delete": "Supprimer"
+          "delete": {
+            "label": "Supprimer",
+            "success": {
+              "title": "Lien supprimé",
+              "description": "Le lien a été supprimé avec succès"
+            }
+          }
         }
       },
       "actions": {
@@ -1319,7 +1600,9 @@
     }
   },
   "folders": {
+    "sharedBy": "Partagé par {name}",
     "filesCount": "{count, plural, =0 {Aucun fichier} =1 {# fichier} other {# fichiers}}",
+    "addDescription": "Ajouter une description",
     "page": {
       "title": "Folders",
       "subtitle": "Your created folders"
@@ -1445,7 +1728,7 @@
       "label": "Télécharger",
       "ongoing": {
         "title": "Téléchargement en cours",
-        "description": "Votre dossier est en train d'être téléchargé. Patientez quelques instants pendant que nous préparons votre archive."
+        "description": "{name} est en train d'être téléchargé. Patientez quelques instants pendant que nous préparons votre archive."
       },
       "success": "{name} a été téléchargé avec succès",
       "empty": "Ce dossier ne contient aucune image a télécharger"
@@ -1561,10 +1844,71 @@
       "deleteMultiple": {
         "trigger": "Supprimer",
         "title": "Supprimer les images",
-        "description": "Êtes-vous sûr de vouloir supprimer {n} images ? Cette actions est irréversible.",
-        "submit": "Supprimer",
-        "submitting": "Suppression...",
-        "cancel": "Annuler"
+        "description": "Êtes-vous sûr de vouloir supprimer {n} images ? Cette action est irréversible.",
+        "actions": {
+          "submit": "Supprimer",
+          "submitting": "Suppression...",
+          "cancel": "Annuler"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de supprimer les images",
+            "description": "Une erreur inconnue est survenue lors de la suppression des images"
+          }
+        },
+        "success": {
+          "title": "Images supprimées",
+          "description": "{n, plural, zero {aucune image n'a été supprimée} one {# image a été supprimée} other {# images ont été supprimées}} avec succès"
+        }
+      },
+      "editDescription": {
+        "title": "Modifier la description",
+        "description": "Modifier la description de {name}",
+        "form": {
+          "description": {
+            "label": "Description",
+            "placeholder": "Entrez une description pour ce fichier",
+            "help": "Rappelez-vous le contexte et ce que ce {fileType} représente",
+            "fileType": {
+              "image": "image",
+              "video": "vidéo"
+            }
+          }
+        },
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Enregistrer",
+          "submitting": "Enregistrement..."
+        },
+        "success": {
+          "title": "Succès",
+          "description": "Description mise à jour avec succès"
+        },
+        "errors": {
+          "unknown": {
+            "title": "Erreur",
+            "description": "Une erreur s'est produite lors de la mise à jour de la description"
+          }
+        }
+      },
+      "deleteDescription": {
+        "title": "Supprimer la description",
+        "description": "Êtes-vous sûr de vouloir supprimer la description de {name} ? Cette action est irréversible.",
+        "actions": {
+          "cancel": "Annuler",
+          "submit": "Supprimer",
+          "submitting": "Suppression..."
+        },
+        "errors": {
+          "unknown": {
+            "title": "Impossible de supprimer la description",
+            "description": "Une erreur inconnue est survenue lors de la suppression de la description"
+          }
+        },
+        "success": {
+          "title": "Description supprimée",
+          "description": "La description a été supprimée avec succès"
+        }
       }
     }
   },
@@ -1572,6 +1916,11 @@
     "page": {
       "title": "Gérer les liens d'accès"
     }
+  },
+  "invalidToken": {
+    "title": "Lien invalide ou expiré",
+    "description": "Il semble que ce lien ne mène pas à un dossier valide. Veuillez vérifier le lien ou contacter le propriétaire.",
+    "goBack": "Retour à la page d'accueil"
   },
   "NotFoundPage": {
     "description": "La page que vous cherchez n'existe pas ou a été déplacée."
