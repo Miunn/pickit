@@ -51,7 +51,7 @@ export default async function Image({ params, searchParams }: { params: { folder
             backgroundColor: '#ffffff'
         }}>
             <img 
-                src={`${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folderId}/images/${folder.cover.id}?${searchParams?.share ? `share=${searchParams.share}` : ""}${searchParams?.t ? `t=${searchParams.t}` : ""}${searchParams?.h ? `h=${searchParams.h}` : ""}`} 
+                src={`${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folderId}/images/${folder.cover.id}?${searchParams.share ? `share=${searchParams.share}` : ""}${searchParams.t ? `t=${searchParams.t}` : ""}${searchParams.h ? `h=${searchParams.h}` : ""}`} 
                 alt="Echomori"
                 style={{
                     width: `${size.width}px`,
