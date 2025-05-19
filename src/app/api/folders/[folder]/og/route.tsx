@@ -48,7 +48,7 @@ export async function GET(request: NextRequest, { params }: { params: { folder: 
       backgroundColor: '#ffffff'
     }}>
       <img
-        src={`${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folder}/images/${folder.cover.id}?share=${searchParams.get("share")}&t=${searchParams.get("t")}&h=${searchParams.get("h")}`}
+        src={`${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folder}/images/${folder.cover.id}?share=${searchParams.get("share")}&t=${searchParams.get("t") === "p" ? "p" : "a"}&h=${searchParams.get("h")}`}
         alt="Echomori"
         style={{
           width: `${size.width}px`,
