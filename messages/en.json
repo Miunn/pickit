@@ -197,8 +197,8 @@
       "getStarted": "Get started",
       "monthlyLabel": "Monthly",
       "yearlyLabel": "Yearly",
-      "monthly": "{price} / month",
-      "yearly": "{price} / year",
+      "monthly": "/ month",
+      "yearly": "/ year",
       "cards": {
         "free": {
           "title": "Basic",
