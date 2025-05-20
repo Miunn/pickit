@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useState } from "react";
 import { useMap } from "@vis.gl/react-google-maps";
 import { Marker, MarkerClusterer } from "@googlemaps/markerclusterer";
-import { Poi } from "./MapContainer";
+import { Poi } from "./FilesMap";
 
 export default function PoiMarkers(props: { pois: Poi[] }) {
     const map = useMap();

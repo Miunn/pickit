@@ -61,6 +61,24 @@ model File {
   extension     String
   width         Int      @default(0)
   height        Int      @default(0)
+  make          String?
+  model         String?
+  software      String?
+  orientation   String?
+  exposureTime  Float?
+  fNumber       Float?
+  iso           Float?
+  takenAt       DateTime?
+  modifiedAt    DateTime?
+  flash         String?
+  focalLength   Float?
+  contrast      Float?
+  saturation    String?
+  sharpness     String?
+  whiteBalance  String?
+  altitude      Float?
+  latitude      Float?
+  longitude     Float?
   duration      Int      @default(0)
   thumbnail     String?
   type          FileType @default(IMAGE)
