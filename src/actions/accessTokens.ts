@@ -90,7 +90,7 @@ export async function changeAccessTokenActiveState(token: string, isActive: bool
         }
     });
 
-    revalidatePath("/app/links");
+    revalidatePath("/app/links?s=links");
     return { error: null }
 }
 

@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { PricingPlan, usePricingContext } from "@/context/PricingContext";
+import { Link } from "@/i18n/navigation";
 import { CheckIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Fragment } from "react";
@@ -21,7 +22,11 @@ const PricingCard = ({ title, description, price, features, selectedPeriod }: { 
             </CardHeader>
             <CardContent>
                 <p className="mb-4"><span className="text-3xl font-bold"><NumberTicker value={price} />{getCurrencySymbol()}</span> <span className="text-muted-foreground">{selectedPeriod === "monthly" ? t("monthly") : t("yearly")}</span></p>
-                <Button variant="outline" className="w-full mb-4">{t("getStarted")}</Button>
+                <Button variant="outline" className="w-full mb-4" asChild>
+                    <Link href="/app">
+                        {t("getStarted")}
+                    </Link>
+                </Button>
                 <ul className="space-y-2">
                     {features.map((feature) => (
                         <li key={feature} className="flex items-center gap-2"><CheckIcon className="bg-primary rounded-full p-0.5 text-white" /> {feature}</li>

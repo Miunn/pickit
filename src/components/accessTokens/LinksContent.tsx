@@ -21,12 +21,12 @@ export default function LinksContent({ side, accessTokens, personsAccessTokens, 
     const t = useTranslations("pages.links");
 
     const [sideState, setSideState] = useQueryState<"links" | "contacts">("s", {
-        parse: (value: string | null) => value as "links" | "contacts",
+        parse: (value: string | null) => value === "links" ? "links" : "contacts",
         defaultValue: side
     })
     
     return (
-        <Tabs value={sideState} onValueChange={(value: string) => setSideState(value as "links" | "contacts")}>
+        <Tabs value={sideState} onValueChange={(value: string) => setSideState(value === "links" ? "links" : "contacts")}>
         <TabsList>
             <TabsTrigger value="contacts">{t('persons.title')}</TabsTrigger>
             <TabsTrigger value="links">{t('links.title')}</TabsTrigger>
