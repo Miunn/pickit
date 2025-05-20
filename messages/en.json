@@ -65,7 +65,8 @@
       "folders": "Folders",
       "images": "Images",
       "links": "Links",
-      "sharedWithMe": "Shared with me"
+      "sharedWithMe": "Shared with me",
+      "map": "My map"
     },
     "secondary": {
       "used": "Used storage"
@@ -83,6 +84,7 @@
     "folders": "Folders",
     "images": "Images",
     "links": "Links",
+    "map": "My map",
     "account": "Account",
     "administration": "Administration",
     "administrationUsers": "Users"

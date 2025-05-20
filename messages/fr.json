@@ -65,7 +65,8 @@
       "folders": "Dossiers",
       "images": "Images",
       "links": "Liens",
-      "sharedWithMe": "Partagés avec moi"
+      "sharedWithMe": "Partagés avec moi",
+      "map": "Carte"
     },
     "secondary": {
       "used": "Espace utilisé"
@@ -83,6 +84,7 @@
     "folders": "Dossiers",
     "images": "Images",
     "links": "Liens",
+    "map": "Carte",
     "account": "Compte",
     "administration": "Administration",
     "administrationUsers": "Utilisateurs"

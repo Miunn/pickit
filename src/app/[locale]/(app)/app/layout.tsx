@@ -5,7 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Folder, Image, Link } from "lucide-react";
+import { Folder, Image, Link, Map } from "lucide-react";
 import BreadcrumbWrapper from "@/components/layout/BreadcrumbWrapper";
 import UnverifiedEmail from "@/components/layout/UnverifiedEmail";
 import { addDays } from "date-fns";
@@ -125,6 +125,12 @@ export default async function LocaleLayout({
                                     title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
                                     url: `/${locale}/app/links?l=${accessToken.id}`
                                 })))
+                            },
+                            {
+                                key: "map",
+                                title: t('main.map'),
+                                icon: Map,
+                                url: `/${locale}/app/map`,
                             },
                             {
                                 key: "shared-with-me",
