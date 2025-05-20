@@ -12,7 +12,7 @@ import { addDays } from "date-fns";
 import SwitchLocale from "@/components/generic/SwitchLocale";
 import { Role } from "@prisma/client";
 import { getCurrentSession } from "@/lib/session";
-import { CommandSearch } from "@/components/CommandSearch";
+import { CommandSearch } from "@/components/generic/CommandSearch";
 import { NuqsAdapter } from 'nuqs/adapters/react'
 import { SwitchTheme } from "@/components/generic/SwitchTheme";
 import SessionProvider from "@/providers/SessionProvider";

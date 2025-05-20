@@ -1,10 +1,10 @@
 import { Comment as CommentType } from "@prisma/client";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useFormatter, useTranslations } from "next-intl";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { Ellipsis } from "lucide-react";
-import { DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { DropdownMenu } from "../ui/dropdown-menu";
+import { DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import DeleteCommentDialog from "./DeleteCommentDialog";
 import { useSession } from "@/providers/SessionProvider";

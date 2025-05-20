@@ -1,15 +1,15 @@
 'use client'
 
-import { ImagePreviewGrid } from "@/components/images/views/grid/ImagePreviewGrid";
+import { ImagePreviewGrid } from "@/components/files/views/grid/ImagePreviewGrid";
 import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Trash2, X, Pencil } from "lucide-react";
-import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
-import { CarouselDialog } from "@/components/images/carousel/CarouselDialog";
+import { DeleteMultipleImagesDialog } from "@/components/files/DeleteMultipleImagesDialog";
+import { CarouselDialog } from "@/components/files/carousel/CarouselDialog";
 import { FileWithComments, FileWithFolder, FileWithLikes } from "@/lib/definitions";
 import { cn, formatBytes, getSortedImagesVideosContent } from "@/lib/utils";
-import { UploadImagesForm } from "@/components/images/upload/UploadImagesForm";
+import { UploadImagesForm } from "@/components/files/upload/UploadImagesForm";
 import { useSession } from "@/providers/SessionProvider";
 import { closestCenter, DndContext, DragEndEvent, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";

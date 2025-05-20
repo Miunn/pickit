@@ -4,7 +4,7 @@ import { FolderX } from "lucide-react";
 import FolderPreviewGrid from "@/components/folders/FolderPreviewGrid";
 import { useTranslations } from "next-intl";
 import React from "react";
-import { LastUploadedImages } from "@/components/images/LastUploadedImages";
+import { LastUploadedImages } from "@/components/files/LastUploadedImages";
 import { FolderWithAccessToken, FolderWithCover, FolderWithFilesCount, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
 import CreateFolderDialog from "../folders/CreateFolderDialog";

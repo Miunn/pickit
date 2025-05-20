@@ -1,4 +1,4 @@
-import UsersDataTable from "@/components/tables/administration/users-data-table";
+import UsersDataTable from "@/components/admin/table/users-data-table";
 import { prisma } from "@/lib/prisma";
 
 export default async function AdminHome({ searchParams }: { searchParams: { u?: string } }) {

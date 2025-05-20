@@ -1,9 +1,9 @@
 "use client";
 
 import { ImageOff, Trash2, X } from "lucide-react";
-import { ImagePreviewGrid } from "@/components/images/views/grid/ImagePreviewGrid";
-import { CarouselDialog } from "@/components/images/carousel/CarouselDialog";
-import { DeleteMultipleImagesDialog } from "@/components/images/DeleteMultipleImagesDialog";
+import { ImagePreviewGrid } from "@/components/files/views/grid/ImagePreviewGrid";
+import { CarouselDialog } from "@/components/files/carousel/CarouselDialog";
+import { DeleteMultipleImagesDialog } from "@/components/files/DeleteMultipleImagesDialog";
 import React, { Fragment, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
