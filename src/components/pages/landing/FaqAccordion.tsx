@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
-import { Label } from "./ui/label";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Label } from "@/components/ui/label";
 
 export default function FaqAccordion() {
 

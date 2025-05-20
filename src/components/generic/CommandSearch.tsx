@@ -24,12 +24,11 @@ import {
     CommandList,
     CommandSeparator,
 } from "@/components/ui/command"
-import NextLink from "next/link"
 import { useTranslations } from "next-intl"
 import { FileLightWithFolderName, LightFolder } from "@/lib/definitions"
 import { useRouter } from "next/navigation"
 import { SignOut } from "@/actions/authActions"
-import CreateFolderDialog from "./folders/CreateFolderDialog"
+import CreateFolderDialog from "@/components/folders/CreateFolderDialog"
 
 export function CommandSearch({ folders, files }: { folders: LightFolder[], files: FileLightWithFolderName[] }) {
     const router = useRouter();

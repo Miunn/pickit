@@ -3,14 +3,14 @@
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, Download, LayoutGrid, List, MoreHorizontal, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { UploadImagesDialog } from "@/components/images/upload/UploadImagesDialog";
-import { ImagesGrid } from "@/components/images/views/grid/ImagesGrid";
+import { UploadImagesDialog } from "@/components/files/upload/UploadImagesDialog";
+import { ImagesGrid } from "@/components/files/views/grid/ImagesGrid";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
 import SortImages, { ImagesSortMethod } from "./SortImages";
 import { useQueryState } from 'nuqs'
 import { downloadClientFiles } from "@/lib/utils";
 import ViewSelector, { ViewState } from "./ViewSelector";
-import ImagesList from "../images/views/list/ImagesList";
+import ImagesList from "../files/views/list/ImagesList";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { useState } from "react";
 import EditDescriptionDialog from "./EditDescriptionDialog";

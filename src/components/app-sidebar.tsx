@@ -19,7 +19,7 @@ import { DialogTrigger } from "./ui/dialog"
 import { UserLight } from "@/lib/definitions"
 import Link from "next/link"
 import { useTranslations } from "next-intl"
-import LogoImage from "./LogoImage"
+import LogoImage from "./generic/LogoImage"
 
 export interface AppSidebarProps {
   navMainItems: NavMainItems;

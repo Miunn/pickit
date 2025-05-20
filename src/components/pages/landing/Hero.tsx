@@ -1,25 +1,17 @@
-'use client'
-
-import FaqAccordion from "@/components/FaqAccordion";
-import FeatureCarouselPreview from "@/components/FeatureCarouselPreview";
 import { AnimatedShinyText } from "@/components/magicui/animated-shiny-text";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { ArrowRight, ArrowRightIcon } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
 import Image from "next/image";
-import { useRef } from "react";
+import { useLocale, useTranslations } from "next-intl";
 
-export default function ClientPage() {
-
+export default function Hero({ seeMoreRef }: { seeMoreRef: React.RefObject<HTMLDivElement> }) {
     const t = useTranslations("pages.landing");
     const locale = useLocale();
-    const moreRef = useRef<HTMLDivElement>(null);
-
+    
     return (
-        <div className="mt-11 mb-32">
-            <div className="relative bg-primary h-fit md:h-[600px] rounded-3xl mx-4 text-white py-8 sm:py-16 md:py-0">
+        <div className="relative bg-primary h-fit md:h-[600px] rounded-3xl mx-4 text-white py-8 sm:py-16 md:py-0">
                 <div className="max-w-7xl grid lg:grid-cols-2 gap-11 justify-between items-center px-4 sm:px-11 mx-auto h-full">
                     <div className="relative col-span-2 lg:col-span-1">
                         <div
@@ -114,7 +106,7 @@ export default function ClientPage() {
                                     {t('hero.getStarted')} <ArrowRight />
                                 </Link>
                             </Button>
-                            <Button variant={"link"} className="w-full sm:w-fit text-white" onClick={() => moreRef.current?.scrollIntoView({ behavior: "smooth" })}>
+                            <Button variant={"link"} className="w-full sm:w-fit text-white" onClick={() => seeMoreRef.current?.scrollIntoView({ behavior: "smooth" })}>
                                 {t('hero.seeMore')}
                             </Button>
                         </div>
@@ -144,26 +136,6 @@ export default function ClientPage() {
                     <div className="absolute left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary mt-64"></div>
                 </div>
             </div>
-
-            <div ref={moreRef} className="max-w-7xl grid grid-cols-4 xl:grid-cols-3 my-16 lg:my-32 mx-16">
-                <div className="col-start-1 lg:col-start-2 col-end-5 xl:col-end-4">
-                    <h3 className="text-4xl md:text-5xl">Store & Share your photos easily</h3>
-
-                    <p>
-                        With Echomori, you can store and share your photos to your loved ones easily.
-                        Our platform is secure and easy to use, you can create albums and share them with your friends and family.
-                    </p>
-                </div>
-            </div>
-
-            <div className="mt-32 lg:mt-64 max-w-2xl xl:max-w-7xl mx-auto px-4">
-                <h2 className="text-2xl font-semibold mb-2" dangerouslySetInnerHTML={{ __html: t('featuresTitle') }} />
-                <FeatureCarouselPreview />
-            </div>
-
-            <div id="faq" className="mx-4">
-                <FaqAccordion />
-            </div>
-        </div>
     )
 }
+
