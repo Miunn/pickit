@@ -1,13 +1,13 @@
 'use client'
 
-import { MarkerClusterer } from '@googlemaps/markerclusterer';
-import type { Marker } from '@googlemaps/markerclusterer';
-import { APIProvider, Map, useMap } from '@vis.gl/react-google-maps';
-import { useEffect } from 'react';
-import { useRef } from 'react';
+import { APIProvider, InfoWindow, Map, useMap } from '@vis.gl/react-google-maps';
+import { useCallback, useEffect } from 'react';
 import { useState } from 'react';
 import PoiMarkers from './PoiMarkers';
 import { FileWithFolder } from '@/lib/definitions';
+import ClusteredMarkers from './ClusteredMarkers';
+import { Feature, Point, FeatureCollection } from 'geojson';
+import { InfoWindowContent } from './InfoWindowContent';
 
 export type Poi = { key: string, location: google.maps.LatLngLiteral }
 const locations: Poi[] = [
@@ -30,30 +30,84 @@ const locations: Poi[] = [
 
 export default function FilesMap({ filesWithFolders }: { filesWithFolders: FileWithFolder[] }) {
 
-  const [markers, setMarkers] = useState<Poi[]>([]);
+  const [markers, setMarkers] = useState<FeatureCollection<Point, FileWithFolder> | null>({
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "id": "Q28163226",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-71.5618959, -33.0217629]
+        },
+        "properties": {
+          ...filesWithFolders[0]
+        }
+      }
+    ]
+  });
+
+  const [infowindowData, setInfowindowData] = useState<{
+    anchor: google.maps.marker.AdvancedMarkerElement;
+    features: Feature<Point>[];
+  } | null>(null);
+
+  const handleInfoWindowClose = useCallback(
+    () => setInfowindowData(null),
+    [setInfowindowData]
+  );
 
   useEffect(() => {
-    setMarkers(filesWithFolders.filter(file => file.latitude && file.longitude).map(file => ({
-      key: file.id,
-      location: { lat: file.latitude!, lng: file.longitude! }
-    })));
+    setMarkers({
+      "type": "FeatureCollection",
+      "features": filesWithFolders.filter(file => file.latitude && file.longitude).map(file => ({
+        "type": "Feature",
+        "id": file.id,
+        "geometry": {
+          "type": "Point",
+          "coordinates": [file.longitude!, file.latitude!]
+        },
+        "properties": file
+      }))
+    });
   }, [filesWithFolders]);
-
-  useEffect(() => {
-    console.log(markers);
-  }, [markers]);
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}>
       <Map
         mapId={process.env.NEXT_PUBLIC_USER_MAP_ID || ""}
-        style={{ width: '100%', height: '100%' }}
+        style={{ position: 'relative', width: '100%', height: '100%' }}
         defaultCenter={{ lat: 22.54992, lng: 0 }}
         defaultZoom={3}
         gestureHandling={'greedy'}
         disableDefaultUI={true}
       >
-        <PoiMarkers pois={markers} />
+        {markers && (
+          <ClusteredMarkers
+            markers={markers}
+            setInfowindowData={setInfowindowData}
+          />
+        )}
+
+        {infowindowData && (
+          <InfoWindow
+            onCloseClick={handleInfoWindowClose}
+            anchor={infowindowData.anchor}>
+            <InfoWindowContent features={infowindowData.features} />
+          </InfoWindow>
+        )}
+        {/* <PoiMarkers pois={markers} />
+        <div className="absolute top-10 left-10 h-10">
+          <ClusteredMarkers foldersNames={[
+            { name: "Folder", count: 10 },
+            { name: "Folder", count: 10 },
+            { name: "Folder", count: 10 },
+            { name: "Folder", count: 10 },
+            { name: "Folder", count: 10 },
+            { name: "Folder", count: 10 },
+            { name: "Folder", count: 10 },
+          ]} />
+        </div> */}
       </Map>
     </APIProvider>
   )

@@ -177,7 +177,7 @@ export async function finalizeFileUpload(
                     make: exif.Make,
                     model: exif.Model,
                     software: exif.Software,
-                    orientation: exif.Orientation,
+                    orientation: exif.Orientation?.toString(),
                     exposureTime: exif.ExposureTime,
                     fNumber: exif.FNumber,
                     iso: exif.ISO,
