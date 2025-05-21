@@ -717,6 +717,13 @@
       "likeButton": {
         "cannotLike": "You must be logged in to like a file"
       }
+    },
+    "map": {
+      "cluster": {
+        "folder": {
+          "count": "{count, plural, =0 {No files} =1 {1 file} other {# files}}"
+        }
+      }
     }
   },
   "dialogs": {

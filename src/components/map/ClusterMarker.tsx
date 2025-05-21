@@ -14,15 +14,15 @@ type TreeClusterMarkerProps = {
     ) => void;
     position: google.maps.LatLngLiteral;
     size: number;
-    sizeAsText: string;
+    folders: { name: string, count: number }[];
 };
 
 export const ClusterMarker = ({
     position,
     size,
-    sizeAsText,
     onMarkerClick,
-    clusterId
+    clusterId,
+    folders
 }: TreeClusterMarkerProps) => {
     const t = useTranslations("components.map.cluster");
 
@@ -31,29 +31,26 @@ export const ClusterMarker = ({
         () => onMarkerClick && onMarkerClick(marker!, clusterId),
         [onMarkerClick, marker, clusterId]
     );
-    const markerSize = Math.floor(48 + Math.sqrt(size) * 2);
     return (
         <AdvancedMarker
             ref={markerRef}
             position={position}
             zIndex={size}
             onClick={handleClick}
-            className={'marker cluster'}
-            style={{ width: markerSize, height: markerSize }}
             anchorPoint={AdvancedMarkerAnchorPoint.CENTER}>
-            <div className="w-48 bg-white border border-primary rounded-lg p-2">
+            <div className="max-w-48 max-h-48 bg-white border border-primary rounded-lg p-1">
                 <div className="flex flex-col gap-2">
-                    {/* {foldersNames.slice(0, 2).map((folderName) => (
-                        <p key={folderName.name} className="text-sm text-primary font-medium">{folderName.name}</p>
+                    {folders.slice(0, 2).map((folder) => (
+                        <p key={folder.name} className="text-xs text-primary font-medium flex justify-between items-center gap-2">
+                            <span>{folder.name}</span>
+                            <span className="text-xs text-gray-500">{t('folder.count', {count: folder.count})}</span>
+                        </p>
                     ))}
-                    {foldersNames.length > 2 && (
-                        <p className="text-sm text-primary font-medium">+{foldersNames.length - 2}</p>
-                    )} */}
-
-                    Cluster
+                    {folders.length > 2 && (
+                        <p className="text-sm text-primary font-medium">+{folders.length - 2}</p>
+                    )}
                 </div>
             </div>
-            <span>{sizeAsText}</span>
         </AdvancedMarker>
     );
 };

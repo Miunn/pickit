@@ -50,6 +50,21 @@ export default function ClusteredMarkers({
       },
       [clusters, setInfowindowData]
     );
+
+    const getClusterFolders = useCallback((clusterId: number) => {
+      const leaves = getLeaves(clusterId);
+      const names = leaves.map((leaf: Feature<Point>) => leaf.properties?.folder.name);
+      
+      // Count the occurrences of each name
+      const counts = names.reduce((acc: Record<string, number>, name) => {
+        if (name) {
+          acc[name] = (acc[name] || 0) + 1;
+        }
+        return acc;
+      }, {});
+
+      return Object.entries(counts).map(([name, count]) => ({name, count}));
+    }, [getLeaves]);
     
     return (
       <>
@@ -57,18 +72,23 @@ export default function ClusteredMarkers({
         const [lng, lat] = feature.geometry.coordinates;
 
         const clusterProperties = feature.properties as ClusterProperties;
-        const isCluster: boolean = clusterProperties.cluster;
 
-        return isCluster ? (
-          <ClusterMarker
-            key={feature.id}
-            clusterId={clusterProperties.cluster_id}
-            position={{lat, lng}}
-            size={clusterProperties.point_count}
-            sizeAsText={String(clusterProperties.point_count_abbreviated)}
-            onMarkerClick={handleClusterClick}
-          />
-        ) : (
+        if (clusterProperties.cluster) {
+          const clusterFolders = getClusterFolders(clusterProperties.cluster_id);
+
+          return (
+            <ClusterMarker
+              key={feature.id}
+              clusterId={clusterProperties.cluster_id}
+              position={{lat, lng}}
+              size={clusterProperties.point_count}
+              onMarkerClick={handleClusterClick}
+              folders={clusterFolders}
+            />
+          );
+        }
+
+        return (
           <PoiMarker
             key={feature.id}
             featureId={feature.id as string}
