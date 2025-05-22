@@ -17,6 +17,8 @@ export default async function MapPage({ params }: { params: { locale: string } }
     });
 
     return (
-        <FilesMap filesWithFolders={filesWithFolders} />
+        <div className='rounded-b-xl h-full overflow-hidden'>
+            <FilesMap filesWithFolders={filesWithFolders} />
+        </div>
     )
 }
