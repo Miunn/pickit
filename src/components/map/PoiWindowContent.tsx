@@ -13,7 +13,7 @@ const getSignedUrl = async (folderId: string, imageId: string): Promise<string> 
   return signedUrl.json().then(data => data.url);
 }
 
-export const ClusterWindowContent = memo(({ folders, onClose }: ClusterWindowContentProps) => {
+export const PoiWindowContent = memo(({ folders, onClose }: ClusterWindowContentProps) => {
 
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
 

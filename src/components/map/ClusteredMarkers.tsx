@@ -8,7 +8,13 @@ import { PoiMarker } from "./PoiMarker";
 
 type ClusteredMarkersProps = {
   markers: FeatureCollection<Point>;
-  setInfowindowData: (
+  setClusterInfoData: (
+    data: {
+      anchor: google.maps.marker.AdvancedMarkerElement;
+      features: Feature<Point>[];
+    } | null
+  ) => void;
+  setPoiInfoData: (
     data: {
       anchor: google.maps.marker.AdvancedMarkerElement;
       features: Feature<Point>[];
@@ -27,7 +33,8 @@ const superclusterOptions: Supercluster.Options<
 
 export default function ClusteredMarkers({
   markers,
-  setInfowindowData
+  setClusterInfoData,
+  setPoiInfoData
 }: ClusteredMarkersProps) {
     const {clusters, getLeaves} = useSupercluster(markers, superclusterOptions);
   
@@ -35,20 +42,20 @@ export default function ClusteredMarkers({
       (marker: google.maps.marker.AdvancedMarkerElement, clusterId: number) => {
         const leaves = getLeaves(clusterId);
   
-        setInfowindowData({anchor: marker, features: leaves});
+        setClusterInfoData({anchor: marker, features: leaves});
       },
-      [getLeaves, setInfowindowData]
+      [getLeaves, setClusterInfoData]
     );
   
-    const handleMarkerClick = useCallback(
+    const handlePoiClick = useCallback(
       (marker: google.maps.marker.AdvancedMarkerElement, featureId: string) => {
         const feature = clusters.find(
           (feat: Feature<Point>) => feat.id === featureId
         ) as Feature<Point>;
   
-        setInfowindowData({anchor: marker, features: [feature]});
+        setPoiInfoData({anchor: marker, features: [feature]});
       },
-      [clusters, setInfowindowData]
+      [clusters, setPoiInfoData]
     );
 
     const getClusterFolders = useCallback((clusterId: number) => {
@@ -93,7 +100,7 @@ export default function ClusteredMarkers({
             key={feature.id}
             featureId={feature.id as string}
             position={{lat, lng}}
-            onMarkerClick={handleMarkerClick}
+            onMarkerClick={handlePoiClick}
           />
         );
       })}

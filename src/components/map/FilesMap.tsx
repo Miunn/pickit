@@ -1,13 +1,15 @@
 'use client'
 
 import { AdvancedMarker, APIProvider, InfoWindow, Map, useMap, AdvancedMarkerAnchorPoint } from '@vis.gl/react-google-maps';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useState } from 'react';
 import PoiMarkers from './PoiMarkers';
 import { FileWithFolder } from '@/lib/definitions';
 import ClusteredMarkers from './ClusteredMarkers';
 import { Feature, Point, FeatureCollection } from 'geojson';
 import { ClusterWindowContent } from './ClusterWindowContent';
+import { PoiWindowContent } from './PoiWindowContent';
+import FolderList from './FolderList';
 
 export type Poi = { key: string, location: google.maps.LatLngLiteral }
 const locations: Poi[] = [
@@ -47,14 +49,30 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: FileW
     ]
   });
 
-  const [infowindowData, setInfowindowData] = useState<{
+  const uniqueFolders = useMemo(() => {
+    return filesWithFolders.map(file => file.folder).filter((folder, index, self) =>
+      self.findIndex(t => t.id === folder.id) === index
+    );
+  }, [filesWithFolders]);
+
+  const [clusterInfoData, setClusterInfoData] = useState<{
     anchor: google.maps.marker.AdvancedMarkerElement;
     features: Feature<Point>[];
   } | null>(null);
 
-  const handleInfoWindowClose = useCallback(
-    () => setInfowindowData(null),
-    [setInfowindowData]
+  const [poiInfoData, setPoiInfoData] = useState<{
+    anchor: google.maps.marker.AdvancedMarkerElement;
+    features: Feature<Point>[];
+  } | null>(null);
+
+  const handleClusterInfoWindowClose = useCallback(
+    () => setClusterInfoData(null),
+    [setClusterInfoData]
+  );
+
+  const handlePoiInfoWindowClose = useCallback(
+    () => setPoiInfoData(null),
+    [setPoiInfoData]
   );
 
   useEffect(() => {
@@ -85,15 +103,29 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: FileW
         {markers && (
           <ClusteredMarkers
             markers={markers}
-            setInfowindowData={setInfowindowData}
+            setClusterInfoData={setClusterInfoData}
+            setPoiInfoData={setPoiInfoData}
           />
         )}
 
-        {infowindowData && (
+        {clusterInfoData && (
           <AdvancedMarker
-            position={infowindowData.anchor.position}
-            anchorPoint={AdvancedMarkerAnchorPoint.BOTTOM_CENTER}>
-            <ClusterWindowContent folders={infowindowData.features.map(feature => feature.properties?.folder)} onClose={handleInfoWindowClose} />
+            position={clusterInfoData.anchor.position}
+            anchorPoint={AdvancedMarkerAnchorPoint.BOTTOM}
+            style={{
+              marginBottom: `${clusterInfoData.anchor.getBoundingClientRect().height/2 + 11}px`
+            }}
+          >
+            <ClusterWindowContent folders={clusterInfoData.features.map(feature => feature.properties?.folder)} onClose={handleClusterInfoWindowClose} />
+          </AdvancedMarker>
+        )}
+
+        {poiInfoData && (
+          <AdvancedMarker
+            position={poiInfoData.anchor.position}
+            anchorPoint={AdvancedMarkerAnchorPoint.BOTTOM}
+          >
+            <PoiWindowContent folders={poiInfoData.features.map(feature => feature.properties?.folder)} onClose={handlePoiInfoWindowClose} />
           </AdvancedMarker>
         )}
         {/* <PoiMarkers pois={markers} />
@@ -108,6 +140,10 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: FileW
             { name: "Folder", count: 10 },
           ]} />
         </div> */}
+
+        <div className="absolute top-5 right-5">
+          <FolderList folders={uniqueFolders} />
+        </div>
       </Map>
     </APIProvider>
   )

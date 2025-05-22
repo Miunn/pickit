@@ -42,7 +42,7 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
                                     className={"relative rounded-xl object-cover"} sizes="33vw" fill />
                             </div>
                             : <div
-                                className={"border border-primary rounded-2xl bg-gray-100 dark:bg-gray-800 h-36 mb-4 flex justify-center items-center"}>
+                                className={"border border-primary rounded-xl bg-gray-100 dark:bg-gray-800 h-36 mb-4 flex justify-center items-center"}>
                                 <Images className={"opacity-50 dark:text-gray-400"} />
                             </div>
                         }
