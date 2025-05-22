@@ -1,13 +1,13 @@
 'use client'
 
-import { APIProvider, InfoWindow, Map, useMap } from '@vis.gl/react-google-maps';
+import { AdvancedMarker, APIProvider, InfoWindow, Map, useMap, AdvancedMarkerAnchorPoint } from '@vis.gl/react-google-maps';
 import { useCallback, useEffect } from 'react';
 import { useState } from 'react';
 import PoiMarkers from './PoiMarkers';
 import { FileWithFolder } from '@/lib/definitions';
 import ClusteredMarkers from './ClusteredMarkers';
 import { Feature, Point, FeatureCollection } from 'geojson';
-import { InfoWindowContent } from './InfoWindowContent';
+import { ClusterWindowContent } from './ClusterWindowContent';
 
 export type Poi = { key: string, location: google.maps.LatLngLiteral }
 const locations: Poi[] = [
@@ -90,11 +90,11 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: FileW
         )}
 
         {infowindowData && (
-          <InfoWindow
-            onCloseClick={handleInfoWindowClose}
-            anchor={infowindowData.anchor}>
-            <InfoWindowContent features={infowindowData.features} />
-          </InfoWindow>
+          <AdvancedMarker
+            position={infowindowData.anchor.position}
+            anchorPoint={AdvancedMarkerAnchorPoint.BOTTOM_CENTER}>
+            <ClusterWindowContent folders={infowindowData.features.map(feature => feature.properties?.folder)} onClose={handleInfoWindowClose} />
+          </AdvancedMarker>
         )}
         {/* <PoiMarkers pois={markers} />
         <div className="absolute top-10 left-10 h-10">
