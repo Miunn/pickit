@@ -14,7 +14,7 @@ export default async function MapPage({ params }: { params: { locale: string } }
 
     const filesWithFolders = await prisma.file.findMany({
         where: { createdBy: { id: user.id } },
-        include: { folder: true }
+        include: { folder: { include: { _count: true } } }
     });
 
     const filesWithSignedUrlsAndFolders = await Promise.all(filesWithFolders.map(async (file) => ({

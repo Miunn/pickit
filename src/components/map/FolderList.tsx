@@ -5,9 +5,10 @@ import { TooltipContent, TooltipProvider } from "../ui/tooltip";
 import { TooltipTrigger } from "../ui/tooltip";
 import { Tooltip } from "../ui/tooltip";
 import { Separator } from "../ui/separator";
-import { useFormatter } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { Checkbox } from "../ui/checkbox";
 import { useState, useRef } from "react";
+import { FolderWithFilesCount } from "@/lib/definitions";
 
 const Ripple = ({ x, y }: { x: number; y: number }) => {
     return (
@@ -27,13 +28,14 @@ const Ripple = ({ x, y }: { x: number; y: number }) => {
 };
 
 interface FolderCardProps {
-    folder: Folder;
+    folder: FolderWithFilesCount;
     isSelected: boolean;
     onToggle: () => void;
     formatter: any;
 }
 
 const FolderCard = ({ folder, isSelected, onToggle, formatter }: FolderCardProps) => {
+    const t = useTranslations("components.map.folderList.folderCard");
     const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
     const nextId = useRef(0);
 
@@ -83,7 +85,7 @@ const FolderCard = ({ folder, isSelected, onToggle, formatter }: FolderCardProps
             }
             <p className="truncate px-2">{folder.name}</p>
             <div className={"text-sm flex h-4 items-center flex-nowrap px-2 mb-2"}>
-                <p className={"opacity-60 text-nowrap"}>22</p>
+                <p className={"opacity-60 text-nowrap"}>{t("folderCount", { count: folder._count.files })}</p>
                 <Separator className="mx-2" orientation="vertical" />
                 <TooltipProvider>
                     <Tooltip>
@@ -111,7 +113,7 @@ const FolderCard = ({ folder, isSelected, onToggle, formatter }: FolderCardProps
     );
 };
 
-export default function FolderList({ folders, onSelectionChange }: { folders: Folder[], onSelectionChange: (selectedFolders: Set<string>) => void }) {
+export default function FolderList({ folders, onSelectionChange }: { folders: FolderWithFilesCount[], onSelectionChange: (selectedFolders: Set<string>) => void }) {
     const formatter = useFormatter();
     const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set(folders.map(folder => folder.id)));
 

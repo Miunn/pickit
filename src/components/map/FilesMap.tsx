@@ -3,16 +3,17 @@
 import { AdvancedMarker, APIProvider, InfoWindow, Map, useMap, AdvancedMarkerAnchorPoint } from '@vis.gl/react-google-maps';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useState } from 'react';
-import { FileWithFolder } from '@/lib/definitions';
+import { FileWithFolder, FolderWithFilesCount } from '@/lib/definitions';
 import ClusteredMarkers from './ClusteredMarkers';
 import { Feature, Point, FeatureCollection } from 'geojson';
 import { ClusterWindowContent } from './ClusterWindowContent';
 import { PoiWindowContent } from './PoiWindowContent';
 import FolderList from './FolderList';
+import { File } from '@prisma/client';
 
 export type Poi = { key: string, location: google.maps.LatLngLiteral }
 
-export default function FilesMap({ filesWithFolders }: { filesWithFolders: (FileWithFolder & { signedUrl: string })[] }) {
+export default function FilesMap({ filesWithFolders }: { filesWithFolders: (File & { folder: FolderWithFilesCount } & { signedUrl: string })[] }) {
 
   const [markers, setMarkers] = useState<FeatureCollection<Point, FileWithFolder & { signedUrl: string }> | null>();
   const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set());

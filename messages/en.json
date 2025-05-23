@@ -723,6 +723,11 @@
         "folder": {
           "count": "{count, plural, =0 {No files} =1 {1 file} other {# files}}"
         }
+      },
+      "folderList": {
+        "folderCard": {
+          "folderCount": "{count, plural, =0 {0 files} =1 {1 file} other {# files}}"
+        }
       }
     }
   },
