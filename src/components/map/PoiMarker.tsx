@@ -9,7 +9,7 @@ import { Aperture } from 'lucide-react';
 type TreeMarkerProps = {
   position: google.maps.LatLngLiteral;
   featureId: string;
-  onMarkerClick?: (
+  onMarkerClick: (
     marker: google.maps.marker.AdvancedMarkerElement,
     featureId: string
   ) => void;

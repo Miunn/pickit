@@ -10,6 +10,7 @@ import { ClusterWindowContent } from './ClusterWindowContent';
 import { PoiWindowContent } from './PoiWindowContent';
 import FolderList from './FolderList';
 import { File } from '@prisma/client';
+import FileCarousel from './FileCarousel';
 
 export type Poi = { key: string, location: google.maps.LatLngLiteral }
 
@@ -17,6 +18,8 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: (File
 
   const [markers, setMarkers] = useState<FeatureCollection<Point, FileWithFolder & { signedUrl: string }> | null>();
   const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set());
+  const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
+  const [carouselStartIndex, setCarouselStartIndex] = useState<number>(0);
 
   const uniqueFolders = useMemo(() => {
     return filesWithFolders.map(file => file.folder).filter((folder, index, self) =>
@@ -43,6 +46,18 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: (File
     () => setPoiInfoData(null),
     [setPoiInfoData]
   );
+
+  const handlePoiClick = useCallback((feature: Feature<Point, FileWithFolder & { signedUrl: string }>) => {
+    const clickedFile = feature.properties;
+
+    const startIndex = filesWithFolders.findIndex(file => file.id === clickedFile.id);
+    setCarouselStartIndex(startIndex);
+    setCarouselOpen(true);
+  }, [filesWithFolders]);
+
+  const handleCarouselClose = useCallback(() => {
+    setCarouselOpen(false);
+  }, []);
 
   useEffect(() => {
     const filteredFiles = filesWithFolders.filter(file => 
@@ -80,6 +95,7 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: (File
             markers={markers}
             setClusterInfoData={setClusterInfoData}
             setPoiInfoData={setPoiInfoData}
+            onPoiClick={handlePoiClick}
           />
         )}
 
@@ -107,6 +123,14 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: (File
           >
             <PoiWindowContent file={poiInfoData.feature.properties} onClose={handlePoiInfoWindowClose} />
           </AdvancedMarker>
+        )}
+
+        {carouselOpen && (
+          <FileCarousel
+            files={filesWithFolders}
+            startIndex={carouselStartIndex}
+            onClose={handleCarouselClose}
+          />
         )}
 
         <div className="absolute top-5 right-5">
