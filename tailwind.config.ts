@@ -75,6 +75,16 @@ const config: Config = {
     					opacity: '0'
     				}
     			},
+    			'ripple': {
+    				'0%': {
+    					transform: 'translate(-50%, -50%) scale(0)',
+    					opacity: '0.7'
+    				},
+    				'100%': {
+    					transform: 'translate(-50%, -50%) scale(3)',
+    					opacity: '0'
+    				}
+    			},
     			progress: {
     				'0%': {
     					width: '0%'
@@ -136,6 +146,7 @@ const config: Config = {
     		},
     		animation: {
     			'caret-blink': 'caret-blink 1.25s ease-out infinite',
+    			'ripple': 'ripple 600ms linear forwards',
     			progress: 'progress 7s linear forwards',
     			collapsibleEnter: 'collapsibleSlideDown 300ms ease-in-out',
     			collapsibleLeave: 'collapsibleSlideUp 300ms ease-in-out',
