@@ -5,19 +5,20 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect } from "react";
 import { ClusterMarker } from "./ClusterMarker";
 import { PoiMarker } from "./PoiMarker";
+import { FileWithFolder } from "@/lib/definitions";
 
 type ClusteredMarkersProps = {
-  markers: FeatureCollection<Point>;
+  markers: FeatureCollection<Point, FileWithFolder & { signedUrl: string }>;
   setClusterInfoData: (
     data: {
       anchor: google.maps.marker.AdvancedMarkerElement;
-      features: Feature<Point>[];
+      features: Feature<Point, FileWithFolder & { signedUrl: string }>[];
     } | null
   ) => void;
   setPoiInfoData: (
     data: {
       anchor: google.maps.marker.AdvancedMarkerElement;
-      features: Feature<Point>[];
+      feature: Feature<Point, FileWithFolder & { signedUrl: string }>;
     } | null
   ) => void;
 };
@@ -26,9 +27,8 @@ const superclusterOptions: Supercluster.Options<
   GeoJsonProperties,
   ClusterProperties
 > = {
-  extent: 256,
-  radius: 80,
-  maxZoom: 12
+  extent: 512,
+  maxZoom: 16
 };
 
 export default function ClusteredMarkers({
@@ -51,9 +51,9 @@ export default function ClusteredMarkers({
       (marker: google.maps.marker.AdvancedMarkerElement, featureId: string) => {
         const feature = clusters.find(
           (feat: Feature<Point>) => feat.id === featureId
-        ) as Feature<Point>;
+        ) as Feature<Point, FileWithFolder & { signedUrl: string }>;
   
-        setPoiInfoData({anchor: marker, features: [feature]});
+        setPoiInfoData({anchor: marker, feature: feature});
       },
       [clusters, setPoiInfoData]
     );

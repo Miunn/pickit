@@ -1,32 +1,25 @@
 import React, { memo, useEffect, useState } from 'react';
 import { Folder } from '@prisma/client';
-import Image from 'next/image';
-import { X } from 'lucide-react';
+import { Images, X } from 'lucide-react';
+import LoadingImage from '../files/LoadingImage';
 
 type ClusterWindowContentProps = {
-  folders: Folder[];
+  folders: (Folder & { coverSignedUrl: string })[];
   onClose: () => void;
 };
 
-const getSignedUrl = async (folderId: string, imageId: string): Promise<string> => {
-  const signedUrl = await fetch(`/api/folders/${folderId}/images/${imageId}/download-url`);
-  return signedUrl.json().then(data => data.url);
-}
-
 export const ClusterWindowContent = memo(({ folders, onClose }: ClusterWindowContentProps) => {
-
-  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!folders[0].coverId) return;
-    getSignedUrl(folders[0].id, folders[0].coverId).then(setCoverImageUrl);
-  }, [folders]);
-
   return (
     <div className="relative">
       <div className="bg-white border border-primary rounded-lg overflow-hidden shadow-lg mb-[23px] w-64">
         <div className="relative h-32 w-full">
-          <Image src={coverImageUrl || ''} alt={folders[0].name} fill className="object-cover" />
+          {
+            folders[0].coverSignedUrl
+              ? <LoadingImage src={folders[0].coverSignedUrl} alt={folders[0].name} sizes='33vw' fill className="object-cover" />
+              : <div className="h-full w-full bg-gray-100 dark:bg-gray-800 flex justify-center items-center">
+                <Images className={"opacity-50 dark:text-gray-400"} />
+              </div>
+          }
 
           <button className="absolute top-2 right-2 text-white bg-black/50 rounded-full p-1" onClick={() => {
             onClose();

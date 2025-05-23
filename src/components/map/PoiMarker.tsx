@@ -4,6 +4,7 @@ import {
   AdvancedMarkerAnchorPoint,
   useAdvancedMarkerRef
 } from '@vis.gl/react-google-maps';
+import { Aperture } from 'lucide-react';
 
 type TreeMarkerProps = {
   position: google.maps.LatLngLiteral;
@@ -32,8 +33,8 @@ export const PoiMarker = ({
       onClick={handleClick}
       anchorPoint={AdvancedMarkerAnchorPoint.CENTER}
       className={'marker feature'}>
-      <div className="w-6 h-6 bg-white border border-primary rounded-lg p-2">
-        
+      <div className="bg-white border border-primary rounded-full p-1">
+        <Aperture className='size-6' />
       </div>
     </AdvancedMarker>
   );

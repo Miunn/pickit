@@ -3,7 +3,6 @@
 import { AdvancedMarker, APIProvider, InfoWindow, Map, useMap, AdvancedMarkerAnchorPoint } from '@vis.gl/react-google-maps';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useState } from 'react';
-import PoiMarkers from './PoiMarkers';
 import { FileWithFolder } from '@/lib/definitions';
 import ClusteredMarkers from './ClusteredMarkers';
 import { Feature, Point, FeatureCollection } from 'geojson';
@@ -30,24 +29,9 @@ const locations: Poi[] = [
   { key: 'barangaroo', location: { lat: - 33.8605523, lng: 151.1972205 } },
 ];
 
-export default function FilesMap({ filesWithFolders }: { filesWithFolders: FileWithFolder[] }) {
+export default function FilesMap({ filesWithFolders }: { filesWithFolders: (FileWithFolder & { signedUrl: string })[] }) {
 
-  const [markers, setMarkers] = useState<FeatureCollection<Point, FileWithFolder> | null>({
-    "type": "FeatureCollection",
-    "features": [
-      {
-        "type": "Feature",
-        "id": "Q28163226",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [-71.5618959, -33.0217629]
-        },
-        "properties": {
-          ...filesWithFolders[0]
-        }
-      }
-    ]
-  });
+  const [markers, setMarkers] = useState<FeatureCollection<Point, FileWithFolder & { signedUrl: string }> | null>();
 
   const uniqueFolders = useMemo(() => {
     return filesWithFolders.map(file => file.folder).filter((folder, index, self) =>
@@ -57,12 +41,12 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: FileW
 
   const [clusterInfoData, setClusterInfoData] = useState<{
     anchor: google.maps.marker.AdvancedMarkerElement;
-    features: Feature<Point>[];
+    features: (Feature<Point, FileWithFolder & { signedUrl: string }>)[];
   } | null>(null);
 
   const [poiInfoData, setPoiInfoData] = useState<{
     anchor: google.maps.marker.AdvancedMarkerElement;
-    features: Feature<Point>[];
+    feature: Feature<Point, FileWithFolder & { signedUrl: string }>;
   } | null>(null);
 
   const handleClusterInfoWindowClose = useCallback(
@@ -116,7 +100,12 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: FileW
               marginBottom: `${clusterInfoData.anchor.getBoundingClientRect().height/2 + 11}px`
             }}
           >
-            <ClusterWindowContent folders={clusterInfoData.features.map(feature => feature.properties?.folder)} onClose={handleClusterInfoWindowClose} />
+            <ClusterWindowContent folders={clusterInfoData.features.map(feature => {
+              return {
+                ...feature.properties?.folder,
+                coverSignedUrl: filesWithFolders.find(f => f.id === feature.properties?.folder.coverId)?.signedUrl || ''
+              }
+            })} onClose={handleClusterInfoWindowClose} />
           </AdvancedMarker>
         )}
 
@@ -125,21 +114,9 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: FileW
             position={poiInfoData.anchor.position}
             anchorPoint={AdvancedMarkerAnchorPoint.BOTTOM}
           >
-            <PoiWindowContent folders={poiInfoData.features.map(feature => feature.properties?.folder)} onClose={handlePoiInfoWindowClose} />
+            <PoiWindowContent file={poiInfoData.feature.properties} onClose={handlePoiInfoWindowClose} />
           </AdvancedMarker>
         )}
-        {/* <PoiMarkers pois={markers} />
-        <div className="absolute top-10 left-10 h-10">
-          <ClusteredMarkers foldersNames={[
-            { name: "Folder", count: 10 },
-            { name: "Folder", count: 10 },
-            { name: "Folder", count: 10 },
-            { name: "Folder", count: 10 },
-            { name: "Folder", count: 10 },
-            { name: "Folder", count: 10 },
-            { name: "Folder", count: 10 },
-          ]} />
-        </div> */}
 
         <div className="absolute top-5 right-5">
           <FolderList folders={uniqueFolders} />

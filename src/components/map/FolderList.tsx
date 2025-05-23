@@ -14,7 +14,7 @@ export default function FolderList({ folders }: { folders: Folder[] }) {
     return (
         <div className="flex flex-col gap-2">
             {folders.map((folder) => (
-                <div className={"inline-block w-64 bg-white border border-primary rounded-xl"}>
+                <div className={"inline-block w-64 bg-white border border-primary rounded-xl"} key={folder.id}>
                     {folder.coverId
                         ? <div className={`relative h-36 mb-1 flex justify-center items-center rounded-t-xl`}>
                             <Image src={`/api/folders/${folder.id}/images/${folder.coverId}`} alt={folder.name}
