@@ -11,30 +11,58 @@ import { PoiWindowContent } from './PoiWindowContent';
 import FolderList from './FolderList';
 import { File } from '@prisma/client';
 import FileCarousel from './FileCarousel';
+import { PointFeature } from 'supercluster';
 
 export type Poi = { key: string, location: google.maps.LatLngLiteral }
 
-export default function FilesMap({ filesWithFolders }: { filesWithFolders: (File & { folder: FolderWithFilesCount } & { signedUrl: string })[] }) {
+export type MapFileWithFolderAndUrl = File & { folder: FolderWithFilesCount } & { signedUrl: string };
 
-  const [markers, setMarkers] = useState<FeatureCollection<Point, FileWithFolder & { signedUrl: string }> | null>();
+const filterFilesWithLocation = (files: MapFileWithFolderAndUrl[], selectedFolders: Set<string>) => {
+  return files.filter(file => 
+    file.latitude && 
+    file.longitude &&
+    (selectedFolders.size === 0 || selectedFolders.has(file.folder.id))
+  );
+}
+
+const getDefaultMarkers = (files: MapFileWithFolderAndUrl[], selectedFolders: Set<string>) => {
+  const filteredFiles = filterFilesWithLocation(files, selectedFolders);
+
+  return {
+    "type": "FeatureCollection" as const,
+    "features": filteredFiles.map(file => ({
+      "type": "Feature" as const,
+      "id": file.id,
+      "geometry": {
+        "type": "Point" as const,
+        "coordinates": [file.longitude!, file.latitude!]
+      },
+      "properties": file
+    }))
+  };
+}
+
+export default function FilesMap({ filesWithFolders }: { filesWithFolders: MapFileWithFolderAndUrl[] }) {
   const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set());
+  const locatedFiles = useMemo<MapFileWithFolderAndUrl[]>(() => filterFilesWithLocation(filesWithFolders, selectedFolders), [filesWithFolders, selectedFolders]);
+  const [markers, setMarkers] = useState<FeatureCollection<Point, MapFileWithFolderAndUrl>>(() => getDefaultMarkers(locatedFiles, selectedFolders));
   const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
   const [carouselStartIndex, setCarouselStartIndex] = useState<number>(0);
 
   const uniqueFolders = useMemo(() => {
-    return filesWithFolders.map(file => file.folder).filter((folder, index, self) =>
+    return locatedFiles.map(file => file.folder).filter((folder, index, self) =>
       self.findIndex(t => t.id === folder.id) === index
     );
-  }, [filesWithFolders]);
+  }, [locatedFiles]);
 
   const [clusterInfoData, setClusterInfoData] = useState<{
     anchor: google.maps.marker.AdvancedMarkerElement;
-    features: (Feature<Point, FileWithFolder & { signedUrl: string }>)[];
+    features: PointFeature<MapFileWithFolderAndUrl>[];
   } | null>(null);
 
   const [poiInfoData, setPoiInfoData] = useState<{
     anchor: google.maps.marker.AdvancedMarkerElement;
-    feature: Feature<Point, FileWithFolder & { signedUrl: string }>;
+    feature: PointFeature<MapFileWithFolderAndUrl>;
   } | null>(null);
 
   const handleClusterInfoWindowClose = useCallback(
@@ -47,20 +75,37 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: (File
     [setPoiInfoData]
   );
 
-  const handlePoiClick = useCallback((feature: Feature<Point, FileWithFolder & { signedUrl: string }>) => {
+  const handlePoiClick = useCallback((feature: PointFeature<MapFileWithFolderAndUrl>) => {
     const clickedFile = feature.properties;
 
-    const startIndex = filesWithFolders.findIndex(file => file.id === clickedFile.id);
+    const startIndex = locatedFiles.findIndex(file => file.id === clickedFile.id);
     setCarouselStartIndex(startIndex);
     setCarouselOpen(true);
-  }, [filesWithFolders]);
+  }, [locatedFiles]);
 
   const handleCarouselClose = useCallback(() => {
     setCarouselOpen(false);
   }, []);
 
+  const handleFileChange = useCallback((file: MapFileWithFolderAndUrl) => {
+    // Find the marker for this file
+    const feature = markers?.features.find(f => f.properties.id === file.id);
+    if (feature) {
+      // Create a new marker element
+      const marker = new google.maps.marker.AdvancedMarkerElement({
+        position: { lat: file.latitude!, lng: file.longitude! }
+      });
+      
+      // Update POI window data
+      setPoiInfoData({
+        anchor: marker,
+        feature
+      });
+    }
+  }, [markers]);
+
   useEffect(() => {
-    const filteredFiles = filesWithFolders.filter(file => 
+    const filteredFiles = locatedFiles.filter(file => 
       file.latitude && 
       file.longitude && 
       (selectedFolders.size === 0 || selectedFolders.has(file.folder.id))
@@ -78,7 +123,7 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: (File
         "properties": file
       }))
     });
-  }, [filesWithFolders, selectedFolders]);
+  }, [locatedFiles, selectedFolders]);
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}>
@@ -127,9 +172,10 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: (File
 
         {carouselOpen && (
           <FileCarousel
-            files={filesWithFolders}
+            files={filterFilesWithLocation(locatedFiles, selectedFolders)}
             startIndex={carouselStartIndex}
             onClose={handleCarouselClose}
+            onFileChange={handleFileChange}
           />
         )}
 

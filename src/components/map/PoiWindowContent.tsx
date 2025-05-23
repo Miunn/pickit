@@ -10,7 +10,7 @@ type ClusterWindowContentProps = {
     onClose: () => void;
 };
 
-export const PoiWindowContent = memo(({ file, onClose }: ClusterWindowContentProps) => {
+export const PoiWindowContent = ({ file, onClose }: ClusterWindowContentProps) => {
     console.log("POI window content", file);
     return (
         <div className="relative">
@@ -51,4 +51,4 @@ export const PoiWindowContent = memo(({ file, onClose }: ClusterWindowContentPro
             </div>
         </div>
     );
-});
+};
