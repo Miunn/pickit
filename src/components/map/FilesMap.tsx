@@ -15,6 +15,7 @@ export type Poi = { key: string, location: google.maps.LatLngLiteral }
 export default function FilesMap({ filesWithFolders }: { filesWithFolders: (FileWithFolder & { signedUrl: string })[] }) {
 
   const [markers, setMarkers] = useState<FeatureCollection<Point, FileWithFolder & { signedUrl: string }> | null>();
+  const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set());
 
   const uniqueFolders = useMemo(() => {
     return filesWithFolders.map(file => file.folder).filter((folder, index, self) =>
@@ -43,9 +44,15 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: (File
   );
 
   useEffect(() => {
+    const filteredFiles = filesWithFolders.filter(file => 
+      file.latitude && 
+      file.longitude && 
+      (selectedFolders.size === 0 || selectedFolders.has(file.folder.id))
+    );
+
     setMarkers({
       "type": "FeatureCollection",
-      "features": filesWithFolders.filter(file => file.latitude && file.longitude).map(file => ({
+      "features": filteredFiles.map(file => ({
         "type": "Feature",
         "id": file.id,
         "geometry": {
@@ -55,7 +62,7 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: (File
         "properties": file
       }))
     });
-  }, [filesWithFolders]);
+  }, [filesWithFolders, selectedFolders]);
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}>
@@ -102,7 +109,10 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: (File
         )}
 
         <div className="absolute top-5 right-5">
-          <FolderList folders={uniqueFolders} />
+          <FolderList 
+            folders={uniqueFolders} 
+            onSelectionChange={setSelectedFolders}
+          />
         </div>
       </Map>
     </APIProvider>

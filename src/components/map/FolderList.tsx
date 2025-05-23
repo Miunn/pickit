@@ -111,7 +111,7 @@ const FolderCard = ({ folder, isSelected, onToggle, formatter }: FolderCardProps
     );
 };
 
-export default function FolderList({ folders }: { folders: Folder[] }) {
+export default function FolderList({ folders, onSelectionChange }: { folders: Folder[], onSelectionChange: (selectedFolders: Set<string>) => void }) {
     const formatter = useFormatter();
     const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set(folders.map(folder => folder.id)));
 
@@ -123,6 +123,7 @@ export default function FolderList({ folders }: { folders: Folder[] }) {
             } else {
                 newSet.add(folderId);
             }
+            onSelectionChange(newSet);
             return newSet;
         });
     };
