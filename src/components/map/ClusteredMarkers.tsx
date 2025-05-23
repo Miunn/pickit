@@ -28,6 +28,7 @@ const superclusterOptions: Supercluster.Options<
   ClusterProperties
 > = {
   extent: 512,
+  radius: 160,
   maxZoom: 16
 };
 
