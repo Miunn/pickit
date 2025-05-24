@@ -12,6 +12,18 @@ const nextConfig = {
                 port: '',
                 pathname: '/echomori-drive-bucket/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'storage.googleapis.com',
+                port: '',
+                pathname: '/echomori-drive-bucket-staging/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'storage.googleapis.com',
+                port: '',
+                pathname: '/echomori-drive-bucket-prod/**',
+            },
         ],
     },
     experimental: {
