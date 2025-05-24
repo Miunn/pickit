@@ -1,9 +1,8 @@
 name: Next.js CI/CD
 
 on:
-  push:
-    branches: [ main, staging ]
   pull_request:
+    types: [opened, synchronize]
     branches: [ main, staging ]
 
 env:
