@@ -49,11 +49,17 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: MapFi
   const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
   const [carouselStartIndex, setCarouselStartIndex] = useState<number>(0);
 
-  const uniqueFolders = useMemo(() => {
+  const uniqueLocatedFolders = useMemo(() => {
     return locatedFiles.map(file => file.folder).filter((folder, index, self) =>
       self.findIndex(t => t.id === folder.id) === index
     );
   }, [locatedFiles]);
+
+  const uniqueFolders = useMemo(() => {
+    return filesWithFolders.map(file => file.folder).filter((folder, index, self) =>
+      self.findIndex(t => t.id === folder.id) === index
+    );
+  }, [filesWithFolders]);
 
   const [clusterInfoData, setClusterInfoData] = useState<{
     anchor: google.maps.marker.AdvancedMarkerElement;
