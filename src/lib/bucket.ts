@@ -21,7 +21,7 @@ export const generateV4DownloadUrl = async (fileName: string) => {
     const [url] = await GoogleBucket.file(fileName).getSignedUrl({
         version: "v4",
         action: "read",
-        expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+        expires: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
     });
     return url;
 }

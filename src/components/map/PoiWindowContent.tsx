@@ -11,7 +11,6 @@ type ClusterWindowContentProps = {
 };
 
 export const PoiWindowContent = ({ file, onClose }: ClusterWindowContentProps) => {
-    console.log("POI window content", file);
     return (
         <div className="relative">
             <div className="bg-white border border-primary rounded-lg overflow-hidden shadow-lg mb-[23px] max-w-64">
@@ -28,12 +27,7 @@ export const PoiWindowContent = ({ file, onClose }: ClusterWindowContentProps) =
                 <div className="p-2">
                     <h2 className='text-sm text-gray-500 font-normal flex justify-between items-center gap-2'>{file.folder.name}</h2>
                     <h3 className='text-sm font-bold flex justify-between items-center gap-2'>{file.name}</h3>
-
-
-
                 </div>
-
-
             </div>
 
             <div style={{
@@ -45,7 +39,7 @@ export const PoiWindowContent = ({ file, onClose }: ClusterWindowContentProps) =
                 height: 12,
                 pointerEvents: 'none', // so it doesn't block clicks
             }}>
-                <svg width="25" height="13" viewBox="-1 1 25 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="25" height="13" viewBox="0 1 25 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <polygon points="0,0 12.5,12 25,0" fill="#fff" stroke="#1f7551" strokeWidth="1" />
                 </svg>
             </div>

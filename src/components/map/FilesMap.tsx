@@ -1,6 +1,6 @@
 'use client'
 
-import { AdvancedMarker, APIProvider, Map, AdvancedMarkerAnchorPoint } from '@vis.gl/react-google-maps';
+import { AdvancedMarker, APIProvider, Map, AdvancedMarkerAnchorPoint, MapControl } from '@vis.gl/react-google-maps';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useState } from 'react';
 import { FolderWithFilesCount } from '@/lib/definitions';
@@ -138,12 +138,14 @@ export default function FilesMap() {
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}>
       <Map
         mapId={process.env.NEXT_PUBLIC_USER_MAP_ID || ""}
+        mapTypeControl={true}
         style={{ position: 'relative', width: '100%', height: '100%' }}
         defaultCenter={{ lat: 22.54992, lng: 0 }}
         defaultZoom={3}
         gestureHandling={'greedy'}
         disableDefaultUI={true}
       >
+        
         {markers && (
           <ClusteredMarkers
             markers={markers}
@@ -173,7 +175,7 @@ export default function FilesMap() {
         {poiInfoData && (
           <AdvancedMarker
             position={poiInfoData.anchor.position}
-            anchorPoint={AdvancedMarkerAnchorPoint.BOTTOM}
+            anchorPoint={["50%", "101.5%"]}
           >
             <PoiWindowContent file={poiInfoData.feature.properties} onClose={handlePoiInfoWindowClose} />
           </AdvancedMarker>
