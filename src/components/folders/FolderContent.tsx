@@ -95,7 +95,7 @@ export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
                     }
                     {!!!isGuest || (token?.token && token.allowMap)
                         ? <Button variant="outline" asChild>
-                            <Link href={`/app/map${token?.token ? `?share=${token?.token}&t=${tokenType}&h=${tokenHash}` : ""}`} className="flex items-center gap-2">
+                            <Link href={`/app/map${token?.token ? `?share=${token?.token}&t=${tokenType === "personAccessToken" ? "p" : "a"}&h=${tokenHash}` : ""}`} className="flex items-center gap-2">
                                 <Map className={"mr-2"} /> {t('actions.map')}
                             </Link>
                         </Button>
@@ -131,7 +131,7 @@ export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
                             }
                             {!!!isGuest || (token?.token && token.allowMap)
                                 ? <DropdownMenuItem asChild>
-                                    <Link href={`/app/map${token?.token ? `?share=${token?.token}&t=${tokenType}&h=${tokenHash}` : ""}`}>
+                                    <Link href={`/app/map${token?.token ? `?share=${token?.token}&t=${tokenType === "personAccessToken" ? "p" : "a"}&h=${tokenHash}` : ""}`}>
                                         {t('actions.map')}
                                     </Link>
                                 </DropdownMenuItem>
@@ -230,7 +230,7 @@ export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
                         }
                         {!!!isGuest || (token?.token && token.allowMap)
                             ? <DropdownMenuItem asChild>
-                                <Link href={`/app/map${token?.token ? `?share=${token?.token}&t=${tokenType}&h=${tokenHash}` : ""}`}>
+                                <Link href={`/app/map${token?.token ? `?share=${token?.token}&t=${tokenType === "personAccessToken" ? "p" : "a"}&h=${tokenHash}` : ""}`}>
                                     {t('actions.map')}
                                 </Link>
                             </DropdownMenuItem>

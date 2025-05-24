@@ -21,7 +21,7 @@ const filterFilesWithLocation = (files: MapFileWithFolderAndUrl[], selectedFolde
   return files.filter(file => 
     file.latitude && 
     file.longitude &&
-    (selectedFolders.size === 0 || selectedFolders.has(file.folder.id))
+    selectedFolders.has(file.folder.id)
   );
 }
 
