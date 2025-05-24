@@ -10,7 +10,7 @@ import { ClusterWindowContent } from './ClusterWindowContent';
 import { PoiWindowContent } from './PoiWindowContent';
 import FolderList from './FolderList';
 import { File } from '@prisma/client';
-import MapFileCarousel from './FileCarousel';
+import MapFileCarousel from './MapFileCarousel';
 import { PointFeature } from 'supercluster';
 
 export type Poi = { key: string, location: google.maps.LatLngLiteral }
