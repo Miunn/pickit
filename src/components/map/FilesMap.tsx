@@ -43,7 +43,13 @@ const getDefaultMarkers = (files: MapFileWithFolderAndUrl[], selectedFolders: Se
 }
 
 export default function FilesMap({ filesWithFolders }: { filesWithFolders: MapFileWithFolderAndUrl[] }) {
-  const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set());
+  const uniqueFolders = useMemo(() => {
+    return filesWithFolders.map(file => file.folder).filter((folder, index, self) =>
+      self.findIndex(t => t.id === folder.id) === index
+    );
+  }, [filesWithFolders]);
+
+  const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set(uniqueFolders.map(folder => folder.id)));
   const locatedFiles = useMemo<MapFileWithFolderAndUrl[]>(() => filterFilesWithLocation(filesWithFolders, selectedFolders), [filesWithFolders, selectedFolders]);
   const [markers, setMarkers] = useState<FeatureCollection<Point, MapFileWithFolderAndUrl>>(() => getDefaultMarkers(locatedFiles, selectedFolders));
   const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
@@ -54,12 +60,6 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: MapFi
       self.findIndex(t => t.id === folder.id) === index
     );
   }, [locatedFiles]);
-
-  const uniqueFolders = useMemo(() => {
-    return filesWithFolders.map(file => file.folder).filter((folder, index, self) =>
-      self.findIndex(t => t.id === folder.id) === index
-    );
-  }, [filesWithFolders]);
 
   const [clusterInfoData, setClusterInfoData] = useState<{
     anchor: google.maps.marker.AdvancedMarkerElement;
