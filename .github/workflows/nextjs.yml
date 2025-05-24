@@ -7,6 +7,9 @@ on:
     branches: [ main, staging ]
 
 env:
+  NEXT_PUBLIC_APP_NAME: "Echomori"
+  NEXT_PUBLIC_APP_URL: "http://localhost:3000"
+  NEXT_PUBLIC_SUPPORT_MAIL: "hello@echomori.fr"
   GCP_BUCKET_NAME: ${{ secrets.GOOGLE_BUCKET_NAME }}
 
 jobs:
