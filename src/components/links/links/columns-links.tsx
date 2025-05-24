@@ -11,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { toast } from "@/hooks/use-toast";
 import { AccessTokenWithFolder } from "@/lib/definitions"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, BadgeCheck, BadgeMinus, CircleHelp, Eye, Lock, LockOpen, MoreHorizontal, Pencil, PencilOff } from "lucide-react";
+import { ArrowUpDown, BadgeCheck, BadgeMinus, CircleHelp, Eye, Lock, LockOpen, MapPin, MapPinOff, MoreHorizontal, Pencil, PencilOff } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
@@ -78,7 +78,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                 return <Badge className="capitalize bg-orange-600 hover:bg-orange-700 flex gap-2 w-fit"><Pencil />{t('write')}</Badge>
             }
         },
-        size: 100
+        size: 260
     },
     {
         accessorKey: "isActive",
@@ -109,6 +109,31 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                     : <Badge className="bg-red-600 hover:bg-red-700 flex gap-2 w-fit"><BadgeMinus /> {t('inactive')}</Badge>
                 }
             </>
+        },
+        size: 120
+    },
+    {
+        accessorKey: "allowMap",
+        header: () => {
+            const t = useTranslations("dataTables.links.columns.allowMap")
+            return (
+                <p>{t('header')}</p>
+            )
+        },
+        cell: ({ row }) => {
+            const t = useTranslations("dataTables.links.columns.allowMap")
+            const allowMap: boolean = row.getValue("allowMap")
+            return <p className="flex items-center text-muted-foreground truncate">{allowMap ? (
+                <>
+                    <MapPin className="mr-2" />
+                    {t('allowed')}
+                </>
+            ) : (
+                <>
+                    <MapPinOff className="mr-2" />
+                    {t('notAllowed')}
+                </>
+            )}</p>
         },
         size: 120
     },

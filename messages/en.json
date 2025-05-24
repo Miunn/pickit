@@ -1497,6 +1497,9 @@
               "description": "The access for this person has been deleted successfully"
             }
           }
+        },
+        "allowMap": {
+          "header": "Is map allowed"
         }
       }
     },
@@ -1573,6 +1576,11 @@
               "description": "The link has been deleted successfully"
             }
           }
+        },
+        "allowMap": {
+          "header": "Is map allowed",
+          "allowed": "Yes",
+          "notAllowed": "No"
         }
       },
       "actions": {
@@ -1626,6 +1634,14 @@
               "description": "The user has been deleted successfully"
             }
           }
+        }
+      }
+    },
+    "peopl": {
+      "columns": {
+        "allowMap": {
+          "allowed": "Yes",
+          "notAllowed": "No"
         }
       }
     }

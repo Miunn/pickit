@@ -12,7 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { Link } from "@/i18n/navigation";
 import { PersonAccessTokenWithFolder } from "@/lib/definitions"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, BadgeCheck, BadgeMinus, CircleHelp, Eye, Lock, LockOpen, MoreHorizontal, Pencil, PencilOff } from "lucide-react";
+import { ArrowUpDown, BadgeCheck, BadgeMinus, CircleHelp, Eye, Lock, LockOpen, MapPin, MapPinOff, MoreHorizontal, Pencil, PencilOff } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -98,7 +98,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
             }
             return <Badge className="bg-gray-600 hover:bg-gray-700 flex gap-2 w-fit"><BadgeMinus /> {t('none')}</Badge>
         },
-        size: 340
+        size: 260
     },
     {
         accessorKey: "isActive",
@@ -130,6 +130,31 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                     : <Badge className="bg-red-600 hover:bg-red-700 flex gap-2 w-fit"><BadgeMinus /> {t('inactive')}</Badge>
                 }
             </>
+        },
+        size: 120
+    },
+    {
+        accessorKey: "allowMap",
+        header: () => {
+            const t = useTranslations("dataTables.people.columns.allowMap")
+            return (
+                <p className="min-w-32">{t('header')}</p>
+            )
+        },
+        cell: ({ row }) => {
+            const t = useTranslations("dataTables.peopl.columns.allowMap")
+            const allowMap: boolean = row.getValue("allowMap")
+            return <p className="flex items-center text-muted-foreground truncate">{allowMap ? (
+                <>
+                    <MapPin className="mr-2" />
+                    {t('allowed')}
+                </>
+            ) : (
+                <>
+                    <MapPinOff className="mr-2" />
+                    {t('notAllowed')}
+                </>
+            )}</p>
         },
         size: 120
     },

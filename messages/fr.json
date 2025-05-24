@@ -1496,6 +1496,9 @@
               "description": "L'accès pour cette personne a été supprimé"
             }
           }
+        },
+        "allowMap": {
+          "header": "Carte autorisée"
         }
       }
     },
@@ -1572,6 +1575,11 @@
               "description": "Le lien a été supprimé avec succès"
             }
           }
+        },
+        "allowMap": {
+          "header": "Carte autorisée",
+          "allowed": "Oui",
+          "notAllowed": "Non"
         }
       },
       "actions": {
@@ -1625,6 +1633,14 @@
               "description": "L'utilisateur a été supprimé avec succès"
             }
           }
+        }
+      }
+    },
+    "peopl": {
+      "columns": {
+        "allowMap": {
+          "allowed": "Oui",
+          "notAllowed": "Non"
         }
       }
     }
