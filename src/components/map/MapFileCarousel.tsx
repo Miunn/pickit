@@ -37,7 +37,7 @@ export default function MapFileCarousel({ files, startIndex, onClose, onFileChan
 
         api.on("select", () => {
             const index = api.selectedScrollSnap();
-            const file = files[(index + 2) % files.length];
+            const file = files[index];
             if (file && file.latitude && file.longitude) {
                 // Pan the map to the new file location
                 map?.panTo({ lat: file.latitude, lng: file.longitude });
@@ -65,9 +65,9 @@ export default function MapFileCarousel({ files, startIndex, onClose, onFileChan
                     >
                         <Carousel
                             opts={{
-                                align: "start",
+                                align: "center",
                                 loop: true,
-                                startIndex: (startIndex - 2) % files.length,
+                                startIndex: startIndex,
                             }}
                             className="w-full"
                             setApi={setApi}
