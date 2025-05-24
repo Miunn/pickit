@@ -144,6 +144,8 @@ export default async function FolderPage({ params, searchParams }: { params: { f
             <FolderProvider
                 folderData={getSortedFolderContent(folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments}
                 tokenData={accessToken}
+                tokenType={searchParams.t === "p" ? "personAccessToken" : "accessToken"}
+                tokenHash={searchParams.h ?? null}
             >
                 <TokenProvider token={accessToken}>
                     <FilesProvider filesData={folder.files}>

@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
-import { ArrowDown, ArrowUp, Download, LayoutGrid, List, MoreHorizontal, Pencil } from "lucide-react";
+import { ArrowDown, ArrowUp, Download, LayoutGrid, List, MoreHorizontal, Pencil, Map } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { UploadImagesDialog } from "@/components/files/upload/UploadImagesDialog";
 import { ImagesGrid } from "@/components/files/views/grid/ImagesGrid";
@@ -17,6 +17,7 @@ import EditDescriptionDialog from "./EditDescriptionDialog";
 import { useSearchParams } from "next/navigation";
 import { useFolderContext } from "@/context/FolderContext";
 import { useFilesContext } from "@/context/FilesContext";
+import { Link } from "@/i18n/navigation";
 
 export interface FolderContentProps {
     defaultView?: ViewState;
@@ -24,12 +25,7 @@ export interface FolderContentProps {
 }
 
 export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
-    const searchParams = useSearchParams();
-    const shareToken = searchParams.get("share");
-    const tokenType = searchParams.get("t");
-    const hashPinCode = searchParams.get("h");
-
-    const { folder } = useFolderContext();
+    const { folder, token, tokenType, tokenHash } = useFolderContext();
     const { files } = useFilesContext();
 
     const t = useTranslations("folders");
@@ -97,11 +93,19 @@ export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
                         ? <SortImages sortState={sortState} setSortState={setSortState} />
                         : null
                     }
+                    {!!!isGuest || (token?.token && token.allowMap)
+                        ? <Button variant="outline" asChild>
+                            <Link href={`/app/map${token?.token ? `?share=${token?.token}&t=${tokenType}&h=${tokenHash}` : ""}`} className="flex items-center gap-2">
+                                <Map className={"mr-2"} /> {t('actions.map')}
+                            </Link>
+                        </Button>
+                        : null
+                    }
                     {!!!isGuest
                         ? <UploadImagesDialog folderId={folder.id} />
                         : null}
                     {!!!isGuest ? <ShareFolderDialog folder={folder} /> : null}
-                    <Button variant="outline" onClick={() => downloadClientFiles(downloadT, files, folder.name, shareToken, tokenType === "accessToken" ? "accessToken" : tokenType === "personAccessToken" ? "personAccessToken" : null, hashPinCode)}>
+                    <Button variant="outline" onClick={() => downloadClientFiles(downloadT, files, folder.name, token?.token, tokenType, tokenHash)}>
                         <Download className={"mr-2"} /> {t('actions.download')}
                     </Button>
                 </div>
@@ -125,12 +129,20 @@ export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
                                 ? <DropdownMenuItem onClick={() => setOpenEditDescription(true)}>{t('addDescription')}</DropdownMenuItem>
                                 : null
                             }
+                            {!!!isGuest || (token?.token && token.allowMap)
+                                ? <DropdownMenuItem asChild>
+                                    <Link href={`/app/map${token?.token ? `?share=${token?.token}&t=${tokenType}&h=${tokenHash}` : ""}`}>
+                                        {t('actions.map')}
+                                    </Link>
+                                </DropdownMenuItem>
+                                : null
+                            }
                             {!!!isGuest
                                 ? <DropdownMenuItem onClick={() => setOpenShare(true)}>
                                     {t('share.label')}
                                 </DropdownMenuItem>
                                 : null}
-                            <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, files, folder.name, shareToken, tokenType === "accessToken" ? "accessToken" : tokenType === "personAccessToken" ? "personAccessToken" : null, hashPinCode)}>
+                            <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, files, folder.name, token?.token, tokenType, tokenHash)}>
                                 {t('download.label')}
                             </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -216,6 +228,14 @@ export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
                             </DropdownMenuSub>
                             : null
                         }
+                        {!!!isGuest || (token?.token && token.allowMap)
+                            ? <DropdownMenuItem asChild>
+                                <Link href={`/app/map${token?.token ? `?share=${token?.token}&t=${tokenType}&h=${tokenHash}` : ""}`}>
+                                    {t('actions.map')}
+                                </Link>
+                            </DropdownMenuItem>
+                            : null
+                        }
                         {!!!isGuest
                             ? <DropdownMenuItem onClick={() => setOpenUpload(true)}>
                                 {t('upload.label')}
@@ -226,7 +246,7 @@ export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
                                 {t('share.label')}
                             </DropdownMenuItem>
                             : null}
-                        <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, files, folder.name, shareToken, tokenType === "accessToken" ? "accessToken" : tokenType === "personAccessToken" ? "personAccessToken" : null, hashPinCode)}>
+                        <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, files, folder.name, token?.token, tokenType, tokenHash)}>
                             {t('download.label')}
                         </DropdownMenuItem>
                     </DropdownMenuContent>

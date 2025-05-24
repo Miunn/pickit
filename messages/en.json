@@ -1678,7 +1678,8 @@
       "open": "Open",
       "manage": "Manage links",
       "properties": "Properties",
-      "download": "Download"
+      "download": "Download",
+      "map": "Map"
     },
     "sort": {
       "label": "Sort by",

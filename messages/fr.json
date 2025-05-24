@@ -1677,7 +1677,8 @@
       "open": "Open",
       "manage": "Manage links",
       "properties": "Properties",
-      "download": "Télécharger"
+      "download": "Télécharger",
+      "map": "Carte"
     },
     "dialog": {
       "rename": {
