@@ -214,7 +214,7 @@ export const getSortedFolderContent = (folderContent: FolderWithFilesWithFolderA
 	}
 }
 
-export const getSortedImagesVideosContent = (arr: FileWithFolder[], sort: ImagesSortMethod): FileWithFolder[] => {
+export const getSortedImagesVideosContent = (arr: FileWithFolder[], sort: ImagesSortMethod) => {
 	switch (sort) {
 		case ImagesSortMethod.NameAsc:
 			return arr.sort((a, b) => a.name.localeCompare(b.name) || a.createdAt.getTime() - b.createdAt.getTime())

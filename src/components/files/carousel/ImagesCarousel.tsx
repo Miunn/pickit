@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../../ui/carousel";
 import { Button } from "../../ui/button";
-import { Heart, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn, formatBytes } from "@/lib/utils";
 import ImageCommentSection from "./ImageCommentSection";
@@ -12,12 +12,10 @@ import { useSession } from "@/providers/SessionProvider";
 import LoadingImage from "../LoadingImage";
 import FileOptions from "./FileOptions";
 import { useFilesContext } from "@/context/FilesContext";
-import { likeFile } from "@/actions/files";
-import { toast } from "sonner";
 import FileLikeButton from "../FileLikeButton";
 
 export default function ImagesCarousel({ startIndex, currentIndex }: { startIndex: number, currentIndex?: number }) {
-    const { files, setFiles, hasUserLikedFile } = useFilesContext();
+    const { files, setFiles } = useFilesContext();
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");

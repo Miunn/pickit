@@ -6,6 +6,7 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { FilesProvider } from "@/context/FilesContext";
 import { TokenProvider } from "@/context/TokenContext";
+import { generateV4DownloadUrl } from "@/lib/bucket";
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
     const t = await getTranslations("metadata.dashboard")
@@ -31,7 +32,7 @@ export default async function Home({ params }: { params: { locale: string } }) {
         include: {
             cover: true,
             AccessToken: true,
-            files: { include: { folder: true, comments: { include: { createdBy: true } } } },
+            files: { include: { folder: { include: { _count: { select: { files: true } } } }, comments: { include: { createdBy: true } } } },
             _count: { select: { files: true } },
         },
         take: 6,
@@ -41,15 +42,20 @@ export default async function Home({ params }: { params: { locale: string } }) {
             createdBy: { id: user.id }
         },
         orderBy: [{ updatedAt: 'desc' }],
-        include: { folder: true, comments: { include: { createdBy: true } }, likes: true },
+        include: { folder: { include: { _count: { select: { files: true } } } }, comments: { include: { createdBy: true } }, likes: true },
         take: 6,
     })).sort((a, b) => {
         return (b.updatedAt as Date).getTime() - (a.updatedAt as Date).getTime();
     }).slice(0, 6);
 
+    const lastFilesWithSignedUrls = await Promise.all(lastFiles.map(async (file) => ({
+        ...file,
+        signedUrl: await generateV4DownloadUrl(`${file.createdById}/${file.folderId}/${file.id}`),
+    })));
+
     return (
         <TokenProvider token={null}>
-            <FilesProvider filesData={lastFiles}>
+            <FilesProvider filesData={lastFilesWithSignedUrls}>
                 <DashboardContent lastFolders={lastFolders} />
             </FilesProvider>
         </TokenProvider>

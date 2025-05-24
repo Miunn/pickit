@@ -3,21 +3,21 @@
 import { prisma } from "@/lib/prisma";
 import sharp from "sharp";
 import { revalidatePath } from "next/cache";
-import { FileLightWithFolderName, FileWithComments, FileWithFolder, RenameImageFormSchema } from "@/lib/definitions";
+import { FileWithComments, FileWithFolder, RenameImageFormSchema } from "@/lib/definitions";
 import { getCurrentSession } from "@/lib/session";
 import { fileTypeFromBuffer } from 'file-type';
 import { z } from "zod";
 import { GoogleBucket } from "@/lib/bucket";
 import mediaInfoFactory, { Track } from "mediainfo.js";
 import ffmpeg from "fluent-ffmpeg";
-import { PassThrough, Readable } from "stream";
+import { PassThrough } from "stream";
 import crypto, { randomUUID } from "crypto";
-import { validateShareToken } from "./tokenValidation";
 import { FileType, PersonAccessToken, FileLike } from "@prisma/client";
-import fs, { mkdtemp, mkdtempSync, rmdirSync, unlinkSync } from "fs";
+import fs, { mkdtempSync } from "fs";
 import path from "path";
 import { tmpdir } from "os";
 import { canLikeFile, getToken, isAllowedToAccessFile } from "@/lib/dal";
+import exifr from "exifr";
 
 ffmpeg.setFfmpegPath(process.env.FFMPEG_PATH as string);
 
@@ -161,6 +161,7 @@ export async function finalizeFileUpload(
         // Create database record
         if (verificationData.type.startsWith("image/")) {
             const metadata = await sharp(uploadedBuffer).metadata();
+            const exif = await exifr.parse(uploadedBuffer, true);
             const image = await prisma.file.create({
                 data: {
                     id: fileId,
@@ -172,7 +173,25 @@ export async function finalizeFileUpload(
                     createdById: session.user.id,
                     extension: verificationData.name.split('.').pop() || '',
                     width: metadata.width || 0,
-                    height: metadata.height || 0
+                    height: metadata.height || 0,
+                    make: exif.Make,
+                    model: exif.Model,
+                    software: exif.Software,
+                    orientation: exif.Orientation?.toString(),
+                    exposureTime: exif.ExposureTime,
+                    fNumber: exif.FNumber,
+                    iso: exif.ISO,
+                    focalLength: exif.FocalLength,
+                    flash: exif.Flash,
+                    takenAt: exif.TakenAt,
+                    modifiedAt: exif.ModifiedAt,
+                    contrast: exif.Contrast,
+                    saturation: exif.Saturation,
+                    sharpness: exif.Sharpness,
+                    whiteBalance: exif.WhiteBalance,
+                    altitude: exif.GPSAltitude,
+                    latitude: exif.latitude,
+                    longitude: exif.longitude
                 }
             });
             revalidatePath(`/app/folders/${parentFolderId}`);

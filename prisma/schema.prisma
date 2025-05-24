@@ -61,6 +61,24 @@ model File {
   extension     String
   width         Int      @default(0)
   height        Int      @default(0)
+  make          String?
+  model         String?
+  software      String?
+  orientation   String?
+  exposureTime  Float?
+  fNumber       Float?
+  iso           Float?
+  takenAt       DateTime?
+  modifiedAt    DateTime?
+  flash         String?
+  focalLength   Float?
+  contrast      Float?
+  saturation    String?
+  sharpness     String?
+  whiteBalance  String?
+  altitude      Float?
+  latitude      Float?
+  longitude     Float?
   duration      Int      @default(0)
   thumbnail     String?
   type          FileType @default(IMAGE)
@@ -123,6 +141,7 @@ model AccessToken {
   uses       Int                   @default(0)
   isActive   Boolean               @default(true)
   permission FolderTokenPermission @default(READ)
+  allowMap   Boolean               @default(false)
   locked     Boolean               @default(false)
   pinCode    String?
   expires    DateTime
@@ -139,6 +158,7 @@ model PersonAccessToken {
   uses       Int                   @default(0)
   isActive   Boolean               @default(true)
   permission FolderTokenPermission @default(READ)
+  allowMap   Boolean               @default(false)
   locked     Boolean               @default(false)
   pinCode    String?
   expires    DateTime

@@ -5,7 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Folder, Image, Link } from "lucide-react";
+import { Folder, Image, Link, Map } from "lucide-react";
 import BreadcrumbWrapper from "@/components/layout/BreadcrumbWrapper";
 import UnverifiedEmail from "@/components/layout/UnverifiedEmail";
 import { addDays } from "date-fns";
@@ -127,6 +127,12 @@ export default async function LocaleLayout({
                                 })))
                             },
                             {
+                                key: "map",
+                                title: t('main.map'),
+                                icon: Map,
+                                url: `/${locale}/app/map`,
+                            },
+                            {
                                 key: "shared-with-me",
                                 title: t('main.sharedWithMe'),
                                 icon: Folder,
@@ -166,7 +172,7 @@ export default async function LocaleLayout({
                             <UnverifiedEmail locale={locale} userDeletionDate={user.emailVerificationDeadline || addDays(user.createdAt, 7)} />
                         ) : null}
 
-                        <div className="flex flex-1 flex-col gap-4 p-4 overflow-auto pt-4">
+                        <div className="flex flex-1 flex-col gap-4 overflow-auto">
                             {children}
                         </div>
                     </SidebarInset>
