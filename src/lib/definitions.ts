@@ -132,7 +132,8 @@ export const CreateAccessTokenFormSchema = z.object({
         invalid_type_error: "Selected date is invalid",
     }).min(new Date(), {
         message: "Expiry date should be in the future"
-    })
+    }),
+    allowMap: z.boolean().optional()
 })
 
 export const CreatePersonAccessTokenFormSchema = z.object({
@@ -145,7 +146,8 @@ export const CreatePersonAccessTokenFormSchema = z.object({
         invalid_type_error: "Selected date is invalid",
     }).min(new Date(), {
         message: "Expiry date should be in the future"
-    })
+    }),
+    allowMap: z.boolean().optional()
 })
 
 export const AccountFormSchema = z.object({

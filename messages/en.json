@@ -914,8 +914,22 @@
               "description": "Link will be invalid after this date"
             },
             "pinCode": {
-              "label": "PIN Code",
-              "description": "Protect this link with a PIN code"
+              "label": "Token locked:",
+              "description": "Protect this link with a PIN code",
+              "yes": "Yes",
+              "no": "No",
+              "dialog": {
+                "title": "Lock with a PIN code",
+                "description": "You'll have to let your users know this PIN code",
+                "cancel": "Cancel",
+                "save": "Lock",
+                "remove": "Remove code"
+              }
+            },
+            "allowMap": {
+              "label": "Allow map:",
+              "yes": "Yes",
+              "no": "No"
             }
           }
         },
@@ -969,7 +983,9 @@
           "placeholder": "Take a look at this album...",
           "sending": "Sending emails",
           "send": "Send"
-        }
+        },
+        "cancel": "Cancel",
+        "share": "Share"
       },
       "delete": {
         "trigger": "Delete",

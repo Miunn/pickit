@@ -141,6 +141,7 @@ model AccessToken {
   uses       Int                   @default(0)
   isActive   Boolean               @default(true)
   permission FolderTokenPermission @default(READ)
+  allowMap   Boolean               @default(false)
   locked     Boolean               @default(false)
   pinCode    String?
   expires    DateTime
@@ -157,6 +158,7 @@ model PersonAccessToken {
   uses       Int                   @default(0)
   isActive   Boolean               @default(true)
   permission FolderTokenPermission @default(READ)
+  allowMap   Boolean               @default(false)
   locked     Boolean               @default(false)
   pinCode    String?
   expires    DateTime

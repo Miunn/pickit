@@ -893,8 +893,22 @@
               "description": "Le lien de partage deviendra invalide après cette date"
             },
             "pinCode": {
-              "label": "Code PIN",
-              "description": "Ce code PIN sera nécessaire pour accéder au dossier"
+              "label": "Lien vérouillé :",
+              "description": "Ce code PIN sera nécessaire pour accéder au dossier",
+              "yes": "Oui",
+              "no": "Non",
+              "dialog": {
+                "title": "Vérouiller avec un code PIN",
+                "description": "Vous devrez communiquer ce code avec la personne à qui vous partagez ce dossier",
+                "cancel": "Annuler",
+                "save": "Vérouiller",
+                "remove": "Supprimer le code"
+              }
+            },
+            "allowMap": {
+              "label": "Autoriser l'accès à la carte :",
+              "yes": "Oui",
+              "no": "Non"
             }
           }
         },
@@ -948,7 +962,9 @@
           "placeholder": "Jetez un coup d'oeil à cet album...",
           "sending": "Envoi des emails",
           "send": "Envoyer"
-        }
+        },
+        "cancel": "Annuler",
+        "share": "Partager"
       },
       "properties": {
         "title": "Propriétés du dossier",
