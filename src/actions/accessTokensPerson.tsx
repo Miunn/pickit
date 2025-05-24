@@ -125,6 +125,28 @@ export async function changePersonAccessTokenActiveState(token: string, isActive
     return { error: null }
 }
 
+export async function changePersonAccessTokenAllowMap(tokenId: string, allowMap: boolean): Promise<{ error: string | null }> {
+    const { user } = await getCurrentSession();
+
+    if (!user) {
+        return { error: "You must be logged in to change the allow map state of an access token" }
+    }
+
+    try {
+        await prisma.personAccessToken.update({
+            where: {
+                id: tokenId,
+                folder: { createdBy: { id: user.id } }
+            },
+            data: { allowMap }
+        });
+        revalidatePath("/app/links");
+        return { error: null }
+    } catch (e) {
+        return { error: "An unknown error happened when trying to change the allow map state of this access token" }
+    }
+}
+
 export async function lockPersonAccessToken(tokenId: string, pin: string): Promise<{
     error: string | null
 }> {

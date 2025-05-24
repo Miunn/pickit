@@ -1495,6 +1495,30 @@
               "title": "Accès supprimée",
               "description": "L'accès pour cette personne a été supprimé"
             }
+          },
+          "allowMap": {
+            "disable": {
+              "label": "Supprimer l'accès à la carte",
+              "error": {
+                "title": "Impossible de supprimer l'accès",
+                "description": "Une erreur inconnue est survenue lors de la suppression de l'accès à la carte. Réessayez"
+              },
+              "success": {
+                "title": "Accès à la carte supprimé",
+                "description": "L'accès à la carte a été supprimé avec succès"
+              }
+            },
+            "enable": {
+              "label": "Activer l'accès à la carte",
+              "error": {
+                "title": "Impossible d'activer l'accès",
+                "description": "Une erreur inconnue est survenue lors de l'activation de l'accès à la carte. Réessayez"
+              },
+              "success": {
+                "title": "Accès à la carte activé",
+                "description": "L'accès à la carte a été activé avec succès"
+              }
+            }
           }
         },
         "allowMap": {
@@ -1573,6 +1597,30 @@
             "success": {
               "title": "Lien supprimé",
               "description": "Le lien a été supprimé avec succès"
+            }
+          },
+          "allowMap": {
+            "disable": {
+              "label": "Supprimer l'accès à la carte",
+              "error": {
+                "title": "Impossible de supprimer l'accès",
+                "description": "Une erreur inconnue est survenue lors de la suppression de l'accès à la carte. Réessayez"
+              },
+              "success": {
+                "title": "Accès à la carte supprimé",
+                "description": "L'accès à la carte a été supprimé avec succès"
+              }
+            },
+            "enable": {
+              "label": "Activer l'accès à la carte",
+              "error": {
+                "title": "Impossible d'activer l'accès",
+                "description": "Une erreur inconnue est survenue lors de l'activation de l'accès à la carte. Réessayez"
+              },
+              "success": {
+                "title": "Accès à la carte activé",
+                "description": "L'accès à la carte a été activé avec succès"
+              }
             }
           }
         },

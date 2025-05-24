@@ -1,6 +1,6 @@
 "use client"
 
-import { changeAccessTokenActiveState, unlockAccessToken } from "@/actions/accessTokens";
+import { changeAccessTokenActiveState, changeAccessTokenAllowMap, unlockAccessToken } from "@/actions/accessTokens";
 import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessTokenDialog";
 import LockTokenDialog from "@/components/folders/LockTokenDialog";
 import { Badge } from "@/components/ui/badge";
@@ -274,6 +274,36 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                                         description: t('setActive.success.description')
                                     })
                                 }}>{t('setActive.label')}</DropdownMenuItem>
+                            }
+                            {accessToken.allowMap
+                                ? <DropdownMenuItem onClick={async () => {
+                                    const r = await changeAccessTokenAllowMap(accessToken.id, false)
+                                    if (r.error) {
+                                        toast({
+                                            title: t('allowMap.disable.error.title'),
+                                            description: t('allowMap.disable.error.description')
+                                        });
+                                        return;
+                                    }
+                                    toast({
+                                        title: t('allowMap.disable.success.title'),
+                                        description: t('allowMap.disable.success.description')
+                                    });
+                                }}>{t('allowMap.disable.label')}</DropdownMenuItem>
+                                : <DropdownMenuItem onClick={async () => {
+                                    const r = await changeAccessTokenAllowMap(accessToken.id, true)
+                                    if (r.error) {
+                                        toast({
+                                            title: t('allowMap.enable.error.title'),
+                                            description: t('allowMap.enable.error.description')
+                                        });
+                                        return;
+                                    }
+                                    toast({
+                                        title: t('allowMap.enable.success.title'),
+                                        description: t('allowMap.enable.success.description')
+                                    });
+                                }}>{t('allowMap.enable.label')}</DropdownMenuItem>
                             }
                             {accessToken.locked
                                 ? <DropdownMenuItem onClick={() => unlockAccessToken(accessToken.id)}>{t('unlock')}</DropdownMenuItem>
