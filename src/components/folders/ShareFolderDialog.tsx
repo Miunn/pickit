@@ -41,7 +41,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
     const locale = useLocale();
     const t = useTranslations("dialogs.folders.share");
     const [loadingShare, setLoadingShare] = useState(false);
-    const [tokenList, setTokenList] = useState<{ email: string, permission: FolderTokenPermission, expiryDate: Date, pinCode?: string }[]>([]);
+    const [tokenList, setTokenList] = useState<{ email: string, permission: FolderTokenPermission, expiryDate: Date, pinCode?: string, allowMap?: boolean }[]>([]);
     const emailScroll = useRef<HTMLDivElement>(null);
     const validTokens = folder.AccessToken.filter((token) => token.expires > new Date() && token.isActive);
 
@@ -81,7 +81,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
         });
     }
 
-    const addEmail = ({ email, permission, expiresAt, pinCode }: z.infer<typeof CreatePersonAccessTokenFormSchema>) => {
+    const addEmail = ({ email, permission, expiresAt, pinCode, allowMap }: z.infer<typeof CreatePersonAccessTokenFormSchema>) => {
         const emailSchema = z.string().email();
         if (!email || email.length === 0 || tokenList.map((t) => t.email).includes(email) || !emailSchema.safeParse(email).success) {
             toast({
@@ -92,13 +92,16 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
             return;
         }
 
+        console.log("Add email", { email, permission, expiryDate: expiresAt, pinCode, allowMap });
+
         setShowPersonAccessTokenLock(false);
-        setTokenList([...tokenList, { email, permission, expiryDate: expiresAt, pinCode }]);
+        setTokenList([...tokenList, { email, permission, expiryDate: expiresAt, pinCode, allowMap }]);
         sharePersonAccessTokenForm.reset();
     }
 
     const submitSharePersonTokens = async () => {
         setLoadingShare(true);
+        console.log("Submit share person tokens", { tokenList, shareMessage });
         const r = await createMultiplePersonAccessTokens(folder.id, tokenList.map(token => ({
             ...token,
             message: shareMessage
