@@ -72,7 +72,7 @@ model File {
   modifiedAt    DateTime?
   flash         String?
   focalLength   Float?
-  contrast      Float?
+  contrast      String?
   saturation    String?
   sharpness     String?
   whiteBalance  String?
