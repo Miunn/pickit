@@ -1,9 +1,10 @@
 import React, { memo, useEffect, useState } from 'react';
-import { Folder } from '@prisma/client';
-import Image from 'next/image';
 import { X } from 'lucide-react';
 import { FileWithFolder } from '@/lib/definitions';
 import LoadingImage from '../files/LoadingImage';
+import { Link } from '@/i18n/navigation';
+import { useTokenContext } from '@/context/TokenContext';
+import { useSearchParams } from 'next/navigation';
 
 type ClusterWindowContentProps = {
     file: FileWithFolder & { signedUrl: string };
@@ -11,6 +12,8 @@ type ClusterWindowContentProps = {
 };
 
 export const PoiWindowContent = ({ file, onClose }: ClusterWindowContentProps) => {
+    const searchParams = useSearchParams();
+
     return (
         <div className="relative">
             <div className="bg-white border border-primary rounded-lg overflow-hidden shadow-lg mb-[23px] max-w-64">
@@ -25,7 +28,11 @@ export const PoiWindowContent = ({ file, onClose }: ClusterWindowContentProps) =
                 </div>
 
                 <div className="p-2">
-                    <h2 className='text-sm text-gray-500 font-normal flex justify-between items-center gap-2'>{file.folder.name}</h2>
+                    <h2 className='w-fit hover:underline text-sm text-gray-500 font-normal flex justify-between items-center gap-2'>
+                        <Link href={`/app/folders/${file.folderId}?${searchParams.toString()}`}>
+                            {file.folder.name}
+                        </Link>
+                    </h2>
                     <h3 className='text-sm font-bold flex justify-between items-center gap-2'>{file.name}</h3>
                 </div>
             </div>
