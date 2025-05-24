@@ -65,7 +65,8 @@
       "folders": "Folders",
       "images": "Images",
       "links": "Links",
-      "sharedWithMe": "Shared with me"
+      "sharedWithMe": "Shared with me",
+      "map": "My map"
     },
     "secondary": {
       "used": "Used storage"
@@ -83,6 +84,7 @@
     "folders": "Folders",
     "images": "Images",
     "links": "Links",
+    "map": "My map",
     "account": "Account",
     "administration": "Administration",
     "administrationUsers": "Users"
@@ -715,6 +717,18 @@
       "likeButton": {
         "cannotLike": "You must be logged in to like a file"
       }
+    },
+    "map": {
+      "cluster": {
+        "folder": {
+          "count": "{count, plural, =0 {No files} =1 {1 file} other {# files}}"
+        }
+      },
+      "folderList": {
+        "folderCard": {
+          "folderCount": "{count, plural, =0 {0 files} =1 {1 file} other {# files}}"
+        }
+      }
     }
   },
   "dialogs": {
@@ -900,8 +914,22 @@
               "description": "Link will be invalid after this date"
             },
             "pinCode": {
-              "label": "PIN Code",
-              "description": "Protect this link with a PIN code"
+              "label": "Token locked:",
+              "description": "Protect this link with a PIN code",
+              "yes": "Yes",
+              "no": "No",
+              "dialog": {
+                "title": "Lock with a PIN code",
+                "description": "You'll have to let your users know this PIN code",
+                "cancel": "Cancel",
+                "save": "Lock",
+                "remove": "Remove code"
+              }
+            },
+            "allowMap": {
+              "label": "Allow map:",
+              "yes": "Yes",
+              "no": "No"
             }
           }
         },
@@ -955,7 +983,9 @@
           "placeholder": "Take a look at this album...",
           "sending": "Sending emails",
           "send": "Send"
-        }
+        },
+        "cancel": "Cancel",
+        "share": "Share"
       },
       "delete": {
         "trigger": "Delete",
@@ -1648,7 +1678,8 @@
       "open": "Open",
       "manage": "Manage links",
       "properties": "Properties",
-      "download": "Download"
+      "download": "Download",
+      "map": "Map"
     },
     "sort": {
       "label": "Sort by",

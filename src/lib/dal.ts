@@ -231,10 +231,65 @@ export async function canLikeComment(commentId: string, shareToken?: string | nu
     return isAllowedToAccessFile(comment.fileId, shareToken, accessKey, "personAccessToken");
 }
 
+export async function canAccessMap(shareToken?: string | null, accessKey?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
+    const { user } = await getCurrentSession();
+
+    // Priority is set to access token if user is logged in
+    if (user && !shareToken) {
+        return true;
+    }
+
+    if (!shareToken || !tokenType) {
+        return false;
+    }
+
+    if (!isAccessWithTokenValid(shareToken, accessKey, tokenType)) {
+        return false;
+    }
+
+    const token = await getToken(shareToken, tokenType);
+
+    if (token?.allowMap) {
+        return true;
+    }
+
+    return false;
+}
+
 export async function getToken(shareToken: string, tokenType: "accessToken" | "personAccessToken"): Promise<AccessToken | PersonAccessToken | null> {
     if (tokenType === "accessToken") {
         return await prisma.accessToken.findUnique({ where: { token: shareToken } });
     } else {
         return await prisma.personAccessToken.findUnique({ where: { token: shareToken } });
     }
+}
+
+async function getTokenWithPinCode(shareToken: string, tokenType: "accessToken" | "personAccessToken"): Promise<AccessToken | PersonAccessToken | null> {
+    if (tokenType === "accessToken") {
+        return await prisma.accessToken.findUnique({ where: { token: shareToken }, omit: { pinCode: false } });
+    } else {
+        return await prisma.personAccessToken.findUnique({ where: { token: shareToken }, omit: { pinCode: false } });
+    }
+}
+
+export async function isAccessWithTokenValid(shareToken?: string | null, key?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
+    if (!shareToken || !tokenType) {
+        return false;
+    }
+
+    const token = await getTokenWithPinCode(shareToken, tokenType);
+
+    if (!token) {
+        return false;
+    }
+
+    if (token.locked && token.pinCode) {
+        if (!key) {
+            return false;
+        }
+
+        return bcrypt.compareSync(token.pinCode, key);
+    }
+
+    return true;
 }

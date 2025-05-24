@@ -65,7 +65,8 @@
       "folders": "Dossiers",
       "images": "Images",
       "links": "Liens",
-      "sharedWithMe": "Partagés avec moi"
+      "sharedWithMe": "Partagés avec moi",
+      "map": "Carte"
     },
     "secondary": {
       "used": "Espace utilisé"
@@ -83,6 +84,7 @@
     "folders": "Dossiers",
     "images": "Images",
     "links": "Liens",
+    "map": "Carte",
     "account": "Compte",
     "administration": "Administration",
     "administrationUsers": "Utilisateurs"
@@ -715,6 +717,18 @@
       "likeButton": {
         "cannotLike": "Vous devez être connecté pour aimer des fichiers"
       }
+    },
+    "map": {
+      "cluster": {
+        "folder": {
+          "count": "{count, plural, =0 {0 fichier} =1 {1 fichier} other {# fichiers}}"
+        }
+      },
+      "folderList": {
+        "folderCard": {
+          "folderCount": "{count, plural, =0 {0 fichier} =1 {1 fichier} other {# fichiers}}"
+        }
+      }
     }
   },
   "dialogs": {
@@ -879,8 +893,22 @@
               "description": "Le lien de partage deviendra invalide après cette date"
             },
             "pinCode": {
-              "label": "Code PIN",
-              "description": "Ce code PIN sera nécessaire pour accéder au dossier"
+              "label": "Lien vérouillé :",
+              "description": "Ce code PIN sera nécessaire pour accéder au dossier",
+              "yes": "Oui",
+              "no": "Non",
+              "dialog": {
+                "title": "Vérouiller avec un code PIN",
+                "description": "Vous devrez communiquer ce code avec la personne à qui vous partagez ce dossier",
+                "cancel": "Annuler",
+                "save": "Vérouiller",
+                "remove": "Supprimer le code"
+              }
+            },
+            "allowMap": {
+              "label": "Autoriser l'accès à la carte :",
+              "yes": "Oui",
+              "no": "Non"
             }
           }
         },
@@ -934,7 +962,9 @@
           "placeholder": "Jetez un coup d'oeil à cet album...",
           "sending": "Envoi des emails",
           "send": "Envoyer"
-        }
+        },
+        "cancel": "Annuler",
+        "share": "Partager"
       },
       "properties": {
         "title": "Propriétés du dossier",
@@ -1647,7 +1677,8 @@
       "open": "Open",
       "manage": "Manage links",
       "properties": "Properties",
-      "download": "Télécharger"
+      "download": "Télécharger",
+      "map": "Carte"
     },
     "dialog": {
       "rename": {

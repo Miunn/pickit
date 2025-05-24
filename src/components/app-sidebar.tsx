@@ -1,5 +1,4 @@
 import * as React from "react"
-import { Command } from "lucide-react"
 
 import { NavMain, NavMainItems } from "@/components/nav-main"
 import { NavSecondary, NavSecondaryItems } from "@/components/nav-secondary"
