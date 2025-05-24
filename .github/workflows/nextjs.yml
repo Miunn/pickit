@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ main, staging ]
 
+env:
+  GCP_BUCKET_NAME: ${{ secrets.GOOGLE_BUCKET_NAME }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
