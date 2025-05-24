@@ -10,7 +10,7 @@ import { ClusterWindowContent } from './ClusterWindowContent';
 import { PoiWindowContent } from './PoiWindowContent';
 import FolderList from './FolderList';
 import { File } from '@prisma/client';
-import FileCarousel from './FileCarousel';
+import MapFileCarousel from './FileCarousel';
 import { PointFeature } from 'supercluster';
 
 export type Poi = { key: string, location: google.maps.LatLngLiteral }
@@ -177,7 +177,7 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: MapFi
         )}
 
         {carouselOpen && (
-          <FileCarousel
+          <MapFileCarousel
             files={filterFilesWithLocation(locatedFiles, selectedFolders)}
             startIndex={carouselStartIndex}
             onClose={handleCarouselClose}

@@ -27,7 +27,7 @@ interface FileCarouselProps {
     onFileChange?: (file: FileWithFolderAndUrl) => void;
 }
 
-export default function FileCarousel({ files, startIndex, onClose, onFileChange }: FileCarouselProps) {
+export default function MapFileCarousel({ files, startIndex, onClose, onFileChange }: FileCarouselProps) {
     const map = useMap();
     const [api, setApi] = useState<CarouselApi>();
     const [isVisible, setIsVisible] = useState(true);
