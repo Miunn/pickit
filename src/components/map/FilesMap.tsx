@@ -1,17 +1,18 @@
 'use client'
 
-import { AdvancedMarker, APIProvider, InfoWindow, Map, useMap, AdvancedMarkerAnchorPoint } from '@vis.gl/react-google-maps';
+import { AdvancedMarker, APIProvider, Map, AdvancedMarkerAnchorPoint } from '@vis.gl/react-google-maps';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useState } from 'react';
-import { FileWithFolder, FolderWithFilesCount } from '@/lib/definitions';
+import { FolderWithFilesCount } from '@/lib/definitions';
 import ClusteredMarkers from './ClusteredMarkers';
-import { Feature, Point, FeatureCollection } from 'geojson';
+import { Point, FeatureCollection } from 'geojson';
 import { ClusterWindowContent } from './ClusterWindowContent';
 import { PoiWindowContent } from './PoiWindowContent';
 import FolderList from './FolderList';
 import { File } from '@prisma/client';
 import MapFileCarousel from './MapFileCarousel';
 import { PointFeature } from 'supercluster';
+import { useFilesContext } from '@/context/FilesContext';
 
 export type Poi = { key: string, location: google.maps.LatLngLiteral }
 
@@ -42,15 +43,17 @@ const getDefaultMarkers = (files: MapFileWithFolderAndUrl[], selectedFolders: Se
   };
 }
 
-export default function FilesMap({ filesWithFolders }: { filesWithFolders: MapFileWithFolderAndUrl[] }) {
+export default function FilesMap() {
+  const { files } = useFilesContext();
+
   const uniqueFolders = useMemo(() => {
-    return filesWithFolders.map(file => file.folder).filter((folder, index, self) =>
+    return files.map(file => file.folder).filter((folder, index, self) =>
       self.findIndex(t => t.id === folder.id) === index
     );
-  }, [filesWithFolders]);
+  }, [files]);
 
   const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set(uniqueFolders.map(folder => folder.id)));
-  const locatedFiles = useMemo<MapFileWithFolderAndUrl[]>(() => filterFilesWithLocation(filesWithFolders, selectedFolders), [filesWithFolders, selectedFolders]);
+  const locatedFiles = useMemo<MapFileWithFolderAndUrl[]>(() => filterFilesWithLocation(files, selectedFolders), [files, selectedFolders]);
   const [markers, setMarkers] = useState<FeatureCollection<Point, MapFileWithFolderAndUrl>>(() => getDefaultMarkers(locatedFiles, selectedFolders));
   const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
   const [carouselStartIndex, setCarouselStartIndex] = useState<number>(0);
@@ -161,7 +164,7 @@ export default function FilesMap({ filesWithFolders }: { filesWithFolders: MapFi
             <ClusterWindowContent folders={clusterInfoData.features.map(feature => {
               return {
                 ...feature.properties?.folder,
-                coverSignedUrl: filesWithFolders.find(f => f.id === feature.properties?.folder.coverId)?.signedUrl || ''
+                coverSignedUrl: files.find(f => f.id === feature.properties?.folder.coverId)?.signedUrl || ''
               }
             })} onClose={handleClusterInfoWindowClose} />
           </AdvancedMarker>

@@ -15,6 +15,7 @@ import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
 import { FolderProvider } from "@/context/FolderContext";
 import { FilesProvider } from "@/context/FilesContext";
 import { TokenProvider } from "@/context/TokenContext";
+import { generateV4DownloadUrl } from "@/lib/bucket";
 
 export async function generateMetadata({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { sort?: ImagesSortMethod, view?: ViewState, share?: string, t?: string, h?: string } }): Promise<Metadata> {
     const t = await getTranslations("metadata.folder");
@@ -89,7 +90,7 @@ export default async function FolderPage({ params, searchParams }: { params: { f
         include: {
             files: {
                 include: {
-                    folder: true,
+                    folder: { include: { _count: { select: { files: true } } } },
                     comments: { include: { createdBy: true } },
                     likes: true
                 },
@@ -136,6 +137,11 @@ export default async function FolderPage({ params, searchParams }: { params: { f
         fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/tokens/increment?token=${searchParams.share}`)
     }
 
+    const filesWithSignedUrls = await Promise.all(folder.files.map(async (file) => ({
+        ...file,
+        signedUrl: await generateV4DownloadUrl(`${file.createdById}/${file.folderId}/${file.id}`),
+    })));
+
     return (
         <>
             <BreadcrumbPortal>
@@ -148,7 +154,7 @@ export default async function FolderPage({ params, searchParams }: { params: { f
                 tokenHash={searchParams.h ?? null}
             >
                 <TokenProvider token={accessToken}>
-                    <FilesProvider filesData={folder.files}>
+                    <FilesProvider filesData={filesWithSignedUrls}>
                         <FolderContent defaultView={searchParams.view} isGuest={!session} />
                     </FilesProvider>
                 </TokenProvider>

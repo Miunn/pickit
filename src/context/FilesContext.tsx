@@ -1,15 +1,14 @@
 'use client'
 
-import { FileWithComments, FileWithLikes } from "@/lib/definitions";
-import { FileWithFolder } from "@/lib/definitions";
+import { FileWithComments, FileWithLikes, FolderWithFilesCount } from "@/lib/definitions";
 import { createContext, useContext, useState } from "react";
 import { useSession } from "@/providers/SessionProvider";
 import { useTokenContext } from "./TokenContext";
-import { Role } from "@prisma/client";
+import { File } from "@prisma/client";
 
 type FilesContextType = {
-    files: (FileWithFolder & FileWithComments & FileWithLikes)[];
-    setFiles: (files: (FileWithFolder & FileWithComments & FileWithLikes)[]) => void;
+    files: (File & { folder: FolderWithFilesCount } & FileWithComments & FileWithLikes & { signedUrl: string })[];
+    setFiles: (files: (File & { folder: FolderWithFilesCount } & FileWithComments & FileWithLikes & { signedUrl: string })[]) => void;
     hasUserLikedFile: (fileId: string) => boolean;
     canUserLikeFile: (file: FileWithLikes) => boolean;
 }
@@ -25,10 +24,10 @@ export const useFilesContext = () => {
     return context;
 }
 
-export const FilesProvider = ({ children, filesData }: { children: React.ReactNode, filesData: (FileWithFolder & FileWithComments & FileWithLikes)[] }) => {
+export const FilesProvider = ({ children, filesData }: { children: React.ReactNode, filesData: (File & { folder: FolderWithFilesCount } & FileWithComments & FileWithLikes & { signedUrl: string })[] }) => {
     const { user } = useSession();
     const { token } = useTokenContext();
-    const [files, setFiles] = useState<(FileWithFolder & FileWithComments & FileWithLikes)[]>(filesData);
+    const [files, setFiles] = useState<(File & { folder: FolderWithFilesCount } & FileWithComments & FileWithLikes & { signedUrl: string })[]>(filesData);
 
     const hasUserLikedFile = (fileId: string) => {
         if (!user && !token) {

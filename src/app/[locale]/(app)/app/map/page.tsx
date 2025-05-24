@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma';
 import { getCurrentSession } from '@/lib/session';
 import { generateV4DownloadUrl } from '@/lib/bucket';
 import { canAccessMap, getToken } from '@/lib/dal';
+import { FilesProvider } from '@/context/FilesContext';
+import { TokenProvider } from '@/context/TokenContext';
 
 export default async function MapPage({ params, searchParams }: { params: { locale: string }, searchParams: { share?: string, h?: string, t?: string } }) {
 
@@ -19,22 +21,31 @@ export default async function MapPage({ params, searchParams }: { params: { loca
     }
 
     let files = [];
+    let accessToken = null;
     // Get files from share token
     if (searchParams.share) {
-        const token = await getToken(searchParams.share, searchParams.t === "p" ? "personAccessToken" : "accessToken");
+        accessToken = await getToken(searchParams.share, searchParams.t === "p" ? "personAccessToken" : "accessToken");
 
-        if (!token) {
+        if (!accessToken) {
             return redirect({ href: "/app/map", locale: params.locale });
         }
 
         files = await prisma.file.findMany({
-            where: { folderId: token.folderId },
-            include: { folder: { include: { _count: true } } }
+            where: { folderId: accessToken.folderId },
+            include: {
+                comments: { include: { createdBy: true } },
+                likes: true,
+                folder: { include: { _count: { select: { files: true } } } }
+            }
         });
     } else if (user) {
         files = await prisma.file.findMany({
             where: { createdBy: { id: user.id } },
-            include: { folder: { include: { _count: true } } }
+            include: {
+                comments: { include: { createdBy: true } },
+                likes: true,
+                folder: { include: { _count: { select: { files: true } } } }
+            }
         });
     } else {
         return redirect({ href: "/signin", locale: params.locale });
@@ -47,7 +58,11 @@ export default async function MapPage({ params, searchParams }: { params: { loca
 
     return (
         <div className='rounded-b-xl h-full overflow-hidden'>
-            <FilesMap filesWithFolders={filesWithSignedUrlsAndFolders} />
+            <TokenProvider token={accessToken}>
+                <FilesProvider filesData={filesWithSignedUrlsAndFolders}>
+                    <FilesMap />
+                </FilesProvider>
+            </TokenProvider>
         </div>
     )
 }
