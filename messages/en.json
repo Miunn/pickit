@@ -1496,7 +1496,34 @@
               "title": "Access deleted",
               "description": "The access for this person has been deleted successfully"
             }
+          },
+          "allowMap": {
+            "disable": {
+              "label": "Remove map access",
+              "error": {
+                "title": "Can't remove access",
+                "description": "An unknown error happened while removing map access. Please try again"
+              },
+              "success": {
+                "title": "Map access removed",
+                "description": "Map access has been removed successfully"
+              }
+            },
+            "enable": {
+              "label": "Enable map access",
+              "error": {
+                "title": "Can't enable access",
+                "description": "An unknown error happened while enabling map access. Please try again"
+              },
+              "success": {
+                "title": "Map access enabled",
+                "description": "Map access has been enabled successfully"
+              }
+            }
           }
+        },
+        "allowMap": {
+          "header": "Is map allowed"
         }
       }
     },
@@ -1572,7 +1599,36 @@
               "title": "Link deleted",
               "description": "The link has been deleted successfully"
             }
+          },
+          "allowMap": {
+            "disable": {
+              "label": "Remove map access",
+              "error": {
+                "title": "Can't remove access",
+                "description": "An unknown error happened while removing map access. Please try again"
+              },
+              "success": {
+                "title": "Map access removed",
+                "description": "Map access has been removed successfully"
+              }
+            },
+            "enable": {
+              "label": "Enable map access",
+              "error": {
+                "title": "Can't enable access",
+                "description": "An unknown error happened while enabling map access. Please try again"
+              },
+              "success": {
+                "title": "Map access enabled",
+                "description": "Map access has been enabled successfully"
+              }
+            }
           }
+        },
+        "allowMap": {
+          "header": "Is map allowed",
+          "allowed": "Yes",
+          "notAllowed": "No"
         }
       },
       "actions": {
@@ -1626,6 +1682,14 @@
               "description": "The user has been deleted successfully"
             }
           }
+        }
+      }
+    },
+    "peopl": {
+      "columns": {
+        "allowMap": {
+          "allowed": "Yes",
+          "notAllowed": "No"
         }
       }
     }
