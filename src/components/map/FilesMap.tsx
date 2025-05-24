@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { FolderWithFilesCount } from '@/lib/definitions';
 import ClusteredMarkers from './ClusteredMarkers';
 import { Point, FeatureCollection } from 'geojson';
-import { ClusterWindowContent } from './ClusterWindowContent';
+import ClusterWindowContent from './ClusterWindowContent';
 import { PoiWindowContent } from './PoiWindowContent';
 import FolderList from './FolderList';
 import { File } from '@prisma/client';

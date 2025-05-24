@@ -8,7 +8,7 @@ type ClusterWindowContentProps = {
   onClose: () => void;
 };
 
-export const ClusterWindowContent = memo(({ folders, onClose }: ClusterWindowContentProps) => {
+const ClusterWindowContent = memo(({ folders, onClose }: ClusterWindowContentProps) => {
   return (
     <div className="relative">
       <div className="bg-white border border-primary rounded-lg overflow-hidden shadow-lg mb-[23px] w-64">
@@ -54,3 +54,7 @@ export const ClusterWindowContent = memo(({ folders, onClose }: ClusterWindowCon
     </div>
   );
 });
+
+ClusterWindowContent.displayName = 'ClusterWindowContent';
+
+export default ClusterWindowContent;
