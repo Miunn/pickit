@@ -190,12 +190,14 @@ export default function FilesMap() {
           />
         )}
 
-        <div className="absolute top-5 right-5">
-          <FolderList 
-            folders={uniqueFolders} 
-            onSelectionChange={setSelectedFolders}
-          />
-        </div>
+        {uniqueFolders.length > 0 && (
+          <div className="absolute top-5 right-5">
+            <FolderList 
+              folders={uniqueFolders} 
+              onSelectionChange={setSelectedFolders}
+            />
+          </div>
+        )}
       </Map>
     </APIProvider>
   )
