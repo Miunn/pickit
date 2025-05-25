@@ -191,7 +191,7 @@ export default function FilesMap() {
         )}
 
         {uniqueFolders.length > 0 && (
-          <div className="absolute top-5 right-5">
+          <div className="absolute top-3 right-3">
             <FolderList 
               folders={uniqueFolders} 
               onSelectionChange={setSelectedFolders}

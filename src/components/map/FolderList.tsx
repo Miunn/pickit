@@ -1,5 +1,5 @@
 import { Folder } from "@prisma/client";
-import { Images } from "lucide-react";
+import { Images, List, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import { TooltipContent, TooltipProvider } from "../ui/tooltip";
 import { TooltipTrigger } from "../ui/tooltip";
@@ -10,6 +10,8 @@ import { Checkbox } from "../ui/checkbox";
 import { useState, useRef } from "react";
 import { FolderWithFilesCount } from "@/lib/definitions";
 import { useSearchParams } from "next/navigation";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
 
 const Ripple = ({ x, y }: { x: number; y: number }) => {
     return (
@@ -149,6 +151,21 @@ export default function FolderList({ folders, onSelectionChange }: { folders: Fo
                 />
             ))}
         </div>
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                    <MoreHorizontal className="size-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+                {folders.map((folder) => (
+                    <DropdownMenuItem key={folder.id} onClick={() => toggleFolderSelection(folder.id)} className="flex items-center gap-2">
+                        <Checkbox checked={selectedFolders.has(folder.id)} />
+                        <p>{folder.name}</p>
+                    </DropdownMenuItem>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
         </>
     )
 }
