@@ -140,7 +140,7 @@ export default function FolderList({ folders, onSelectionChange }: { folders: Fo
 
     return (
         <>
-        <div className="hidden md:flex flex-col gap-2">
+        <div className="hidden lg:flex flex-col gap-2">
             {folders.map((folder) => (
                 <FolderCard
                     key={folder.id}
@@ -152,7 +152,7 @@ export default function FolderList({ folders, onSelectionChange }: { folders: Fo
             ))}
         </div>
         <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger className="lg:hidden" asChild>
                 <Button variant="outline" size="icon">
                     <MoreHorizontal className="size-4" />
                 </Button>
