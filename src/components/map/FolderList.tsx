@@ -1,5 +1,5 @@
 import { Folder } from "@prisma/client";
-import { Images } from "lucide-react";
+import { Images, List, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import { TooltipContent, TooltipProvider } from "../ui/tooltip";
 import { TooltipTrigger } from "../ui/tooltip";
@@ -9,6 +9,9 @@ import { useFormatter, useTranslations } from "next-intl";
 import { Checkbox } from "../ui/checkbox";
 import { useState, useRef } from "react";
 import { FolderWithFilesCount } from "@/lib/definitions";
+import { useSearchParams } from "next/navigation";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
 
 const Ripple = ({ x, y }: { x: number; y: number }) => {
     return (
@@ -36,6 +39,11 @@ interface FolderCardProps {
 
 const FolderCard = ({ folder, isSelected, onToggle, formatter }: FolderCardProps) => {
     const t = useTranslations("components.map.folderList.folderCard");
+    const searchParams = useSearchParams();
+    const share = searchParams.get("share");
+    const shareType = searchParams.get("t");
+    const shareHash = searchParams.get("h");
+
     const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
     const nextId = useRef(0);
 
@@ -75,7 +83,7 @@ const FolderCard = ({ folder, isSelected, onToggle, formatter }: FolderCardProps
             </div>
             {folder.coverId
                 ? <div className={`relative h-36 mb-1 flex justify-center items-center rounded-t-xl`}>
-                    <Image src={`/api/folders/${folder.id}/images/${folder.coverId}`} alt={folder.name}
+                    <Image src={`/api/folders/${folder.id}/images/${folder.coverId}${share ? `?share=${share}&t=${shareType}&h=${shareHash}` : ""}`} alt={folder.name}
                         className={"relative rounded-t-xl object-cover"} sizes="33vw" fill />
                 </div>
                 : <div
@@ -131,7 +139,8 @@ export default function FolderList({ folders, onSelectionChange }: { folders: Fo
     };
 
     return (
-        <div className="flex flex-col gap-2">
+        <>
+        <div className="hidden lg:flex flex-col gap-2">
             {folders.map((folder) => (
                 <FolderCard
                     key={folder.id}
@@ -142,5 +151,21 @@ export default function FolderList({ folders, onSelectionChange }: { folders: Fo
                 />
             ))}
         </div>
+        <DropdownMenu>
+            <DropdownMenuTrigger className="lg:hidden" asChild>
+                <Button variant="outline" size="icon">
+                    <MoreHorizontal className="size-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+                {folders.map((folder) => (
+                    <DropdownMenuItem key={folder.id} onClick={() => toggleFolderSelection(folder.id)} className="flex items-center gap-2">
+                        <Checkbox checked={selectedFolders.has(folder.id)} />
+                        <p>{folder.name}</p>
+                    </DropdownMenuItem>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
+        </>
     )
 }
