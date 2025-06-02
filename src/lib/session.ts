@@ -70,7 +70,7 @@ export const getCurrentSession = cache(async (): Promise<SessionValidationResult
 });
 
 export function setSessionTokenCookie(token: string, expiresAt: Date): void {
-	const cookieStore = (cookies() as unknown as UnsafeUnwrappedCookies);
+	const cookieStore = ((cookies() as unknown as UnsafeUnwrappedCookies) as unknown as UnsafeUnwrappedCookies);
 	cookieStore.set("session", token, {
 		httpOnly: true,
 		sameSite: "lax",
@@ -81,7 +81,7 @@ export function setSessionTokenCookie(token: string, expiresAt: Date): void {
 }
 
 export function deleteSessionTokenCookie(): void {
-	const cookieStore = (cookies() as unknown as UnsafeUnwrappedCookies);
+	const cookieStore = ((cookies() as unknown as UnsafeUnwrappedCookies) as unknown as UnsafeUnwrappedCookies);
 	cookieStore.set("session", "", {
 		httpOnly: true,
 		sameSite: "lax",

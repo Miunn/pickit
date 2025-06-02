@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 
-export async function generateMetadata({ params }: { params: { locale: string, token: string } }): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations("metadata.resetPassword");
     return {
         title: t("title"),

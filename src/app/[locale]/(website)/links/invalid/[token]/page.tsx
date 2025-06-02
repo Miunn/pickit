@@ -7,7 +7,7 @@ import { getTranslations } from "next-intl/server";
 import { Toaster } from "@/components/ui/toaster";
 import Header from "@/components/layout/Header";
 
-export default async function InvalidTokenPage({ params }: { params: { token: string } }) {
+export default async function InvalidTokenPage() {
 
     const t = await getTranslations("invalidToken");
 
