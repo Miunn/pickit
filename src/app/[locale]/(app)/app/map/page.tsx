@@ -7,7 +7,11 @@ import { canAccessMap, getToken } from '@/lib/dal';
 import { FilesProvider } from '@/context/FilesContext';
 import { TokenProvider } from '@/context/TokenContext';
 
-export default async function MapPage({ params, searchParams }: { params: { locale: string }, searchParams: { share?: string, h?: string, t?: string } }) {
+export default async function MapPage(
+    props: { params: Promise<{ locale: string }>, searchParams: Promise<{ share?: string, h?: string, t?: string }> }
+) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
 
     const { user } = await getCurrentSession();
 

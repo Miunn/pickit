@@ -1,8 +1,9 @@
 import UsersDataTable from "@/components/admin/table/users-data-table";
 import { prisma } from "@/lib/prisma";
 
-export default async function AdminHome({ searchParams }: { searchParams: { u?: string } }) {
-    
+export default async function AdminHome(props: { searchParams: Promise<{ u?: string }> }) {
+    const searchParams = await props.searchParams;
+
     const users = await prisma.user.findMany({
         select: {
             id: true,

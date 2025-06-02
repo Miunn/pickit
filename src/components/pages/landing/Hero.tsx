@@ -6,7 +6,7 @@ import { ArrowRight, ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 
-export default function Hero({ seeMoreRef }: { seeMoreRef: React.RefObject<HTMLDivElement> }) {
+export default function Hero({ seeMoreRef }: { seeMoreRef: React.RefObject<HTMLDivElement | null> }) {
     const t = useTranslations("pages.landing");
     const locale = useLocale();
     

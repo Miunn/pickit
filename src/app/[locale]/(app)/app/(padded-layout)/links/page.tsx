@@ -13,7 +13,11 @@ export async function generateMetadata(): Promise<Metadata> {
     }
 }
 
-export default async function LinksPage({ params, searchParams }: { params: { locale: string }, searchParams: { s?: "links" | "contacts", l?: string } }) {
+export default async function LinksPage(
+    props: { params: Promise<{ locale: string }>, searchParams: Promise<{ s?: "links" | "contacts", l?: string }> }
+) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
 
     const { user } = await getCurrentSession();
     if (!user) {

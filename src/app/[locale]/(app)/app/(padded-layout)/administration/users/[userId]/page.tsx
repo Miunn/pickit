@@ -4,8 +4,9 @@ import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
 import { redirect } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
 
-export default async function AdminUser({ params }: { params: { locale: string, userId: string } }) {
-    
+export default async function AdminUser(props: { params: Promise<{ locale: string, userId: string }> }) {
+    const params = await props.params;
+
     const user = await prisma.user.findUnique({
         where: { id: params.userId },
         select: {
