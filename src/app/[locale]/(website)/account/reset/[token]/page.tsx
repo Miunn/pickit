@@ -12,7 +12,8 @@ export async function generateMetadata({ params }: { params: { locale: string, t
     }
 }
 
-export default async function ResetPasswordPage({ params }: { params: { locale: string, token: string } }) {
+export default async function ResetPasswordPage(props: { params: Promise<{ locale: string, token: string }> }) {
+    const params = await props.params;
 
     const verifyPasswordResetToken = await prisma.passwordResetRequest.findUnique({
         where: { token: params.token }

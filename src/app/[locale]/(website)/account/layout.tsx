@@ -10,13 +10,22 @@ export const metadata: Metadata = {
     description: "Upload and share images with ease.",
 };
 
-export default async function LocaleLayout({
-    children,
-    params: { locale },
-}: Readonly<{
-    children: React.ReactNode;
-    params: { locale: string };
-}>) {
+export default async function LocaleLayout(
+    props: Readonly<{
+        children: React.ReactNode;
+        params: { locale: string };
+    }>
+) {
+    const params = await props.params;
+
+    const {
+        locale
+    } = params;
+
+    const {
+        children
+    } = props;
+
     return (
         <>
             <div className={"min-h-screen flex flex-col"}>

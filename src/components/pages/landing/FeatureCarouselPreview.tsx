@@ -9,7 +9,7 @@ export default function FeatureCarouselPreview() {
     const t = useTranslations("components.featuresCarousel");
 
     const [expandedIndex, setExpandedIndex] = React.useState<number>(0);
-    const progressRefs = React.useRef<Array<React.RefObject<HTMLDivElement>>>([]);
+    const progressRefs = React.useRef<Array<React.RefObject<HTMLDivElement | null>>>([]);
 
     // Initialize refs array on mount
     React.useEffect(() => {

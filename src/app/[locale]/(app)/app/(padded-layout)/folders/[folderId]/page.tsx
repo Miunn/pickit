@@ -17,7 +17,11 @@ import { FilesProvider } from "@/context/FilesContext";
 import { TokenProvider } from "@/context/TokenContext";
 import { generateV4DownloadUrl } from "@/lib/bucket";
 
-export async function generateMetadata({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { sort?: ImagesSortMethod, view?: ViewState, share?: string, t?: string, h?: string } }): Promise<Metadata> {
+export async function generateMetadata(
+    props: { params: Promise<{ folderId: string, locale: string }>, searchParams: Promise<{ sort?: ImagesSortMethod, view?: ViewState, share?: string, t?: string, h?: string }> }
+): Promise<Metadata> {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
     const t = await getTranslations("metadata.folder");
     let folderNameAndDescription: { name: string, description?: string | null } | null = null;
     if (!searchParams.share) {
@@ -73,7 +77,11 @@ export async function generateMetadata({ params, searchParams }: { params: { fol
     }
 }
 
-export default async function FolderPage({ params, searchParams }: { params: { folderId: string, locale: string }, searchParams: { sort?: ImagesSortMethod, view?: ViewState, share?: string, t?: string, h?: string, codeNeeded?: boolean, wrongPin?: boolean } }) {
+export default async function FolderPage(
+    props: { params: Promise<{ folderId: string, locale: string }>, searchParams: Promise<{ sort?: ImagesSortMethod, view?: ViewState, share?: string, t?: string, h?: string, codeNeeded?: boolean, wrongPin?: boolean }> }
+) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
     const hasAccess = await isAllowedToAccessFolder(params.folderId, searchParams.share, searchParams.h, searchParams.t);
 
     if (hasAccess === 0) {

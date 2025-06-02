@@ -16,7 +16,8 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     }
 }
 
-export default async function Home({ params }: { params: { locale: string } }) {
+export default async function Home(props: { params: Promise<{ locale: string }> }) {
+    const params = await props.params;
 
     const { user } = await getCurrentSession();
 

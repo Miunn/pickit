@@ -7,7 +7,8 @@ const size = {
   height: 630
 }
 
-export async function GET(request: NextRequest, { params }: { params: { folder: string } }) {
+export async function GET(request: NextRequest, props: { params: Promise<{ folder: string }> }) {
+  const params = await props.params;
   const searchParams = request.nextUrl.searchParams;
   const folder = await prisma.folder.findUnique({
     where: { id: params.folder },

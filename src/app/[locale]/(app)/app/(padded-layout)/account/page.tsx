@@ -15,7 +15,8 @@ export async function generateMetadata(): Promise<Metadata> {
     }
 }
 
-export default async function AccountPage({ params }: { params: { locale: string } }) {
+export default async function AccountPage(props: { params: Promise<{ locale: string }> }) {
+    const params = await props.params;
 
     const { user } = await getCurrentSession();
 

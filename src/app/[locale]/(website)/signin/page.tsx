@@ -6,7 +6,10 @@ import { redirect } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 
-export async function generateMetadata({ params, searchParams }: { params: { locale: string }, searchParams: { side?: string } }): Promise<Metadata> {
+export async function generateMetadata(
+    props: { params: Promise<{ locale: string }>, searchParams: Promise<{ side?: string }> }
+): Promise<Metadata> {
+    const searchParams = await props.searchParams;
     if (searchParams.side === "register") {
         const t = await getTranslations("metadata.signup");
         return {
@@ -14,7 +17,7 @@ export async function generateMetadata({ params, searchParams }: { params: { loc
             description: t("description"),
         }
     }
-    
+
     const t = await getTranslations("metadata.signin");
     return {
         title: t("title"),
@@ -22,7 +25,11 @@ export async function generateMetadata({ params, searchParams }: { params: { loc
     }
 }
 
-export default async function LoginPage({ params, searchParams }: { params: { locale: string }, searchParams: { side?: string, error?: string } }) {
+export default async function LoginPage(
+    props: { params: Promise<{ locale: string }>, searchParams: Promise<{ side?: string, error?: string }> }
+) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
 
     const { user } = await getCurrentSession();
     if (user) {

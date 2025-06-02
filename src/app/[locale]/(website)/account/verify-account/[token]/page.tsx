@@ -12,7 +12,8 @@ export async function generateMetadata({ params }: { params: { locale: string, t
     }
 }
 
-export default async function VerifyAccountPage({ params }: { params: { locale: string, token: string } }) {
+export default async function VerifyAccountPage(props: { params: Promise<{ locale: string, token: string }> }) {
+    const params = await props.params;
 
     const result = await verifyAccount(params.token);
 
