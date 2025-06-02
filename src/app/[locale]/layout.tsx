@@ -22,12 +22,17 @@ export const viewport: Viewport = {
 
 type Props = {
     children: ReactNode;
-    params: { locale: string };
+    params: Promise<{ locale: string }>;
 };
 
 // Since we have a `not-found.tsx` page on the root, a layout file
 // is required, even if it's just passing children through.
-export default async function LocaleLayout({ children, params }: Props) {
+export default async function LocaleLayout(props: Props) {
+    const params = await props.params;
+
+    const {
+        children
+    } = props;
 
     const messages = await getMessages();
 

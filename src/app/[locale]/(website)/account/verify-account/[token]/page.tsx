@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-export async function generateMetadata({ params }: { params: { locale: string, token: string } }): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations("metadata.verifyEmail");
     return {
         title: t("title"),
@@ -12,7 +12,8 @@ export async function generateMetadata({ params }: { params: { locale: string, t
     }
 }
 
-export default async function VerifyAccountPage({ params }: { params: { locale: string, token: string } }) {
+export default async function VerifyAccountPage(props: { params: Promise<{ locale: string, token: string }> }) {
+    const params = await props.params;
 
     const result = await verifyAccount(params.token);
 

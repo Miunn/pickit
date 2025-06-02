@@ -8,7 +8,7 @@ import { FilesProvider } from "@/context/FilesContext";
 import { TokenProvider } from "@/context/TokenContext";
 import { generateV4DownloadUrl } from "@/lib/bucket";
 
-export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations("metadata.dashboard")
     return {
         title: t("title"),
@@ -16,7 +16,8 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     }
 }
 
-export default async function Home({ params }: { params: { locale: string } }) {
+export default async function Home(props: { params: Promise<{ locale: string }> }) {
+    const params = await props.params;
 
     const { user } = await getCurrentSession();
 

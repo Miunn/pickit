@@ -3,7 +3,11 @@ import {prisma} from "@/lib/prisma";
 import { generateV4DownloadUrl } from "@/lib/bucket";
 import { isAllowedToAccessFile } from "@/lib/dal";
 
-export async function GET(req: NextRequest, { params }: { params: {folder: string, video: string} }) {
+export async function GET(
+    req: NextRequest,
+    props: { params: Promise<{folder: string, video: string}> }
+) {
+    const params = await props.params;
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
     const tokenType = req.nextUrl.searchParams.get("t");

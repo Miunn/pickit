@@ -14,7 +14,11 @@ export async function generateMetadata(): Promise<Metadata> {
     }
 }
 
-export default async function FoldersPage({ params, searchParams }: { params: { locale: string }, searchParams: { view?: ViewState } }) {
+export default async function FoldersPage(
+    props: { params: Promise<{ locale: string }>, searchParams: Promise<{ view?: ViewState }> }
+) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
 
     const { user } = await getCurrentSession();
 

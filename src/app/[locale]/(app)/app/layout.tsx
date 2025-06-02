@@ -23,15 +23,23 @@ export const metadata: Metadata = {
     description: "Upload and share images with ease.",
 };
 
-export default async function LocaleLayout({
-    children,
-    params: { locale },
-    searchParams
-}: Readonly<{
-    children: React.ReactNode;
-    params: { locale: string };
-    searchParams: { share?: string, h?: string, t?: string };
-}>) {
+export default async function LocaleLayout(
+    props: Readonly<{
+        children: React.ReactNode;
+        params: { locale: string };
+        searchParams: { share?: string, h?: string, t?: string };
+    }>
+) {
+    const params = await props.params;
+
+    const {
+        locale
+    } = params;
+
+    const {
+        children
+    } = props;
+
     const { user, session } = await getCurrentSession();
 
     const t = await getTranslations("sidebar");
