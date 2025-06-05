@@ -39,7 +39,8 @@ export default async function MapPage(
             include: {
                 comments: { include: { createdBy: true } },
                 likes: true,
-                folder: { include: { _count: { select: { files: true } } } }
+                folder: { include: { _count: { select: { files: true } } } },
+                tags: true
             }
         });
     } else if (user) {
@@ -48,7 +49,8 @@ export default async function MapPage(
             include: {
                 comments: { include: { createdBy: true } },
                 likes: true,
-                folder: { include: { _count: { select: { files: true } } } }
+                folder: { include: { _count: { select: { files: true } } } },
+                tags: true
             }
         });
     } else {

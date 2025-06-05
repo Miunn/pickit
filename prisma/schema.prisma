@@ -51,6 +51,17 @@ model Folder {
   updatedAt         DateTime            @updatedAt
   AccessToken       AccessToken[]
   PersonAccessToken PersonAccessToken[]
+  tags              FolderTag[]
+}
+
+model FolderTag {
+  id        String   @id @default(cuid())
+  name      String
+  folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId  String
+  files     File[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model File {
@@ -94,6 +105,7 @@ model File {
 
   comments Comment[]
   likes    FileLike[]
+  tags     FolderTag[]
 }
 
 model Comment {

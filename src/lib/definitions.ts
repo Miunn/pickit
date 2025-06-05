@@ -296,6 +296,12 @@ const fileLight = Prisma.validator<Prisma.FileDefaultArgs>()({
 
 export type FileLightWithFolderName = Prisma.FileGetPayload<typeof fileLight>
 
+const fileWithTags = Prisma.validator<Prisma.FileDefaultArgs>()({
+    include: { tags: true }
+})
+
+export type FileWithTags = Prisma.FileGetPayload<typeof fileWithTags>
+
 const fileWithFolder = Prisma.validator<Prisma.FileDefaultArgs>()({
     include: { folder: true },
 })

@@ -1,12 +1,12 @@
 'use client'
 
-import { FileWithComments, FileWithLikes, FolderWithFilesCount } from "@/lib/definitions";
+import { FileWithComments, FileWithLikes, FolderWithFilesCount, FileWithTags } from "@/lib/definitions";
 import { createContext, useContext, useState } from "react";
 import { useSession } from "@/providers/SessionProvider";
 import { useTokenContext } from "./TokenContext";
 import { File as PrismaFile } from "@prisma/client";
 
-export type ContextFile = PrismaFile & { folder: FolderWithFilesCount } & FileWithComments & FileWithLikes & { signedUrl: string };
+export type ContextFile = PrismaFile & FileWithTags & { folder: FolderWithFilesCount } & FileWithComments & FileWithLikes & { signedUrl: string };
 
 type FilesContextType = {
     files: ContextFile[];
