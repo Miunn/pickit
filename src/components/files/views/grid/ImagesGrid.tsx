@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Trash2, X, Pencil } from "lucide-react";
 import { DeleteMultipleImagesDialog } from "@/components/files/DeleteMultipleImagesDialog";
 import { CarouselDialog } from "@/components/files/carousel/CarouselDialog";
-import { FileWithComments, FileWithFolder, FileWithLikes, FolderWithFilesCount } from "@/lib/definitions";
 import { cn, formatBytes, getSortedImagesVideosContent } from "@/lib/utils";
 import { UploadImagesForm } from "@/components/files/upload/UploadImagesForm";
 import { useSession } from "@/providers/SessionProvider";
@@ -19,7 +18,6 @@ import { ImagesSortMethod } from "@/components/folders/SortImages";
 import EditDescriptionDialog from "@/components/folders/EditDescriptionDialog";
 import DeleteDescriptionDialog from "@/components/folders/DeleteDescriptionDialog";
 import { useFilesContext } from "@/context/FilesContext";
-import { File } from "@prisma/client";
 import { ContextFile } from "@/context/FilesContext";
 
 export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {

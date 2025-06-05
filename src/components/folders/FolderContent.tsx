@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, Download, LayoutGrid, List, MoreHorizontal, Pencil, Map } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { UploadImagesDialog } from "@/components/files/upload/UploadImagesDialog";
-import { ImagesGrid } from "@/components/files/views/grid/ImagesGrid";
 import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
 import SortImages, { ImagesSortMethod } from "./SortImages";
 import { useQueryState } from 'nuqs'
@@ -14,11 +13,15 @@ import ImagesList from "../files/views/list/ImagesList";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { useState } from "react";
 import EditDescriptionDialog from "./EditDescriptionDialog";
-import { useSearchParams } from "next/navigation";
 import { useFolderContext } from "@/context/FolderContext";
 import { useFilesContext } from "@/context/FilesContext";
 import { Link } from "@/i18n/navigation";
+import dynamic from "next/dynamic";
 
+const ImagesGrid = dynamic(() => import('@/components/files/views/grid/ImagesGrid').then(mod => mod.ImagesGrid), {
+    ssr: false,
+});
+  
 export interface FolderContentProps {
     defaultView?: ViewState;
     isGuest?: boolean;

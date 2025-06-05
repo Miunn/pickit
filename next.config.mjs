@@ -26,7 +26,6 @@ const nextConfig = {
             },
         ],
     },
-    serverComponentsExternalPackages: ['@prisma/client', 'pg', 'bcrypt-edge'],
 };
 
 export default withNextIntl(nextConfig);
