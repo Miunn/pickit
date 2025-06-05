@@ -1,9 +1,7 @@
 import { FileWithFolder } from "@/lib/definitions";
 import { Button } from "../ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import exifr from 'exifr';
 import React from "react";
-import { useSearchParams } from "next/navigation";
 import { Label } from "../ui/label";
 import { useTranslations } from "next-intl";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
