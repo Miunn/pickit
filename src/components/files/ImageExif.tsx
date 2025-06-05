@@ -12,22 +12,7 @@ import { MapPin } from "lucide-react";
 import { getCoordinatesString } from "@/lib/utils";
 
 export default function ImageExif({ children, image }: { children: React.ReactNode, image: FileWithFolder }) {
-    const searchParams = useSearchParams();
-    const shareToken = searchParams.get("share");
-    const shareHashPin = searchParams.get("h");
-    const tokenType = searchParams.get("t") === "p";
-
-    const [exifData, setExifData] = React.useState<any>({});
-
     const t = useTranslations("dialogs.images.exif");
-
-    React.useEffect(() => {
-        exifr.parse(`/api/folders/${image.folderId}/images/${image.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`, true).then((exif) => {
-            if (!exif) return;
-
-            setExifData(exif);
-        });
-    }, [image, shareToken, shareHashPin, tokenType]);
 
     return (
         <Dialog>
@@ -49,10 +34,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.ImageWidth || exifData.ExifImageWidth || t('noData')}</p>
+                                        <p className="truncate">{image.width || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.ImageWidth || exifData.ExifImageWidth || t('noData')}</p>
+                                        <p>{image.width || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -62,10 +47,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.ImageHeight || exifData.ExifImageHeight || t('noData')}</p>
+                                        <p className="truncate">{image.height  || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.ImageHeight || exifData.ExifImageHeight || t('noData')}</p>
+                                        <p>{image.height || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -75,10 +60,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.Make || t('noData')}</p>
+                                        <p className="truncate">{image.make || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.Make || t('noData')}</p>
+                                        <p>{image.make || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -88,10 +73,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.Model || t('noData')}</p>
+                                        <p className="truncate">{image.model || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.Model || t('noData')}</p>
+                                        <p>{image.model || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -101,10 +86,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.Software || t('noData')}</p>
+                                        <p className="truncate">{image.software || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.Software || t('noData')}</p>
+                                        <p>{image.software || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -114,10 +99,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.Orientation || t('noData')}</p>
+                                        <p className="truncate">{image.orientation || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.Orientation || t('noData')}</p>
+                                        <p>{image.orientation || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -127,10 +112,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.ExposureTime || t('noData')}</p>
+                                        <p className="truncate">{image.exposureTime || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.ExposureTime || t('noData')}</p>
+                                        <p>{image.exposureTime || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -140,10 +125,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.FNumber || t('noData')}</p>
+                                        <p className="truncate">{image.fNumber || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.FNumber || t('noData')}</p>
+                                        <p>{image.fNumber || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -153,10 +138,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.ISO || t('noData')}</p>
+                                        <p className="truncate">{image.iso || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.ISO || t('noData')}</p>
+                                        <p>{image.iso || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -166,10 +151,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.DateTimeOriginal?.toString() || t('noData')}</p>
+                                        <p className="truncate">{image.takenAt?.toString() || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.DateTimeOriginal?.toString() || t('noData')}</p>
+                                        <p>{image.takenAt?.toString() || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -179,10 +164,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.ModifyDate?.toString() || t('noData')}</p>
+                                        <p className="truncate">{image.modifiedAt?.toString() || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.ModifyDate?.toString() || t('noData')}</p>
+                                        <p>{image.modifiedAt?.toString() || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -192,10 +177,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.Flash || t('noData')}</p>
+                                        <p className="truncate">{image.flash || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.Flash || t('noData')}</p>
+                                        <p>{image.flash || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -205,10 +190,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.FocalLength || t('noData')}</p>
+                                        <p className="truncate">{image.focalLength || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.FocalLength || t('noData')}</p>
+                                        <p>{image.focalLength || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -218,10 +203,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.Contrast || t('noData')}</p>
+                                        <p className="truncate">{image.contrast || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.Contrast || t('noData')}</p>
+                                        <p>{image.contrast || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -231,10 +216,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.Saturation || t('noData')}</p>
+                                        <p className="truncate">{image.saturation || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.Saturation || t('noData')}</p>
+                                        <p>{image.saturation || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -244,10 +229,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.Sharpness || t('noData')}</p>
+                                        <p className="truncate">{image.sharpness || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.Sharpness || t('noData')}</p>
+                                        <p>{image.sharpness || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -257,10 +242,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.WhiteBalance || t('noData')}</p>
+                                        <p className="truncate">{image.whiteBalance || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.WhiteBalance || t('noData')}</p>
+                                        <p>{image.whiteBalance || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -270,10 +255,10 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className="truncate">{exifData.Altitude || t('noData')}</p>
+                                        <p className="truncate">{image.altitude || t('noData')}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.Altitude || t('noData')}</p>
+                                        <p>{image.altitude || t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -283,15 +268,15 @@ export default function ImageExif({ children, image }: { children: React.ReactNo
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        {exifData.latitude && exifData.longitude
-                                            ? <Link href={`https://www.google.com/maps/search/?api=1&query=${exifData.latitude},${exifData.longitude}`} target="_blank" className="flex items-center gap-2 hover:underline hover:underline-offset-1">
-                                                {getCoordinatesString(exifData.latitude, exifData.longitude)} <MapPin className="w-4 h-4" />
+                                        {image.latitude && image.longitude
+                                            ? <Link href={`https://www.google.com/maps/search/?api=1&query=${image.latitude},${image.longitude}`} target="_blank" className="flex items-center gap-2 hover:underline hover:underline-offset-1">
+                                                {getCoordinatesString(image.latitude, image.longitude)} <MapPin className="w-4 h-4" />
                                             </Link>
                                             : t('noData')
                                         }
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{exifData.latitude && exifData.longitude ? getCoordinatesString(exifData.latitude, exifData.longitude) : t('noData')}</p>
+                                        <p>{image.latitude && image.longitude ? getCoordinatesString(image.latitude, image.longitude) : t('noData')}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
