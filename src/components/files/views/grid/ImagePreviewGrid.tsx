@@ -54,8 +54,8 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
         <>
             <ContextMenu key={file.id} modal={false}>
                 <ContextMenuTrigger asChild>
-                    <button ref={setNodeRef} onClick={onClick} className="unset cursor-pointer" style={style} {...listeners} {...attributes}>
-                        <div className={cn(`inline-block w-full sm:w-64 rounded-2xl ${selected.includes(file.id) ? "bg-accent" : ""}`, className)}>
+                    <button ref={setNodeRef} onClick={onClick} className="w-full unset cursor-pointer" style={style} {...listeners} {...attributes}>
+                        <div className={cn(`inline-block w-full rounded-2xl ${selected.includes(file.id) ? "bg-accent" : ""}`, className)}>
                             <div className={`${selected.includes(file.id) ? "scale-95" : ""}`}>
                                 <div className={`relative h-32 sm:h-36 mb-4 flex justify-center items-center group`}>
                                     {file.type === FileType.VIDEO
