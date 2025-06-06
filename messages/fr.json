@@ -1387,6 +1387,16 @@
           }
         }
       }
+    },
+    "files": {
+      "addTag": {
+        "title": "Gérer les tags",
+        "description": "Ajoutez, supprimez ou créez des tags pour ce fichier",
+        "selectedTags": "Tags sélectionnés",
+        "folderTags": "Tags du dossier",
+        "otherTags": "Autres tags créés",
+        "noSelectedTags": "Aucun tag sélectionné pour ce fichier"
+      }
     }
   },
   "dataTables": {
@@ -1844,6 +1854,7 @@
       "select": "Sélectionner",
       "unselect": "Désélectionner",
       "download": "Télécharger",
+      "addTag": "Gérer les tags",
       "rename": "Renommer",
       "setAsCover": {
         "label": "Définir comme couverture",

@@ -18,6 +18,8 @@ import { FileType } from "@prisma/client";
 import RenameImageDialog from "../../RenameImageDialog";
 import { DeleteImageDialog } from "../../DeleteImageDialog";
 import ImagePropertiesDialog from "../../ImagePropertiesDialog";
+import AddTagDialog from "../../AddTagDialog";
+import { DialogTrigger } from "@/components/ui/dialog";
 export interface ImagePreviewProps {
     file: FileWithFolder & FileWithTags;
     selected: string[];
@@ -42,7 +44,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
     const { user } = useSession();
 
     const { attributes, listeners, setNodeRef, transition, transform } = useSortable({ id: file.id });
-    
+
     const style = file.createdById === user?.id && transform ? {
         transform: CSS.Translate.toString(transform),
         transition
@@ -124,6 +126,17 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                         {t('actions.download')}
                     </ContextMenuItem>
                     {file.createdById === user?.id
+                        ?
+                        <ContextMenuItem onClick={(e) => e.preventDefault()}>
+                            <AddTagDialog file={file}>
+                                <span>
+                                    {t('actions.addTag')}
+                                </span>
+                            </AddTagDialog>
+                        </ContextMenuItem>
+                        : null
+                    }
+                    {file.createdById === user?.id
                         ? <ContextMenuItem onClick={() => setOpenRename(true)}>
                             {t('actions.rename')}
                         </ContextMenuItem>
@@ -162,7 +175,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                         : null
                     }
                 </ContextMenuContent>
-            </ContextMenu>
+            </ContextMenu >
             <RenameImageDialog file={file} openState={openRename} setOpenState={setOpenRename} />
             <DeleteImageDialog file={file} open={openDelete} setOpen={setOpenDelete} />
             <ImagePropertiesDialog file={file} open={openProperties} setOpen={setOpenProperties} />

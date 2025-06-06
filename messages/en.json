@@ -1388,6 +1388,16 @@
           }
         }
       }
+    },
+    "files": {
+      "addTag": {
+        "title": "Manage tags",
+        "description": "Add, remove and create tags for this file",
+        "selectedTags": "Selected tags",
+        "folderTags": "Folder tags",
+        "otherTags": "Other tags you created",
+        "noSelectedTags": "No tags selected for this file"
+      }
     }
   },
   "dataTables": {
@@ -1783,6 +1793,7 @@
       "view": "Open",
       "select": "Select",
       "download": "Download",
+      "addTag": "Manage tags",
       "rename": "Rename",
       "setAsCover": {
         "label": "Set as cover",
