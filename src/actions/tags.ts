@@ -5,6 +5,13 @@ import { prisma } from "@/lib/prisma";
 import { FolderTag } from "@prisma/client";
 
 export async function createTag(name: string, folderId: string, fileId?: string): Promise<{ success: true, tag: FolderTag } | { success: false, error: string }> {
+    if (name.length === 0) {
+        return {
+            success: false,
+            error: "name is required"
+        }
+    }
+
     if (!(await hasFolderOwnerAccess(folderId))) {
         return {
             success: false,

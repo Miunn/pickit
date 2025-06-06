@@ -1401,7 +1401,8 @@
           "addFirst": "Ajouter",
           "add": "Ajouter",
           "name": "Nom de l'étiquette",
-          "success": "Etiquette ajoutée"
+          "success": "Etiquette ajoutée",
+          "color": "Sélectionnez la couleur"
         }
       }
     }

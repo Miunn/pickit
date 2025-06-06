@@ -1402,7 +1402,8 @@
           "addFirst": "Create one",
           "add": "Add",
           "name": "Tag's name",
-          "success": "Tag added"
+          "success": "Tag added",
+          "color": "Choose color"
         }
       }
     }
