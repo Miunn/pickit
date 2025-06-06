@@ -39,7 +39,7 @@ export default async function MapPage(
             include: {
                 comments: { include: { createdBy: true } },
                 likes: true,
-                folder: { include: { _count: { select: { files: true } } } },
+                folder: { include: { _count: { select: { files: true } }, tags: true } },
                 tags: true
             }
         });
@@ -49,7 +49,7 @@ export default async function MapPage(
             include: {
                 comments: { include: { createdBy: true } },
                 likes: true,
-                folder: { include: { _count: { select: { files: true } } } },
+                folder: { include: { _count: { select: { files: true } }, tags: true } },
                 tags: true
             }
         });

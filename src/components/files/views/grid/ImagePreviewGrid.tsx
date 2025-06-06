@@ -3,7 +3,7 @@
 import { useFormatter, useTranslations } from "next-intl";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import React from "react";
-import { FileWithFolder, FileWithTags } from "@/lib/definitions";
+import { FileWithTags, FolderWithTags } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { cn, downloadClientImageHandler, formatBytes } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
@@ -18,10 +18,10 @@ import { FileType } from "@prisma/client";
 import RenameImageDialog from "../../RenameImageDialog";
 import { DeleteImageDialog } from "../../DeleteImageDialog";
 import ImagePropertiesDialog from "../../ImagePropertiesDialog";
-import AddTagDialog from "../../AddTagDialog";
-import { DialogTrigger } from "@/components/ui/dialog";
+import ManageTagsDialog from "../../ManageTagsDialog";
+
 export interface ImagePreviewProps {
-    file: FileWithFolder & FileWithTags;
+    file: { folder: FolderWithTags } & FileWithTags;
     selected: string[];
     onClick: (e?: React.MouseEvent) => void;
     onSelect: () => void;
@@ -128,11 +128,11 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                     {file.createdById === user?.id
                         ?
                         <ContextMenuItem onClick={(e) => e.preventDefault()}>
-                            <AddTagDialog file={file}>
+                            <ManageTagsDialog file={file}>
                                 <span>
                                     {t('actions.addTag')}
                                 </span>
-                            </AddTagDialog>
+                            </ManageTagsDialog>
                         </ContextMenuItem>
                         : null
                     }

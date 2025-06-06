@@ -1396,7 +1396,14 @@
         "selectedTags": "Selected tags",
         "folderTags": "Folder tags",
         "otherTags": "Other tags you created",
-        "noSelectedTags": "No tags selected for this file"
+        "noSelectedTags": "No tags selected for this file.",
+        "noFolderTags": "No tags created for this folder.",
+        "addTag": {
+          "addFirst": "Create one",
+          "add": "Add",
+          "name": "Tag's name",
+          "success": "Tag added"
+        }
       }
     }
   },
