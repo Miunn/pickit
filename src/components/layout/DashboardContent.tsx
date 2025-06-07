@@ -20,7 +20,7 @@ export default function DashboardContent({ lastFolders }: { lastFolders: (Folder
             <ContextMenuTrigger className="flex flex-col flex-grow">
                 <h2 className={"font-semibold mb-5"}>{t('folders.lastUpdatedFolders')}</h2>
 
-                <div className={`flex flex-wrap gap-3 ${lastFolders.length == 0 && "justify-center"} mb-10`}>
+                <div className={`grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] gap-3 ${lastFolders.length == 0 && "justify-center"} mb-10`}>
                     {lastFolders.length == 0
                         ? <div className={"flex flex-col justify-center items-center"}>
                             <FolderX className={"w-32 h-32 opacity-20"} />

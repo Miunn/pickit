@@ -1387,6 +1387,28 @@
           }
         }
       }
+    },
+    "files": {
+      "addTag": {
+        "title": "Gérer les tags",
+        "description": "Ajoutez, supprimez ou créez des tags pour ce fichier",
+        "selectedTags": "Tags sélectionnés",
+        "folderTags": "Tags du dossier",
+        "otherTags": "Autres tags créés",
+        "noSelectedTags": "Aucun tag sélectionné pour ce fichier.",
+        "noFolderTags": "Aucun tag créé pour ce dossier.",
+        "addTag": {
+          "addFirst": "Ajouter",
+          "add": "Ajouter",
+          "name": "Nom de l'étiquette",
+          "success": "Etiquette ajoutée",
+          "color": "Sélectionnez la couleur",
+          "error": "Une erreur est survenue lors de l'ajout de l'étiquette",
+          "errorRemove": "Une erreur est survenue lors de la suppression de l'étiquette",
+          "errorAdd": "Une erreur est survenue lors de l'ajout de l'étiquette"
+        },
+        "noUserTags": "Aucune étiquette créé pour le moment"
+      }
     }
   },
   "dataTables": {
@@ -1844,6 +1866,7 @@
       "select": "Sélectionner",
       "unselect": "Désélectionner",
       "download": "Télécharger",
+      "addTag": "Gérer les tags",
       "rename": "Renommer",
       "setAsCover": {
         "label": "Définir comme couverture",

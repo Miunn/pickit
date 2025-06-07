@@ -47,15 +47,8 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             return sortedItems;
         }
 
-
         const orderedItems = [...files];
-        const sortedItems = [...orderedItems].sort((a, b) => {
-            const aIndex = files.findIndex((file) => file.id === a.id);
-            const bIndex = files.findIndex((file) => file.id === b.id);
-            if (aIndex === -1) return 1;
-            if (bIndex === -1) return -1;
-            return aIndex - bIndex;
-        });
+        const sortedItems = [...orderedItems].sort((a, b) => a.position - b.position);
         return sortedItems;
     }, [sortState, sortStrategy]);
 
@@ -66,7 +59,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     useEffect(() => {
         setSortStrategy(sortState);
         setSortedFiles(getSortedFiles(files));
-    }, [sortState]);
+    }, [sortState, files]);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -135,14 +128,11 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
 
         setTimeout(async () => {
             let newPosition: number | undefined;
-            console.log("Files positions:", files.map((file) => ({ name: file.name, position: file.position, id: file.id })));
             if (overIndex === 0) {
                 // We just dragged to the first position
-                console.log("Dragging to the first position", activeId, sortedFiles[0].id);
                 newPosition = (await updateFilePosition(activeId, undefined, sortedFiles[0].id)).newPosition;
             } else if (overIndex === sortedFiles.length - 1) {
                 // We just dragged to the last position
-                console.log("Dragging to the last position", activeId, sortedFiles[sortedFiles.length - 1].id);
                 newPosition = (await updateFilePosition(activeId, sortedFiles[sortedFiles.length - 2].id, undefined)).newPosition;
             } else {
                 // We just dragged to the middle
@@ -155,8 +145,6 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             }
 
             if (newPosition) {
-                console.log("New position:", newPosition);
-                console.log("New files order:", files.map((file) => file.id === activeId ? { ...file, position: newPosition } : file).map((file) => file.name));
                 setFiles(files.map((file) => file.id === activeId ? { ...file, position: newPosition } : file));
             }
         }, 0);
@@ -173,11 +161,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             }
 
             setSortStrategy('dragOrder');
-            const orderedFiles = arrayMove(currentOrder, oldIndex, newIndex);
-
-            console.log("Ordered IDs:", orderedFiles);
-
-            return orderedFiles;
+            return arrayMove(currentOrder, oldIndex, newIndex);
         });
 
         setActiveId(null);

@@ -51,6 +51,21 @@ model Folder {
   updatedAt         DateTime            @updatedAt
   AccessToken       AccessToken[]
   PersonAccessToken PersonAccessToken[]
+  tags              FolderTag[]
+}
+
+model FolderTag {
+  id        String   @id @default(cuid())
+  name      String
+  folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId  String
+  files     File[]
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, userId])
 }
 
 model File {
@@ -94,6 +109,7 @@ model File {
 
   comments Comment[]
   likes    FileLike[]
+  tags     FolderTag[]
 }
 
 model Comment {
@@ -192,6 +208,7 @@ model User {
   comments Comment[]
   likes    FileLike[]
   commentLikes CommentLike[]
+  tags FolderTag[]
 }
 
 model VerifyEmailRequest {

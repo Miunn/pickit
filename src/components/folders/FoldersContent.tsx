@@ -46,7 +46,7 @@ export default function FoldersContent({ defaultView, folders }: { defaultView?:
                     : null
                 }
                 {folders.length > 0 && viewState == ViewState.Grid
-                    ? <div className={`flex flex-wrap gap-6 ${folders.length == 0 && "justify-center"} mb-10`}>
+                    ? <div className={`grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] gap-6 ${folders.length == 0 && "justify-center"} mb-10`}>
                         {folders.map(folder => (
                             <FolderPreviewGrid key={folder.id} folder={folder} />
                         ))}

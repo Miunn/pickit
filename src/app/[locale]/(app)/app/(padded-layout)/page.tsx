@@ -33,7 +33,7 @@ export default async function Home(props: { params: Promise<{ locale: string }> 
         include: {
             cover: true,
             AccessToken: true,
-            files: { include: { folder: { include: { _count: { select: { files: true } } } }, comments: { include: { createdBy: true } } } },
+            files: { include: { folder: { include: { _count: { select: { files: true } }, tags: true } }, comments: { include: { createdBy: true } } } },
             _count: { select: { files: true } },
         },
         take: 6,
@@ -43,7 +43,7 @@ export default async function Home(props: { params: Promise<{ locale: string }> 
             createdBy: { id: user.id }
         },
         orderBy: [{ updatedAt: 'desc' }],
-        include: { folder: { include: { _count: { select: { files: true } } } }, comments: { include: { createdBy: true } }, likes: true },
+        include: { folder: { include: { _count: { select: { files: true } }, tags: true } }, comments: { include: { createdBy: true } }, likes: true, tags: true },
         take: 6,
     })).sort((a, b) => {
         return (b.updatedAt as Date).getTime() - (a.updatedAt as Date).getTime();

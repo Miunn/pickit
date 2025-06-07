@@ -248,6 +248,12 @@ const folderWithImages = Prisma.validator<Prisma.FolderDefaultArgs>()({
 
 export type FolderWithImages = Prisma.FolderGetPayload<typeof folderWithImages>
 
+const folderWithTags = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { tags: true }
+})
+
+export type FolderWithTags = Prisma.FolderGetPayload<typeof folderWithTags>
+
 const folderWithFilesWithFolder = Prisma.validator<Prisma.FolderDefaultArgs>()({
     include: { files: { include: { folder: true } } },
 })
@@ -295,6 +301,12 @@ const fileLight = Prisma.validator<Prisma.FileDefaultArgs>()({
 })
 
 export type FileLightWithFolderName = Prisma.FileGetPayload<typeof fileLight>
+
+const fileWithTags = Prisma.validator<Prisma.FileDefaultArgs>()({
+    include: { tags: true }
+})
+
+export type FileWithTags = Prisma.FileGetPayload<typeof fileWithTags>
 
 const fileWithFolder = Prisma.validator<Prisma.FileDefaultArgs>()({
     include: { folder: true },

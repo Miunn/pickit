@@ -35,7 +35,7 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
             <ContextMenu modal={false}>
                 <ContextMenuTrigger asChild>
                     <Link href={`/${locale}/app/folders/${folder.id}`} locale={locale}
-                        className={"inline-block w-64"}>
+                        className={"inline-block w-full"}>
                         {folder.cover
                             ? <div className={`relative h-36 mb-4 flex justify-center items-center border border-primary rounded-xl`}>
                                 <Image src={`/api/folders/${folder.id}/images/${folder.coverId}`} alt={folder.cover.name}

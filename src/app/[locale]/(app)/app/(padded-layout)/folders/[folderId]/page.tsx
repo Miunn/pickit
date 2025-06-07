@@ -98,9 +98,10 @@ export default async function FolderPage(
         include: {
             files: {
                 include: {
-                    folder: { include: { _count: { select: { files: true } } } },
+                    folder: { include: { _count: { select: { files: true } }, tags: true } },
                     comments: { include: { createdBy: true } },
-                    likes: true
+                    likes: true,
+                    tags: true
                 },
             },
             createdBy: true,
