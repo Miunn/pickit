@@ -2,7 +2,6 @@ import { useTranslations } from "next-intl";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { FileWithTags, FolderWithTags } from "@/lib/definitions";
 import { Label } from "../ui/label";
-import { Badge } from "../ui/badge";
 import { BrushCleaning, Loader2 } from "lucide-react";
 import { PopoverNonPortal, PopoverContent, PopoverTrigger } from "../ui/popover-non-portal";
 import { Button } from "../ui/button";
@@ -11,9 +10,21 @@ import { useState } from "react";
 import { addTagsToFile, createTag, removeTagsFromFile } from "@/actions/tags";
 import { toast } from "sonner";
 import { FolderTag } from "@prisma/client";
-import useUserTagsSWR from "@/hooks/use-user-tags-swr";
 import TagChip from "../tags/TagChip";
 import { useFilesContext } from "@/context/FilesContext";
+import { cn } from "@/lib/utils";
+
+const colors = [
+    "#00a8ff",
+    "#9c88ff",
+    "#487eb0",
+    "#e84118",
+    "#273c75",
+    "#44bd32",
+    "#e67e22",
+    "#1abc9c",
+    "#f1c40f"
+];
 
 interface AddTagPopoverProps {
     onTagAdded: (tag: FolderTag) => void;
@@ -24,12 +35,18 @@ interface AddTagPopoverProps {
 const AddTagPopover = ({ onTagAdded, folderId, fileId }: AddTagPopoverProps) => {
     const t = useTranslations("dialogs.files.addTag");
     const [name, setName] = useState("");
+    const [selectedColor, setSelectedColor] = useState(colors[0]);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
 
     const handleAdd = async () => {
+        if (name.length === 0) {
+            toast.error(t("addTag.errorEmpty"));
+            return;
+        }
+
         setLoading(true);
-        const result = await createTag(name, folderId, fileId);
+        const result = await createTag(name, selectedColor, folderId, fileId);
         setLoading(false);
 
         if (result.success) {
@@ -56,6 +73,17 @@ const AddTagPopover = ({ onTagAdded, folderId, fileId }: AddTagPopoverProps) => 
                         }
                     }}
                 />
+
+                <div className="w-full">
+                    <Label>{t("addTag.color")}</Label>
+                    <div className="mt-1 grid grid-cols-3 gap-2">
+                        {colors.map((color) => (
+                            <div key={color} className={cn("h-9 rounded-md cursor-pointer transition-all duration-75 ease-in-out outline outline-0 outline-offset-0 outline-transparent",
+                                selectedColor === color && "outline outline-2 outline-offset-2 outline-primary"
+                            )} style={{ backgroundColor: color }} onClick={() => setSelectedColor(color)} />
+                        ))}
+                    </div>
+                </div>
 
                 <Button onClick={handleAdd} disabled={loading}>
                     {loading ? <Loader2 className="size-4 animate-spin mr-2" /> : null} {t("addTag.add")}
@@ -128,7 +156,7 @@ export default function ManageTagsDialog({ children, file, className, ...props }
 
                 <div className="grid gap-4">
                     <Label>{t("folderTags")} <span className="text-sm text-muted-foreground"><AddTagPopover onTagAdded={handleTagAdded} folderId={file.folder.id} fileId={file.id} /></span></Label>
-                    {file.folder.tags.length > 0 ? (
+                    {folderTags.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
                             {folderTags.map((tag) => (
                                 <TagChip key={tag.id} tag={tag} checked={selectedTags.some((t) => t.id === tag.id)} showCheckbox onTagSelected={handleTagSelected} onTagUnselected={handleTagUnselected} />

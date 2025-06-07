@@ -1407,7 +1407,8 @@
           "color": "Choose color",
           "error": "Error while adding tag",
           "errorRemove": "Error happened while removing tag",
-          "errorAdd": "Error happened while adding tag"
+          "errorAdd": "Error happened while adding tag",
+          "errorEmpty": "Name must not be empty"
         },
         "noUserTags": "No tags created yet"
       }

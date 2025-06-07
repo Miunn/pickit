@@ -6,7 +6,7 @@ import { getCurrentSession } from "@/lib/session";
 import { FolderTag } from "@prisma/client";
 import { FileWithTags } from "@/lib/definitions";
 
-export async function createTag(name: string, folderId: string, fileId?: string): Promise<{ success: true, tag: FolderTag } | { success: false, error: string }> {
+export async function createTag(name: string, color: string, folderId: string, fileId?: string): Promise<{ success: true, tag: FolderTag } | { success: false, error: string }> {
     if (name.length === 0) {
         return {
             success: false,
@@ -30,7 +30,7 @@ export async function createTag(name: string, folderId: string, fileId?: string)
     }
 
     const tag = await prisma.folderTag.create({
-        data: { name, folderId, files: fileId ? { connect: { id: fileId } } : undefined, userId: session.user.id },
+        data: { name, color, folderId, files: fileId ? { connect: { id: fileId } } : undefined, userId: session.user.id },
     })
 
     return {

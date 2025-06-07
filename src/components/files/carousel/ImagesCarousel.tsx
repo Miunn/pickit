@@ -45,8 +45,8 @@ export default function ImagesCarousel({ startIndex, currentIndex }: { startInde
     return (
         <div className={"w-full overflow-hidden p-2 mx-auto"}>
             <div className="max-w-full flex justify-between items-center mb-2 gap-2 px-2">
-                <p className="font-semibold truncate flex items-center gap-3">
-                    {files[currentIndexState]?.name}
+                <div className="font-semibold truncate flex items-center gap-3">
+                    <p className="truncate">{files[currentIndexState]?.name}</p>
                     {files[currentIndexState]?.tags.length > 0 && (
                         <div className="flex gap-1">
                             <TagChip tag={files[currentIndexState]?.tags[0]} />
@@ -57,6 +57,7 @@ export default function ImagesCarousel({ startIndex, currentIndex }: { startInde
                                             <TagChip tag={{
                                                 id: "more",
                                                 name: `+${files[currentIndexState]?.tags.length - 1}`,
+                                                color: files[currentIndexState]?.tags[1].color,
                                                 createdAt: new Date(),
                                                 updatedAt: new Date(),
                                                 folderId: files[currentIndexState]?.folderId,
@@ -72,7 +73,7 @@ export default function ImagesCarousel({ startIndex, currentIndex }: { startInde
                                 </TooltipProvider>
                             )}
                         </div>
-                    )}</p>
+                    )}</div>
                 <FileOptions file={files[currentIndexState]} fullScreenCarouselFiles={files} currentIndexState={currentIndexState} carouselApi={carouselApi} />
             </div>
             <Carousel className="w-full h-fit mx-auto max-w-xl mb-2" opts={{
