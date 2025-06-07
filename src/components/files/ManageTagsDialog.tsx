@@ -150,7 +150,7 @@ export default function ManageTagsDialog({ children, file, className, ...props }
                             ))}
                         </div>
                     ) : (
-                        <p className="flex items-center gap-2 text-muted-foreground text-sm"><BrushCleaning /> {t("noSelectedTags")}</p>
+                        <p className="flex items-center gap-2 my-[3px] text-muted-foreground text-sm"><BrushCleaning /> {t("noSelectedTags")}</p>
                     )}
                 </div>
 
@@ -163,7 +163,7 @@ export default function ManageTagsDialog({ children, file, className, ...props }
                             ))}
                         </div>
                     ) : (
-                        <p className="flex items-center gap-2 text-muted-foreground text-sm"><BrushCleaning /> {t("noFolderTags")}</p>
+                        <p className="flex items-center gap-2 my-[3px] text-muted-foreground text-sm"><BrushCleaning /> {t("noFolderTags")}</p>
                     )}
                 </div>
             </DialogContent>
