@@ -1402,8 +1402,12 @@
           "add": "Ajouter",
           "name": "Nom de l'étiquette",
           "success": "Etiquette ajoutée",
-          "color": "Sélectionnez la couleur"
-        }
+          "color": "Sélectionnez la couleur",
+          "error": "Une erreur est survenue lors de l'ajout de l'étiquette",
+          "errorRemove": "Une erreur est survenue lors de la suppression de l'étiquette",
+          "errorAdd": "Une erreur est survenue lors de l'ajout de l'étiquette"
+        },
+        "noUserTags": "Aucune étiquette créé pour le moment"
       }
     }
   },

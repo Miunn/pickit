@@ -8,9 +8,12 @@ import { PopoverNonPortal, PopoverContent, PopoverTrigger } from "../ui/popover-
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useState } from "react";
-import { createTag } from "@/actions/tags";
+import { addTagsToFile, createTag, removeTagsFromFile } from "@/actions/tags";
 import { toast } from "sonner";
 import { FolderTag } from "@prisma/client";
+import useUserTagsSWR from "@/hooks/use-user-tags-swr";
+import TagChip from "../tags/TagChip";
+import { useFilesContext } from "@/context/FilesContext";
 
 interface AddTagPopoverProps {
     onTagAdded: (tag: FolderTag) => void;
@@ -32,6 +35,7 @@ const AddTagPopover = ({ onTagAdded, folderId, fileId }: AddTagPopoverProps) => 
         if (result.success) {
             setName("");
             toast.success(t("addTag.success"));
+            console.log("Created tag", result.tag);
             onTagAdded(result.tag);
             setOpen(false);
         }
@@ -66,12 +70,34 @@ export default function ManageTagsDialog({ children, file, className, ...props }
     const t = useTranslations("dialogs.files.addTag");
     const [selectedTags, setSelectedTags] = useState<FolderTag[]>(file.tags);
     const [folderTags, setFolderTags] = useState<FolderTag[]>(file.folder.tags);
-    const [otherTags, setOtherTags] = useState<FolderTag[]>([]);
+    const { files, setFiles } = useFilesContext();
 
     const handleTagAdded = (tag: FolderTag) => {
         setSelectedTags([...selectedTags, tag]);
         setFolderTags([...folderTags, tag]);
     };
+
+    const handleTagSelected = async (tag: FolderTag) => {
+        setSelectedTags([...selectedTags, tag]);
+        setFiles(files.map((f) => f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f));
+        const result = await addTagsToFile(file.id, [tag.id]);
+        if (!result.success) {
+            toast.error(t("addTag.errorAdd"));
+            setSelectedTags(selectedTags.filter((t) => t.id !== tag.id));
+            setFiles(files.map((f) => f.id === file.id ? { ...f, tags: f.tags.filter((t) => t.id !== tag.id) } : f));
+        }
+    }
+
+    const handleTagUnselected = async (tag: FolderTag) => {
+        setSelectedTags(selectedTags.filter((t) => t.id !== tag.id));
+        setFiles(files.map((f) => f.id === file.id ? { ...f, tags: f.tags.filter((t) => t.id !== tag.id) } : f));
+        const result = await removeTagsFromFile(file.id, [tag.id]);
+        if (!result.success) {
+            toast.error(t("addTag.errorRemove"));
+            setSelectedTags([...selectedTags, tag]);
+            setFiles(files.map((f) => f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f));
+        }
+    }
 
     return (
         <Dialog>
@@ -89,10 +115,10 @@ export default function ManageTagsDialog({ children, file, className, ...props }
                 <div className="grid gap-4">
                     <Label>{t("selectedTags")} <span className="text-sm text-muted-foreground"><AddTagPopover onTagAdded={handleTagAdded} folderId={file.folder.id} fileId={file.id} /></span></Label>
 
-                    {file.tags.length > 0 ? (
+                    {selectedTags.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
                             {selectedTags.map((tag) => (
-                                <Badge key={tag.id}>{tag.name}</Badge>
+                                <TagChip key={tag.id} tag={tag} checked={true} showCheckbox onTagSelected={handleTagSelected} onTagUnselected={handleTagUnselected} />
                             ))}
                         </div>
                     ) : (
@@ -105,21 +131,12 @@ export default function ManageTagsDialog({ children, file, className, ...props }
                     {file.folder.tags.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
                             {folderTags.map((tag) => (
-                                <Badge key={tag.id}>{tag.name}</Badge>
+                                <TagChip key={tag.id} tag={tag} checked={selectedTags.some((t) => t.id === tag.id)} showCheckbox onTagSelected={handleTagSelected} onTagUnselected={handleTagUnselected} />
                             ))}
                         </div>
                     ) : (
                         <p className="flex items-center gap-2 text-muted-foreground text-sm"><BrushCleaning /> {t("noFolderTags")}</p>
                     )}
-                </div>
-
-                <div className="grid gap-4">
-                    <Label>{t("otherTags")}</Label>
-                    <div className="flex flex-wrap gap-2">
-                        {otherTags.map((tag) => (
-                            <Badge key={tag.id}>{tag.name}</Badge>
-                        ))}
-                    </div>
                 </div>
             </DialogContent>
         </Dialog>

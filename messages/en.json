@@ -1403,8 +1403,12 @@
           "add": "Add",
           "name": "Tag's name",
           "success": "Tag added",
-          "color": "Choose color"
-        }
+          "color": "Choose color",
+          "error": "Error while adding tag",
+          "errorRemove": "Error happened while removing tag",
+          "errorAdd": "Error happened while adding tag"
+        },
+        "noUserTags": "No tags created yet"
       }
     }
   },

@@ -60,8 +60,12 @@ model FolderTag {
   folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
   folderId  String
   files     File[]
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([name, userId])
 }
 
 model File {
@@ -204,6 +208,7 @@ model User {
   comments Comment[]
   likes    FileLike[]
   commentLikes CommentLike[]
+  tags FolderTag[]
 }
 
 model VerifyEmailRequest {
