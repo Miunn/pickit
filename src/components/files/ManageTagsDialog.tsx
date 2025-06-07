@@ -35,7 +35,6 @@ const AddTagPopover = ({ onTagAdded, folderId, fileId }: AddTagPopoverProps) => 
         if (result.success) {
             setName("");
             toast.success(t("addTag.success"));
-            console.log("Created tag", result.tag);
             onTagAdded(result.tag);
             setOpen(false);
         }
@@ -73,8 +72,9 @@ export default function ManageTagsDialog({ children, file, className, ...props }
     const { files, setFiles } = useFilesContext();
 
     const handleTagAdded = (tag: FolderTag) => {
-        setSelectedTags([...selectedTags, tag]);
         setFolderTags([...folderTags, tag]);
+        setSelectedTags([...selectedTags, tag]);
+        setFiles(files.map((f) => f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f));
     };
 
     const handleTagSelected = async (tag: FolderTag) => {
