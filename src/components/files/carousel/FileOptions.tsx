@@ -1,4 +1,4 @@
-import { Braces, Ellipsis } from "lucide-react";
+import { Braces, Ellipsis, Tags } from "lucide-react";
 
 import { Copy } from "lucide-react";
 
@@ -11,7 +11,7 @@ import FullScreenImageCarousel from "./FullScrenImageCarousel";
 import { Expand } from "lucide-react";
 import Link from "next/link";
 import { copyImageToClipboard, downloadClientImageHandler } from "@/lib/utils";
-import { FileWithFolder } from "@/lib/definitions";
+import { FileWithFolder, FileWithTags, FolderWithTags } from "@/lib/definitions";
 import { toast } from "@/hooks/use-toast";
 import { FileType } from "@prisma/client";
 import { useState } from "react";
@@ -20,9 +20,11 @@ import { CarouselApi } from "@/components/ui/carousel";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { DropdownMenu, DropdownMenuItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import ManageTagsDialog from "../ManageTagsDialog";
+import { useSession } from "@/providers/SessionProvider";
 
-export default function FileOptions({ file, fullScreenCarouselFiles, currentIndexState, carouselApi }: { file: FileWithFolder, fullScreenCarouselFiles: FileWithFolder[], currentIndexState: number, carouselApi: CarouselApi }) {
-
+export default function FileOptions({ file, fullScreenCarouselFiles, currentIndexState, carouselApi }: { file: { folder: FolderWithTags } & FileWithTags, fullScreenCarouselFiles: (FileWithFolder & FileWithTags)[], currentIndexState: number, carouselApi: CarouselApi }) {
+    const { user } = useSession();
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
@@ -35,6 +37,13 @@ export default function FileOptions({ file, fullScreenCarouselFiles, currentInde
     return (
         <>
             <div className="hidden sm:flex gap-2">
+                {user?.id === file.createdById && (
+                    <ManageTagsDialog file={file}>
+                    <Button variant={"outline"} size={"icon"} type="button">
+                        <Tags className="w-4 h-4" />
+                    </Button>
+                </ManageTagsDialog>
+                )}
                 <FullScreenImageCarousel files={fullScreenCarouselFiles} defaultIndex={currentIndexState} parentCarouselApi={carouselApi}>
                     <Button variant={"outline"} size={"icon"} type="button">
                         <Expand className="w-4 h-4" />
@@ -95,6 +104,16 @@ export default function FileOptions({ file, fullScreenCarouselFiles, currentInde
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
+                    {user?.id === file.createdById && (
+                        <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+                            <ManageTagsDialog file={file}>
+                                <div className="w-full flex items-center">
+                                    <Tags size={16} className="opacity-60 mr-2" aria-hidden="true" />
+                                    {t('manageTags')}
+                                </div>
+                            </ManageTagsDialog>
+                        </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
                         <div onClick={(e) => e.stopPropagation()} className="w-full flex items-center">
                             <FullScreenImageCarousel files={fullScreenCarouselFiles} defaultIndex={currentIndexState} parentCarouselApi={carouselApi}>

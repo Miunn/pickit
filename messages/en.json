@@ -493,7 +493,8 @@
               }
             }
           },
-          "metadata": "Metadata"
+          "metadata": "Metadata",
+          "manageTags": "Manage tags"
         }
       },
       "comments": {
