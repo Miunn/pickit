@@ -93,6 +93,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                                                             <TagChip tag={{
                                                                 id: "more",
                                                                 name: `+${file.tags.length - 1}`,
+                                                                color: file.tags[1].color,
                                                                 createdAt: new Date(),
                                                                 updatedAt: new Date(),
                                                                 folderId: file.folderId,

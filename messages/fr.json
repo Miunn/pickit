@@ -494,7 +494,8 @@
               }
             }
           },
-          "metadata": "Métadonnées"
+          "metadata": "Métadonnées",
+          "manageTags": "Gérer les étiquettes"
         }
       },
       "comments": {
@@ -1405,7 +1406,8 @@
           "color": "Sélectionnez la couleur",
           "error": "Une erreur est survenue lors de l'ajout de l'étiquette",
           "errorRemove": "Une erreur est survenue lors de la suppression de l'étiquette",
-          "errorAdd": "Une erreur est survenue lors de l'ajout de l'étiquette"
+          "errorAdd": "Une erreur est survenue lors de l'ajout de l'étiquette",
+          "errorEmpty": "Le nom ne doit pas être vide"
         },
         "noUserTags": "Aucune étiquette créé pour le moment"
       }

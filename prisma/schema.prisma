@@ -57,6 +57,7 @@ model Folder {
 model FolderTag {
   id        String   @id @default(cuid())
   name      String
+  color     String   @default("#00a8ff")
   folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
   folderId  String
   files     File[]
