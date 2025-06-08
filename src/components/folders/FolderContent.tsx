@@ -1,81 +1,44 @@
 'use client'
 
-import { Button } from "@/components/ui/button";
-import { ArrowDown, ArrowUp, Download, LayoutGrid, List, MoreHorizontal, Pencil, Map } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { UploadImagesDialog } from "@/components/files/upload/UploadImagesDialog";
-import { ShareFolderDialog } from "@/components/folders/ShareFolderDialog";
-import SortImages, { ImagesSortMethod } from "./SortImages";
+import { ImagesSortMethod } from "./SortImages";
 import { useQueryState } from 'nuqs'
-import { downloadClientFiles } from "@/lib/utils";
-import ViewSelector, { ViewState } from "./ViewSelector";
+import { ViewState } from "./ViewSelector";
 import ImagesList from "../files/views/list/ImagesList";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { useState } from "react";
-import EditDescriptionDialog from "./EditDescriptionDialog";
 import { useFolderContext } from "@/context/FolderContext";
 import { useFilesContext } from "@/context/FilesContext";
-import { Link } from "@/i18n/navigation";
 import dynamic from "next/dynamic";
+import FolderActionBar from "./FolderActionBar";
+import { useSession } from "@/providers/SessionProvider";
+import TagGroupedGrid from "../files/views/grid/TagGroupedGrid";
 
 const ImagesGrid = dynamic(() => import('@/components/files/views/grid/ImagesGrid').then(mod => mod.ImagesGrid), {
     ssr: false,
 });
-  
+
 export interface FolderContentProps {
     defaultView?: ViewState;
     isGuest?: boolean;
 }
 
-export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
-    const { folder, token, tokenType, tokenHash } = useFolderContext();
-    const { files } = useFilesContext();
+export const FolderContent = () => {
+    const { isGuest } = useSession();
+    const { folder } = useFolderContext();
+    const { viewState, sortState } = useFilesContext();
 
     const t = useTranslations("folders");
-    const [viewState, setViewState] = useQueryState<ViewState>('view', {
-        defaultValue: defaultView || ViewState.Grid,
-        parse: (v) => {
-            switch (v) {
-                case "grid":
-                    return ViewState.Grid;
-                case "list":
-                    return ViewState.List;
-                default:
-                    return ViewState.Grid;
-            }
-        }
-    });
-    const [sortState, setSortState] = useQueryState<ImagesSortMethod>('sort', {
-        defaultValue: ImagesSortMethod.PositionAsc,
-        parse: (v) => {
-            switch (v) {
-                case "name-asc":
-                    return ImagesSortMethod.NameAsc;
-                case "name-desc":
-                    return ImagesSortMethod.NameDesc;
-                case "size-asc":
-                    return ImagesSortMethod.SizeAsc;
-                case "size-desc":
-                    return ImagesSortMethod.SizeDesc;
-                case "date-asc":
-                    return ImagesSortMethod.DateAsc;
-                case "date-desc":
-                    return ImagesSortMethod.DateDesc;
-                case "position-asc":
-                    return ImagesSortMethod.PositionAsc;
-                case "position-desc":
-                    return ImagesSortMethod.PositionDesc;
-                default:
-                    return ImagesSortMethod.PositionAsc;
-            }
-        }
-    });
 
-    const [openUpload, setOpenUpload] = useState(false);
-    const [openShare, setOpenShare] = useState(false);
-    const [openEditDescription, setOpenEditDescription] = useState(false);
-
-    const downloadT = useTranslations("components.download");
+    const renderContent = () => {
+        switch (viewState) {
+            case ViewState.List:
+                return <ImagesList />;
+            case ViewState.TagGrouped:
+                return <TagGroupedGrid />;
+            default:
+                return <ImagesGrid sortState={sortState} />;
+        }
+    }
 
     return (
         <div>
@@ -86,184 +49,11 @@ export const FolderContent = ({ defaultView, isGuest }: FolderContentProps) => {
                         : null
                 }</p>
 
-                <div className={"hidden xl:flex gap-4"}>
-                    {!folder.description
-                        ? <Button variant="outline" onClick={() => setOpenEditDescription(true)}><Pencil className={"size-4 mr-2"} /> {t('addDescription')}</Button>
-                        : null
-                    }
-                    <ViewSelector viewState={viewState} setViewState={setViewState} />
-                    {viewState === ViewState.Grid
-                        ? <SortImages sortState={sortState} setSortState={setSortState} />
-                        : null
-                    }
-                    {!!!isGuest || (token?.token && token.allowMap)
-                        ? <Button variant="outline" asChild>
-                            <Link href={`/app/map${token?.token ? `?share=${token?.token}&t=${tokenType === "personAccessToken" ? "p" : "a"}&h=${tokenHash}` : ""}`} className="flex items-center gap-2">
-                                <Map className={"mr-2"} /> {t('actions.map')}
-                            </Link>
-                        </Button>
-                        : null
-                    }
-                    {!!!isGuest
-                        ? <UploadImagesDialog folderId={folder.id} />
-                        : null}
-                    {!!!isGuest ? <ShareFolderDialog folder={folder} /> : null}
-                    <Button variant="outline" onClick={() => downloadClientFiles(downloadT, files, folder.name, token?.token, tokenType, tokenHash)}>
-                        <Download className={"mr-2"} /> {t('actions.download')}
-                    </Button>
-                </div>
-                <div className="hidden lg:flex xl:hidden gap-4">
-                    <ViewSelector viewState={viewState} setViewState={setViewState} />
-                    {viewState === ViewState.Grid
-                        ? <SortImages sortState={sortState} setSortState={setSortState} />
-                        : null
-                    }
-                    {!!!isGuest
-                        ? <UploadImagesDialog folderId={folder.id} />
-                        : null}
-                    <DropdownMenu modal={false}>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size={"icon"}>
-                                <MoreHorizontal className="w-4 h-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            {!folder.description
-                                ? <DropdownMenuItem onClick={() => setOpenEditDescription(true)}>{t('addDescription')}</DropdownMenuItem>
-                                : null
-                            }
-                            {!!!isGuest || (token?.token && token.allowMap)
-                                ? <DropdownMenuItem asChild>
-                                    <Link href={`/app/map${token?.token ? `?share=${token?.token}&t=${tokenType === "personAccessToken" ? "p" : "a"}&h=${tokenHash}` : ""}`}>
-                                        {t('actions.map')}
-                                    </Link>
-                                </DropdownMenuItem>
-                                : null
-                            }
-                            {!!!isGuest
-                                ? <DropdownMenuItem onClick={() => setOpenShare(true)}>
-                                    {t('share.label')}
-                                </DropdownMenuItem>
-                                : null}
-                            <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, files, folder.name, token?.token, tokenType, tokenHash)}>
-                                {t('download.label')}
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
-                <DropdownMenu modal={false}>
-                    <DropdownMenuTrigger className="lg:hidden">
-                        <MoreHorizontal className="w-4 h-4" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuSub>
-                            <DropdownMenuSubTrigger>{t('views.label')}</DropdownMenuSubTrigger>
-                            <DropdownMenuPortal>
-                                <DropdownMenuSubContent>
-                                    <DropdownMenuItem onClick={() => setViewState(ViewState.Grid)} className="flex items-center gap-3">
-                                        <LayoutGrid className="w-4 h-4" /> {t('views.options.grid')}
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => setViewState(ViewState.List)} className="flex items-center gap-3">
-                                        <List className="w-4 h-4" /> {t('views.options.list')}
-                                    </DropdownMenuItem>
-                                </DropdownMenuSubContent>
-                            </DropdownMenuPortal>
-                        </DropdownMenuSub>
-                        {viewState === ViewState.Grid
-                            ? <DropdownMenuSub>
-                                <DropdownMenuSubTrigger>{t('sort.label')}</DropdownMenuSubTrigger>
-                                <DropdownMenuSubContent>
-                                    <DropdownMenuItem onClick={(event) => {
-                                        event.preventDefault();
-                                        if (sortState === ImagesSortMethod.NameDesc) {
-                                            setSortState(ImagesSortMethod.NameAsc);
-                                        } else {
-                                            setSortState(ImagesSortMethod.NameDesc)
-                                        }
-                                    }} className="flex justify-between items-center gap-3">
-                                        {t('sort.options.name')}
-                                        {sortState === ImagesSortMethod.NameAsc
-                                            ? <ArrowUp className="w-4 h-4" />
-                                            : null
-                                        }
-                                        {sortState === ImagesSortMethod.NameDesc
-                                            ? <ArrowDown className="w-4 h-4" />
-                                            : null
-                                        }
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={(event) => {
-                                        event.preventDefault();
-                                        if (sortState === ImagesSortMethod.SizeDesc) {
-                                            setSortState(ImagesSortMethod.SizeAsc);
-                                        } else {
-                                            setSortState(ImagesSortMethod.SizeDesc)
-                                        }
-                                    }} className="flex justify-between items-center gap-3">
-                                        {t('sort.options.size')}
-                                        {sortState === ImagesSortMethod.SizeAsc
-                                            ? <ArrowUp className="w-4 h-4" />
-                                            : null
-                                        }
-                                        {sortState === ImagesSortMethod.SizeDesc
-                                            ? <ArrowDown className="w-4 h-4" />
-                                            : null
-                                        }
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={(event) => {
-                                        event.preventDefault();
-                                        if (sortState === ImagesSortMethod.DateDesc) {
-                                            setSortState(ImagesSortMethod.DateAsc);
-                                        } else {
-                                            setSortState(ImagesSortMethod.DateDesc)
-                                        }
-                                    }} className="flex justify-between items-center gap-3">
-                                        {t('sort.options.date')}
-                                        {sortState === ImagesSortMethod.DateAsc
-                                            ? <ArrowUp className="w-4 h-4" />
-                                            : null
-                                        }
-                                        {sortState === ImagesSortMethod.DateDesc
-                                            ? <ArrowDown className="w-4 h-4" />
-                                            : null
-                                        }
-                                    </DropdownMenuItem>
-                                </DropdownMenuSubContent>
-                            </DropdownMenuSub>
-                            : null
-                        }
-                        {!!!isGuest || (token?.token && token.allowMap)
-                            ? <DropdownMenuItem asChild>
-                                <Link href={`/app/map${token?.token ? `?share=${token?.token}&t=${tokenType === "personAccessToken" ? "p" : "a"}&h=${tokenHash}` : ""}`}>
-                                    {t('actions.map')}
-                                </Link>
-                            </DropdownMenuItem>
-                            : null
-                        }
-                        {!!!isGuest
-                            ? <DropdownMenuItem onClick={() => setOpenUpload(true)}>
-                                {t('upload.label')}
-                            </DropdownMenuItem>
-                            : null}
-                        {!!!isGuest
-                            ? <DropdownMenuItem onClick={() => setOpenShare(true)}>
-                                {t('share.label')}
-                            </DropdownMenuItem>
-                            : null}
-                        <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, files, folder.name, token?.token, tokenType, tokenHash)}>
-                            {t('download.label')}
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-                <EditDescriptionDialog open={openEditDescription} setOpen={setOpenEditDescription} folder={folder} />
-                <UploadImagesDialog open={openUpload} setOpen={setOpenUpload} folderId={folder.id} />
-                <ShareFolderDialog open={openShare} setOpen={setOpenShare} folder={folder} />
+                <FolderActionBar />
             </h3>
 
             <div className="flex-1 overflow-auto">
-                {viewState === ViewState.List
-                    ? <ImagesList />
-                    : <ImagesGrid sortState={sortState} />
-                }
+                {renderContent()}
             </div>
         </div>
     )
