@@ -6,6 +6,7 @@ import { generateV4DownloadUrl } from '@/lib/bucket';
 import { canAccessMap, getToken } from '@/lib/dal';
 import { FilesProvider } from '@/context/FilesContext';
 import { TokenProvider } from '@/context/TokenContext';
+import { ViewState } from '@/components/folders/ViewSelector';
 
 export default async function MapPage(
     props: { params: Promise<{ locale: string }>, searchParams: Promise<{ share?: string, h?: string, t?: string }> }
@@ -65,7 +66,7 @@ export default async function MapPage(
     return (
         <div className='rounded-b-xl h-full overflow-hidden'>
             <TokenProvider token={accessToken}>
-                <FilesProvider filesData={filesWithSignedUrlsAndFolders}>
+                <FilesProvider filesData={filesWithSignedUrlsAndFolders} defaultView={ViewState.Grid}>
                     <FilesMap />
                 </FilesProvider>
             </TokenProvider>

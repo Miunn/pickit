@@ -7,6 +7,7 @@ import { getTranslations } from "next-intl/server";
 import { FilesProvider } from "@/context/FilesContext";
 import { TokenProvider } from "@/context/TokenContext";
 import { generateV4DownloadUrl } from "@/lib/bucket";
+import { ViewState } from "@/components/folders/ViewSelector";
 
 export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations("metadata.dashboard")
@@ -56,7 +57,7 @@ export default async function Home(props: { params: Promise<{ locale: string }> 
 
     return (
         <TokenProvider token={null}>
-            <FilesProvider filesData={lastFilesWithSignedUrls}>
+            <FilesProvider filesData={lastFilesWithSignedUrls} defaultView={ViewState.Grid}>
                 <DashboardContent lastFolders={lastFolders} />
             </FilesProvider>
         </TokenProvider>
