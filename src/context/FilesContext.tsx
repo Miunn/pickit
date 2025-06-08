@@ -1,18 +1,21 @@
 'use client'
 
-import { FileWithComments, FileWithLikes, FolderWithFilesCount } from "@/lib/definitions";
+import { FileWithComments, FileWithLikes, FolderWithFilesCount, FileWithTags, FolderWithTags } from "@/lib/definitions";
 import { createContext, useContext, useState } from "react";
 import { useSession } from "@/providers/SessionProvider";
 import { useTokenContext } from "./TokenContext";
 import { File as PrismaFile } from "@prisma/client";
+import { ImagesSortMethod } from "@/components/folders/SortImages";
+import { getSortedImagesVideosContent } from "@/lib/utils";
 
-export type ContextFile = PrismaFile & { folder: FolderWithFilesCount } & FileWithComments & FileWithLikes & { signedUrl: string };
+export type ContextFile = PrismaFile & FileWithTags & { folder: FolderWithFilesCount & FolderWithTags } & FileWithComments & FileWithLikes & { signedUrl: string };
 
 type FilesContextType = {
     files: ContextFile[];
     setFiles: (files: ContextFile[]) => void;
     hasUserLikedFile: (fileId: string) => boolean;
     canUserLikeFile: (file: FileWithLikes) => boolean;
+    getSortedFiles: (sortStrategy: ImagesSortMethod | 'dragOrder', sortState: ImagesSortMethod) => ContextFile[];
 }
 
 const FilesContext = createContext<FilesContextType | undefined>(undefined);
@@ -69,8 +72,26 @@ export const FilesProvider = ({ children, filesData }: { children: React.ReactNo
         return true;
     }
 
+    const getSortedFiles = (sortStrategy: ImagesSortMethod | 'dragOrder', sortState: ImagesSortMethod): ContextFile[] => {
+        if (sortStrategy !== 'dragOrder') {
+            const sortedItems = [...getSortedImagesVideosContent(files, sortState)] as ContextFile[];
+            return sortedItems;
+        }
+
+
+        const orderedItems = [...files];
+        const sortedItems = [...orderedItems].sort((a, b) => {
+            const aIndex = files.findIndex((file) => file.id === a.id);
+            const bIndex = files.findIndex((file) => file.id === b.id);
+            if (aIndex === -1) return 1;
+            if (bIndex === -1) return -1;
+            return aIndex - bIndex;
+        });
+        return sortedItems;
+    };
+
     return (
-        <FilesContext.Provider value={{ files, setFiles, hasUserLikedFile, canUserLikeFile }}>
+        <FilesContext.Provider value={{ files, setFiles, hasUserLikedFile, canUserLikeFile, getSortedFiles }}>
             {children}
         </FilesContext.Provider>
     )

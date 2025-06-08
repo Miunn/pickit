@@ -493,7 +493,8 @@
               }
             }
           },
-          "metadata": "Metadata"
+          "metadata": "Metadata",
+          "manageTags": "Manage tags"
         }
       },
       "comments": {
@@ -1388,6 +1389,29 @@
           }
         }
       }
+    },
+    "files": {
+      "addTag": {
+        "title": "Manage tags",
+        "description": "Add, remove and create tags for this file",
+        "selectedTags": "Selected tags",
+        "folderTags": "Folder tags",
+        "otherTags": "Other tags you created",
+        "noSelectedTags": "No tags selected for this file.",
+        "noFolderTags": "No tags created for this folder.",
+        "addTag": {
+          "addFirst": "Create one",
+          "add": "Add",
+          "name": "Tag's name",
+          "success": "Tag added",
+          "color": "Choose color",
+          "error": "Error while adding tag",
+          "errorRemove": "Error happened while removing tag",
+          "errorAdd": "Error happened while adding tag",
+          "errorEmpty": "Name must not be empty"
+        },
+        "noUserTags": "No tags created yet"
+      }
     }
   },
   "dataTables": {
@@ -1783,6 +1807,7 @@
       "view": "Open",
       "select": "Select",
       "download": "Download",
+      "addTag": "Manage tags",
       "rename": "Rename",
       "setAsCover": {
         "label": "Set as cover",

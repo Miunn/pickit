@@ -2,7 +2,7 @@
 
 import { useQueryState } from "nuqs";
 import ViewSelector, { ViewState } from "./ViewSelector"
-import { FolderWithAccessToken, FolderWithCover, FolderWithCreatedBy, FolderWithFilesCount, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
+import { FileWithComments, FileWithTags, FolderWithAccessToken, FolderWithCover, FolderWithCreatedBy, FolderWithFilesCount, FolderWithFilesWithFolderAndComments, FolderWithTags } from "@/lib/definitions";
 import { useTranslations } from "next-intl";
 import { FolderX } from "lucide-react";
 import FolderPreviewGrid from "./FolderPreviewGrid";
@@ -11,7 +11,7 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } 
 import CreateFolderDialog from "./CreateFolderDialog";
 import { useState } from "react";
 
-export default function FoldersContent({ defaultView, folders }: { defaultView?: ViewState, folders: (FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments)[] }) {
+export default function FoldersContent({ defaultView, folders }: { defaultView?: ViewState, folders: (FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & { files: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[] })[] }) {
     const t = useTranslations("pages.folders");
     const [viewState, setViewState] = useQueryState<ViewState>('view', {
         defaultValue: defaultView || ViewState.Grid,
@@ -46,7 +46,7 @@ export default function FoldersContent({ defaultView, folders }: { defaultView?:
                     : null
                 }
                 {folders.length > 0 && viewState == ViewState.Grid
-                    ? <div className={`flex flex-wrap gap-6 ${folders.length == 0 && "justify-center"} mb-10`}>
+                    ? <div className={`grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] gap-6 ${folders.length == 0 && "justify-center"} mb-10`}>
                         {folders.map(folder => (
                             <FolderPreviewGrid key={folder.id} folder={folder} />
                         ))}

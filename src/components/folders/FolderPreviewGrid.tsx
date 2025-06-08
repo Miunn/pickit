@@ -1,6 +1,6 @@
 'use client'
 
-import { FolderWithAccessToken, FolderWithCover, FolderWithFilesCount, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
+import { FileWithComments, FileWithTags, FolderWithAccessToken, FolderWithCover, FolderWithFilesCount, FolderWithTags } from "@/lib/definitions";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import React from "react";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
@@ -17,7 +17,7 @@ import DeleteFolderDialog from "./DeleteFolderDialog";
 import { downloadClientFiles } from "@/lib/utils";
 import { FileType } from "@prisma/client";
 
-export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments }) {
+export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & { files: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[] } }) {
     const t = useTranslations("folders");
     const dialogsTranslations = useTranslations("dialogs.folders");
     const downloadT = useTranslations("components.download");
@@ -35,7 +35,7 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
             <ContextMenu modal={false}>
                 <ContextMenuTrigger asChild>
                     <Link href={`/${locale}/app/folders/${folder.id}`} locale={locale}
-                        className={"inline-block w-64"}>
+                        className={"inline-block w-full"}>
                         {folder.cover
                             ? <div className={`relative h-36 mb-4 flex justify-center items-center border border-primary rounded-xl`}>
                                 <Image src={`/api/folders/${folder.id}/images/${folder.coverId}`} alt={folder.cover.name}

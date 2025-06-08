@@ -48,7 +48,7 @@ export const LastUploadedImages = () => {
                 </div>
                 : null
             }
-            <div className={`flex flex-wrap gap-3 ${files.length == 0 && "justify-center"}`}>
+            <div className={`grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] gap-3 ${files.length == 0 && "justify-center"}`}>
                 {files.length == 0
                     ? <div className={"flex flex-col justify-center items-center"}>
                         <ImageOff className={"w-32 h-32 opacity-20"} />

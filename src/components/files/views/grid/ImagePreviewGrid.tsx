@@ -3,7 +3,7 @@
 import { useFormatter, useTranslations } from "next-intl";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import React from "react";
-import { FileWithFolder } from "@/lib/definitions";
+import { FileWithTags, FolderWithTags } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { cn, downloadClientImageHandler, formatBytes } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
@@ -18,8 +18,12 @@ import { FileType } from "@prisma/client";
 import RenameImageDialog from "../../RenameImageDialog";
 import { DeleteImageDialog } from "../../DeleteImageDialog";
 import ImagePropertiesDialog from "../../ImagePropertiesDialog";
+import ManageTagsDialog from "../../ManageTagsDialog";
+import { Badge } from "@/components/ui/badge";
+import TagChip from "@/components/tags/TagChip";
+
 export interface ImagePreviewProps {
-    file: FileWithFolder;
+    file: { folder: FolderWithTags } & FileWithTags;
     selected: string[];
     onClick: (e?: React.MouseEvent) => void;
     onSelect: () => void;
@@ -42,7 +46,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
     const { user } = useSession();
 
     const { attributes, listeners, setNodeRef, transition, transform } = useSortable({ id: file.id });
-    
+
     const style = file.createdById === user?.id && transform ? {
         transform: CSS.Translate.toString(transform),
         transition
@@ -52,8 +56,8 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
         <>
             <ContextMenu key={file.id} modal={false}>
                 <ContextMenuTrigger asChild>
-                    <button ref={setNodeRef} onClick={onClick} className="unset cursor-pointer" style={style} {...listeners} {...attributes}>
-                        <div className={cn(`inline-block w-full sm:w-64 rounded-2xl ${selected.includes(file.id) ? "bg-accent" : ""}`, className)}>
+                    <button ref={setNodeRef} onClick={onClick} className="w-full unset cursor-pointer" style={style} {...listeners} {...attributes}>
+                        <div className={cn(`inline-block w-full rounded-2xl ${selected.includes(file.id) ? "bg-accent" : ""}`, className)}>
                             <div className={`${selected.includes(file.id) ? "scale-95" : ""}`}>
                                 <div className={`relative h-32 sm:h-36 mb-4 flex justify-center items-center group`}>
                                     {file.type === FileType.VIDEO
@@ -78,6 +82,34 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                                         ? <CirclePlay className="absolute left-2 bottom-2 text-white opacity-80 group-hover:opacity-100 transition-all duration-200 ease-in-out" size={25} />
                                         : null
                                     }
+
+                                    {file.tags.length > 0 && (
+                                        <div className="absolute top-2 left-2 flex flex-wrap gap-1">
+                                            <TagChip tag={file.tags[0]} />
+                                            {file.tags.length > 1 && (
+                                                <TooltipProvider>
+                                                    <Tooltip delayDuration={0}>
+                                                        <TooltipTrigger asChild>
+                                                            <TagChip tag={{
+                                                                id: "more",
+                                                                name: `+${file.tags.length - 1}`,
+                                                                color: file.tags[1].color,
+                                                                createdAt: new Date(),
+                                                                updatedAt: new Date(),
+                                                                folderId: file.folderId,
+                                                                userId: file.createdById
+                                                            }} />
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            <p className="text-sm capitalize truncate">
+                                                                {file.tags.slice(1).map((tag) => tag.name).join(", ")}
+                                                            </p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                                 <p className={"text-start truncate"}>{file.name}</p>
                                 <div className={"text-sm h-4 flex items-center justify-between"}>
@@ -124,6 +156,17 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                         {t('actions.download')}
                     </ContextMenuItem>
                     {file.createdById === user?.id
+                        ?
+                        <ContextMenuItem onClick={(e) => e.preventDefault()}>
+                            <ManageTagsDialog file={file}>
+                                <span>
+                                    {t('actions.addTag')}
+                                </span>
+                            </ManageTagsDialog>
+                        </ContextMenuItem>
+                        : null
+                    }
+                    {file.createdById === user?.id
                         ? <ContextMenuItem onClick={() => setOpenRename(true)}>
                             {t('actions.rename')}
                         </ContextMenuItem>
@@ -162,7 +205,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                         : null
                     }
                 </ContextMenuContent>
-            </ContextMenu>
+            </ContextMenu >
             <RenameImageDialog file={file} openState={openRename} setOpenState={setOpenRename} />
             <DeleteImageDialog file={file} open={openDelete} setOpen={setOpenDelete} />
             <ImagePropertiesDialog file={file} open={openProperties} setOpen={setOpenProperties} />
