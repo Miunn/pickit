@@ -461,7 +461,8 @@
       "placeholder": "Select a view",
       "options": {
         "grid": "Grid",
-        "list": "List"
+        "list": "List",
+        "tagGrouped": "Group by tag"
       }
     },
     "images": {
@@ -712,6 +713,11 @@
       "success": {
         "title": "{name} - Downloaded",
         "description": "{name} has been downloaded successfully"
+      },
+      "actions": {
+        "groupBy": {
+          "tag": "Group by tags"
+        }
       }
     },
     "files": {
@@ -1730,7 +1736,8 @@
       "label": "View",
       "options": {
         "grid": "Grid",
-        "list": "List"
+        "list": "List",
+        "tagGrouped": "Group by tag"
       },
       "list": {
         "table": {

@@ -163,8 +163,8 @@ export default async function FolderPage(
                 tokenHash={searchParams.h ?? null}
             >
                 <TokenProvider token={accessToken}>
-                    <FilesProvider filesData={filesWithSignedUrls}>
-                        <FolderContent defaultView={searchParams.view} isGuest={!session} />
+                    <FilesProvider filesData={filesWithSignedUrls} defaultView={searchParams.view || ViewState.Grid}>
+                        <FolderContent />
                     </FilesProvider>
                 </TokenProvider>
             </FolderProvider>
