@@ -5,11 +5,11 @@ import FolderPreviewGrid from "@/components/folders/FolderPreviewGrid";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { LastUploadedImages } from "@/components/files/LastUploadedImages";
-import { FolderWithAccessToken, FolderWithCover, FolderWithFilesCount, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
+import { FileWithComments, FileWithTags, FolderWithAccessToken, FolderWithCover, FolderWithFilesCount, FolderWithFilesWithFolderAndComments, FolderWithTags } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
 import CreateFolderDialog from "../folders/CreateFolderDialog";
 
-export default function DashboardContent({ lastFolders }: { lastFolders: (FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments)[] }) {
+export default function DashboardContent({ lastFolders }: { lastFolders: (FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & { files: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[] })[] }) {
     const t = useTranslations("pages.dashboard");
 
     const [openCreateFolder, setOpenCreateFolder] = React.useState(false);

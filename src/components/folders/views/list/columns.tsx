@@ -16,6 +16,7 @@ import { ShareFolderDialog } from "../../ShareFolderDialog";
 import ChangeCoverFolderDialog from "../../ChangeCoverFolderDialog";
 import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/files";
 import { useSearchParams } from "next/navigation";
+import { FolderWithTags, FileWithTags } from "@/lib/definitions";
 
 export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWithFilesCount & FolderWithFilesWithFolderAndComments>[] = [
     {
@@ -117,10 +118,10 @@ export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWit
             const t = useTranslations("folders.views.list.columns.actions");
             const downloadT = useTranslations("components.download");
             const searchParams = useSearchParams();
-            const [folderImages, setFolderImages] = useState<(FileWithFolder & FileWithComments)[]>([]);
+            const [folderImages, setFolderImages] = useState<({ folder: FolderWithTags } & FileWithTags & FileWithComments)[]>([]);
 
             const loadImages = useCallback(async () => {
-                setFolderImages((await getImagesWithFolderAndCommentsFromFolder(row.original.id)).images);
+                setFolderImages((await getImagesWithFolderAndCommentsFromFolder(row.original.id)).images as ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[]);
             }, [row.original.id]);
 
             useEffect(() => {

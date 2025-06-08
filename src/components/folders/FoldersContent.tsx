@@ -2,7 +2,7 @@
 
 import { useQueryState } from "nuqs";
 import ViewSelector, { ViewState } from "./ViewSelector"
-import { FolderWithAccessToken, FolderWithCover, FolderWithCreatedBy, FolderWithFilesCount, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
+import { FileWithComments, FileWithTags, FolderWithAccessToken, FolderWithCover, FolderWithCreatedBy, FolderWithFilesCount, FolderWithFilesWithFolderAndComments, FolderWithTags } from "@/lib/definitions";
 import { useTranslations } from "next-intl";
 import { FolderX } from "lucide-react";
 import FolderPreviewGrid from "./FolderPreviewGrid";
@@ -11,7 +11,7 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } 
 import CreateFolderDialog from "./CreateFolderDialog";
 import { useState } from "react";
 
-export default function FoldersContent({ defaultView, folders }: { defaultView?: ViewState, folders: (FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments)[] }) {
+export default function FoldersContent({ defaultView, folders }: { defaultView?: ViewState, folders: (FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & { files: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[] })[] }) {
     const t = useTranslations("pages.folders");
     const [viewState, setViewState] = useQueryState<ViewState>('view', {
         defaultValue: defaultView || ViewState.Grid,
