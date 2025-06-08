@@ -47,6 +47,8 @@ export const FilesProvider = ({ children, filesData, defaultView }: { children: 
                     return ViewState.Grid;
                 case "list":
                     return ViewState.List;
+                case "tagGrouped":
+                    return ViewState.TagGrouped;
                 default:
                     return ViewState.Grid;
             }

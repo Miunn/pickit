@@ -1,7 +1,7 @@
 import { downloadClientFiles } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuPortal, DropdownMenuSubContent } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Pencil, Download, MoreHorizontal, LayoutGrid, List, ArrowUp, ArrowDown, Map } from "lucide-react";
+import { Pencil, Download, MoreHorizontal, LayoutGrid, List, ArrowUp, ArrowDown, Map, Tag } from "lucide-react";
 import { UploadImagesDialog } from "../files/upload/UploadImagesDialog";
 import EditDescriptionDialog from "./EditDescriptionDialog";
 import { ShareFolderDialog } from "./ShareFolderDialog";
@@ -81,6 +81,9 @@ export default function FolderActionBar() {
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => setViewState(ViewState.List)} className="flex items-center gap-3">
                                     <List className="w-4 h-4" /> {t('views.options.list')}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setViewState(ViewState.TagGrouped)} className="flex items-center gap-3">
+                                    <Tag className="w-4 h-4" /> {t('views.options.tagGrouped')}
                                 </DropdownMenuItem>
                             </DropdownMenuSubContent>
                         </DropdownMenuPortal>

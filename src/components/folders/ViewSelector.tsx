@@ -28,13 +28,13 @@ export default function ViewSelector({ viewState, setViewState }: { viewState: V
                     break;
             }
         }} value={viewState}>
-            <SelectTrigger className="w-28 font-medium hover:bg-accent hover:text-accent-foreground">
+            <SelectTrigger className="w-fit font-medium hover:bg-accent hover:text-accent-foreground">
                 <SelectValue placeholder={t('placeholder')} />
             </SelectTrigger>
             <SelectContent>
-                <SelectItem value={ViewState.Grid}><div className="flex items-center gap-3"><LayoutGrid className="w-4 h-4" /> {t('options.grid')}</div></SelectItem>
-                <SelectItem value={ViewState.List}><div className="flex items-center gap-3"><List className="w-4 h-4" /> {t('options.list')}</div></SelectItem>
-                <SelectItem value={ViewState.TagGrouped}><div className="flex items-center gap-3"><Tag className="w-4 h-4" /> {t('options.tagGrouped')}</div></SelectItem>
+                <SelectItem value={ViewState.Grid}><div className="flex items-center gap-3 mr-2"><LayoutGrid className="w-4 h-4" /> {t('options.grid')}</div></SelectItem>
+                <SelectItem value={ViewState.List}><div className="flex items-center gap-3 mr-2"><List className="w-4 h-4" /> {t('options.list')}</div></SelectItem>
+                <SelectItem value={ViewState.TagGrouped}><div className="flex items-center gap-3 mr-2"><Tag className="w-4 h-4" /> {t('options.tagGrouped')}</div></SelectItem>
             </SelectContent>
         </Select>
     )

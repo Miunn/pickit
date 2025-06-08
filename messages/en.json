@@ -1736,7 +1736,8 @@
       "label": "View",
       "options": {
         "grid": "Grid",
-        "list": "List"
+        "list": "List",
+        "tagGrouped": "Group by tag"
       },
       "list": {
         "table": {
