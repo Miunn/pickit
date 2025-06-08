@@ -38,10 +38,19 @@ export default function TagGroupedGrid() {
                 }
             });
             if (fileTags.length === 0) {
-                acc.push({ tag: "No tags", files: [file] });
+                const existingNoTagsGroup = acc.find((group) => group.tag === "No tags");
+                if (existingNoTagsGroup) {
+                    existingNoTagsGroup.files.push(file);
+                } else {
+                    acc.push({ tag: "No tags", files: [file] });
+                }
             }
             return acc;
-        }, [] as { tag: FolderTag | "No tags", files: ContextFile[] }[]);
+        }, [] as { tag: FolderTag | "No tags", files: ContextFile[] }[]).sort((a, b) => {
+            if (a.tag === "No tags") return 1;
+            if (b.tag === "No tags") return -1;
+            return a.tag.name.localeCompare(b.tag.name);
+        });
     }, [files]);
 
     const renderGroup = (tag: FolderTag | "No tags", files: ContextFile[]) => {
