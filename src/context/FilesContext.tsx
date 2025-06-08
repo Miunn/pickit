@@ -7,6 +7,8 @@ import { useTokenContext } from "./TokenContext";
 import { File as PrismaFile } from "@prisma/client";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
 import { getSortedImagesVideosContent } from "@/lib/utils";
+import { ViewState } from "@/components/folders/ViewSelector";
+import { useQueryState } from "nuqs";
 
 export type ContextFile = PrismaFile & FileWithTags & { folder: FolderWithFilesCount & FolderWithTags } & FileWithComments & FileWithLikes & { signedUrl: string };
 
@@ -16,6 +18,10 @@ type FilesContextType = {
     hasUserLikedFile: (fileId: string) => boolean;
     canUserLikeFile: (file: FileWithLikes) => boolean;
     getSortedFiles: (sortStrategy: ImagesSortMethod | 'dragOrder', sortState: ImagesSortMethod) => ContextFile[];
+    viewState: ViewState;
+    setViewState: React.Dispatch<React.SetStateAction<ViewState>>;
+    sortState: ImagesSortMethod;
+    setSortState: React.Dispatch<React.SetStateAction<ImagesSortMethod>>;
 }
 
 const FilesContext = createContext<FilesContextType | undefined>(undefined);
@@ -29,10 +35,48 @@ export const useFilesContext = () => {
     return context;
 }
 
-export const FilesProvider = ({ children, filesData }: { children: React.ReactNode, filesData: ContextFile[] }) => {
+export const FilesProvider = ({ children, filesData, defaultView }: { children: React.ReactNode, filesData: ContextFile[], defaultView: ViewState }) => {
     const { user } = useSession();
     const { token } = useTokenContext();
     const [files, setFiles] = useState<ContextFile[]>(filesData);
+    const [viewState, setViewState] = useQueryState<ViewState>('view', {
+        defaultValue: defaultView || ViewState.Grid,
+        parse: (v) => {
+            switch (v) {
+                case "grid":
+                    return ViewState.Grid;
+                case "list":
+                    return ViewState.List;
+                default:
+                    return ViewState.Grid;
+            }
+        }
+    });
+    const [sortState, setSortState] = useQueryState<ImagesSortMethod>('sort', {
+        defaultValue: ImagesSortMethod.PositionAsc,
+        parse: (v) => {
+            switch (v) {
+                case "name-asc":
+                    return ImagesSortMethod.NameAsc;
+                case "name-desc":
+                    return ImagesSortMethod.NameDesc;
+                case "size-asc":
+                    return ImagesSortMethod.SizeAsc;
+                case "size-desc":
+                    return ImagesSortMethod.SizeDesc;
+                case "date-asc":
+                    return ImagesSortMethod.DateAsc;
+                case "date-desc":
+                    return ImagesSortMethod.DateDesc;
+                case "position-asc":
+                    return ImagesSortMethod.PositionAsc;
+                case "position-desc":
+                    return ImagesSortMethod.PositionDesc;
+                default:
+                    return ImagesSortMethod.PositionAsc;
+            }
+        }
+    });
 
     const hasUserLikedFile = (fileId: string) => {
         if (!user && !token) {
@@ -91,7 +135,7 @@ export const FilesProvider = ({ children, filesData }: { children: React.ReactNo
     };
 
     return (
-        <FilesContext.Provider value={{ files, setFiles, hasUserLikedFile, canUserLikeFile, getSortedFiles }}>
+        <FilesContext.Provider value={{ files, setFiles, hasUserLikedFile, canUserLikeFile, getSortedFiles, viewState, setViewState, sortState, setSortState }}>
             {children}
         </FilesContext.Provider>
     )

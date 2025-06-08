@@ -6,12 +6,15 @@ import { createContext, useContext } from "react";
 interface SessionProviderProps {
     user: User | null;
     session: Session | null;
+    isGuest: boolean;
 }
 
 const SessionContext = createContext<SessionProviderProps>({} as SessionProviderProps);
 
 export default function SessionProvider({ children, values }: { children: React.ReactNode, values: SessionProviderProps }) {
-    return <SessionContext.Provider value={values}>{children}</SessionContext.Provider>;
+    const isGuest = !values.session;
+
+    return <SessionContext.Provider value={{ ...values, isGuest }}>{children}</SessionContext.Provider>;
 }
 
 export function useSession() {

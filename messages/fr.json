@@ -462,7 +462,8 @@
       "placeholder": "Sélectionnez une vue",
       "options": {
         "grid": "Grille",
-        "list": "Liste"
+        "list": "Liste",
+        "tagGrouped": "Grouper par étiquette"
       }
     },
     "images": {
@@ -712,6 +713,11 @@
       "success": {
         "title": "{name} - Téléchargement terminé",
         "description": "{name} a été téléchargé avec succès"
+      },
+      "actions": {
+        "groupBy": {
+          "tag": "Grouper par étiquette"
+        }
       }
     },
     "files": {
