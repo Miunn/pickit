@@ -33,7 +33,7 @@ export default async function FoldersPage(
         include: {
             cover: true,
             AccessToken: true,
-            files: { include: { folder: true, comments: { include: { createdBy: true } } } },
+            files: { include: { folder: { include: { tags: true } }, comments: { include: { createdBy: true } }, tags: true } },
             createdBy: true,
             _count: { select: { files: true } }
         },
