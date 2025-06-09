@@ -11,13 +11,13 @@ import { Role, FileType } from "@prisma/client";
 import { useSession } from "@/providers/SessionProvider";
 import LoadingImage from "../LoadingImage";
 import FileOptions from "./FileOptions";
-import { useFilesContext } from "@/context/FilesContext";
+import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import FileLikeButton from "../FileLikeButton";
 import TagChip from "@/components/tags/TagChip";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-export default function ImagesCarousel({ startIndex, currentIndex }: { startIndex: number, currentIndex?: number }) {
-    const { files, setFiles } = useFilesContext();
+export default function ImagesCarousel({ files, startIndex, currentIndex }: { files: ContextFile[], startIndex: number, currentIndex?: number }) {
+    const { setFiles } = useFilesContext();
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");

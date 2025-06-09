@@ -97,7 +97,7 @@ export const LastUploadedImages = () => {
                 }
             </div>
 
-            <CarouselDialog title={"Last uploaded files"} carouselOpen={carouselOpen}
+            <CarouselDialog files={files} title={"Last uploaded files"} carouselOpen={carouselOpen}
                 setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteMultipleImagesDialog files={files.filter((file) => selected.includes(file.id))} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
                 setSelected([]);

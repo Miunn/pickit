@@ -22,6 +22,7 @@ export default function TagGroupedGrid() {
     const [sizeSelected, setSizeSelected] = useState<number>(0);
 
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
+    const [carouselFiles, setCarouselFiles] = useState<ContextFile[]>([]);
     const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
     const [startIndex, setStartIndex] = useState(0);
 
@@ -97,6 +98,7 @@ export default function TagGroupedGrid() {
                                             setSizeSelected(sizeSelected + file.size);
                                         }
                                     } else {
+                                        setCarouselFiles(files);
                                         setStartIndex(files.indexOf(file));
                                         setCarouselOpen(true);
                                     }
@@ -147,7 +149,7 @@ export default function TagGroupedGrid() {
                     </Fragment>
                 ))}
             </div>
-            <CarouselDialog title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
+            <CarouselDialog files={carouselFiles} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteMultipleImagesDialog files={files.filter((file) => selected.includes(file.id))} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
                 setSelected([]);
                 setSelecting(false);
