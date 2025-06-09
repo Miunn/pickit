@@ -1,6 +1,5 @@
 'use client'
 
-import { FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../ui/table";
 import { flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
 import { imagesListViewColumns } from "./columns";
@@ -17,7 +16,7 @@ import { useFilesContext } from "@/context/FilesContext";
 
 export default function ImagesList() {
     const t = useTranslations("images.views.list.table");
-    const { folder, setFolder } = useFolderContext();
+    const { folder } = useFolderContext();
     const { files } = useFilesContext();
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);
     const [startIndex, setStartIndex] = React.useState<number>(0);
@@ -227,7 +226,7 @@ export default function ImagesList() {
                     </TableBody>
                 </Table>
             </div>
-            <CarouselDialog title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
+            <CarouselDialog files={tableData} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteMultipleImagesDialog files={tableData.filter((file) => Object.keys(rowSelection).includes(file.id))} open={openDeleteSelection} setOpen={setOpenDeleteSelection} onDelete={() => {
                 setRowSelection({});
             }} />
