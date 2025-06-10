@@ -13,11 +13,11 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner"
 import { initiateFileUpload, finalizeFileUpload } from "@/actions/files";
 import { Progress } from "@/components/ui/progress";
-import { useState } from "react";
+import { ContextFile } from "@/context/FilesContext";
 
 interface UploadImagesFormProps {
     folderId: string;
-    onUpload?: () => void;
+    onUpload?: (files: ContextFile[]) => void;
 }
 
 interface InitiateUploadResult {
@@ -25,11 +25,6 @@ interface InitiateUploadResult {
     uploadUrl: string | null;
     verificationToken?: string;
     fileId?: string;
-}
-
-interface FinalizeUploadResult {
-    error: string | null;
-    fileId: string | null;
 }
 
 export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) {
@@ -112,7 +107,7 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
                         finalizeFormData.append("verificationToken", verificationResult.verificationToken || "");
                         finalizeFormData.append("fileId", verificationResult.fileId || "");
 
-                        const finalizeResult = await finalizeFileUpload(finalizeFormData, folderId) as FinalizeUploadResult;
+                        const finalizeResult = await finalizeFileUpload(finalizeFormData, folderId);
 
                         if (finalizeResult.error) {
                             throw new Error(finalizeResult.error);
@@ -129,13 +124,13 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
                         )
                         return {
                             success: true,
-                            file: file.name
+                            file: finalizeResult.file
                         };
                     } catch (error) {
                         console.error(`Error uploading ${file.name}:`, error);
                         return {
                             success: false,
-                            file: file.name,
+                            file: null,
                             error: error instanceof Error ? error.message : "Unknown error"
                         };
                     }        
@@ -151,9 +146,7 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
 
             toast.success(t('success', { count: successfulUploads.length }));
 
-            if (onUpload) {
-                onUpload();
-            }
+            onUpload?.(successfulUploads.map(r => r.file));
         } catch (error) {
             console.error("Upload error:", error);
             toast.error("An error occurred during upload");
