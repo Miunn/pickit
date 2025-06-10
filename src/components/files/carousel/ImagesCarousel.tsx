@@ -16,7 +16,7 @@ import FileLikeButton from "../FileLikeButton";
 import TagChip from "@/components/tags/TagChip";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-export default function ImagesCarousel({ files, startIndex, currentIndex }: { files: ContextFile[], startIndex: number, currentIndex?: number }) {
+export default function ImagesCarousel({ files, startIndex }: { files: ContextFile[], startIndex: number }) {
     const { setFiles } = useFilesContext();
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
@@ -27,8 +27,8 @@ export default function ImagesCarousel({ files, startIndex, currentIndex }: { fi
 
     const t = useTranslations("components.images.carousel");
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
-    const [currentIndexInternalState, setCurrentIndexInternalState] = useState<number>(currentIndex ?? 0);
-    const currentIndexState = currentIndex ?? currentIndexInternalState;
+    const [currentIndexInternalState, setCurrentIndexInternalState] = useState<number>(startIndex);
+    const currentIndexState = currentIndexInternalState;
 
     const [commentSectionOpen, setCommentSectionOpen] = useState<boolean>(false);
 
