@@ -17,7 +17,7 @@ import { Link } from "@/i18n/navigation";
 export default function FolderActionBar() {
     const { isGuest } = useSession();
     const { folder, token, tokenType, tokenHash } = useFolderContext();
-    const { viewState, sortState, setViewState, setSortState, files } = useFilesContext();
+    const { viewState, sortState, setViewState, setSortState, files, setFiles } = useFilesContext();
     const t = useTranslations("folders");
     const downloadT = useTranslations("components.download");
 
@@ -35,7 +35,9 @@ export default function FolderActionBar() {
                     : null
                 }
                 {!!!isGuest
-                    ? <UploadImagesDialog folderId={folder.id} />
+                    ? <UploadImagesDialog folderId={folder.id} onUpload={(uploadedFiles) => {
+                        setFiles([...files, ...uploadedFiles]);
+                    }} />
                     : null}
                 <DropdownMenu modal={false}>
                     <DropdownMenuTrigger asChild>
@@ -174,7 +176,9 @@ export default function FolderActionBar() {
                 </DropdownMenuContent>
             </DropdownMenu>
             <EditDescriptionDialog open={openEditDescription} setOpen={setOpenEditDescription} folder={folder} />
-            <UploadImagesDialog open={openUpload} setOpen={setOpenUpload} folderId={folder.id} />
+            <UploadImagesDialog open={openUpload} setOpen={setOpenUpload} folderId={folder.id} onUpload={(uploadedFiles) => {
+                setFiles([...files, ...uploadedFiles]);
+            }} />
             <ShareFolderDialog open={openShare} setOpen={setOpenShare} folder={folder} />
         </>
     )
