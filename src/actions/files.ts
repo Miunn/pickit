@@ -3,16 +3,16 @@
 import { prisma } from "@/lib/prisma";
 import sharp from "sharp";
 import { revalidatePath } from "next/cache";
-import { FileWithComments, FileWithFolder, RenameImageFormSchema } from "@/lib/definitions";
+import { FileWithComments, FileWithFolder, FileWithLikes, FileWithTags, FolderWithFilesCount, FolderWithTags, RenameImageFormSchema } from "@/lib/definitions";
 import { getCurrentSession } from "@/lib/session";
 import { fileTypeFromBuffer } from 'file-type';
 import { z } from "zod";
-import { GoogleBucket } from "@/lib/bucket";
+import { generateV4DownloadUrl, GoogleBucket } from "@/lib/bucket";
 import mediaInfoFactory, { Track } from "mediainfo.js";
 import ffmpeg from "fluent-ffmpeg";
 import { PassThrough } from "stream";
 import crypto, { randomUUID } from "crypto";
-import { FileType, PersonAccessToken, FileLike } from "@prisma/client";
+import { FileType, PersonAccessToken, FileLike, File as PrismaFile } from "@prisma/client";
 import fs, { mkdtempSync } from "fs";
 import path from "path";
 import { tmpdir } from "os";
@@ -100,17 +100,17 @@ export async function initiateFileUpload(
 export async function finalizeFileUpload(
     formData: FormData,
     parentFolderId: string
-): Promise<{ error: string | null; fileId: string | null }> {
+): Promise<{ error: string | null; file: (FileWithTags & FileWithComments & FileWithLikes & { folder: FolderWithFilesCount & FolderWithTags } & { signedUrl: string }) | null }> {
     const session = await getCurrentSession();
     if (!session?.user?.id) {
-        return { error: "not-authenticated", fileId: null };
+        return { error: "not-authenticated", file: null };
     }
 
     const verificationToken = formData.get("verificationToken") as string;
     const fileId = formData.get("fileId") as string;
 
     if (!verificationToken || !fileId) {
-        return { error: "missing-verification-data", fileId: null };
+        return { error: "missing-verification-data", file: null };
     }
 
     try {
@@ -120,7 +120,7 @@ export async function finalizeFileUpload(
 
         // Verify metadata
         if (verificationData.userId !== session.user.id) {
-            return { error: "verification-failed", fileId: null };
+            return { error: "verification-failed", file: null };
         }
 
         // Get the uploaded file
@@ -131,13 +131,13 @@ export async function finalizeFileUpload(
         const detectedType = await fileTypeFromBuffer(uploadedBuffer);
         if (!detectedType || detectedType.mime !== verificationData.type) {
             await GoogleBucket.file(`${session.user.id}/${parentFolderId}/${fileId}`).delete();
-            return { error: "file-type-mismatch", fileId: null };
+            return { error: "file-type-mismatch", file: null };
         }
 
         // Verify file size
         if (uploadedBuffer.length !== verificationData.size) {
             await GoogleBucket.file(`${session.user.id}/${parentFolderId}/${fileId}`).delete();
-            return { error: "file-size-mismatch", fileId: null };
+            return { error: "file-size-mismatch", file: null };
         }
 
         // Verify file samples
@@ -151,7 +151,7 @@ export async function finalizeFileUpload(
 
             if (sampleHash !== samples[i]) {
                 await GoogleBucket.file(`${session.user.id}/${parentFolderId}/${fileId}`).delete();
-                return { error: "file-content-mismatch", fileId: null };
+                return { error: "file-content-mismatch", file: null };
             }
         }
 
@@ -192,13 +192,20 @@ export async function finalizeFileUpload(
                     altitude: exif.GPSAltitude,
                     latitude: exif.latitude,
                     longitude: exif.longitude
+                },
+                include: {
+                    tags: true,
+                    comments: { include: { createdBy: true } },
+                    likes: true,
+                    folder: { include: { tags: true, _count: { select: { files: true } } } }
                 }
             });
             revalidatePath(`/app/folders/${parentFolderId}`);
             revalidatePath(`/app/folders`);
             revalidatePath(`/app`);
 
-            return { error: null, fileId: image.id };
+            const signedUrl = await generateV4DownloadUrl(`${session.user.id}/${parentFolderId}/${fileId}`);
+            return { error: null, file: { ...image, signedUrl } };
         } else if (verificationData.type.startsWith("video/")) {
             // Process thumbnail creation
             try {
@@ -231,6 +238,12 @@ export async function finalizeFileUpload(
                     width: metadata.media?.track.find((track: Track) => track["@type"] === "Video")?.Active_Width || 0,
                     height: metadata.media?.track.find((track: Track) => track["@type"] === "Video")?.Active_Height || 0,
                     duration: metadata.media?.track.find((track: Track) => track["@type"] === "General")?.Duration || 0
+                },
+                include: {
+                    tags: true,
+                    comments: { include: { createdBy: true } },
+                    likes: true,
+                    folder: { include: { tags: true, _count: { select: { files: true } } } }
                 }
             });
 
@@ -238,13 +251,14 @@ export async function finalizeFileUpload(
             revalidatePath(`/app/folders`);
             revalidatePath(`/app`);
 
-            return { error: null, fileId: video.id };
+            const signedUrl = await generateV4DownloadUrl(`${session.user.id}/${parentFolderId}/${fileId}`);
+            return { error: null, file: { ...video, signedUrl } };
         }
 
-        return { error: "invalid-file-type", fileId: null };
+        return { error: "invalid-file-type", file: null };
     } catch (err) {
         console.error("Error finalizing upload:", err);
-        return { error: "upload-finalization-failed", fileId: null };
+        return { error: "upload-finalization-failed", file: null };
     }
 }
 

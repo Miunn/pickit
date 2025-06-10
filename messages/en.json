@@ -535,7 +535,7 @@
       "uploadImagesForm": {
         "label": "Upload images",
         "ongoing": {
-          "title": "Upload in progress"
+          "title": "Upload in progress ({current}/{total})"
         },
         "success": "{count, plural, one {# file uploaded} other {# files uploaded}} successfully",
         "actions": {

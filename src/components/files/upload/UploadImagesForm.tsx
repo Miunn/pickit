@@ -13,11 +13,11 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner"
 import { initiateFileUpload, finalizeFileUpload } from "@/actions/files";
 import { Progress } from "@/components/ui/progress";
-import { useState } from "react";
+import { ContextFile } from "@/context/FilesContext";
 
 interface UploadImagesFormProps {
     folderId: string;
-    onUpload?: () => void;
+    onUpload?: (files: ContextFile[]) => void;
 }
 
 interface InitiateUploadResult {
@@ -25,11 +25,6 @@ interface InitiateUploadResult {
     uploadUrl: string | null;
     verificationToken?: string;
     fileId?: string;
-}
-
-interface FinalizeUploadResult {
-    error: string | null;
-    fileId: string | null;
 }
 
 export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) {
@@ -47,7 +42,7 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
 
         toast(
             <div className="w-full">
-                {t('ongoing.title')}
+                {t('ongoing.title', { current: 0, total: data.images.length })}
                 <Progress value={0} className="w-full mt-2" />
             </div>,
             {
@@ -61,6 +56,7 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
         );
 
         try {
+            let uploadedCount = 0;
             const results = await Promise.all(
                 data.images.map(async (file: File, i: number) => {
                     try {
@@ -112,16 +108,17 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
                         finalizeFormData.append("verificationToken", verificationResult.verificationToken || "");
                         finalizeFormData.append("fileId", verificationResult.fileId || "");
 
-                        const finalizeResult = await finalizeFileUpload(finalizeFormData, folderId) as FinalizeUploadResult;
+                        const finalizeResult = await finalizeFileUpload(finalizeFormData, folderId);
 
                         if (finalizeResult.error) {
                             throw new Error(finalizeResult.error);
                         }
 
+                        uploadedCount += 1;
                         toast(
                             <div className="w-full">
-                                {t('ongoing.title')}
-                                <Progress value={Math.round(((i + 1) / data.images!.length) * 100)} className="w-full mt-2" />
+                                {t('ongoing.title', { current: uploadedCount, total: data.images.length })}
+                                <Progress value={uploadedCount / data.images.length * 100} className="w-full mt-2" />
                             </div>,
                             {
                                 id: "progress-toast"
@@ -129,13 +126,13 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
                         )
                         return {
                             success: true,
-                            file: file.name
+                            file: finalizeResult.file
                         };
                     } catch (error) {
                         console.error(`Error uploading ${file.name}:`, error);
                         return {
                             success: false,
-                            file: file.name,
+                            file: null,
                             error: error instanceof Error ? error.message : "Unknown error"
                         };
                     }        
@@ -151,9 +148,7 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
 
             toast.success(t('success', { count: successfulUploads.length }));
 
-            if (onUpload) {
-                onUpload();
-            }
+            onUpload?.(successfulUploads.map(r => r.file));
         } catch (error) {
             console.error("Upload error:", error);
             toast.error("An error occurred during upload");
