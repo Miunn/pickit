@@ -535,7 +535,7 @@
       "uploadImagesForm": {
         "label": "Importer des images",
         "ongoing": {
-          "title": "Importation en cours"
+          "title": "Importation en cours ({current}/{total})"
         },
         "success": "{count, plural, one {# fichier importé} other {# fichiers importés}} avec succès",
         "actions": {

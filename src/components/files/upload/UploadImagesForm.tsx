@@ -42,7 +42,7 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
 
         toast(
             <div className="w-full">
-                {t('ongoing.title')}
+                {t('ongoing.title', { current: 0, total: data.images.length })}
                 <Progress value={0} className="w-full mt-2" />
             </div>,
             {
@@ -56,6 +56,7 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
         );
 
         try {
+            let uploadedCount = 0;
             const results = await Promise.all(
                 data.images.map(async (file: File, i: number) => {
                     try {
@@ -113,10 +114,11 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
                             throw new Error(finalizeResult.error);
                         }
 
+                        uploadedCount += 1;
                         toast(
                             <div className="w-full">
-                                {t('ongoing.title')}
-                                <Progress value={Math.round(((i + 1) / data.images!.length) * 100)} className="w-full mt-2" />
+                                {t('ongoing.title', { current: uploadedCount, total: data.images.length })}
+                                <Progress value={uploadedCount / data.images.length * 100} className="w-full mt-2" />
                             </div>,
                             {
                                 id: "progress-toast"
