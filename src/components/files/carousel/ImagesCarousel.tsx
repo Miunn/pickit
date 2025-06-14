@@ -116,6 +116,18 @@ export default function ImagesCarousel({ files, startIndex }: { files: ContextFi
                 <div className="flex items-center gap-2">
                     <FileLikeButton file={files[currentIndexState]} />
 
+
+                    <div className="flex items-center gap-0.5">
+                        <p className="text-sm text-muted-foreground">{files[currentIndexState].comments.length}</p>
+                        <ImageCommentSection
+                            file={files[currentIndexState]}
+                        >
+                            <Button variant={"ghost"} size={"icon"} type="button" className="size-7 p-0 rounded-full hover:bg-primary/20">
+                                <MessageCircle className="size-4" />
+                            </Button>
+                        </ImageCommentSection>
+                    </div>
+
                     {user?.role.includes(Role.ADMIN) || user?.id === files[currentIndexState].folder.createdById
                         ? (
                             <EditDescriptionDialog file={files[currentIndexState]} onSuccess={(description) => {
@@ -126,18 +138,11 @@ export default function ImagesCarousel({ files, startIndex }: { files: ContextFi
                                     return file;
                                 }));
                             }}>
-                                <Button variant={"outline"} size={"icon"} type="button">
+                                <Button variant={"ghost"} size={"icon"} type="button" className="size-7 p-0 rounded-full hover:bg-primary/20">
                                     <Pencil className="size-4" />
                                 </Button>
                             </EditDescriptionDialog>
                         ) : null}
-                    <ImageCommentSection
-                        file={files[currentIndexState]}
-                    >
-                        <Button variant={"outline"} size={"icon"} type="button">
-                            <MessageCircle className="size-4" />
-                        </Button>
-                    </ImageCommentSection>
                 </div>
             </div>
         </div>
