@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../../ui/carousel";
 import { Button } from "../../ui/button";
-import { Pencil } from "lucide-react";
+import { MessageCircle, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn, formatBytes } from "@/lib/utils";
 import ImageCommentSection from "./ImageCommentSection";
@@ -29,8 +29,6 @@ export default function ImagesCarousel({ files, startIndex }: { files: ContextFi
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
     const [currentIndexInternalState, setCurrentIndexInternalState] = useState<number>(startIndex);
     const currentIndexState = currentIndexInternalState;
-
-    const [commentSectionOpen, setCommentSectionOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (!carouselApi) return;
@@ -84,11 +82,11 @@ export default function ImagesCarousel({ files, startIndex }: { files: ContextFi
                 <CarouselContent className="h-fit">
                     {files.map((file) => (
                         <CarouselItem key={file.id} className="h-fit">
-                            <div className={`${commentSectionOpen ? "h-44" : "h-96"} relative flex justify-center items-center p-2 transition-all duration-300 ease-in-out`}>
+                            <div className={"relative flex justify-center items-center p-2 transition-all duration-300 ease-in-out"}>
                                 {file.type === FileType.VIDEO
-                                    ? <video className={`${commentSectionOpen ? "h-44" : "h-96"} max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out`} controls src={`/api/folders/${file.folder.id}/videos/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} />
+                                    ? <video className={"max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out"} controls src={`/api/folders/${file.folder.id}/videos/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`} />
                                     : <LoadingImage src={`/api/folders/${file.folder.id}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
-                                        alt={file.name} className={`${commentSectionOpen ? "h-44" : "h-96"} max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out`} width={900} height={384} spinnerClassName="w-10 h-10 text-primary" />
+                                        alt={file.name} className={"max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out"} width={900} height={384} spinnerClassName="w-10 h-10 text-primary" />
                                 }
                             </div>
                         </CarouselItem>
@@ -119,28 +117,29 @@ export default function ImagesCarousel({ files, startIndex }: { files: ContextFi
                     <FileLikeButton file={files[currentIndexState]} />
 
                     {user?.role.includes(Role.ADMIN) || user?.id === files[currentIndexState].folder.createdById
-                        ? <EditDescriptionDialog file={files[currentIndexState]} onSuccess={(description) => {
-                            setFiles(files.map((file) => {
-                                if (file.id === files[currentIndexState].id) {
-                                    return { ...file, description: description };
-                                }
-                                return file;
-                            }));
-                        }}>
-                            <Button variant={"outline"} size={"icon"} type="button">
-                                <Pencil className="size-4" />
-                            </Button>
-                        </EditDescriptionDialog>
-                        : null}
+                        ? (
+                            <EditDescriptionDialog file={files[currentIndexState]} onSuccess={(description) => {
+                                setFiles(files.map((file) => {
+                                    if (file.id === files[currentIndexState].id) {
+                                        return { ...file, description: description };
+                                    }
+                                    return file;
+                                }));
+                            }}>
+                                <Button variant={"outline"} size={"icon"} type="button">
+                                    <Pencil className="size-4" />
+                                </Button>
+                            </EditDescriptionDialog>
+                        ) : null}
+                    <ImageCommentSection
+                        file={files[currentIndexState]}
+                    >
+                        <Button variant={"outline"} size={"icon"} type="button">
+                            <MessageCircle className="size-4" />
+                        </Button>
+                    </ImageCommentSection>
                 </div>
             </div>
-
-            <ImageCommentSection
-                className="py-2 transition-all duration-1000 ease-in-out"
-                open={commentSectionOpen}
-                setOpen={setCommentSectionOpen}
-                file={files[currentIndexState]}
-            />
         </div>
     )
 }

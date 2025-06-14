@@ -503,7 +503,7 @@
         "trigger": "{count, plural, zero {Aucun commentaire} one {# Commentaire} other {# Commentaires}}",
         "form": {
           "text": {
-            "label": "Poster un commentaire",
+            "label": "{count, plural, =0 {Aucun commentaire} =1 {1 commentaire} other {# commentaires}}",
             "placeholder": "Partagez vos pensées sur la photo..."
           }
         },

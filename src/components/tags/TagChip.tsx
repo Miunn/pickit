@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { motion } from "motion/react";
 
-export default function TagChip({ tag, checked, showCheckbox, onTagSelected, onTagUnselected }: { tag: FolderTag, checked?: boolean, showCheckbox?: boolean, onTagSelected?: (tag: FolderTag) => void, onTagUnselected?: (tag: FolderTag) => void }) {
+export default function TagChip({ tag, className, checked, showCheckbox, onTagSelected, onTagUnselected }: { tag: FolderTag, className?: string, checked?: boolean, showCheckbox?: boolean, onTagSelected?: (tag: FolderTag) => void, onTagUnselected?: (tag: FolderTag) => void }) {
 
     // Convert hex color to rgb
     const rgb = tag.color.match(/\w\w/g)?.map(hex => parseInt(hex, 16)) ?? [0, 0, 0];
@@ -15,12 +15,12 @@ export default function TagChip({ tag, checked, showCheckbox, onTagSelected, onT
 
     if (!showCheckbox) {
         return (
-            <Badge className={cn("cursor-default px-2.5 py-1.5 rounded-full")} style={{
+            <Badge className={cn("cursor-default px-2.5 py-1.5 rounded-full", className)} style={{
                 borderColor: textColor,
                 backgroundColor: backgroundColor,
                 color: textColor
             }}>
-                {tag.name}
+                <span className="truncate">{tag.name}</span>
             </Badge>
         )
     }
@@ -45,7 +45,7 @@ export default function TagChip({ tag, checked, showCheckbox, onTagSelected, onT
             >
                 {checked && <Check className={cn("size-4 mr-2")} style={{ color: textColor }} />}
             </motion.div>
-            {tag.name}
+            <span className="truncate">{tag.name}</span>
         </Badge>
     )
 }

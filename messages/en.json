@@ -502,7 +502,7 @@
         "trigger": "{count, plural, one {# Comment} other {# Comments}}",
         "form": {
           "text": {
-            "label": "Leave a comment",
+            "label": "{count, plural, =0 {No comments} =1 {1 comment} other {# comments}}",
             "placeholder": "Write a comment..."
           }
         },
@@ -522,7 +522,7 @@
         },
         "empty": "No comments yet",
         "privacy": {
-          "trigger": "How we handle your comments ?",
+          "trigger": "How do we handle your comments ?",
           "content": "If you are logged in, your name will appear above your comment.<br />If you are not logged in but this folder has been shared with you by e-mail, the first part of your e-mail address will appear above your comment.<br />If you are not logged in and this file has been shared with you via a link, your comment will be anonymous.<br /><br />Comments are only shared with people who have access to the folder."
         },
         "comment": {
