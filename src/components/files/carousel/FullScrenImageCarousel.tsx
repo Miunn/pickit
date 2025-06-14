@@ -2,10 +2,12 @@ import { FileWithFolder } from "@/lib/definitions";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../../ui/carousel";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Dialog, DialogContent, DialogTrigger } from "../../ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../../ui/dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import LoadingImage from "../LoadingImage";
 import { FileType } from "@prisma/client";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+
 export default function FullScreenImageCarousel({ 
     files,
     defaultIndex,
@@ -60,6 +62,9 @@ export default function FullScreenImageCarousel({
                 {children}
             </DialogTrigger>
             <DialogContent className="w-dvw h-dvh max-w-none max-h-none p-0 border-none bg-transparent overflow-hidden" closeButton={<Cross2Icon className="size-7 bg-gray-600 text-white rounded-md p-1" />}>
+                <VisuallyHidden>
+                    <DialogTitle>{files[carouselApi?.selectedScrollSnap() ?? 0].name}</DialogTitle>
+                </VisuallyHidden>
                 <div className="fixed inset-0 bg-black/90 flex items-center justify-center">
                     <Carousel className="w-full h-full" opts={{
                         align: "center",
