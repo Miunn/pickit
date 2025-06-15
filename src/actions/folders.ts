@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getCurrentSession } from "@/lib/session";
 import { GoogleBucket } from "@/lib/bucket";
+import { hasFolderOwnerAccess } from "@/lib/dal";
 
 export async function createFolder(name: string): Promise<{
     folder: { id: string; name: string; coverId: string | null; createdById: string; createdAt: Date; updatedAt: Date; } | null,
@@ -45,6 +46,26 @@ export async function createFolder(name: string): Promise<{
     revalidatePath("/app/folders");
     revalidatePath("/app");
     return { folder: folder, error: null };
+}
+
+export async function updateFolderKey(folderId: string, key: string, iv: string): Promise<{
+    error: string | null,
+}> {
+    if (!(await hasFolderOwnerAccess(folderId))) {
+        return { error: "You must be the owner of the folder to update its key" };
+    }
+
+    const { user } = await getCurrentSession();
+    if (!user) {
+        return { error: "You must be logged in to update a folder's key" };
+    }
+
+    await prisma.folder.update({
+        where: { id: folderId, createdBy: { id: user.id as string } },
+        data: { key, iv }
+    });
+
+    return { error: null };
 }
 
 export async function renameFolder(folderId: string, name: string): Promise<{

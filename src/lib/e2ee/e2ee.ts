@@ -4,11 +4,9 @@ export async function withIndexedDB(callback: (db: IDBDatabase) => void) {
         console.error("Error opening indexedDB", event);
     };
     request.onsuccess = (event) => {
-        console.log("IndexedDB opened", event);
         callback(request.result);
     };
     request.onupgradeneeded = (event) => {
-        console.log("IndexedDB upgraded", event);
         const db = (event.target as IDBOpenDBRequest).result;
         createStore(db);
     };
@@ -22,6 +20,11 @@ export function createStore(db: IDBDatabase) {
         store.createIndex("iv", "iv", { unique: true });
         store.createIndex("salt", "salt", { unique: true });
     }
+
+    if (!db.objectStoreNames.contains("vaults")) {
+        const store = db.createObjectStore("vaults", { keyPath: "id", autoIncrement: true });
+        store.createIndex("folderId", "folderId", { unique: true });
+    }
 }
 
 export async function generateKeys() {
@@ -34,7 +37,6 @@ export async function generateKeys() {
         ["deriveKey", "deriveBits"],
     );
 
-    console.log("Generated keys", publicKey, privateKey);
     return { publicKey, privateKey };
 }
 
@@ -64,19 +66,21 @@ export async function passwordToKey(password: string, salt: Uint8Array) {
         "raw",
         derivedBits,
         { name: "AES-GCM" },
-        false,
+        true,
         ["wrapKey", "unwrapKey"]
     );
+
+    // Save it to session storage
+    const exportedWrappingKey = await crypto.subtle.exportKey("jwk", key);
+    sessionStorage.setItem("wrappingKey", JSON.stringify(exportedWrappingKey));
 
     return { key };
 }
 
-export async function storeKeys(publicKey: CryptoKey, privateKey: CryptoKey, iv: Uint8Array, salt: Uint8Array, password: string) {
+export async function storeKeys(publicKey: CryptoKey, privateKey: CryptoKey, iv: Uint8Array, salt: Uint8Array, password: string): Promise<{ publicKey: CryptoKey, privateKey: CryptoKey, wrappingKey: CryptoKey, wrappedPrivateKey: ArrayBuffer }> {
     const { key: wrappingKey } = await passwordToKey(password, salt);
-    console.log("Storing wrapping key", wrappingKey);
 
     const exportedPublicKey = await crypto.subtle.exportKey("spki", publicKey);
-    console.log("Exported public key", exportedPublicKey);
     const wrappedPrivateKey = await crypto.subtle.wrapKey(
         "jwk",
         privateKey,
@@ -86,8 +90,6 @@ export async function storeKeys(publicKey: CryptoKey, privateKey: CryptoKey, iv:
             iv,
         }
     );
-
-    console.log("Wrapped private key", wrappedPrivateKey);
 
     // Store keys in the device
     withIndexedDB((db) => {
@@ -114,10 +116,11 @@ export async function storeKeys(publicKey: CryptoKey, privateKey: CryptoKey, iv:
             console.error("Error storing keys", event);
         };
     });
+
+    return { publicKey, privateKey, wrappingKey, wrappedPrivateKey };
 }
 
-export async function loadKeys(password: string, callback: (keys: { publicKey: CryptoKey, privateKey: CryptoKey }) => void, onError: () => void) {
-    console.log("Loading keys from indexedDB");
+export async function loadKeys(password: string, callback: (keys: { publicKey: CryptoKey, privateKey: CryptoKey, wrappingKey: CryptoKey }) => void, onError: () => void) {
     withIndexedDB((db) => {
         const transaction = db.transaction("keys", "readonly");
         const store = transaction.objectStore("keys");
@@ -127,9 +130,8 @@ export async function loadKeys(password: string, callback: (keys: { publicKey: C
             const keys = (event.target as IDBRequest).result;
             if (keys) {
                 const { key: wrappingKey } = await passwordToKey(password, keys.salt);
-                console.log("Loading wrapping key", wrappingKey);
                 const { publicKey, privateKey } = await importKeyPair(keys.publicKey, keys.privateKey, wrappingKey, keys.iv);
-                callback({ publicKey, privateKey });
+                callback({ publicKey, privateKey, wrappingKey });
             } else {
                 console.warn("No keys found");
                 onError();
@@ -140,6 +142,12 @@ export async function loadKeys(password: string, callback: (keys: { publicKey: C
             console.error("Error loading keys", event);
         };
     });
+}
+
+export async function exportKeyPair(publicKey: CryptoKey, privateKey: CryptoKey, wrappingKey: CryptoKey, iv: Uint8Array) {
+    const exportedPublicKey = await crypto.subtle.exportKey("spki", publicKey);
+    const exportedPrivateKey = await crypto.subtle.wrapKey("jwk", privateKey, wrappingKey, { name: "AES-GCM", iv });
+    return { exportedPublicKey, exportedPrivateKey };
 }
 
 /**

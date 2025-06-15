@@ -41,6 +41,8 @@ model Folder {
   id                String              @id @default(cuid())
   name              String
   description       String?
+  key               String              @default("")
+  iv                String              @default("")
   files             File[]              @relation("FolderFiles")
   size              Int                 @default(0)
   cover             File?               @relation(fields: [coverId], references: [id])
@@ -196,8 +198,10 @@ model User {
   password                  String?
   sessions                  Session[]
 
-  publicKey String?
-  privateKey String?  // Encrypted, for device switching
+  publicKey  String?
+  privateKey String? // Encrypted, for device switching
+  e2eeSalt   String?
+  e2eeSaltIv String?
 
   googleId String? @unique
 

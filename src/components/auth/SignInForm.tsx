@@ -15,7 +15,6 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
-import { generateKeys, storeKeys } from "@/lib/e2ee";
 import { useE2EEncryptionContext } from "@/context/E2EEncryptionContext";
 
 export default function SignInForm({ locale }: { locale: string }) {
