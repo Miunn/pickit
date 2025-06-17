@@ -37,6 +37,11 @@ enum FileType {
   VIDEO
 }
 
+enum NotificationType {
+  FILE_UPLOADED
+  FOLDER_SHARED
+}
+
 model Folder {
   id                String              @id @default(cuid())
   name              String
@@ -183,6 +188,19 @@ model PersonAccessToken {
   updatedAt  DateTime              @updatedAt
 }
 
+model Notification {
+  id        String   @id @default(cuid())
+  type      NotificationType
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isRead    Boolean   @default(false)
+  title     String
+  message   String
+  data      Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model User {
   id                        String    @id @default(cuid())
   name                      String
@@ -210,6 +228,7 @@ model User {
   likes    FileLike[]
   commentLikes CommentLike[]
   tags FolderTag[]
+  notifications Notification[]
 }
 
 model VerifyEmailRequest {
