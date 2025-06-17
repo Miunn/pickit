@@ -2,7 +2,7 @@ import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from "@oslojs/enco
 import { sha256 } from "@oslojs/crypto/sha2";
 import { prisma } from "./prisma";
 import type { User, Session } from "@prisma/client";
-import { cookies, type UnsafeUnwrappedCookies } from "next/headers";
+import { cookies } from "next/headers";
 import { cache } from "react";
 
 export function generateSessionToken(): string {
@@ -69,8 +69,8 @@ export const getCurrentSession = cache(async (): Promise<SessionValidationResult
 	return result;
 });
 
-export function setSessionTokenCookie(token: string, expiresAt: Date): void {
-	const cookieStore = ((cookies() as unknown as UnsafeUnwrappedCookies) as unknown as UnsafeUnwrappedCookies);
+export async function setSessionTokenCookie(token: string, expiresAt: Date): Promise<void> {
+	const cookieStore = await cookies();
 	cookieStore.set("session", token, {
 		httpOnly: true,
 		sameSite: "lax",
@@ -80,8 +80,8 @@ export function setSessionTokenCookie(token: string, expiresAt: Date): void {
 	});
 }
 
-export function deleteSessionTokenCookie(): void {
-	const cookieStore = ((cookies() as unknown as UnsafeUnwrappedCookies) as unknown as UnsafeUnwrappedCookies);
+export async function deleteSessionTokenCookie(): Promise<void> {
+	const cookieStore = await cookies();
 	cookieStore.set("session", "", {
 		httpOnly: true,
 		sameSite: "lax",

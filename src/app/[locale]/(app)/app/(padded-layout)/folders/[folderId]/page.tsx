@@ -105,7 +105,7 @@ export default async function FolderPage(
                 },
             },
             createdBy: true,
-            AccessToken: true
+            AccessToken: true,
         }
     });
 

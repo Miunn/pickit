@@ -3,9 +3,17 @@
   <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.53">
     <root id="1">
       <DateStyle>mdy</DateStyle>
-      <IntrospectionStateNumber>1620</IntrospectionStateNumber>
+      <Grants>1||-9223372036854775808|c|G
+1||10|c|G
+1||10|C|G
+1||10|T|G
+4||-9223372036854775808|c|G
+4||10|c|G
+4||10|C|G
+4||10|T|G</Grants>
+      <IntrospectionStateNumber>8446</IntrospectionStateNumber>
       <ServerVersion>17.4</ServerVersion>
-      <StartupTime>1746633392</StartupTime>
+      <StartupTime>1749949953</StartupTime>
       <TimeZones>true ACDT
 true ACSST
 false ACST
@@ -1401,7 +1409,7 @@ true posixrules
 13219||10|C|G
 13219||-9223372036854775808|U|G
 13219||10|U|G</Grants>
-      <IntrospectionStateNumber>1620</IntrospectionStateNumber>
+      <IntrospectionStateNumber>8446</IntrospectionStateNumber>
       <ObjectId>16384</ObjectId>
       <OwnerName>pickit_connector</OwnerName>
     </database>
@@ -4826,19 +4834,18 @@ true posixrules
       <OwnerName>pickit_connector</OwnerName>
     </schema>
     <schema id="265" parent="2" name="public">
-      <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <IntrospectionStateNumber>1620</IntrospectionStateNumber>
-      <LastIntrospectionLocalTimestamp>2025-05-07.16:00:38</LastIntrospectionLocalTimestamp>
-      <ObjectId>2200</ObjectId>
-      <StateNumber>532</StateNumber>
-      <OwnerName>pg_database_owner</OwnerName>
+      <IntrospectionStateNumber>8446</IntrospectionStateNumber>
+      <LastIntrospectionLocalTimestamp>2025-06-15.01:14:36</LastIntrospectionLocalTimestamp>
+      <ObjectId>57613</ObjectId>
+      <StateNumber>7240</StateNumber>
+      <OwnerName>pickit_connector</OwnerName>
     </schema>
     <object-type id="266" parent="265" name="FileType">
       <Labels>IMAGE
 VIDEO</Labels>
-      <ObjectId>17065</ObjectId>
-      <StateNumber>982</StateNumber>
+      <ObjectId>57955</ObjectId>
+      <StateNumber>7431</StateNumber>
       <SubCategory>enum</SubCategory>
       <SubKind>enum</SubKind>
       <OwnerName>pickit_connector</OwnerName>
@@ -4847,8 +4854,8 @@ VIDEO</Labels>
       <Labels>READ
 WRITE
 ADMIN</Labels>
-      <ObjectId>16838</ObjectId>
-      <StateNumber>798</StateNumber>
+      <ObjectId>57728</ObjectId>
+      <StateNumber>7247</StateNumber>
       <SubCategory>enum</SubCategory>
       <SubKind>enum</SubKind>
       <OwnerName>pickit_connector</OwnerName>
@@ -4859,8 +4866,8 @@ USED
 EXPIRED
 ERROR
 SUCCESS</Labels>
-      <ObjectId>17012</ObjectId>
-      <StateNumber>962</StateNumber>
+      <ObjectId>57902</ObjectId>
+      <StateNumber>7411</StateNumber>
       <SubCategory>enum</SubCategory>
       <SubKind>enum</SubKind>
       <OwnerName>pickit_connector</OwnerName>
@@ -4868,1148 +4875,1653 @@ SUCCESS</Labels>
     <object-type id="269" parent="265" name="Role">
       <Labels>USER
 ADMIN</Labels>
-      <ObjectId>16911</ObjectId>
-      <StateNumber>886</StateNumber>
+      <ObjectId>57801</ObjectId>
+      <StateNumber>7335</StateNumber>
       <SubCategory>enum</SubCategory>
       <SubKind>enum</SubKind>
       <OwnerName>pickit_connector</OwnerName>
     </object-type>
     <table id="270" parent="265" name="AccessToken">
-      <ObjectId>16749</ObjectId>
-      <StateNumber>878</StateNumber>
+      <ObjectId>57639</ObjectId>
+      <StateNumber>7463</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>pickit_connector</OwnerName>
     </table>
     <table id="271" parent="265" name="Comment">
-      <ObjectId>16936</ObjectId>
-      <StateNumber>1382</StateNumber>
+      <ObjectId>57826</ObjectId>
+      <StateNumber>7443</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>pickit_connector</OwnerName>
     </table>
-    <table id="272" parent="265" name="Contact">
-      <ObjectId>16955</ObjectId>
-      <StateNumber>922</StateNumber>
+    <table id="272" parent="265" name="CommentLike">
+      <ObjectId>57970</ObjectId>
+      <StateNumber>7451</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>pickit_connector</OwnerName>
     </table>
-    <table id="273" parent="265" name="File">
-      <ObjectId>17031</ObjectId>
-      <StateNumber>982</StateNumber>
+    <table id="273" parent="265" name="Contact">
+      <ObjectId>57845</ObjectId>
+      <StateNumber>7371</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>pickit_connector</OwnerName>
     </table>
-    <table id="274" parent="265" name="Folder">
-      <ObjectId>16733</ObjectId>
-      <StateNumber>974</StateNumber>
+    <table id="274" parent="265" name="File">
+      <ObjectId>57921</ObjectId>
+      <StateNumber>7467</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>pickit_connector</OwnerName>
     </table>
-    <table id="275" parent="265" name="PasswordResetRequest">
-      <ObjectId>16868</ObjectId>
-      <StateNumber>962</StateNumber>
+    <table id="275" parent="265" name="FileLike">
+      <ObjectId>57962</ObjectId>
+      <StateNumber>7451</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>pickit_connector</OwnerName>
     </table>
-    <table id="276" parent="265" name="PersonAccessToken">
-      <ObjectId>16882</ObjectId>
-      <StateNumber>878</StateNumber>
+    <table id="276" parent="265" name="Folder">
+      <ObjectId>57623</ObjectId>
+      <StateNumber>9499</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>pickit_connector</OwnerName>
     </table>
-    <table id="277" parent="265" name="Session">
-      <ObjectId>16772</ObjectId>
-      <StateNumber>894</StateNumber>
+    <table id="277" parent="265" name="FolderTag">
+      <ObjectId>58012</ObjectId>
+      <StateNumber>7601</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>pickit_connector</OwnerName>
     </table>
-    <table id="278" parent="265" name="User">
-      <ObjectId>16757</ObjectId>
-      <StateNumber>934</StateNumber>
+    <table id="278" parent="265" name="PasswordResetRequest">
+      <ObjectId>57758</ObjectId>
+      <StateNumber>7411</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>pickit_connector</OwnerName>
     </table>
-    <table id="279" parent="265" name="VerifyEmailRequest">
-      <ObjectId>16854</ObjectId>
-      <StateNumber>834</StateNumber>
+    <table id="279" parent="265" name="PersonAccessToken">
+      <ObjectId>57772</ObjectId>
+      <StateNumber>7463</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>pickit_connector</OwnerName>
     </table>
-    <table id="280" parent="265" name="_prisma_migrations">
-      <ObjectId>16724</ObjectId>
-      <StateNumber>792</StateNumber>
+    <table id="280" parent="265" name="Session">
+      <ObjectId>57662</ObjectId>
+      <StateNumber>7343</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>pickit_connector</OwnerName>
     </table>
-    <column id="281" parent="270" name="id">
+    <table id="281" parent="265" name="User">
+      <ObjectId>57647</ObjectId>
+      <StateNumber>8441</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>pickit_connector</OwnerName>
+    </table>
+    <table id="282" parent="265" name="VerifyEmailRequest">
+      <ObjectId>57744</ObjectId>
+      <StateNumber>7283</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>pickit_connector</OwnerName>
+    </table>
+    <table id="283" parent="265" name="_FileToFolderTag">
+      <ObjectId>58020</ObjectId>
+      <StateNumber>7471</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>pickit_connector</OwnerName>
+    </table>
+    <table id="284" parent="265" name="_prisma_migrations">
+      <ObjectId>57614</ObjectId>
+      <StateNumber>7241</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>pickit_connector</OwnerName>
+    </table>
+    <column id="285" parent="270" name="id">
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="282" parent="270" name="token">
+    <column id="286" parent="270" name="token">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="283" parent="270" name="folderId">
+    <column id="287" parent="270" name="folderId">
       <NotNull>1</NotNull>
       <Position>3</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="284" parent="270" name="expires">
+    <column id="288" parent="270" name="expires">
       <NotNull>1</NotNull>
       <Position>4</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="285" parent="270" name="createdAt">
+    <column id="289" parent="270" name="createdAt">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>5</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="286" parent="270" name="updatedAt">
+    <column id="290" parent="270" name="updatedAt">
       <NotNull>1</NotNull>
       <Position>6</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="287" parent="270" name="permission">
+    <column id="291" parent="270" name="permission">
       <DefaultExpression>&apos;READ&apos;::&quot;FolderTokenPermission&quot;</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>7</Position>
-      <StateNumber>798</StateNumber>
+      <StateNumber>7247</StateNumber>
       <StoredType>&quot;FolderTokenPermission&quot;|0s</StoredType>
-      <TypeId>16838</TypeId>
+      <TypeId>57728</TypeId>
     </column>
-    <column id="288" parent="270" name="uses">
+    <column id="292" parent="270" name="uses">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>8</Position>
-      <StateNumber>806</StateNumber>
+      <StateNumber>7255</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="289" parent="270" name="isActive">
+    <column id="293" parent="270" name="isActive">
       <DefaultExpression>true</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>9</Position>
-      <StateNumber>810</StateNumber>
+      <StateNumber>7259</StateNumber>
       <StoredType>boolean|0s</StoredType>
       <TypeId>16</TypeId>
     </column>
-    <column id="290" parent="270" name="pinCode">
+    <column id="294" parent="270" name="pinCode">
       <Position>10</Position>
-      <StateNumber>874</StateNumber>
+      <StateNumber>7323</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="291" parent="270" name="locked">
+    <column id="295" parent="270" name="locked">
       <DefaultExpression>false</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>11</Position>
-      <StateNumber>878</StateNumber>
+      <StateNumber>7327</StateNumber>
       <StoredType>boolean|0s</StoredType>
       <TypeId>16</TypeId>
     </column>
-    <foreign-key id="292" parent="270" name="AccessToken_folderId_fkey">
+    <column id="296" parent="270" name="allowMap">
+      <DefaultExpression>false</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>12</Position>
+      <StateNumber>7463</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <foreign-key id="297" parent="270" name="AccessToken_folderId_fkey">
       <ColNames>folderId</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16844</ObjectId>
+      <ObjectId>57734</ObjectId>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
-      <StateNumber>802</StateNumber>
+      <StateNumber>7251</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
-      <RefTableId>16733</RefTableId>
+      <RefTableId>57623</RefTableId>
     </foreign-key>
-    <index id="293" parent="270" name="AccessToken_pkey">
+    <index id="298" parent="270" name="AccessToken_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16755</ObjectId>
+      <ObjectId>57645</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <index id="294" parent="270" name="AccessToken_token_key">
+    <index id="299" parent="270" name="AccessToken_token_key">
       <ColNames>token</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16792</ObjectId>
-      <StateNumber>794</StateNumber>
+      <ObjectId>57682</ObjectId>
+      <StateNumber>7243</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="295" parent="270" name="AccessToken_pkey">
+    <key id="300" parent="270" name="AccessToken_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16756</ObjectId>
+      <ObjectId>57646</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>794</StateNumber>
-      <UnderlyingIndexId>16755</UnderlyingIndexId>
+      <StateNumber>7243</StateNumber>
+      <UnderlyingIndexId>57645</UnderlyingIndexId>
     </key>
-    <column id="296" parent="271" name="id">
+    <column id="301" parent="271" name="id">
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>902</StateNumber>
+      <StateNumber>7351</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="297" parent="271" name="text">
+    <column id="302" parent="271" name="text">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>902</StateNumber>
+      <StateNumber>7351</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="298" parent="271" name="createdById">
+    <column id="303" parent="271" name="createdById">
       <Position>4</Position>
-      <StateNumber>906</StateNumber>
+      <StateNumber>7355</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="299" parent="271" name="createdAt">
+    <column id="304" parent="271" name="createdAt">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>5</Position>
-      <StateNumber>902</StateNumber>
+      <StateNumber>7351</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="300" parent="271" name="updatedAt">
+    <column id="305" parent="271" name="updatedAt">
       <NotNull>1</NotNull>
       <Position>6</Position>
-      <StateNumber>902</StateNumber>
+      <StateNumber>7351</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="301" parent="271" name="name">
+    <column id="306" parent="271" name="name">
       <Position>7</Position>
-      <StateNumber>906</StateNumber>
+      <StateNumber>7355</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="302" parent="271" name="fileId">
+    <column id="307" parent="271" name="fileId">
       <NotNull>1</NotNull>
       <Position>9</Position>
-      <StateNumber>1593</StateNumber>
+      <StateNumber>7439</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="303" parent="271" name="createdByEmail">
+    <column id="308" parent="271" name="createdByEmail">
       <Position>10</Position>
-      <StateNumber>1382</StateNumber>
+      <StateNumber>7435</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <foreign-key id="304" parent="271" name="Comment_createdById_fkey">
+    <foreign-key id="309" parent="271" name="Comment_createdById_fkey">
       <ColNames>createdById</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16949</ObjectId>
+      <ObjectId>57839</ObjectId>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
-      <StateNumber>902</StateNumber>
+      <StateNumber>7351</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
-      <RefTableId>16757</RefTableId>
+      <RefTableId>57647</RefTableId>
     </foreign-key>
-    <foreign-key id="305" parent="271" name="Comment_fileId_fkey">
+    <foreign-key id="310" parent="271" name="Comment_fileId_fkey">
       <ColNames>fileId</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>17059</ObjectId>
+      <ObjectId>57949</ObjectId>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7427</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
-      <RefTableId>17031</RefTableId>
+      <RefTableId>57921</RefTableId>
     </foreign-key>
-    <index id="306" parent="271" name="Comment_pkey">
+    <index id="311" parent="271" name="Comment_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16942</ObjectId>
+      <ObjectId>57832</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>902</StateNumber>
+      <StateNumber>7351</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="307" parent="271" name="Comment_pkey">
+    <key id="312" parent="271" name="Comment_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16943</ObjectId>
+      <ObjectId>57833</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>902</StateNumber>
-      <UnderlyingIndexId>16942</UnderlyingIndexId>
+      <StateNumber>7351</StateNumber>
+      <UnderlyingIndexId>57832</UnderlyingIndexId>
     </key>
-    <column id="308" parent="272" name="id">
+    <column id="313" parent="272" name="id">
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>922</StateNumber>
+      <StateNumber>7447</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="309" parent="272" name="name">
+    <column id="314" parent="272" name="commentId">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>922</StateNumber>
+      <StateNumber>7447</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="310" parent="272" name="email">
-      <NotNull>1</NotNull>
+    <column id="315" parent="272" name="createdById">
       <Position>3</Position>
-      <StateNumber>922</StateNumber>
+      <StateNumber>7447</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="311" parent="272" name="message">
-      <NotNull>1</NotNull>
-      <Position>4</Position>
-      <StateNumber>922</StateNumber>
-      <StoredType>text|0s</StoredType>
-      <TypeId>25</TypeId>
-    </column>
-    <column id="312" parent="272" name="createdAt">
+    <column id="316" parent="272" name="createdAt">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
-      <Position>5</Position>
-      <StateNumber>922</StateNumber>
+      <Position>4</Position>
+      <StateNumber>7447</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <index id="313" parent="272" name="Contact_pkey">
+    <column id="317" parent="272" name="updatedAt">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>7447</StateNumber>
+      <StoredType>timestamp(3)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="318" parent="272" name="createdByEmail">
+      <Position>6</Position>
+      <StateNumber>7451</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <foreign-key id="319" parent="272" name="CommentLike_commentId_fkey">
+      <ColNames>commentId</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>57988</ObjectId>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <StateNumber>7447</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>57826</RefTableId>
+    </foreign-key>
+    <foreign-key id="320" parent="272" name="CommentLike_createdById_fkey">
+      <ColNames>createdById</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>57993</ObjectId>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <StateNumber>7447</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>57647</RefTableId>
+    </foreign-key>
+    <index id="321" parent="272" name="CommentLike_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16961</ObjectId>
+      <ObjectId>57976</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>922</StateNumber>
+      <StateNumber>7447</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="314" parent="272" name="Contact_pkey">
+    <key id="322" parent="272" name="CommentLike_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16962</ObjectId>
+      <ObjectId>57977</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>922</StateNumber>
-      <UnderlyingIndexId>16961</UnderlyingIndexId>
+      <StateNumber>7447</StateNumber>
+      <UnderlyingIndexId>57976</UnderlyingIndexId>
     </key>
-    <column id="315" parent="273" name="id">
+    <column id="323" parent="273" name="id">
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7371</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="316" parent="273" name="name">
+    <column id="324" parent="273" name="name">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7371</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="317" parent="273" name="description">
+    <column id="325" parent="273" name="email">
+      <NotNull>1</NotNull>
       <Position>3</Position>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7371</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="318" parent="273" name="size">
+    <column id="326" parent="273" name="message">
       <NotNull>1</NotNull>
       <Position>4</Position>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7371</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="327" parent="273" name="createdAt">
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>7371</StateNumber>
+      <StoredType>timestamp(3)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <index id="328" parent="273" name="Contact_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>57851</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>7371</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="329" parent="273" name="Contact_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>57852</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>7371</StateNumber>
+      <UnderlyingIndexId>57851</UnderlyingIndexId>
+    </key>
+    <column id="330" parent="274" name="id">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>7427</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="331" parent="274" name="name">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>7427</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="332" parent="274" name="description">
+      <Position>3</Position>
+      <StateNumber>7427</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="333" parent="274" name="size">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>7427</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="319" parent="273" name="extension">
+    <column id="334" parent="274" name="extension">
       <NotNull>1</NotNull>
       <Position>5</Position>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7427</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="320" parent="273" name="width">
+    <column id="335" parent="274" name="width">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>6</Position>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7427</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="321" parent="273" name="height">
+    <column id="336" parent="274" name="height">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>7</Position>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7427</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="322" parent="273" name="duration">
+    <column id="337" parent="274" name="duration">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>8</Position>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7427</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="323" parent="273" name="thumbnail">
+    <column id="338" parent="274" name="thumbnail">
       <Position>9</Position>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7427</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="324" parent="273" name="position">
+    <column id="339" parent="274" name="position">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>11</Position>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7427</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="325" parent="273" name="folderId">
+    <column id="340" parent="274" name="folderId">
       <NotNull>1</NotNull>
       <Position>12</Position>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7427</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="326" parent="273" name="folderCoverId">
+    <column id="341" parent="274" name="folderCoverId">
       <Position>13</Position>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7427</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="327" parent="273" name="createdById">
+    <column id="342" parent="274" name="createdById">
       <NotNull>1</NotNull>
       <Position>14</Position>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7427</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="328" parent="273" name="createdAt">
+    <column id="343" parent="274" name="createdAt">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>15</Position>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7427</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="329" parent="273" name="updatedAt">
+    <column id="344" parent="274" name="updatedAt">
       <NotNull>1</NotNull>
       <Position>16</Position>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7427</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="330" parent="273" name="type">
+    <column id="345" parent="274" name="type">
       <DefaultExpression>&apos;IMAGE&apos;::&quot;FileType&quot;</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>17</Position>
-      <StateNumber>982</StateNumber>
+      <StateNumber>7459</StateNumber>
       <StoredType>&quot;FileType&quot;|0s</StoredType>
-      <TypeId>17065</TypeId>
+      <TypeId>57955</TypeId>
     </column>
-    <foreign-key id="331" parent="273" name="File_folderId_fkey">
+    <column id="346" parent="274" name="flash">
+      <Position>23</Position>
+      <StateNumber>7455</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="347" parent="274" name="iso">
+      <Position>25</Position>
+      <StateNumber>7459</StateNumber>
+      <StoredType>double precision|0s</StoredType>
+      <TypeId>701</TypeId>
+    </column>
+    <column id="348" parent="274" name="latitude">
+      <Position>26</Position>
+      <StateNumber>7459</StateNumber>
+      <StoredType>double precision|0s</StoredType>
+      <TypeId>701</TypeId>
+    </column>
+    <column id="349" parent="274" name="longitude">
+      <Position>27</Position>
+      <StateNumber>7459</StateNumber>
+      <StoredType>double precision|0s</StoredType>
+      <TypeId>701</TypeId>
+    </column>
+    <column id="350" parent="274" name="make">
+      <Position>28</Position>
+      <StateNumber>7455</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="351" parent="274" name="model">
+      <Position>29</Position>
+      <StateNumber>7455</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="352" parent="274" name="modifiedAt">
+      <Position>30</Position>
+      <StateNumber>7455</StateNumber>
+      <StoredType>timestamp(3)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="353" parent="274" name="orientation">
+      <Position>31</Position>
+      <StateNumber>7459</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="354" parent="274" name="saturation">
+      <Position>32</Position>
+      <StateNumber>7455</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="355" parent="274" name="sharpness">
+      <Position>33</Position>
+      <StateNumber>7455</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="356" parent="274" name="software">
+      <Position>34</Position>
+      <StateNumber>7455</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="357" parent="274" name="takenAt">
+      <Position>35</Position>
+      <StateNumber>7455</StateNumber>
+      <StoredType>timestamp(3)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="358" parent="274" name="whiteBalance">
+      <Position>36</Position>
+      <StateNumber>7455</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="359" parent="274" name="altitude">
+      <Position>37</Position>
+      <StateNumber>7459</StateNumber>
+      <StoredType>double precision|0s</StoredType>
+      <TypeId>701</TypeId>
+    </column>
+    <column id="360" parent="274" name="contrast">
+      <Position>38</Position>
+      <StateNumber>7467</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="361" parent="274" name="exposureTime">
+      <Position>39</Position>
+      <StateNumber>7459</StateNumber>
+      <StoredType>double precision|0s</StoredType>
+      <TypeId>701</TypeId>
+    </column>
+    <column id="362" parent="274" name="fNumber">
+      <Position>40</Position>
+      <StateNumber>7459</StateNumber>
+      <StoredType>double precision|0s</StoredType>
+      <TypeId>701</TypeId>
+    </column>
+    <column id="363" parent="274" name="focalLength">
+      <Position>41</Position>
+      <StateNumber>7459</StateNumber>
+      <StoredType>double precision|0s</StoredType>
+      <TypeId>701</TypeId>
+    </column>
+    <foreign-key id="364" parent="274" name="File_folderId_fkey">
       <ColNames>folderId</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>17049</ObjectId>
+      <ObjectId>57939</ObjectId>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7427</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
-      <RefTableId>16733</RefTableId>
+      <RefTableId>57623</RefTableId>
     </foreign-key>
-    <foreign-key id="332" parent="273" name="File_createdById_fkey">
+    <foreign-key id="365" parent="274" name="File_createdById_fkey">
       <ColNames>createdById</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>17054</ObjectId>
+      <ObjectId>57944</ObjectId>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7427</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
-      <RefTableId>16757</RefTableId>
+      <RefTableId>57647</RefTableId>
     </foreign-key>
-    <index id="333" parent="273" name="File_pkey">
+    <index id="366" parent="274" name="File_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>17042</ObjectId>
+      <ObjectId>57932</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7467</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="334" parent="273" name="File_pkey">
+    <key id="367" parent="274" name="File_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>17043</ObjectId>
+      <ObjectId>57933</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>978</StateNumber>
-      <UnderlyingIndexId>17042</UnderlyingIndexId>
+      <StateNumber>7427</StateNumber>
+      <UnderlyingIndexId>57932</UnderlyingIndexId>
     </key>
-    <column id="335" parent="274" name="id">
+    <column id="368" parent="275" name="id">
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7447</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="336" parent="274" name="name">
+    <column id="369" parent="275" name="fileId">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7447</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="337" parent="274" name="coverId">
+    <column id="370" parent="275" name="createdById">
       <Position>3</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7447</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="338" parent="274" name="createdById">
+    <column id="371" parent="275" name="createdAt">
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>4</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7447</StateNumber>
+      <StoredType>timestamp(3)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="372" parent="275" name="updatedAt">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>7447</StateNumber>
+      <StoredType>timestamp(3)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="373" parent="275" name="createdByEmail">
+      <Position>6</Position>
+      <StateNumber>7451</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="339" parent="274" name="createdAt">
+    <foreign-key id="374" parent="275" name="FileLike_fileId_fkey">
+      <ColNames>fileId</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>57978</ObjectId>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <StateNumber>7447</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>57921</RefTableId>
+    </foreign-key>
+    <foreign-key id="375" parent="275" name="FileLike_createdById_fkey">
+      <ColNames>createdById</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>57983</ObjectId>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <StateNumber>7447</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>57647</RefTableId>
+    </foreign-key>
+    <index id="376" parent="275" name="FileLike_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>57968</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>7447</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="377" parent="275" name="FileLike_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>57969</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>7447</StateNumber>
+      <UnderlyingIndexId>57968</UnderlyingIndexId>
+    </key>
+    <column id="378" parent="276" name="id">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>7243</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="379" parent="276" name="name">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>7243</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="380" parent="276" name="coverId">
+      <Position>3</Position>
+      <StateNumber>7243</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="381" parent="276" name="createdById">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>7243</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="382" parent="276" name="createdAt">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>5</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="340" parent="274" name="updatedAt">
+    <column id="383" parent="276" name="updatedAt">
       <NotNull>1</NotNull>
       <Position>6</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="341" parent="274" name="size">
+    <column id="384" parent="276" name="size">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>7</Position>
-      <StateNumber>870</StateNumber>
+      <StateNumber>7319</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="342" parent="274" name="description">
+    <column id="385" parent="276" name="description">
       <Position>10</Position>
-      <StateNumber>974</StateNumber>
+      <StateNumber>7423</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <foreign-key id="343" parent="274" name="Folder_coverId_fkey">
+    <column id="386" parent="276" name="key">
+      <DefaultExpression>&apos;&apos;::text</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>12</Position>
+      <StateNumber>9224</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="387" parent="276" name="iv">
+      <DefaultExpression>&apos;&apos;::text</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>13</Position>
+      <StateNumber>9499</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <foreign-key id="388" parent="276" name="Folder_coverId_fkey">
       <ColNames>coverId</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>17044</ObjectId>
+      <ObjectId>57934</ObjectId>
       <OnDelete>set-null</OnDelete>
       <OnUpdate>cascade</OnUpdate>
-      <StateNumber>978</StateNumber>
+      <StateNumber>7427</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
-      <RefTableId>17031</RefTableId>
+      <RefTableId>57921</RefTableId>
     </foreign-key>
-    <foreign-key id="344" parent="274" name="Folder_createdById_fkey">
+    <foreign-key id="389" parent="276" name="Folder_createdById_fkey">
       <ColNames>createdById</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16916</ObjectId>
+      <ObjectId>57806</ObjectId>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
-      <StateNumber>898</StateNumber>
+      <StateNumber>7347</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
-      <RefTableId>16757</RefTableId>
+      <RefTableId>57647</RefTableId>
     </foreign-key>
-    <index id="345" parent="274" name="Folder_pkey">
+    <index id="390" parent="276" name="Folder_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16739</ObjectId>
+      <ObjectId>57629</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>870</StateNumber>
+      <StateNumber>7319</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <index id="346" parent="274" name="Folder_coverId_key">
+    <index id="391" parent="276" name="Folder_coverId_key">
       <ColNames>coverId</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16791</ObjectId>
-      <StateNumber>870</StateNumber>
+      <ObjectId>57681</ObjectId>
+      <StateNumber>7319</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="347" parent="274" name="Folder_pkey">
+    <key id="392" parent="276" name="Folder_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16740</ObjectId>
+      <ObjectId>57630</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>794</StateNumber>
-      <UnderlyingIndexId>16739</UnderlyingIndexId>
+      <StateNumber>7243</StateNumber>
+      <UnderlyingIndexId>57629</UnderlyingIndexId>
     </key>
-    <column id="348" parent="275" name="id">
+    <column id="393" parent="277" name="id">
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>850</StateNumber>
+      <StateNumber>7471</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="349" parent="275" name="token">
+    <column id="394" parent="277" name="name">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>850</StateNumber>
+      <StateNumber>7471</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="350" parent="275" name="expires">
+    <column id="395" parent="277" name="folderId">
       <NotNull>1</NotNull>
       <Position>3</Position>
-      <StateNumber>850</StateNumber>
+      <StateNumber>7471</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="396" parent="277" name="userId">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>7471</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="397" parent="277" name="createdAt">
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>7471</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="351" parent="275" name="userId">
+    <column id="398" parent="277" name="updatedAt">
       <NotNull>1</NotNull>
-      <Position>4</Position>
-      <StateNumber>850</StateNumber>
+      <Position>6</Position>
+      <StateNumber>7471</StateNumber>
+      <StoredType>timestamp(3)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="399" parent="277" name="color">
+      <DefaultExpression>&apos;#00a8ff&apos;::text</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+      <StateNumber>7601</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="352" parent="275" name="status">
+    <foreign-key id="400" parent="277" name="FolderTag_folderId_fkey">
+      <ColNames>folderId</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>58028</ObjectId>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <StateNumber>7471</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>57623</RefTableId>
+    </foreign-key>
+    <foreign-key id="401" parent="277" name="FolderTag_userId_fkey">
+      <ColNames>userId</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>58033</ObjectId>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <StateNumber>7471</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>57647</RefTableId>
+    </foreign-key>
+    <index id="402" parent="277" name="FolderTag_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>58018</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>7471</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <index id="403" parent="277" name="FolderTag_name_userId_key">
+      <ColNames>name
+userId</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>58048</ObjectId>
+      <StateNumber>7475</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationIds>100
+100</CollationIds>
+      <CollationNames>default
+default</CollationNames>
+      <CollationParentNames>pg_catalog
+pg_catalog</CollationParentNames>
+    </index>
+    <key id="404" parent="277" name="FolderTag_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>58019</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>7471</StateNumber>
+      <UnderlyingIndexId>58018</UnderlyingIndexId>
+    </key>
+    <column id="405" parent="278" name="id">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>7299</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="406" parent="278" name="token">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>7299</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="407" parent="278" name="expires">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>7299</StateNumber>
+      <StoredType>timestamp(3)|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="408" parent="278" name="userId">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>7299</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="409" parent="278" name="status">
       <DefaultExpression>&apos;PENDING&apos;::&quot;PasswordResetRequestStatus&quot;</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>5</Position>
-      <StateNumber>962</StateNumber>
+      <StateNumber>7411</StateNumber>
       <StoredType>&quot;PasswordResetRequestStatus&quot;|0s</StoredType>
-      <TypeId>17012</TypeId>
+      <TypeId>57902</TypeId>
     </column>
-    <foreign-key id="353" parent="275" name="PasswordResetRequest_userId_fkey">
+    <foreign-key id="410" parent="278" name="PasswordResetRequest_userId_fkey">
       <ColNames>userId</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16931</ObjectId>
+      <ObjectId>57821</ObjectId>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
-      <StateNumber>898</StateNumber>
+      <StateNumber>7347</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
-      <RefTableId>16757</RefTableId>
+      <RefTableId>57647</RefTableId>
     </foreign-key>
-    <index id="354" parent="275" name="PasswordResetRequest_pkey">
+    <index id="411" parent="278" name="PasswordResetRequest_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16873</ObjectId>
+      <ObjectId>57763</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>962</StateNumber>
+      <StateNumber>7411</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <index id="355" parent="275" name="PasswordResetRequest_token_key">
+    <index id="412" parent="278" name="PasswordResetRequest_token_key">
       <ColNames>token</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16875</ObjectId>
-      <StateNumber>962</StateNumber>
+      <ObjectId>57765</ObjectId>
+      <StateNumber>7411</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <index id="356" parent="275" name="PasswordResetRequest_userId_key">
+    <index id="413" parent="278" name="PasswordResetRequest_userId_key">
       <ColNames>userId</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16876</ObjectId>
-      <StateNumber>962</StateNumber>
+      <ObjectId>57766</ObjectId>
+      <StateNumber>7411</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="357" parent="275" name="PasswordResetRequest_pkey">
+    <key id="414" parent="278" name="PasswordResetRequest_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16874</ObjectId>
+      <ObjectId>57764</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>850</StateNumber>
-      <UnderlyingIndexId>16873</UnderlyingIndexId>
+      <StateNumber>7299</StateNumber>
+      <UnderlyingIndexId>57763</UnderlyingIndexId>
     </key>
-    <column id="358" parent="276" name="id">
+    <column id="415" parent="279" name="id">
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>854</StateNumber>
+      <StateNumber>7303</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="359" parent="276" name="token">
+    <column id="416" parent="279" name="token">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>854</StateNumber>
+      <StateNumber>7303</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="360" parent="276" name="email">
+    <column id="417" parent="279" name="email">
       <NotNull>1</NotNull>
       <Position>3</Position>
-      <StateNumber>854</StateNumber>
+      <StateNumber>7303</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="361" parent="276" name="folderId">
+    <column id="418" parent="279" name="folderId">
       <NotNull>1</NotNull>
       <Position>4</Position>
-      <StateNumber>854</StateNumber>
+      <StateNumber>7303</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="362" parent="276" name="uses">
+    <column id="419" parent="279" name="uses">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>5</Position>
-      <StateNumber>854</StateNumber>
+      <StateNumber>7303</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="363" parent="276" name="isActive">
+    <column id="420" parent="279" name="isActive">
       <DefaultExpression>true</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>6</Position>
-      <StateNumber>854</StateNumber>
+      <StateNumber>7303</StateNumber>
       <StoredType>boolean|0s</StoredType>
       <TypeId>16</TypeId>
     </column>
-    <column id="364" parent="276" name="permission">
+    <column id="421" parent="279" name="permission">
       <DefaultExpression>&apos;READ&apos;::&quot;FolderTokenPermission&quot;</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>7</Position>
-      <StateNumber>854</StateNumber>
+      <StateNumber>7303</StateNumber>
       <StoredType>&quot;FolderTokenPermission&quot;|0s</StoredType>
-      <TypeId>16838</TypeId>
+      <TypeId>57728</TypeId>
     </column>
-    <column id="365" parent="276" name="expires">
+    <column id="422" parent="279" name="expires">
       <NotNull>1</NotNull>
       <Position>8</Position>
-      <StateNumber>854</StateNumber>
+      <StateNumber>7303</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="366" parent="276" name="createdAt">
+    <column id="423" parent="279" name="createdAt">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>9</Position>
-      <StateNumber>854</StateNumber>
+      <StateNumber>7303</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="367" parent="276" name="updatedAt">
+    <column id="424" parent="279" name="updatedAt">
       <NotNull>1</NotNull>
       <Position>10</Position>
-      <StateNumber>854</StateNumber>
+      <StateNumber>7303</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="368" parent="276" name="pinCode">
+    <column id="425" parent="279" name="pinCode">
       <Position>11</Position>
-      <StateNumber>874</StateNumber>
+      <StateNumber>7323</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="369" parent="276" name="locked">
+    <column id="426" parent="279" name="locked">
       <DefaultExpression>false</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>12</Position>
-      <StateNumber>878</StateNumber>
+      <StateNumber>7327</StateNumber>
       <StoredType>boolean|0s</StoredType>
       <TypeId>16</TypeId>
     </column>
-    <foreign-key id="370" parent="276" name="PersonAccessToken_folderId_fkey">
+    <column id="427" parent="279" name="allowMap">
+      <DefaultExpression>false</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>13</Position>
+      <StateNumber>7463</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <foreign-key id="428" parent="279" name="PersonAccessToken_folderId_fkey">
       <ColNames>folderId</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16894</ObjectId>
+      <ObjectId>57784</ObjectId>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
-      <StateNumber>854</StateNumber>
+      <StateNumber>7303</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
-      <RefTableId>16733</RefTableId>
+      <RefTableId>57623</RefTableId>
     </foreign-key>
-    <index id="371" parent="276" name="PersonAccessToken_pkey">
+    <index id="429" parent="279" name="PersonAccessToken_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16891</ObjectId>
+      <ObjectId>57781</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>854</StateNumber>
+      <StateNumber>7303</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <index id="372" parent="276" name="PersonAccessToken_token_key">
+    <index id="430" parent="279" name="PersonAccessToken_token_key">
       <ColNames>token</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16893</ObjectId>
-      <StateNumber>854</StateNumber>
+      <ObjectId>57783</ObjectId>
+      <StateNumber>7303</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="373" parent="276" name="PersonAccessToken_pkey">
+    <key id="431" parent="279" name="PersonAccessToken_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16892</ObjectId>
+      <ObjectId>57782</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>854</StateNumber>
-      <UnderlyingIndexId>16891</UnderlyingIndexId>
+      <StateNumber>7303</StateNumber>
+      <UnderlyingIndexId>57781</UnderlyingIndexId>
     </key>
-    <column id="374" parent="277" name="sessionToken">
+    <column id="432" parent="280" name="sessionToken">
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="375" parent="277" name="userId">
+    <column id="433" parent="280" name="userId">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="376" parent="277" name="expiresAt">
+    <column id="434" parent="280" name="expiresAt">
       <NotNull>1</NotNull>
       <Position>4</Position>
-      <StateNumber>894</StateNumber>
+      <StateNumber>7343</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <foreign-key id="377" parent="277" name="Session_userId_fkey">
+    <foreign-key id="435" parent="280" name="Session_userId_fkey">
       <ColNames>userId</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16827</ObjectId>
+      <ObjectId>57717</ObjectId>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
-      <RefTableId>16757</RefTableId>
+      <RefTableId>57647</RefTableId>
     </foreign-key>
-    <index id="378" parent="277" name="Session_sessionToken_key">
+    <index id="436" parent="280" name="Session_sessionToken_key">
       <ColNames>sessionToken</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16794</ObjectId>
-      <StateNumber>794</StateNumber>
+      <ObjectId>57684</ObjectId>
+      <StateNumber>7243</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <column id="379" parent="278" name="id">
+    <column id="437" parent="281" name="id">
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="380" parent="278" name="name">
+    <column id="438" parent="281" name="name">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>826</StateNumber>
+      <StateNumber>7275</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="381" parent="278" name="email">
+    <column id="439" parent="281" name="email">
       <NotNull>1</NotNull>
       <Position>3</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="382" parent="278" name="image">
+    <column id="440" parent="281" name="image">
       <Position>5</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="383" parent="278" name="password">
+    <column id="441" parent="281" name="password">
       <Position>6</Position>
-      <StateNumber>918</StateNumber>
+      <StateNumber>7367</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="384" parent="278" name="createdAt">
+    <column id="442" parent="281" name="createdAt">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>7</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="385" parent="278" name="updatedAt">
+    <column id="443" parent="281" name="updatedAt">
       <NotNull>1</NotNull>
       <Position>8</Position>
-      <StateNumber>794</StateNumber>
+      <StateNumber>7243</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="386" parent="278" name="usedStorage">
+    <column id="444" parent="281" name="usedStorage">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>9</Position>
-      <StateNumber>934</StateNumber>
+      <StateNumber>7383</StateNumber>
       <StoredType>bigint|0s</StoredType>
       <TypeId>20</TypeId>
     </column>
-    <column id="387" parent="278" name="emailVerified">
+    <column id="445" parent="281" name="emailVerified">
       <DefaultExpression>false</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>10</Position>
-      <StateNumber>934</StateNumber>
+      <StateNumber>7383</StateNumber>
       <StoredType>boolean|0s</StoredType>
       <TypeId>16</TypeId>
     </column>
-    <column id="388" parent="278" name="emailVerificationDeadline">
+    <column id="446" parent="281" name="emailVerificationDeadline">
       <Position>11</Position>
-      <StateNumber>846</StateNumber>
+      <StateNumber>7295</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="389" parent="278" name="role">
+    <column id="447" parent="281" name="role">
       <DefaultExpression>ARRAY[&apos;USER&apos;::&quot;Role&quot;]</DefaultExpression>
       <Position>13</Position>
-      <StateNumber>934</StateNumber>
+      <StateNumber>7383</StateNumber>
       <StoredType>&quot;Role&quot;[]|0s</StoredType>
-      <TypeId>16910</TypeId>
+      <TypeId>57800</TypeId>
     </column>
-    <column id="390" parent="278" name="googleId">
+    <column id="448" parent="281" name="googleId">
       <Position>14</Position>
-      <StateNumber>910</StateNumber>
+      <StateNumber>7359</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="391" parent="278" name="maxStorage">
+    <column id="449" parent="281" name="maxStorage">
       <DefaultExpression>&apos;5368709120&apos;::bigint</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>15</Position>
-      <StateNumber>934</StateNumber>
+      <StateNumber>7383</StateNumber>
       <StoredType>bigint|0s</StoredType>
       <TypeId>20</TypeId>
     </column>
-    <index id="392" parent="278" name="User_pkey">
+    <column id="450" parent="281" name="privateKey">
+      <Position>16</Position>
+      <StateNumber>8441</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="451" parent="281" name="publicKey">
+      <Position>17</Position>
+      <StateNumber>8441</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <index id="452" parent="281" name="User_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16763</ObjectId>
+      <ObjectId>57653</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>934</StateNumber>
+      <StateNumber>7383</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <index id="393" parent="278" name="User_email_key">
+    <index id="453" parent="281" name="User_email_key">
       <ColNames>email</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16793</ObjectId>
-      <StateNumber>934</StateNumber>
+      <ObjectId>57683</ObjectId>
+      <StateNumber>7383</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <index id="394" parent="278" name="User_googleId_key">
+    <index id="454" parent="281" name="User_googleId_key">
       <ColNames>googleId</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16954</ObjectId>
-      <StateNumber>934</StateNumber>
+      <ObjectId>57844</ObjectId>
+      <StateNumber>7383</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="395" parent="278" name="User_pkey">
+    <key id="455" parent="281" name="User_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16764</ObjectId>
+      <ObjectId>57654</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>794</StateNumber>
-      <UnderlyingIndexId>16763</UnderlyingIndexId>
+      <StateNumber>7243</StateNumber>
+      <UnderlyingIndexId>57653</UnderlyingIndexId>
     </key>
-    <column id="396" parent="279" name="id">
+    <column id="456" parent="282" name="id">
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>834</StateNumber>
+      <StateNumber>7283</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="397" parent="279" name="token">
+    <column id="457" parent="282" name="token">
       <NotNull>1</NotNull>
       <Position>3</Position>
-      <StateNumber>834</StateNumber>
+      <StateNumber>7283</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="398" parent="279" name="expires">
+    <column id="458" parent="282" name="expires">
       <NotNull>1</NotNull>
       <Position>4</Position>
-      <StateNumber>834</StateNumber>
+      <StateNumber>7283</StateNumber>
       <StoredType>timestamp(3)|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="399" parent="279" name="userId">
+    <column id="459" parent="282" name="userId">
       <NotNull>1</NotNull>
       <Position>5</Position>
-      <StateNumber>834</StateNumber>
+      <StateNumber>7283</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <foreign-key id="400" parent="279" name="VerifyEmailRequest_userId_fkey">
+    <foreign-key id="460" parent="282" name="VerifyEmailRequest_userId_fkey">
       <ColNames>userId</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16926</ObjectId>
+      <ObjectId>57816</ObjectId>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
-      <StateNumber>898</StateNumber>
+      <StateNumber>7347</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
-      <RefTableId>16757</RefTableId>
+      <RefTableId>57647</RefTableId>
     </foreign-key>
-    <index id="401" parent="279" name="VerifyEmailRequest_pkey">
+    <index id="461" parent="282" name="VerifyEmailRequest_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16859</ObjectId>
+      <ObjectId>57749</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>834</StateNumber>
+      <StateNumber>7283</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <index id="402" parent="279" name="VerifyEmailRequest_token_key">
+    <index id="462" parent="282" name="VerifyEmailRequest_token_key">
       <ColNames>token</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16867</ObjectId>
-      <StateNumber>838</StateNumber>
+      <ObjectId>57757</ObjectId>
+      <StateNumber>7287</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <index id="403" parent="279" name="VerifyEmailRequest_userId_key">
+    <index id="463" parent="282" name="VerifyEmailRequest_userId_key">
       <ColNames>userId</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16861</ObjectId>
-      <StateNumber>834</StateNumber>
+      <ObjectId>57751</ObjectId>
+      <StateNumber>7283</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="404" parent="279" name="VerifyEmailRequest_pkey">
+    <key id="464" parent="282" name="VerifyEmailRequest_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16860</ObjectId>
+      <ObjectId>57750</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>834</StateNumber>
-      <UnderlyingIndexId>16859</UnderlyingIndexId>
+      <StateNumber>7283</StateNumber>
+      <UnderlyingIndexId>57749</UnderlyingIndexId>
     </key>
-    <column id="405" parent="280" name="id">
+    <column id="465" parent="283" name="A">
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>792</StateNumber>
+      <StateNumber>7471</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="466" parent="283" name="B">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>7471</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <foreign-key id="467" parent="283" name="_FileToFolderTag_A_fkey">
+      <ColNames>A</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>58038</ObjectId>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <StateNumber>7471</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>57921</RefTableId>
+    </foreign-key>
+    <foreign-key id="468" parent="283" name="_FileToFolderTag_B_fkey">
+      <ColNames>B</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>58043</ObjectId>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <StateNumber>7471</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>58012</RefTableId>
+    </foreign-key>
+    <index id="469" parent="283" name="_FileToFolderTag_AB_pkey">
+      <ColNames>A
+B</ColNames>
+      <ObjectId>58025</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>7471</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationIds>100
+100</CollationIds>
+      <CollationNames>default
+default</CollationNames>
+      <CollationParentNames>pg_catalog
+pg_catalog</CollationParentNames>
+    </index>
+    <index id="470" parent="283" name="_FileToFolderTag_B_index">
+      <ColNames>B</ColNames>
+      <ObjectId>58027</ObjectId>
+      <StateNumber>7471</StateNumber>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="471" parent="283" name="_FileToFolderTag_AB_pkey">
+      <ObjectId>58026</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>7471</StateNumber>
+      <UnderlyingIndexId>58025</UnderlyingIndexId>
+    </key>
+    <column id="472" parent="284" name="id">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>7241</StateNumber>
       <StoredType>varchar(36)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="406" parent="280" name="checksum">
+    <column id="473" parent="284" name="checksum">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>792</StateNumber>
+      <StateNumber>7241</StateNumber>
       <StoredType>varchar(64)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="407" parent="280" name="finished_at">
+    <column id="474" parent="284" name="finished_at">
       <Position>3</Position>
-      <StateNumber>792</StateNumber>
+      <StateNumber>7241</StateNumber>
       <StoredType>timestamp with time zone|0s</StoredType>
       <TypeId>1184</TypeId>
     </column>
-    <column id="408" parent="280" name="migration_name">
+    <column id="475" parent="284" name="migration_name">
       <NotNull>1</NotNull>
       <Position>4</Position>
-      <StateNumber>792</StateNumber>
+      <StateNumber>7241</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="409" parent="280" name="logs">
+    <column id="476" parent="284" name="logs">
       <Position>5</Position>
-      <StateNumber>792</StateNumber>
+      <StateNumber>7241</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="410" parent="280" name="rolled_back_at">
+    <column id="477" parent="284" name="rolled_back_at">
       <Position>6</Position>
-      <StateNumber>792</StateNumber>
+      <StateNumber>7241</StateNumber>
       <StoredType>timestamp with time zone|0s</StoredType>
       <TypeId>1184</TypeId>
     </column>
-    <column id="411" parent="280" name="started_at">
+    <column id="478" parent="284" name="started_at">
       <DefaultExpression>now()</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>7</Position>
-      <StateNumber>792</StateNumber>
+      <StateNumber>7241</StateNumber>
       <StoredType>timestamp with time zone|0s</StoredType>
       <TypeId>1184</TypeId>
     </column>
-    <column id="412" parent="280" name="applied_steps_count">
+    <column id="479" parent="284" name="applied_steps_count">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>8</Position>
-      <StateNumber>792</StateNumber>
+      <StateNumber>7241</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <index id="413" parent="280" name="_prisma_migrations_pkey">
+    <index id="480" parent="284" name="_prisma_migrations_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16731</ObjectId>
+      <ObjectId>57621</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>792</StateNumber>
+      <StateNumber>7241</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="414" parent="280" name="_prisma_migrations_pkey">
+    <key id="481" parent="284" name="_prisma_migrations_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16732</ObjectId>
+      <ObjectId>57622</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>792</StateNumber>
-      <UnderlyingIndexId>16731</UnderlyingIndexId>
+      <StateNumber>7241</StateNumber>
+      <UnderlyingIndexId>57621</UnderlyingIndexId>
     </key>
   </database-model>
 </dataSource>

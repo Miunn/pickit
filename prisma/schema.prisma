@@ -46,6 +46,8 @@ model Folder {
   id                String              @id @default(cuid())
   name              String
   description       String?
+  key               String              @default("")
+  iv                String              @default("")
   files             File[]              @relation("FolderFiles")
   size              Int                 @default(0)
   cover             File?               @relation(fields: [coverId], references: [id])
@@ -75,13 +77,13 @@ model FolderTag {
 }
 
 model File {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String
   description   String?
   size          Int
   extension     String
-  width         Int      @default(0)
-  height        Int      @default(0)
+  width         Int       @default(0)
+  height        Int       @default(0)
   make          String?
   model         String?
   software      String?
@@ -100,18 +102,18 @@ model File {
   altitude      Float?
   latitude      Float?
   longitude     Float?
-  duration      Int      @default(0)
+  duration      Int       @default(0)
   thumbnail     String?
-  type          FileType @default(IMAGE)
-  position      Int      @default(0)
-  folder        Folder   @relation("FolderFiles", fields: [folderId], references: [id], onDelete: Cascade)
+  type          FileType  @default(IMAGE)
+  position      Int       @default(0)
+  folder        Folder    @relation("FolderFiles", fields: [folderId], references: [id], onDelete: Cascade)
   folderId      String
   folderCover   Folder?
   folderCoverId String?
-  createdBy     User     @relation("UserFiles", fields: [createdById], references: [id], onDelete: Cascade)
+  createdBy     User      @relation("UserFiles", fields: [createdById], references: [id], onDelete: Cascade)
   createdById   String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   comments Comment[]
   likes    FileLike[]
@@ -134,25 +136,25 @@ model Comment {
 }
 
 model FileLike {
-  id        String   @id @default(cuid())
-  file      File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
-  fileId    String
-  createdBy User?     @relation(fields: [createdById], references: [id], onDelete: Cascade)
-  createdById String?
+  id             String   @id @default(cuid())
+  file           File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  fileId         String
+  createdBy      User?    @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById    String?
   createdByEmail String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model CommentLike {
-  id        String   @id @default(cuid())
-  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  commentId String
-  createdBy User?     @relation(fields: [createdById], references: [id], onDelete: Cascade)
-  createdById String?
+  id             String   @id @default(cuid())
+  comment        Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId      String
+  createdBy      User?    @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById    String?
   createdByEmail String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model AccessToken {
@@ -214,6 +216,11 @@ model User {
   password                  String?
   sessions                  Session[]
 
+  publicKey  String?
+  privateKey String? // Encrypted, for device switching
+  e2eeSalt   String?
+  e2eeSaltIv String?
+
   googleId String? @unique
 
   createdAt DateTime @default(now())
@@ -222,10 +229,10 @@ model User {
   verifiedEmailRequest VerifyEmailRequest?
   passwordResetRequest PasswordResetRequest?
 
-  folders  Folder[]  @relation("UserFolders")
-  files    File[]    @relation("UserFiles")
-  comments Comment[]
-  likes    FileLike[]
+  folders      Folder[]      @relation("UserFolders")
+  files        File[]        @relation("UserFiles")
+  comments     Comment[]
+  likes        FileLike[]
   commentLikes CommentLike[]
   tags FolderTag[]
   notifications Notification[]

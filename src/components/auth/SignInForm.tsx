@@ -15,6 +15,7 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
+import { useE2EEncryptionContext } from "@/context/E2EEncryptionContext";
 
 export default function SignInForm({ locale }: { locale: string }) {
 
@@ -22,6 +23,7 @@ export default function SignInForm({ locale }: { locale: string }) {
     const searchParams = useSearchParams();
     const [loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
+    const { loadKeys } = useE2EEncryptionContext();
 
     const form = useForm({
         resolver: zodResolver(SignInFormSchema),
@@ -46,6 +48,8 @@ export default function SignInForm({ locale }: { locale: string }) {
             });
             return;
         }
+
+        await loadKeys(data.password);
 
         router.push(`/${locale}/app`);
     };

@@ -105,7 +105,10 @@ export default function FileOptions({ file, fullScreenCarouselFiles, currentInde
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                     {user?.id === file.createdById && (
-                        <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+                        <DropdownMenuItem onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                        }}>
                             <ManageTagsDialog file={file}>
                                 <div className="w-full flex items-center">
                                     <Tags size={16} className="opacity-60 mr-2" aria-hidden="true" />

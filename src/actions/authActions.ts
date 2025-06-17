@@ -39,7 +39,7 @@ export async function SignIn(email: string, password: string): Promise<{
 
         const token = generateSessionToken();
         const session = await createSession(token, user.id);
-        setSessionTokenCookie(token, session.expiresAt);
+        await setSessionTokenCookie(token, session.expiresAt);
         return null;
     } catch (e) {
         return { error: "unknown-error" };
@@ -54,6 +54,6 @@ export async function SignOut() {
     }
 
     await invalidateAllSessions(session.userId);
-    deleteSessionTokenCookie();
+    await deleteSessionTokenCookie();
     return redirect(`/${locale}/signin`);
 }
