@@ -196,9 +196,9 @@ model Notification {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   isRead    Boolean   @default(false)
-  title     String
-  message   String
-  data      Json?
+  authorName String
+  folderName String
+  href       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
