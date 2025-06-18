@@ -43,6 +43,10 @@ export default async function LocaleLayout(
     const { user, session } = await getCurrentSession();
 
     const t = await getTranslations("sidebar");
+    const notifications = user ? await prisma.notification.findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: "desc" }
+    }) : [];
     const folders = user ? await prisma.folder.findMany({
         where: {
             createdBy: { id: user.id }
@@ -94,7 +98,7 @@ export default async function LocaleLayout(
         <NuqsAdapter>
             <SessionProvider user={user} session={session}>
                 <SidebarProvider defaultOpen={!!user}>
-                    <AppSidebar locale={locale} user={user} items={{
+                    <AppSidebar locale={locale} user={user} notifications={notifications} items={{
                         navMainItems: [
                             {
                                 key: "folders",

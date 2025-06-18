@@ -22,7 +22,7 @@ import { ContextFile } from "@/context/FilesContext";
 
 export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     const { user } = useSession();
-    const { folder } = useFolderContext();
+    const { folder, isShared } = useFolderContext();
     const { files, setFiles } = useFilesContext();
 
     const t = useTranslations("images");
@@ -174,7 +174,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                     <SortableContext items={sortedFiles.map((item) => item.id)}>
                         {files.length === 0
                             ? <div className={"col-start-1 col-end-3 xl:col-start-2 xl:col-end-4 2xl:col-start-3 2xl:col-end-5 mx-auto mt-6 flex flex-col justify-center items-center max-w-lg"}>
-                                <UploadImagesForm folderId={folder.id} onUpload={(uploadedFiles) => {
+                                <UploadImagesForm folderId={folder.id} shouldDisplayNotify={isShared} onUpload={(uploadedFiles) => {
                                     setFiles([...files, ...uploadedFiles]);
                                 }} />
                             </div>

@@ -105,7 +105,8 @@ export default async function FolderPage(
                 },
             },
             createdBy: true,
-            AccessToken: true
+            AccessToken: true,
+            PersonAccessToken: true
         }
     });
 
@@ -161,6 +162,7 @@ export default async function FolderPage(
                 tokenData={accessToken}
                 tokenType={searchParams.t === "p" ? "personAccessToken" : "accessToken"}
                 tokenHash={searchParams.h ?? null}
+                isShared={folder.PersonAccessToken.length > 0}
             >
                 <TokenProvider token={accessToken}>
                     <FilesProvider filesData={filesWithSignedUrls} defaultView={searchParams.view || ViewState.Grid}>

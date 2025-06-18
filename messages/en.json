@@ -545,7 +545,8 @@
         "errors": {
           "not-enough-storage": "You don't have enough storage remaining to upload {name}. Your used storage is {used} / {max}.",
           "invalid-file": "{name} isn't a file you can upload. Files must be either image or video."
-        }
+        },
+        "shouldNotify": "Notify people you've shared this album with"
       }
     },
     "accessTokens": {

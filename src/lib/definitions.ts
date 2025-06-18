@@ -81,7 +81,8 @@ export const UploadImagesFormSchema = z.object({
                 return Array.from(file).every((f) => f.type.startsWith('image/') || f.type.startsWith('video/'));
             }, {
                 message: 'File must be an image or a video',
-            })
+            }),
+    shouldNotify: z.boolean().optional()
 });
 
 export const RenameImageFormSchema = z.object({
@@ -223,6 +224,12 @@ const userLight = Prisma.validator<Prisma.UserDefaultArgs>()({
 })
 
 export type UserLight = Prisma.UserGetPayload<typeof userLight>
+
+const userWithNotifications = Prisma.validator<Prisma.UserDefaultArgs>()({
+    include: { notifications: true }
+})
+
+export type UserWithNotifications = Prisma.UserGetPayload<typeof userWithNotifications>
 
 const lightFolders = Prisma.validator<Prisma.FolderDefaultArgs>()({
     select: { id: true, name: true }

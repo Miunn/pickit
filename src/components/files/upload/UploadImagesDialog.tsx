@@ -15,7 +15,7 @@ import { useState } from "react";
 import { UploadImagesForm } from "@/components/files/upload/UploadImagesForm";
 import { ContextFile } from "@/context/FilesContext";
 
-export const UploadImagesDialog = ({ folderId, open, setOpen, onUpload }: { folderId: string, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>>, onUpload?: (files: ContextFile[]) => void }) => {
+export const UploadImagesDialog = ({ folderId, open, setOpen, onUpload, shouldDisplayNotify = true }: { folderId: string, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>>, onUpload?: (files: ContextFile[]) => void, shouldDisplayNotify?: boolean }) => {
     const t = useTranslations("images.dialog.upload");
 
     const [internalOpen, setInternalOpen] = useState(false);
@@ -38,7 +38,7 @@ export const UploadImagesDialog = ({ folderId, open, setOpen, onUpload }: { fold
                     <DialogTitle>{t('title')}</DialogTitle>
                     <DialogDescription>{t('description')}</DialogDescription>
                 </DialogHeader>
-                <UploadImagesForm folderId={folderId} onUpload={(files) => {
+                <UploadImagesForm folderId={folderId} shouldDisplayNotify={shouldDisplayNotify} onUpload={(files) => {
                     setOpenState(false);
                     onUpload?.(files);
                 }} />

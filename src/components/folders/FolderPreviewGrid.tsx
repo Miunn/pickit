@@ -4,7 +4,6 @@ import { FileWithComments, FileWithTags, FolderWithAccessToken, FolderWithCover,
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import React from "react";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
-import Link from "next/link";
 import Image from "next/image";
 import { Images } from "lucide-react";
 import { Separator } from "../ui/separator";
@@ -16,6 +15,7 @@ import FolderPropertiesDialog from "./FolderPropertiesDialogs";
 import DeleteFolderDialog from "./DeleteFolderDialog";
 import { downloadClientFiles } from "@/lib/utils";
 import { FileType } from "@prisma/client";
+import { Link } from "@/i18n/navigation";
 
 export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & { files: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[] } }) {
     const t = useTranslations("folders");
@@ -34,7 +34,7 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
         <>
             <ContextMenu modal={false}>
                 <ContextMenuTrigger asChild>
-                    <Link href={`/${locale}/app/folders/${folder.id}`} locale={locale}
+                    <Link href={`/app/folders/${folder.id}`}
                         className={"inline-block w-full"}>
                         {folder.cover
                             ? <div className={`relative h-36 mb-4 flex justify-center items-center border border-primary rounded-xl`}>
@@ -76,7 +76,7 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
                 </ContextMenuTrigger>
                 <ContextMenuContent className="w-48">
                     <ContextMenuItem asChild>
-                        <Link href={`/${locale}/app/folders/${folder.id}`} locale={locale}>
+                        <Link href={`/app/folders/${folder.id}`}>
                             {t('actions.open')}
                         </Link>
                     </ContextMenuItem>

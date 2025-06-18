@@ -44,6 +44,26 @@ export async function updateUser(id: string, name?: string, email?: string) {
     return true;
 }
 
+export async function setupE2EE(privateKey: string, publicKey: string, iv: string, salt: string): Promise<{ error: string | null }> {
+    const { user } = await getCurrentSession();
+
+    if (!user) {
+        return { error: "You must be logged in to setup E2EE" };
+    }
+
+    await prisma.user.update({
+        where: { id: user.id },
+        data: {
+            privateKey,
+            publicKey,
+            e2eeSalt: salt,
+            e2eeSaltIv: iv
+        }
+    });
+
+    return { error: null };
+}
+
 export async function sendVerificationEmail(email: string): Promise<{
     error: string | null,
     user: {

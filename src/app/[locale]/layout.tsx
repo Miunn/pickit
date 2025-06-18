@@ -8,6 +8,7 @@ import { Metadata, Viewport } from 'next';
 import { ThemeProvider } from 'next-themes';
 import NextTopLoader from 'nextjs-toploader';
 import { PricingProvider } from '@/context/PricingContext';
+import { E2EEncryptionProvider } from '@/context/E2EEncryptionContext';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -46,11 +47,13 @@ export default async function LocaleLayout(props: Props) {
                     disableTransitionOnChange={true}>
                     <NextTopLoader color='#30b57e' showSpinner={false} />
                     <NextIntlClientProvider messages={messages}>
-                        <PricingProvider>
-                            {children}
-                            <Toaster />
-                            <SonnerToaster richColors />
-                        </PricingProvider>
+                        <E2EEncryptionProvider>
+                            <PricingProvider>
+                                {children}
+                                <Toaster />
+                                <SonnerToaster richColors />
+                            </PricingProvider>
+                        </E2EEncryptionProvider>
                     </NextIntlClientProvider>
                 </ThemeProvider>
             </body>
