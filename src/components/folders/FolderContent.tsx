@@ -1,11 +1,8 @@
 'use client'
 
 import { useTranslations } from "next-intl";
-import { ImagesSortMethod } from "./SortImages";
-import { useQueryState } from 'nuqs'
 import { ViewState } from "./ViewSelector";
 import ImagesList from "../files/views/list/ImagesList";
-import { useState } from "react";
 import { useFolderContext } from "@/context/FolderContext";
 import { useFilesContext } from "@/context/FilesContext";
 import dynamic from "next/dynamic";

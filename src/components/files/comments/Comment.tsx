@@ -32,17 +32,19 @@ export function Comment({ comment }: { comment: CommentType }) {
 
     return (
         <div className="relative">
-            <p className="text-sm font-semibold flex items-center gap-2">
-                {comment.name}
+            <div className="text-sm font-semibold flex items-center gap-2">
+                <p>
+                    {comment.name}
+                </p>
                 <Tooltip>
                     <TooltipTrigger>
-                        <span className="font-light text-gray-500">{formatter.relativeTime(comment.createdAt, new Date())}</span>
+                        <p className="font-light text-gray-500">{formatter.relativeTime(comment.createdAt, new Date())}</p>
                     </TooltipTrigger>
                     <TooltipContent>
                         <span className="capitalize">{formatter.dateTime(comment.createdAt, { weekday: "long", day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "numeric" })}</span>
                     </TooltipContent>
                 </Tooltip>
-            </p>
+            </div>
             <p className="text-sm">{comment.text}</p>
 
             {canEditComment ? (
@@ -66,8 +68,8 @@ export function Comment({ comment }: { comment: CommentType }) {
             />
 
             <DeleteCommentDialog
-                comment={comment} 
-                open={openDelete} 
+                comment={comment}
+                open={openDelete}
                 setOpen={setOpenDelete}
                 onDelete={() => {
                     setFiles(files.map((file) => ({ ...file, comments: file.comments.filter((c) => c.id !== comment.id) })))

@@ -14,10 +14,14 @@ import { toast } from "sonner"
 import { initiateFileUpload, finalizeFileUpload } from "@/actions/files";
 import { Progress } from "@/components/ui/progress";
 import { ContextFile } from "@/context/FilesContext";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { notifyAboutUpload } from "@/actions/accessTokensPerson";
 
 interface UploadImagesFormProps {
     folderId: string;
     onUpload?: (files: ContextFile[]) => void;
+    shouldDisplayNotify?: boolean;
 }
 
 interface InitiateUploadResult {
@@ -27,16 +31,17 @@ interface InitiateUploadResult {
     fileId?: string;
 }
 
-export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) {
+export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = true }: UploadImagesFormProps) {
     const t = useTranslations("components.images.uploadImagesForm");
 
     const uploadImageForm = useForm<z.infer<typeof UploadImagesFormSchema>>({
         resolver: zodResolver(UploadImagesFormSchema),
         defaultValues: {
-            images: []
+            images: [],
+            shouldNotify: true
         }
     });
-    
+
     const onSubmit = async (data: z.infer<typeof UploadImagesFormSchema>) => {
         if (!data.images || data.images.length === 0) return;
 
@@ -64,7 +69,7 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
                         const sampleSize = 1024 * 1024; // 1MB
                         const samples = [];
                         const fileBuffer = await file.arrayBuffer();
-                        
+
                         for (let i = 0; i < fileBuffer.byteLength; i += sampleSize) {
                             const chunk = fileBuffer.slice(i, Math.min(i + sampleSize, fileBuffer.byteLength));
                             const hashBuffer = await crypto.subtle.digest('SHA-256', chunk);
@@ -81,7 +86,7 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
                         verificationFormData.append("fileSamples", JSON.stringify(samples));
 
                         const verificationResult = await initiateFileUpload(verificationFormData, folderId) as InitiateUploadResult;
-                        
+
                         if (verificationResult.error) {
                             throw new Error(verificationResult.error);
                         }
@@ -135,7 +140,7 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
                             file: null,
                             error: error instanceof Error ? error.message : "Unknown error"
                         };
-                    }        
+                    }
                 })
             );
 
@@ -145,6 +150,10 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
             setTimeout(() => {
                 toast.dismiss("progress-toast");
             }, 2000);
+
+            if (data.shouldNotify && successfulUploads.length > 0) {
+                await notifyAboutUpload(folderId, successfulUploads.length);
+            }
 
             toast.success(t('success', { count: successfulUploads.length }));
 
@@ -190,10 +199,20 @@ export function UploadImagesForm({ folderId, onUpload }: UploadImagesFormProps) 
                     )}
                 />
 
-                {uploadImageForm.formState.isSubmitting
-                    ? <Button className="ml-auto flex" type="button" disabled><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t('actions.submitting')}</Button>
-                    : <Button className="ml-auto flex" type="submit">{t('actions.submit')}</Button>
-                }
+                <div className="flex justify-between">
+                    {shouldDisplayNotify ? <div className="flex items-center gap-2">
+                        <Switch
+                            id="shouldNotify"
+                            checked={uploadImageForm.watch('shouldNotify')}
+                            onCheckedChange={(checked) => uploadImageForm.setValue('shouldNotify', checked)}
+                        />
+                        <Label className="max-w-[200px]" htmlFor="shouldNotify">{t('shouldNotify')}</Label>
+                    </div> : null}
+                    {uploadImageForm.formState.isSubmitting
+                        ? <Button className="ml-auto flex" type="button" disabled><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t('actions.submitting')}</Button>
+                        : <Button className="ml-auto flex" type="submit">{t('actions.submit')}</Button>
+                    }
+                </div>
             </form>
         </Form>
     )

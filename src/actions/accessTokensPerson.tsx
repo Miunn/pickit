@@ -8,6 +8,7 @@ import { transporter } from "@/lib/mailing";
 import { getCurrentSession } from "@/lib/session";
 import ShareFolderTemplate from "@/components/emails/ShareFolderTemplate";
 import { render } from "@react-email/components";
+import NotifyAboutUploadTemplate from "@/components/emails/NotifyAboutUpload";
 
 export async function createNewPersonAccessToken(folderId: string, target: string, permission: FolderTokenPermission, expiryDate: Date): Promise<{
     error: string | null,
@@ -295,6 +296,31 @@ export async function sendAgainPersonAccessToken(token: string) {
     return { error: null }
 }
 
+export async function notifyAboutUpload(folderId: string, count: number) {
+    const { user } = await getCurrentSession();
+
+    if (!user) {
+        return { error: "You must be logged in to notify about an upload" }
+    }
+
+    const folder = await prisma.folder.findUnique({
+        where: { id: folderId, createdBy: { id: user.id } },
+        include: { PersonAccessToken: true }
+    });
+
+    if (!folder) {
+        return { error: "Folder not found" }
+    }
+
+    const personAccessTokens = folder.PersonAccessToken.map((p) => ({
+        email: p.email,
+        link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folderId}?share=${p.token}&t=p`,
+        locked: p.locked
+    }));
+
+    await sendNotifyAboutUploadEmail(personAccessTokens, user.name!, folder.name, count);
+}
+
 async function sendShareFolderEmail(data: { email: string, link: string, locked: boolean, message?: string }[], name: string, folderName: string) {
     data.forEach(async (d) => {
         const content = await render(<ShareFolderTemplate name={name} folderName={folderName} link={d.link} isLocked={d.locked} message={d.message} />);
@@ -304,6 +330,20 @@ async function sendShareFolderEmail(data: { email: string, link: string, locked:
             to: d.email,
             subject: "You've been shared a folder",
             text: "You've been shared a folder",
+            html: content,
+        })
+    });
+}
+
+async function sendNotifyAboutUploadEmail(data: { email: string, link: string, locked: boolean }[], name: string, folderName: string, count: number) {
+    data.forEach(async (d) => {
+        const content = await render(<NotifyAboutUploadTemplate name={name} folderName={folderName} link={d.link} isLocked={d.locked} count={count} />);
+
+        await transporter.sendMail({
+            from: `"The Echomori Team" <${process.env.MAIL_SENDER}>`,
+            to: d.email,
+            subject: "Nouveaux fichiers ajoutés à " + folderName,
+            text: "Nouveaux fichiers ajoutés à " + folderName,
             html: content,
         })
     });
