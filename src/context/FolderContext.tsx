@@ -15,6 +15,7 @@ type FolderContextType = {
     setToken: (token: AccessToken | PersonAccessToken | null) => void;
     tokenType: "accessToken" | "personAccessToken" | null;
     tokenHash: string | null;
+    isShared: boolean;
 };
 
 const FolderContext = createContext<FolderContextType | undefined>(undefined);
@@ -29,7 +30,7 @@ export const useFolderContext = () => {
     return context;
 };
 
-export function FolderProvider({ children, folderData, tokenData, tokenType, tokenHash }: { children: React.ReactNode, folderData: FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover, tokenData: AccessToken | PersonAccessToken | null, tokenType: "accessToken" | "personAccessToken" | null, tokenHash: string | null }) {
+export function FolderProvider({ children, folderData, tokenData, tokenType, tokenHash, isShared }: { children: React.ReactNode, folderData: FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover, tokenData: AccessToken | PersonAccessToken | null, tokenType: "accessToken" | "personAccessToken" | null, tokenHash: string | null, isShared: boolean }) {
     const [folder, setFolder] = useState<FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover>(folderData);
     const [token, setToken] = useState<AccessToken | PersonAccessToken | null>(tokenData);
     const [encryptionKey, setEncryptionKey] = useState<CryptoKey | null>(null);
@@ -64,7 +65,7 @@ export function FolderProvider({ children, folderData, tokenData, tokenType, tok
     }, [folder, wrappingKey]);
 
     return (
-        <FolderContext.Provider value={{ folder, setFolder, token, setToken, tokenType, tokenHash }}>
+        <FolderContext.Provider value={{ folder, setFolder, token, setToken, tokenType, tokenHash, isShared }}>
             {children}
         </FolderContext.Provider>
     );

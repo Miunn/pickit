@@ -545,7 +545,8 @@
         "errors": {
           "not-enough-storage": "Vous n'avez pas assez d'espace de stockage restant pour importer {name}. Votre stockage est actuellement de {used} / {max}",
           "invalid-file": "{name} n'est pas un fichier que vous pouvez importer. Chaque fichier doit être soit une image soit une vidéo"
-        }
+        },
+        "shouldNotify": "Notifier les personnes à qui vous avez partagé cet album"
       }
     },
     "accessTokens": {

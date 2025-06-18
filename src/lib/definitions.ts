@@ -81,7 +81,8 @@ export const UploadImagesFormSchema = z.object({
                 return Array.from(file).every((f) => f.type.startsWith('image/') || f.type.startsWith('video/'));
             }, {
                 message: 'File must be an image or a video',
-            })
+            }),
+    shouldNotify: z.boolean().optional()
 });
 
 export const RenameImageFormSchema = z.object({
