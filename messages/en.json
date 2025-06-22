@@ -1923,5 +1923,13 @@
   },
   "NotFoundPage": {
     "description": "This page could not be found"
+  },
+  "emails": {
+    "notifyAboutUpload": {
+      "title": "New files added to {folderName}",
+      "nameAddedFiles": "{name} added {count, plural, =1 {a new file} other {# new files}} to {folderName}",
+      "clickButtonToAccess": "Click below to open the album",
+      "regard": "Best regards,<br/>The <strong>{appName}</strong> team"
+    }
   }
 }

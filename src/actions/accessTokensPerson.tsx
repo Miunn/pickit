@@ -337,7 +337,7 @@ async function sendShareFolderEmail(data: { email: string, link: string, locked:
 
 async function sendNotifyAboutUploadEmail(data: { email: string, link: string, locked: boolean }[], name: string, folderName: string, count: number) {
     data.forEach(async (d) => {
-        const content = await render(<NotifyAboutUploadTemplate name={name} folderName={folderName} link={d.link} isLocked={d.locked} count={count} />);
+        const content = await render(<NotifyAboutUploadTemplate name={name} folderName={folderName} link={d.link} isLocked={d.locked} count={count} lang="fr" />);
 
         await transporter.sendMail({
             from: `"The Echomori Team" <${process.env.MAIL_SENDER}>`,
