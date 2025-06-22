@@ -52,6 +52,15 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
         transition
     } : undefined;
 
+    // Check if file is less than or equal to 3 days old
+    const isNew = React.useMemo(() => {
+        const now = new Date();
+        const fileDate = new Date(file.createdAt);
+        const diffTime = Math.abs(now.getTime() - fileDate.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays <= 3;
+    }, [file.createdAt]);
+
     return (
         <>
             <ContextMenu key={file.id} modal={false}>
@@ -82,6 +91,13 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                                         ? <CirclePlay className="absolute left-2 bottom-2 text-white opacity-80 group-hover:opacity-100 transition-all duration-200 ease-in-out" size={25} />
                                         : null
                                     }
+
+                                    {/* New banner overlay */}
+                                    {isNew && (
+                                        <div className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-semibold px-2 py-1 rounded-full shadow-lg transform rotate-12 z-10">
+                                            {t('new')}
+                                        </div>
+                                    )}
 
                                     {file.tags.length > 0 && (
                                         <div className="absolute top-2 left-2 flex flex-wrap gap-1">
