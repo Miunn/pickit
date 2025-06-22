@@ -547,7 +547,8 @@
           "invalid-file": "{name} isn't a file you can upload. Files must be either image or video."
         },
         "shouldNotify": "Notify people you've shared this album with"
-      }
+      },
+      "new": "New"
     },
     "accessTokens": {
       "unlock": {
@@ -1806,6 +1807,7 @@
     "lastUploadedImages": "Last updated images",
     "selected": "{count, plural, =1 {# image} other {# images}} selected",
     "empty": "No images uploaded",
+    "new": "New",
     "page": {
       "title": "{folder} images",
       "subtitle": "{folder} uploaded images",

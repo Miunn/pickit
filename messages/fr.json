@@ -1866,6 +1866,7 @@
     "lastUploadedImages": "Dernières images importées",
     "selected": "{count, plural, =1 {# image sélectionnée} other {# images sélectionnées}}",
     "empty": "No images uploaded",
+    "new": "Nouveau",
     "page": {
       "title": "{folder} images",
       "subtitle": "{folder} uploaded images",

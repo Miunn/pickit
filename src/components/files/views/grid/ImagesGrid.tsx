@@ -338,7 +338,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             }
             <div className={cn(
                 files.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] justify-items-start gap-3 sm:gap-3 mx-auto",
-                "relative overflow-hidden"
+                "relative"
             )}>
                 {folder.description
                     ? <div className={cn("hidden sm:block w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto",
