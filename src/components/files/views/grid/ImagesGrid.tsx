@@ -296,8 +296,39 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
         )
     }
 
+    const newFiles = useMemo(() => {
+        return files.filter((file) => {
+            const now = new Date();
+            const fileDate = new Date(file.createdAt);
+            const diffTime = Math.abs(now.getTime() - fileDate.getTime());
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays <= 3;
+        });
+    }, [files]);
+
     return (
         <div className="mt-10">
+            {newFiles.length > 0 && (
+                <>
+                    <h2 className="text-lg font-medium">{t('newFiles')}</h2>
+                    <hr className="mt-1 mb-5" />
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] justify-items-start gap-3 sm:gap-3 mx-auto mb-3">
+                        {newFiles.map((file) => (
+                            <Fragment key={file.id}>
+                                <ImagePreviewGrid
+                                    file={file}
+                                    selected={selected}
+                                    onClick={() => { }}
+                                    onSelect={() => { }}
+                                />
+                            </Fragment>
+                        ))}
+                    </div>
+
+                    <h2 className="text-lg font-medium mt-8">{t('albumContent')}</h2>
+                    <hr className="mt-1 mb-5" />
+                </>
+            )}
             {selecting
                 ? <div className={"flex justify-between items-center mb-5 bg-gray-50 dark:bg-primary/30 rounded-2xl w-full p-2"}>
                     <div className={"flex gap-2 items-center"}>

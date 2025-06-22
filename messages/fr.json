@@ -1867,6 +1867,8 @@
     "selected": "{count, plural, =1 {# image sélectionnée} other {# images sélectionnées}}",
     "empty": "No images uploaded",
     "new": "Nouveau",
+    "newFiles": "Fichiers ajoutés récemment",
+    "albumContent": "Tous les fichiers",
     "page": {
       "title": "{folder} images",
       "subtitle": "{folder} uploaded images",
