@@ -2052,5 +2052,14 @@
   },
   "NotFoundPage": {
     "description": "La page que vous cherchez n'existe pas ou a été déplacée."
+  },
+  "emails": {
+    "notifyAboutUpload": {
+      "title": "Nouveaux fichiers ajoutés à {folderName}",
+      "nameAddedFiles": "{name} a jouté {count, plural, =1 {un nouveau fichier} other {# nouveaux fichiers}} à {folderName}",
+      "clickButtonToAccess": "Cliquez ci-dessous pour ouvrir l'album",
+      "lockedFolder": "{name} a vérouillé ce dossier par un code que vous devrez renseigner avant de pouvoir accéder à son contenu.                                         Si vous ne connaissez pas ce code, veuillez contacter {name} pour l'obtenir.",
+      "regard": "Cordialement,<br/>Léquipe <strong>{appName}</strong>"
+    }
   }
 }
