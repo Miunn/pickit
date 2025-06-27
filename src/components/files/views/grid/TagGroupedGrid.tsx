@@ -2,7 +2,7 @@ import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { Fragment, useMemo, useState } from "react";
 import { ImagePreviewGrid } from "./ImagePreviewGrid";
 import { Button } from "@/components/ui/button";
-import { Trash2, X } from "lucide-react";
+import { Plus, Trash2, X } from "lucide-react";
 import { cn, formatBytes } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { CarouselDialog } from "../../carousel/CarouselDialog";
@@ -10,6 +10,7 @@ import { DeleteMultipleImagesDialog } from "../../DeleteMultipleImagesDialog";
 import { useFolderContext } from "@/context/FolderContext";
 import { Separator } from "@/components/ui/separator";
 import { FolderTag } from "@prisma/client";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export default function TagGroupedGrid() {
     const { folder } = useFolderContext();
@@ -60,12 +61,13 @@ export default function TagGroupedGrid() {
         const headerText = tag !== "No tags" ? tag.name : "No tags";
 
         return (
-            <div>
-                <h2 className="text-lg font-medium" style={{ color: headerColor }}>{headerText}</h2>
-                <Separator orientation="horizontal" className="mt-2 mb-3" />
-                <div key={groupKey} className={cn(
+            <AccordionItem value={groupKey} className="prose:overflow-visible">
+                <AccordionTrigger className="text-lg font-medium py-2">
+                    <span style={{ color: headerColor }}>{headerText}</span>
+                </AccordionTrigger>
+                <AccordionContent key={groupKey} className={cn(
                     files.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] justify-items-start gap-3 sm:gap-3 mx-auto",
-                    "relative"
+                    "relative pt-3"
                 )}>
                     {files.map((file) => (
                         <Fragment key={file.id}>
@@ -116,8 +118,8 @@ export default function TagGroupedGrid() {
                             />
                         </Fragment>
                     ))}
-                </div>
-            </div>
+                </AccordionContent>
+            </AccordionItem>
         )
     }
 
@@ -142,13 +144,13 @@ export default function TagGroupedGrid() {
                 </div>
                 : null
             }
-            <div className="flex flex-col gap-6">
+            <Accordion type="multiple" className="flex flex-col gap-4 overflow-visible" defaultValue={groupedFiles.map((group) => group.tag !== "No tags" ? group.tag.id : "no-tags")}>
                 {groupedFiles.map((group) => (
                     <Fragment key={group.tag !== "No tags" ? group.tag.id : "no-tags"}>
                         {renderGroup(group.tag, group.files)}
                     </Fragment>
                 ))}
-            </div>
+            </Accordion>
             <CarouselDialog files={carouselFiles} title={folder.name} carouselOpen={carouselOpen} setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
             <DeleteMultipleImagesDialog files={files.filter((file) => selected.includes(file.id))} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
                 setSelected([]);
