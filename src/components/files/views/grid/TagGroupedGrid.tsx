@@ -65,7 +65,7 @@ export default function TagGroupedGrid() {
                 <Separator orientation="horizontal" className="mt-2 mb-3" />
                 <div key={groupKey} className={cn(
                     files.length === 0 ? "flex flex-col lg:flex-row justify-center" : "grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] justify-items-start gap-3 sm:gap-3 mx-auto",
-                    "relative overflow-hidden"
+                    "relative"
                 )}>
                     {files.map((file) => (
                         <Fragment key={file.id}>
