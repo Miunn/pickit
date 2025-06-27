@@ -49,7 +49,7 @@ export const FolderContent = () => {
                 <FolderActionBar />
             </h3>
 
-            <div className="flex-1 overflow-auto">
+            <div className="flex-1 overflow-visible">
                 {renderContent()}
             </div>
         </div>
