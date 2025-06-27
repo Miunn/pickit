@@ -318,7 +318,10 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                                 <ImagePreviewGrid
                                     file={file}
                                     selected={selected}
-                                    onClick={() => { }}
+                                    onClick={() => {
+                                        setStartIndex(files.indexOf(file));
+                                        setCarouselOpen(true);
+                                    }}
                                     onSelect={() => { }}
                                 />
                             </Fragment>
