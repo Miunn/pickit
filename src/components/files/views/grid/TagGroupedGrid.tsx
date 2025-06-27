@@ -144,7 +144,7 @@ export default function TagGroupedGrid() {
                 </div>
                 : null
             }
-            <Accordion type="multiple" className="flex flex-col gap-4 overflow-visible" defaultValue={groupedFiles.map((group) => group.tag !== "No tags" ? group.tag.id : "no-tags")}>
+            <Accordion type="multiple" defaultValue={groupedFiles.map((group) => group.tag !== "No tags" ? group.tag.id : "no-tags")}>
                 {groupedFiles.map((group) => (
                     <Fragment key={group.tag !== "No tags" ? group.tag.id : "no-tags"}>
                         {renderGroup(group.tag, group.files)}
