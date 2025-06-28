@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
             },
         ],
         mode: "subscription",
-        return_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing?session_id={CHECKOUT_SESSION_ID}`,
+        return_url: `${process.env.NEXT_PUBLIC_APP_URL}/app/account/billing?session_id={CHECKOUT_SESSION_ID}`,
     });
 
     return NextResponse.json({ clientSecret: session.client_secret });
