@@ -1,4 +1,4 @@
-import { FileWithComments, FileWithFolder } from "@/lib/definitions";
+import { FileWithComments, FileWithFolder, FileWithTags, FolderWithTags } from "@/lib/definitions";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -7,11 +7,11 @@ import { Loader2 } from "lucide-react";
 import { changeFolderCover } from "@/actions/folders";
 import { toast } from "@/hooks/use-toast";
 import { Carousel, CarouselNext, CarouselItem, CarouselPrevious, CarouselApi, CarouselContent } from "../ui/carousel";
-import LoadingImage from "../LoadingImage";
-import FileOptions from "../images/carousel/FileOptions";
+import LoadingImage from "../files/LoadingImage";
+import FileOptions from "../files/carousel/FileOptions";
 import { formatBytes } from "@/lib/utils";
 
-export default function ChangeCoverFolderDialog({ images, folderId, open, setOpen }: { images: (FileWithFolder & FileWithComments)[], folderId: string, open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ChangeCoverFolderDialog({ images, folderId, open, setOpen }: { images: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[], folderId: string, open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const t = useTranslations("dialogs.folders.changeCover");
 

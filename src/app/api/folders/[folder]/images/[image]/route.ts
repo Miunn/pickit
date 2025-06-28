@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { GoogleBucket } from "@/lib/bucket";
 import { isAllowedToAccessFile } from "@/lib/dal";
-export async function GET(req: NextRequest, { params }: { params: { image: string }, }): Promise<NextResponse> {
+export async function GET(req: NextRequest, props: { params: Promise<{ image: string }>, }): Promise<NextResponse> {
+    const params = await props.params;
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
     const tokenType = req.nextUrl.searchParams.get("t");
-    
-    if (!isAllowedToAccessFile(params.image, shareToken, accessKey, tokenType)) {
+
+    if (!(await isAllowedToAccessFile(params.image, shareToken, accessKey, tokenType))) {
         return NextResponse.json({ error: "You need to be authenticated or have a magic link to access this resource" }, { status: 400 })
     }
 

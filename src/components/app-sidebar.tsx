@@ -1,5 +1,4 @@
 import * as React from "react"
-import { Command } from "lucide-react"
 
 import { NavMain, NavMainItems } from "@/components/nav-main"
 import { NavSecondary, NavSecondaryItems } from "@/components/nav-secondary"
@@ -19,15 +18,16 @@ import { DialogTrigger } from "./ui/dialog"
 import { UserLight } from "@/lib/definitions"
 import Link from "next/link"
 import { useTranslations } from "next-intl"
-import LogoImage from "./LogoImage"
+import LogoImage from "./generic/LogoImage"
+import { Notification as NotificationData } from "@prisma/client"
 
 export interface AppSidebarProps {
   navMainItems: NavMainItems;
   navSecondaryItems: NavSecondaryItems;
 }
 
-export function AppSidebar({ locale, user, items, ...props }: {
-  locale: string, user?: UserLight | null, items: AppSidebarProps & React.ComponentProps<typeof Sidebar>
+export function AppSidebar({ locale, user, notifications, items, ...props }: {
+  locale: string, user?: UserLight | null, notifications: NotificationData[], items: AppSidebarProps & React.ComponentProps<typeof Sidebar>
 }) {
   
   const t = useTranslations("sidebar");
@@ -67,7 +67,7 @@ export function AppSidebar({ locale, user, items, ...props }: {
       </SidebarContent>
       <SidebarFooter>
         {user ? <NavSecondary locale={locale} userUsedStorage={user.usedStorage} userMaxStorage={user.maxStorage} items={items.navSecondaryItems} /> : null}
-        {user ? <NavUser user={user} /> : <Button variant={"outline"} className="w-full" asChild><Link href={`/${locale}/signin`}>Sign in</Link></Button>}
+        {user ? <NavUser user={user} initialNotifications={notifications} /> : <Button variant={"outline"} className="w-full" asChild><Link href={`/${locale}/signin`}>Sign in</Link></Button>}
       </SidebarFooter>
     </Sidebar>
   )

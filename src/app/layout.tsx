@@ -8,7 +8,6 @@ type Props = {
 
 export const metadata: Metadata = {
     metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL!),
-    themeColor: "#1f7551",
 };
 
 // Since we have a `not-found.tsx` page on the root, a layout file

@@ -8,6 +8,7 @@ import { transporter } from "@/lib/mailing";
 import { getCurrentSession } from "@/lib/session";
 import ShareFolderTemplate from "@/components/emails/ShareFolderTemplate";
 import { render } from "@react-email/components";
+import NotifyAboutUploadTemplate from "@/components/emails/NotifyAboutUpload";
 
 export async function createNewPersonAccessToken(folderId: string, target: string, permission: FolderTokenPermission, expiryDate: Date): Promise<{
     error: string | null,
@@ -50,7 +51,7 @@ export async function createNewPersonAccessToken(folderId: string, target: strin
     return { error: null, personAccessToken }
 }
 
-export async function createMultiplePersonAccessTokens(folderId: string, data: { email: string, permission: FolderTokenPermission, expiryDate: Date, pinCode?: string, message?: string }[]): Promise<{
+export async function createMultiplePersonAccessTokens(folderId: string, data: { email: string, permission: FolderTokenPermission, expiryDate: Date, pinCode?: string, message?: string, allowMap?: boolean }[]): Promise<{
     error: string | null
 }> {
     const { user } = await getCurrentSession();
@@ -81,7 +82,8 @@ export async function createMultiplePersonAccessTokens(folderId: string, data: {
             permission: d.permission,
             expires: d.expiryDate,
             locked: d.pinCode ? true : false,
-            pinCode: d.pinCode
+            pinCode: d.pinCode,
+            allowMap: d.allowMap
         }))
     });
 
@@ -122,6 +124,28 @@ export async function changePersonAccessTokenActiveState(token: string, isActive
 
     revalidatePath("/app/links");
     return { error: null }
+}
+
+export async function changePersonAccessTokenAllowMap(tokenId: string, allowMap: boolean): Promise<{ error: string | null }> {
+    const { user } = await getCurrentSession();
+
+    if (!user) {
+        return { error: "You must be logged in to change the allow map state of an access token" }
+    }
+
+    try {
+        await prisma.personAccessToken.update({
+            where: {
+                id: tokenId,
+                folder: { createdBy: { id: user.id } }
+            },
+            data: { allowMap }
+        });
+        revalidatePath("/app/links");
+        return { error: null }
+    } catch (e) {
+        return { error: "An unknown error happened when trying to change the allow map state of this access token" }
+    }
 }
 
 export async function lockPersonAccessToken(tokenId: string, pin: string): Promise<{
@@ -272,6 +296,31 @@ export async function sendAgainPersonAccessToken(token: string) {
     return { error: null }
 }
 
+export async function notifyAboutUpload(folderId: string, count: number) {
+    const { user } = await getCurrentSession();
+
+    if (!user) {
+        return { error: "You must be logged in to notify about an upload" }
+    }
+
+    const folder = await prisma.folder.findUnique({
+        where: { id: folderId, createdBy: { id: user.id } },
+        include: { PersonAccessToken: true }
+    });
+
+    if (!folder) {
+        return { error: "Folder not found" }
+    }
+
+    const personAccessTokens = folder.PersonAccessToken.map((p) => ({
+        email: p.email,
+        link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folderId}?share=${p.token}&t=p`,
+        locked: p.locked
+    }));
+
+    await sendNotifyAboutUploadEmail(personAccessTokens, user.name!, folder.name, count);
+}
+
 async function sendShareFolderEmail(data: { email: string, link: string, locked: boolean, message?: string }[], name: string, folderName: string) {
     data.forEach(async (d) => {
         const content = await render(<ShareFolderTemplate name={name} folderName={folderName} link={d.link} isLocked={d.locked} message={d.message} />);
@@ -281,6 +330,20 @@ async function sendShareFolderEmail(data: { email: string, link: string, locked:
             to: d.email,
             subject: "You've been shared a folder",
             text: "You've been shared a folder",
+            html: content,
+        })
+    });
+}
+
+async function sendNotifyAboutUploadEmail(data: { email: string, link: string, locked: boolean }[], name: string, folderName: string, count: number) {
+    data.forEach(async (d) => {
+        const content = await render(<NotifyAboutUploadTemplate name={name} folderName={folderName} link={d.link} isLocked={d.locked} count={count} lang="fr" />);
+
+        await transporter.sendMail({
+            from: `"The Echomori Team" <${process.env.MAIL_SENDER}>`,
+            to: d.email,
+            subject: "Nouveaux fichiers ajoutés à " + folderName,
+            text: "Nouveaux fichiers ajoutés à " + folderName,
             html: content,
         })
     });

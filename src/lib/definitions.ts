@@ -81,7 +81,8 @@ export const UploadImagesFormSchema = z.object({
                 return Array.from(file).every((f) => f.type.startsWith('image/') || f.type.startsWith('video/'));
             }, {
                 message: 'File must be an image or a video',
-            })
+            }),
+    shouldNotify: z.boolean().optional()
 });
 
 export const RenameImageFormSchema = z.object({
@@ -132,7 +133,8 @@ export const CreateAccessTokenFormSchema = z.object({
         invalid_type_error: "Selected date is invalid",
     }).min(new Date(), {
         message: "Expiry date should be in the future"
-    })
+    }),
+    allowMap: z.boolean().optional()
 })
 
 export const CreatePersonAccessTokenFormSchema = z.object({
@@ -145,7 +147,8 @@ export const CreatePersonAccessTokenFormSchema = z.object({
         invalid_type_error: "Selected date is invalid",
     }).min(new Date(), {
         message: "Expiry date should be in the future"
-    })
+    }),
+    allowMap: z.boolean().optional()
 })
 
 export const AccountFormSchema = z.object({
@@ -222,6 +225,12 @@ const userLight = Prisma.validator<Prisma.UserDefaultArgs>()({
 
 export type UserLight = Prisma.UserGetPayload<typeof userLight>
 
+const userWithNotifications = Prisma.validator<Prisma.UserDefaultArgs>()({
+    include: { notifications: true }
+})
+
+export type UserWithNotifications = Prisma.UserGetPayload<typeof userWithNotifications>
+
 const lightFolders = Prisma.validator<Prisma.FolderDefaultArgs>()({
     select: { id: true, name: true }
 })
@@ -245,6 +254,12 @@ const folderWithImages = Prisma.validator<Prisma.FolderDefaultArgs>()({
 })
 
 export type FolderWithImages = Prisma.FolderGetPayload<typeof folderWithImages>
+
+const folderWithTags = Prisma.validator<Prisma.FolderDefaultArgs>()({
+    include: { tags: true }
+})
+
+export type FolderWithTags = Prisma.FolderGetPayload<typeof folderWithTags>
 
 const folderWithFilesWithFolder = Prisma.validator<Prisma.FolderDefaultArgs>()({
     include: { files: { include: { folder: true } } },
@@ -293,6 +308,12 @@ const fileLight = Prisma.validator<Prisma.FileDefaultArgs>()({
 })
 
 export type FileLightWithFolderName = Prisma.FileGetPayload<typeof fileLight>
+
+const fileWithTags = Prisma.validator<Prisma.FileDefaultArgs>()({
+    include: { tags: true }
+})
+
+export type FileWithTags = Prisma.FileGetPayload<typeof fileWithTags>
 
 const fileWithFolder = Prisma.validator<Prisma.FileDefaultArgs>()({
     include: { folder: true },

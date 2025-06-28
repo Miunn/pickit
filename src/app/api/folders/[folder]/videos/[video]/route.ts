@@ -5,7 +5,8 @@ import fs from "fs";
 import { getCurrentSession } from "@/lib/session";
 import { GoogleBucket } from "@/lib/bucket";
 
-export async function GET(req: NextRequest, { params }: { params: { video: string }, }): Promise<NextResponse> {
+export async function GET(req: NextRequest, props: { params: Promise<{ video: string }>, }): Promise<NextResponse> {
+    const params = await props.params;
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
     const tokenType = req.nextUrl.searchParams.get("t");

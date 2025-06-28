@@ -5,8 +5,10 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { UserAdministration } from "@/lib/definitions";
 import { useTranslations } from "next-intl";
 
+type BreadcrumbType = 'dashboard' | 'folders' | 'images' | 'folder' | 'links' | 'map' | 'account' | 'administration' | 'administrationUsers';
+
 type BreadcrumbPath = {
-    type: 'dashboard' | 'folders' | 'images' | 'folder' | 'links' | 'account' | 'administration' | 'administrationUsers';
+    type: BreadcrumbType;
     folderId?: string;
     folderName?: string;
     userId?: string;
@@ -22,6 +24,7 @@ function getCurrentPath(pathname: string, folderName?: string): { path: Breadcru
         'folders': { type: 'folders' },
         'images': { type: 'images' },
         'links': { type: 'links' },
+        'map': { type: 'map' },
         'account': { type: 'account' },
         'administration': { type: 'administration' },
     };
@@ -51,7 +54,7 @@ export default function HeaderBreadcumb({ folderName, adminUser }: { folderName?
 
     const { path: currentPath } = getCurrentPath(pathname, folderName);
 
-    const renderBreadcrumbItem = (type: 'dashboard' | 'folders' | 'images' | 'folder' | 'links' | 'account' | 'administration' | 'administrationUsers', locale: string, isCurrent: boolean = false) => {
+    const renderBreadcrumbItem = (type: BreadcrumbType, locale: string, isCurrent: boolean = false) => {
         return isCurrent ? (
             <BreadcrumbItem>
                 <BreadcrumbPage>{t(type)}</BreadcrumbPage>

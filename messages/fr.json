@@ -65,7 +65,8 @@
       "folders": "Dossiers",
       "images": "Images",
       "links": "Liens",
-      "sharedWithMe": "Partagés avec moi"
+      "sharedWithMe": "Partagés avec moi",
+      "map": "Carte"
     },
     "secondary": {
       "used": "Espace utilisé"
@@ -83,6 +84,7 @@
     "folders": "Dossiers",
     "images": "Images",
     "links": "Liens",
+    "map": "Carte",
     "account": "Compte",
     "administration": "Administration",
     "administrationUsers": "Utilisateurs"
@@ -460,7 +462,8 @@
       "placeholder": "Sélectionnez une vue",
       "options": {
         "grid": "Grille",
-        "list": "Liste"
+        "list": "Liste",
+        "tagGrouped": "Grouper par étiquette"
       }
     },
     "images": {
@@ -492,14 +495,15 @@
               }
             }
           },
-          "metadata": "Métadonnées"
+          "metadata": "Métadonnées",
+          "manageTags": "Gérer les étiquettes"
         }
       },
       "comments": {
         "trigger": "{count, plural, zero {Aucun commentaire} one {# Commentaire} other {# Commentaires}}",
         "form": {
           "text": {
-            "label": "Poster un commentaire",
+            "label": "{count, plural, =0 {Aucun commentaire} =1 {1 commentaire} other {# commentaires}}",
             "placeholder": "Partagez vos pensées sur la photo..."
           }
         },
@@ -531,7 +535,7 @@
       "uploadImagesForm": {
         "label": "Importer des images",
         "ongoing": {
-          "title": "Importation en cours"
+          "title": "Importation en cours ({current}/{total})"
         },
         "success": "{count, plural, one {# fichier importé} other {# fichiers importés}} avec succès",
         "actions": {
@@ -541,7 +545,8 @@
         "errors": {
           "not-enough-storage": "Vous n'avez pas assez d'espace de stockage restant pour importer {name}. Votre stockage est actuellement de {used} / {max}",
           "invalid-file": "{name} n'est pas un fichier que vous pouvez importer. Chaque fichier doit être soit une image soit une vidéo"
-        }
+        },
+        "shouldNotify": "Notifier les personnes à qui vous avez partagé cet album"
       }
     },
     "accessTokens": {
@@ -709,11 +714,28 @@
       "success": {
         "title": "{name} - Téléchargement terminé",
         "description": "{name} a été téléchargé avec succès"
+      },
+      "actions": {
+        "groupBy": {
+          "tag": "Grouper par étiquette"
+        }
       }
     },
     "files": {
       "likeButton": {
         "cannotLike": "Vous devez être connecté pour aimer des fichiers"
+      }
+    },
+    "map": {
+      "cluster": {
+        "folder": {
+          "count": "{count, plural, =0 {0 fichier} =1 {1 fichier} other {# fichiers}}"
+        }
+      },
+      "folderList": {
+        "folderCard": {
+          "folderCount": "{count, plural, =0 {0 fichier} =1 {1 fichier} other {# fichiers}}"
+        }
       }
     }
   },
@@ -879,8 +901,22 @@
               "description": "Le lien de partage deviendra invalide après cette date"
             },
             "pinCode": {
-              "label": "Code PIN",
-              "description": "Ce code PIN sera nécessaire pour accéder au dossier"
+              "label": "Lien vérouillé :",
+              "description": "Ce code PIN sera nécessaire pour accéder au dossier",
+              "yes": "Oui",
+              "no": "Non",
+              "dialog": {
+                "title": "Vérouiller avec un code PIN",
+                "description": "Vous devrez communiquer ce code avec la personne à qui vous partagez ce dossier",
+                "cancel": "Annuler",
+                "save": "Vérouiller",
+                "remove": "Supprimer le code"
+              }
+            },
+            "allowMap": {
+              "label": "Autoriser l'accès à la carte :",
+              "yes": "Oui",
+              "no": "Non"
             }
           }
         },
@@ -934,7 +970,9 @@
           "placeholder": "Jetez un coup d'oeil à cet album...",
           "sending": "Envoi des emails",
           "send": "Envoyer"
-        }
+        },
+        "cancel": "Annuler",
+        "share": "Partager"
       },
       "properties": {
         "title": "Propriétés du dossier",
@@ -1357,6 +1395,29 @@
           }
         }
       }
+    },
+    "files": {
+      "addTag": {
+        "title": "Gérer les tags",
+        "description": "Ajoutez, supprimez ou créez des tags pour ce fichier",
+        "selectedTags": "Tags sélectionnés",
+        "folderTags": "Tags du dossier",
+        "otherTags": "Autres tags créés",
+        "noSelectedTags": "Aucun tag sélectionné pour ce fichier.",
+        "noFolderTags": "Aucun tag créé pour ce dossier.",
+        "addTag": {
+          "addFirst": "Ajouter",
+          "add": "Ajouter",
+          "name": "Nom de l'étiquette",
+          "success": "Etiquette ajoutée",
+          "color": "Sélectionnez la couleur",
+          "error": "Une erreur est survenue lors de l'ajout de l'étiquette",
+          "errorRemove": "Une erreur est survenue lors de la suppression de l'étiquette",
+          "errorAdd": "Une erreur est survenue lors de l'ajout de l'étiquette",
+          "errorEmpty": "Le nom ne doit pas être vide"
+        },
+        "noUserTags": "Aucune étiquette créé pour le moment"
+      }
     }
   },
   "dataTables": {
@@ -1465,7 +1526,34 @@
               "title": "Accès supprimée",
               "description": "L'accès pour cette personne a été supprimé"
             }
+          },
+          "allowMap": {
+            "disable": {
+              "label": "Supprimer l'accès à la carte",
+              "error": {
+                "title": "Impossible de supprimer l'accès",
+                "description": "Une erreur inconnue est survenue lors de la suppression de l'accès à la carte. Réessayez"
+              },
+              "success": {
+                "title": "Accès à la carte supprimé",
+                "description": "L'accès à la carte a été supprimé avec succès"
+              }
+            },
+            "enable": {
+              "label": "Activer l'accès à la carte",
+              "error": {
+                "title": "Impossible d'activer l'accès",
+                "description": "Une erreur inconnue est survenue lors de l'activation de l'accès à la carte. Réessayez"
+              },
+              "success": {
+                "title": "Accès à la carte activé",
+                "description": "L'accès à la carte a été activé avec succès"
+              }
+            }
           }
+        },
+        "allowMap": {
+          "header": "Carte autorisée"
         }
       }
     },
@@ -1541,7 +1629,36 @@
               "title": "Lien supprimé",
               "description": "Le lien a été supprimé avec succès"
             }
+          },
+          "allowMap": {
+            "disable": {
+              "label": "Supprimer l'accès à la carte",
+              "error": {
+                "title": "Impossible de supprimer l'accès",
+                "description": "Une erreur inconnue est survenue lors de la suppression de l'accès à la carte. Réessayez"
+              },
+              "success": {
+                "title": "Accès à la carte supprimé",
+                "description": "L'accès à la carte a été supprimé avec succès"
+              }
+            },
+            "enable": {
+              "label": "Activer l'accès à la carte",
+              "error": {
+                "title": "Impossible d'activer l'accès",
+                "description": "Une erreur inconnue est survenue lors de l'activation de l'accès à la carte. Réessayez"
+              },
+              "success": {
+                "title": "Accès à la carte activé",
+                "description": "L'accès à la carte a été activé avec succès"
+              }
+            }
           }
+        },
+        "allowMap": {
+          "header": "Carte autorisée",
+          "allowed": "Oui",
+          "notAllowed": "Non"
         }
       },
       "actions": {
@@ -1597,6 +1714,14 @@
           }
         }
       }
+    },
+    "peopl": {
+      "columns": {
+        "allowMap": {
+          "allowed": "Oui",
+          "notAllowed": "Non"
+        }
+      }
     }
   },
   "folders": {
@@ -1611,7 +1736,8 @@
       "label": "Vue",
       "options": {
         "list": "Liste",
-        "grid": "Grille"
+        "grid": "Grille",
+        "tagGrouped": "Grouper par étiquette"
       },
       "list": {
         "table": {
@@ -1647,7 +1773,8 @@
       "open": "Open",
       "manage": "Manage links",
       "properties": "Properties",
-      "download": "Télécharger"
+      "download": "Télécharger",
+      "map": "Carte"
     },
     "dialog": {
       "rename": {
@@ -1739,6 +1866,9 @@
     "lastUploadedImages": "Dernières images importées",
     "selected": "{count, plural, =1 {# image sélectionnée} other {# images sélectionnées}}",
     "empty": "No images uploaded",
+    "new": "Nouveau",
+    "newFiles": "Fichiers ajoutés récemment",
+    "albumContent": "Tous les fichiers",
     "page": {
       "title": "{folder} images",
       "subtitle": "{folder} uploaded images",
@@ -1749,6 +1879,7 @@
       "select": "Sélectionner",
       "unselect": "Désélectionner",
       "download": "Télécharger",
+      "addTag": "Gérer les tags",
       "rename": "Renommer",
       "setAsCover": {
         "label": "Définir comme couverture",
@@ -1924,5 +2055,14 @@
   },
   "NotFoundPage": {
     "description": "La page que vous cherchez n'existe pas ou a été déplacée."
+  },
+  "emails": {
+    "notifyAboutUpload": {
+      "title": "Nouveaux fichiers ajoutés à {folderName}",
+      "nameAddedFiles": "{name} a jouté {count, plural, =1 {un nouveau fichier} other {# nouveaux fichiers}} à {folderName}",
+      "clickButtonToAccess": "Cliquez ci-dessous pour ouvrir l'album",
+      "lockedFolder": "{name} a vérouillé ce dossier par un code que vous devrez renseigner avant de pouvoir accéder à son contenu.                                         Si vous ne connaissez pas ce code, veuillez contacter {name} pour l'obtenir.",
+      "regard": "Cordialement,<br/>Léquipe <strong>{appName}</strong>"
+    }
   }
 }

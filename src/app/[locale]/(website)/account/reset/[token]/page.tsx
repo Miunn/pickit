@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 
-export async function generateMetadata({ params }: { params: { locale: string, token: string } }): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations("metadata.resetPassword");
     return {
         title: t("title"),
@@ -12,7 +12,8 @@ export async function generateMetadata({ params }: { params: { locale: string, t
     }
 }
 
-export default async function ResetPasswordPage({ params }: { params: { locale: string, token: string } }) {
+export default async function ResetPasswordPage(props: { params: Promise<{ locale: string, token: string }> }) {
+    const params = await props.params;
 
     const verifyPasswordResetToken = await prisma.passwordResetRequest.findUnique({
         where: { token: params.token }

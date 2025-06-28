@@ -10,7 +10,7 @@ export async function GET(request: Request): Promise<Response> {
     const url = new URL(request.url);
     const code = url.searchParams.get("code");
     const state = url.searchParams.get("state");
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const storedState = cookieStore.get("google_oauth_state")?.value ?? null;
     const codeVerifier = cookieStore.get("google_code_verifier")?.value ?? null;
     if (code === null || state === null || storedState === null || codeVerifier === null) {
@@ -46,7 +46,7 @@ export async function GET(request: Request): Promise<Response> {
     if (existingUser !== null) {
         const sessionToken = generateSessionToken();
         const session = await createSession(sessionToken, existingUser.id);
-        setSessionTokenCookie(sessionToken, session.expiresAt);
+        await setSessionTokenCookie(sessionToken, session.expiresAt);
         return new Response(null, {
             status: 302,
             headers: {
@@ -81,7 +81,7 @@ export async function GET(request: Request): Promise<Response> {
 
     const sessionToken = generateSessionToken();
     const session = await createSession(sessionToken, user.id);
-    setSessionTokenCookie(sessionToken, session.expiresAt);
+    await setSessionTokenCookie(sessionToken, session.expiresAt);
     return new Response(null, {
         status: 302,
         headers: {

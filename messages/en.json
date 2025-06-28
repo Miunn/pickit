@@ -65,7 +65,8 @@
       "folders": "Folders",
       "images": "Images",
       "links": "Links",
-      "sharedWithMe": "Shared with me"
+      "sharedWithMe": "Shared with me",
+      "map": "My map"
     },
     "secondary": {
       "used": "Used storage"
@@ -83,6 +84,7 @@
     "folders": "Folders",
     "images": "Images",
     "links": "Links",
+    "map": "My map",
     "account": "Account",
     "administration": "Administration",
     "administrationUsers": "Users"
@@ -459,7 +461,8 @@
       "placeholder": "Select a view",
       "options": {
         "grid": "Grid",
-        "list": "List"
+        "list": "List",
+        "tagGrouped": "Group by tag"
       }
     },
     "images": {
@@ -491,14 +494,15 @@
               }
             }
           },
-          "metadata": "Metadata"
+          "metadata": "Metadata",
+          "manageTags": "Manage tags"
         }
       },
       "comments": {
         "trigger": "{count, plural, one {# Comment} other {# Comments}}",
         "form": {
           "text": {
-            "label": "Leave a comment",
+            "label": "{count, plural, =0 {No comments} =1 {1 comment} other {# comments}}",
             "placeholder": "Write a comment..."
           }
         },
@@ -518,7 +522,7 @@
         },
         "empty": "No comments yet",
         "privacy": {
-          "trigger": "How we handle your comments ?",
+          "trigger": "How do we handle your comments ?",
           "content": "If you are logged in, your name will appear above your comment.<br />If you are not logged in but this folder has been shared with you by e-mail, the first part of your e-mail address will appear above your comment.<br />If you are not logged in and this file has been shared with you via a link, your comment will be anonymous.<br /><br />Comments are only shared with people who have access to the folder."
         },
         "comment": {
@@ -531,7 +535,7 @@
       "uploadImagesForm": {
         "label": "Upload images",
         "ongoing": {
-          "title": "Upload in progress"
+          "title": "Upload in progress ({current}/{total})"
         },
         "success": "{count, plural, one {# file uploaded} other {# files uploaded}} successfully",
         "actions": {
@@ -541,8 +545,10 @@
         "errors": {
           "not-enough-storage": "You don't have enough storage remaining to upload {name}. Your used storage is {used} / {max}.",
           "invalid-file": "{name} isn't a file you can upload. Files must be either image or video."
-        }
-      }
+        },
+        "shouldNotify": "Notify people you've shared this album with"
+      },
+      "new": "New"
     },
     "accessTokens": {
       "unlock": {
@@ -709,11 +715,28 @@
       "success": {
         "title": "{name} - Downloaded",
         "description": "{name} has been downloaded successfully"
+      },
+      "actions": {
+        "groupBy": {
+          "tag": "Group by tags"
+        }
       }
     },
     "files": {
       "likeButton": {
         "cannotLike": "You must be logged in to like a file"
+      }
+    },
+    "map": {
+      "cluster": {
+        "folder": {
+          "count": "{count, plural, =0 {No files} =1 {1 file} other {# files}}"
+        }
+      },
+      "folderList": {
+        "folderCard": {
+          "folderCount": "{count, plural, =0 {0 files} =1 {1 file} other {# files}}"
+        }
       }
     }
   },
@@ -900,8 +923,22 @@
               "description": "Link will be invalid after this date"
             },
             "pinCode": {
-              "label": "PIN Code",
-              "description": "Protect this link with a PIN code"
+              "label": "Token locked:",
+              "description": "Protect this link with a PIN code",
+              "yes": "Yes",
+              "no": "No",
+              "dialog": {
+                "title": "Lock with a PIN code",
+                "description": "You'll have to let your users know this PIN code",
+                "cancel": "Cancel",
+                "save": "Lock",
+                "remove": "Remove code"
+              }
+            },
+            "allowMap": {
+              "label": "Allow map:",
+              "yes": "Yes",
+              "no": "No"
             }
           }
         },
@@ -955,7 +992,9 @@
           "placeholder": "Take a look at this album...",
           "sending": "Sending emails",
           "send": "Send"
-        }
+        },
+        "cancel": "Cancel",
+        "share": "Share"
       },
       "delete": {
         "trigger": "Delete",
@@ -1358,6 +1397,29 @@
           }
         }
       }
+    },
+    "files": {
+      "addTag": {
+        "title": "Manage tags",
+        "description": "Add, remove and create tags for this file",
+        "selectedTags": "Selected tags",
+        "folderTags": "Folder tags",
+        "otherTags": "Other tags you created",
+        "noSelectedTags": "No tags selected for this file.",
+        "noFolderTags": "No tags created for this folder.",
+        "addTag": {
+          "addFirst": "Create one",
+          "add": "Add",
+          "name": "Tag's name",
+          "success": "Tag added",
+          "color": "Choose color",
+          "error": "Error while adding tag",
+          "errorRemove": "Error happened while removing tag",
+          "errorAdd": "Error happened while adding tag",
+          "errorEmpty": "Name must not be empty"
+        },
+        "noUserTags": "No tags created yet"
+      }
     }
   },
   "dataTables": {
@@ -1466,7 +1528,34 @@
               "title": "Access deleted",
               "description": "The access for this person has been deleted successfully"
             }
+          },
+          "allowMap": {
+            "disable": {
+              "label": "Remove map access",
+              "error": {
+                "title": "Can't remove access",
+                "description": "An unknown error happened while removing map access. Please try again"
+              },
+              "success": {
+                "title": "Map access removed",
+                "description": "Map access has been removed successfully"
+              }
+            },
+            "enable": {
+              "label": "Enable map access",
+              "error": {
+                "title": "Can't enable access",
+                "description": "An unknown error happened while enabling map access. Please try again"
+              },
+              "success": {
+                "title": "Map access enabled",
+                "description": "Map access has been enabled successfully"
+              }
+            }
           }
+        },
+        "allowMap": {
+          "header": "Is map allowed"
         }
       }
     },
@@ -1542,7 +1631,36 @@
               "title": "Link deleted",
               "description": "The link has been deleted successfully"
             }
+          },
+          "allowMap": {
+            "disable": {
+              "label": "Remove map access",
+              "error": {
+                "title": "Can't remove access",
+                "description": "An unknown error happened while removing map access. Please try again"
+              },
+              "success": {
+                "title": "Map access removed",
+                "description": "Map access has been removed successfully"
+              }
+            },
+            "enable": {
+              "label": "Enable map access",
+              "error": {
+                "title": "Can't enable access",
+                "description": "An unknown error happened while enabling map access. Please try again"
+              },
+              "success": {
+                "title": "Map access enabled",
+                "description": "Map access has been enabled successfully"
+              }
+            }
           }
+        },
+        "allowMap": {
+          "header": "Is map allowed",
+          "allowed": "Yes",
+          "notAllowed": "No"
         }
       },
       "actions": {
@@ -1598,6 +1716,14 @@
           }
         }
       }
+    },
+    "peopl": {
+      "columns": {
+        "allowMap": {
+          "allowed": "Yes",
+          "notAllowed": "No"
+        }
+      }
     }
   },
   "folders": {
@@ -1612,7 +1738,8 @@
       "label": "View",
       "options": {
         "grid": "Grid",
-        "list": "List"
+        "list": "List",
+        "tagGrouped": "Group by tag"
       },
       "list": {
         "table": {
@@ -1648,7 +1775,8 @@
       "open": "Open",
       "manage": "Manage links",
       "properties": "Properties",
-      "download": "Download"
+      "download": "Download",
+      "map": "Map"
     },
     "sort": {
       "label": "Sort by",
@@ -1679,6 +1807,9 @@
     "lastUploadedImages": "Last updated images",
     "selected": "{count, plural, =1 {# image} other {# images}} selected",
     "empty": "No images uploaded",
+    "new": "New",
+    "newFiles": "Recently added files",
+    "albumContent": "All files",
     "page": {
       "title": "{folder} images",
       "subtitle": "{folder} uploaded images",
@@ -1688,6 +1819,7 @@
       "view": "Open",
       "select": "Select",
       "download": "Download",
+      "addTag": "Manage tags",
       "rename": "Rename",
       "setAsCover": {
         "label": "Set as cover",
@@ -1795,5 +1927,13 @@
   },
   "NotFoundPage": {
     "description": "This page could not be found"
+  },
+  "emails": {
+    "notifyAboutUpload": {
+      "title": "New files added to {folderName}",
+      "nameAddedFiles": "{name} added {count, plural, =1 {a new file} other {# new files}} to {folderName}",
+      "clickButtonToAccess": "Click below to open the album",
+      "regard": "Best regards,<br/>The <strong>{appName}</strong> team"
+    }
   }
 }
