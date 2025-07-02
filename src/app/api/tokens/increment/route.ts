@@ -32,31 +32,6 @@ export async function GET(req: NextRequest) {
         });
     }
 
-    const personAccessToken = await prisma.personAccessToken.findUnique({
-        where: {
-            token: token
-        }
-    });
-
-    if (personAccessToken) {
-        await prisma.personAccessToken.update({
-            where: {
-                token: token
-            },
-            data: {
-                uses: {
-                    increment: 1
-                }
-            }
-        })
-        revalidatePath("/app/links");
-        return NextResponse.json({
-            message: "Token was successfullly incremented"
-        }, {
-            status: 200
-        });
-    }
-
     return NextResponse.json({
         message: "Token not found"
     }, {

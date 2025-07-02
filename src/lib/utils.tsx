@@ -94,7 +94,7 @@ export const downloadClientImageHandler = async (file: FileWithFolder) => {
 	saveAs(await r.blob(), `${file.name}.${file.extension}`);
 }
 
-export const downloadClientFiles = async (translations: (key: string, params?: Record<string, string | number>) => string, files: FileWithFolder[], title: string, shareToken?: string | null, tokenType?: "accessToken" | "personAccessToken" | null, hashPinCode?: string | null) => {
+export const downloadClientFiles = async (translations: (key: string, params?: Record<string, string | number>) => string, files: FileWithFolder[], title: string, shareToken?: string | null, hashPinCode?: string | null) => {
 	const zip = new JSZip();
 	const totalFiles = files.length;
 	const totalSizes = files.reduce((acc, file) => acc + file.size, 0);
@@ -145,7 +145,7 @@ export const downloadClientFiles = async (translations: (key: string, params?: R
 			},
 		};
 
-		const signedUrl = await fetch(`/api/folders/${file.folderId}/${file.type === FileType.VIDEO ? 'videos' : 'images'}/${file.id}/download-url?share=${shareToken}&h=${hashPinCode}&t=${tokenType === "personAccessToken" ? "p" : "a"}`);
+		const signedUrl = await fetch(`/api/folders/${file.folderId}/${file.type === FileType.VIDEO ? 'videos' : 'images'}/${file.id}/download-url?share=${shareToken}&h=${hashPinCode}`);
 		const signedUrlData = await signedUrl.json();
 		const r = await axios.get(signedUrlData.url, axiosConfig);
 

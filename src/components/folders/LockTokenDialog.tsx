@@ -11,10 +11,9 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { lockAccessToken } from "@/actions/accessTokens";
-import { lockPersonAccessToken } from "@/actions/accessTokensPerson";
 import { useTranslations } from "next-intl";
 
-export default function LockTokenDialog({ children, openState, setOpenState, tokenId, tokenType }: { children?: React.ReactNode, openState?: boolean, setOpenState?: React.Dispatch<React.SetStateAction<boolean>>, tokenId: string, tokenType: "accessToken" | "personAccessToken" }) {
+export default function LockTokenDialog({ children, openState, setOpenState, tokenId }: { children?: React.ReactNode, openState?: boolean, setOpenState?: React.Dispatch<React.SetStateAction<boolean>>, tokenId: string }) {
 
     const t = useTranslations("dialogs.accessTokens.lockToken");
     const [saveLoading, setSaveLoading] = useState<boolean>(false);
@@ -28,19 +27,8 @@ export default function LockTokenDialog({ children, openState, setOpenState, tok
 
     async function submit(data: z.infer<typeof LockFolderFormSchema>) {
         setSaveLoading(true);
-        let r;
-        if (tokenType === "accessToken") {
-            r = await lockAccessToken(tokenId, data.pin);
-        } else if (tokenType === "personAccessToken") {
-            r = await lockPersonAccessToken(tokenId, data.pin);
-        } else {
-            setSaveLoading(false);
-            toast({
-                title: t('errors.tokenType.title'),
-                description: t('errors.tokenType.description')
-            });
-            return;
-        }
+        const r = await lockAccessToken(tokenId, data.pin);
+
         setSaveLoading(false);
 
         if (r.error) {
@@ -56,9 +44,7 @@ export default function LockTokenDialog({ children, openState, setOpenState, tok
             description: t('success.description'),
         });
 
-        if (setOpenState) {
-            setOpenState(false);
-        }
+        setOpenState?.(false);
     }
 
     return (

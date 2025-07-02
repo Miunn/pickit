@@ -33,7 +33,7 @@ export default async function Home(props: { params: Promise<{ locale: string }> 
         orderBy: [{ updatedAt: 'desc' }],
         include: {
             cover: true,
-            AccessToken: true,
+            accessTokens: true,
             files: { include: { folder: { include: { _count: { select: { files: true } }, tags: true } }, comments: { include: { createdBy: true } }, tags: true } },
             _count: { select: { files: true } },
         },

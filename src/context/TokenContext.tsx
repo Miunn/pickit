@@ -1,10 +1,10 @@
 'use client'
 
-import { createContext, useContext, useState } from "react";
-import { AccessToken, PersonAccessToken } from "@prisma/client";
+import { createContext, useContext } from "react";
+import { AccessToken } from "@prisma/client";
 
 type TokenContextType = {
-    token: AccessToken | PersonAccessToken | null;
+    token: AccessToken | null;
 }
 
 const TokenContext = createContext<TokenContextType | undefined>(undefined);
@@ -18,7 +18,7 @@ export const useTokenContext = () => {
     return context;
 }
 
-export const TokenProvider = ({ children, token }: { children: React.ReactNode, token: AccessToken | PersonAccessToken | null }) => {
+export const TokenProvider = ({ children, token }: { children: React.ReactNode, token: AccessToken | null }) => {
     return (
         <TokenContext.Provider value={{ token }}>
             {children}

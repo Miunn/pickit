@@ -34,7 +34,6 @@ export default function DeleteCommentDialog({ comment, open, setOpen, children, 
             comment.id,
             searchParams.get("share"),
             searchParams.get("h"),
-            searchParams.get("t") === "p" ? "personAccessToken" : "accessToken"
         );
         setDeleting(false);
 

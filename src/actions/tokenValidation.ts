@@ -6,75 +6,39 @@ import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithFilesWithFolderAn
 import * as bcrypt from "bcryptjs";
 
 export async function validateShareToken(
-  folderId: string, 
-  token: string, 
-  type: "accessToken" | "personAccessToken", 
+  folderId: string,
+  token: string,
   hashedPinCode?: string | null
-): Promise<{ 
-  error: string | null, 
-  folder: (FolderWithCreatedBy & FolderWithFilesWithFolderAndComments & FolderWithAccessToken) | null, 
-  permission?: FolderTokenPermission 
+): Promise<{
+  error: string | null,
+  folder: (FolderWithCreatedBy & FolderWithFilesWithFolderAndComments & FolderWithAccessToken) | null,
+  permission?: FolderTokenPermission
 }> {
-  if (!prisma) {
-    return { error: "Database connection error", folder: null };
-  }
-  
-  let accessToken;
-  if (type === "accessToken") {
-    accessToken = await prisma!.accessToken.findUnique({
-      where: {
-        token: token,
-        folderId: folderId,
-        expires: {
-          gte: new Date()
-        }
-      },
-      include: {
-        folder: {
-          include: {
-            files: {
-              include: {
-                folder: true,
-                comments: { include: { createdBy: true } }
-              }
-            },
-            createdBy: true
-          }
-        }
-      },
-      omit: {
-        pinCode: false
+  const accessToken = await prisma.accessToken.findUnique({
+    where: {
+      token: token,
+      folderId: folderId,
+      expires: {
+        gte: new Date()
       }
-    });
-  } else if (type === "personAccessToken") {
-    accessToken = await prisma!.personAccessToken.findUnique({
-      where: {
-        token: token,
-        folderId: folderId,
-        expires: {
-          gte: new Date()
+    },
+    include: {
+      folder: {
+        include: {
+          files: {
+            include: {
+              folder: true,
+              comments: { include: { createdBy: true } }
+            }
+          },
+          createdBy: true
         }
-      },
-      include: {
-        folder: {
-          include: {
-            files: {
-              include: {
-                folder: true,
-                comments: { include: { createdBy: true } }
-              }
-            },
-            createdBy: true
-          }
-        }
-      },
-      omit: {
-        pinCode: false
       }
-    });
-  } else {
-    return { error: "invalid-token-type", folder: null };
-  }
+    },
+    omit: {
+      pinCode: false
+    }
+  });
 
   if (!accessToken || !accessToken.isActive) {
     return { error: "invalid-token", folder: null };
@@ -96,5 +60,5 @@ export async function validateShareToken(
     }
   }
 
-  return { error: null, folder: { ...accessToken.folder, AccessToken: [] }, permission: accessToken.permission };
+  return { error: null, folder: { ...accessToken.folder, accessTokens: [] }, permission: accessToken.permission };
 }

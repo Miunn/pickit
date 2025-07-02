@@ -154,7 +154,7 @@ export const foldersListViewColumns: ColumnDef<FolderWithAccessToken & FolderWit
                                 : t('select')
                             }
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, row.original.files, row.original.name, searchParams.get("share"), searchParams.get("t") === "p" ? "personAccessToken" : "accessToken", searchParams.get("h"))}>{t('download')}</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, row.original.files, row.original.name, searchParams.get("share"), searchParams.get("h"))}>{t('download')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenShare(true)}>{t('share')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenChangeCover(true)}>{t('changeCover')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenRename(true)}>{t('rename')}</DropdownMenuItem>

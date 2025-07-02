@@ -12,9 +12,6 @@ const prismaClientSingleton = () => {
             },
             accessToken: {
                 pinCode: true,
-            },
-            personAccessToken: {
-                pinCode: true,
             }
         }
     }).$extends({
