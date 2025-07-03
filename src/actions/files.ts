@@ -12,11 +12,11 @@ import mediaInfoFactory, { Track } from "mediainfo.js";
 import ffmpeg from "fluent-ffmpeg";
 import { PassThrough } from "stream";
 import crypto, { randomUUID } from "crypto";
-import { FileType, PersonAccessToken, FileLike, File as PrismaFile } from "@prisma/client";
+import { FileType, AccessToken, FileLike, File as PrismaFile } from "@prisma/client";
 import fs, { mkdtempSync } from "fs";
 import path from "path";
 import { tmpdir } from "os";
-import { canLikeFile, getToken, isAllowedToAccessFile } from "@/lib/dal";
+import { canLikeFile, isAllowedToAccessFile } from "@/lib/dal";
 import exifr from "exifr";
 
 ffmpeg.setFfmpegPath(process.env.FFMPEG_PATH as string);
@@ -354,7 +354,7 @@ export async function updateFileDescription(fileId: string, description: string)
 }
 
 export async function likeFile(fileId: string, shareToken?: string | null, accessKey?: string | null): Promise<{ error: string | null, like?: FileLike, liked?: boolean }> {
-    if (!canLikeFile(fileId, shareToken, accessKey, "personAccessToken")) {
+    if (!canLikeFile(fileId, shareToken, accessKey)) {
         return { error: "You do not have permission to like this file" };
     }
     
@@ -386,7 +386,7 @@ export async function likeFile(fileId: string, shareToken?: string | null, acces
 
         return { error: null, like: file.likes[file.likes.length - 1], liked: true };
     } else if (shareToken) {
-        const token = await getToken(shareToken, "personAccessToken") as PersonAccessToken;
+        const token = await prisma.accessToken.findUnique({ where: { token: shareToken } });
 
         if (!token) {
             return { error: "Invalid share token" };
@@ -487,8 +487,8 @@ export async function updateFilePosition(fileId: string, previousId?: string, ne
     return { error: null, newPosition: position };
 }
 
-export async function deleteFile(fileId: string, shareToken?: string, hashPin?: string, tokenType?: string) {
-    const isAllowed = await isAllowedToAccessFile(fileId, shareToken, hashPin, tokenType);
+export async function deleteFile(fileId: string, shareToken?: string, hashPin?: string) {
+    const isAllowed = await isAllowedToAccessFile(fileId, shareToken, hashPin);
 
     if (!isAllowed) {
         return { error: "You do not have permission to delete this file" };

@@ -280,16 +280,10 @@ const folderWithFilesWithFolderAndCommentsAndCreatedBy = Prisma.validator<Prisma
 export type FolderWithFilesWithFolderAndCommentsAndCreatedBy = Prisma.FolderGetPayload<typeof folderWithFilesWithFolderAndCommentsAndCreatedBy>
 
 const folderWithAccessToken = Prisma.validator<Prisma.FolderDefaultArgs>()({
-    include: { AccessToken: true }
+    include: { accessTokens: true }
 })
 
 export type FolderWithAccessToken = Prisma.FolderGetPayload<typeof folderWithAccessToken>
-
-const folderWithPersonAccessToken = Prisma.validator<Prisma.FolderDefaultArgs>()({
-    include: { PersonAccessToken: true }
-})
-
-export type FolderWithPersonAccessToken = Prisma.FolderGetPayload<typeof folderWithPersonAccessToken>
 
 const folderWithFilesCount = Prisma.validator<Prisma.FolderDefaultArgs>()({
     include: { _count: { select: { files: true } } }
@@ -362,15 +356,3 @@ const accessTokenWithFolder = Prisma.validator<Prisma.AccessTokenDefaultArgs>()(
 })
 
 export type AccessTokenWithFolder = Prisma.AccessTokenGetPayload<typeof accessTokenWithFolder>
-
-const personAccessTokenWithFolder = Prisma.validator<Prisma.PersonAccessTokenDefaultArgs>()({
-    include: { folder: true },
-})
-
-export type PersonAccessTokenWithFolder = Prisma.PersonAccessTokenGetPayload<typeof personAccessTokenWithFolder>
-
-const personAccessTokenWithFolderWithCreatedBy = Prisma.validator<Prisma.PersonAccessTokenDefaultArgs>()({
-    include: { folder: { include: { createdBy: true } } },
-})
-
-export type PersonAccessTokenWithFolderWithCreatedBy = Prisma.PersonAccessTokenGetPayload<typeof personAccessTokenWithFolderWithCreatedBy>

@@ -29,11 +29,6 @@ export default async function LinksPage(
         include: { folder: true },
         orderBy: [ { folder: { name: "asc" } } ]
     });
-    const personsAccessTokens = await prisma.personAccessToken.findMany({
-        where: { folder: { createdBy: { id: user.id } } },
-        include: { folder: true },
-        orderBy: [ { folder: { name: "asc" } } ]
-    });
 
     const lightFolders = await prisma.folder.findMany({
         where: { createdBy: { id: user.id } },
@@ -44,16 +39,13 @@ export default async function LinksPage(
     });
 
     const defaultSelectedAccessTokenIndex = accessTokens.map((act) => act.id).indexOf(searchParams.l || "");
-    const defaultSelectedPersonAccessTokenIndex = personsAccessTokens.map((act) => act.id).indexOf(searchParams.l || "");
 
     return (
         <LinksContent
             side={searchParams.s || "contacts"}
             accessTokens={accessTokens}
-            personsAccessTokens={personsAccessTokens}
             lightFolders={lightFolders}
             defaultSelectedAccessTokenIndex={defaultSelectedAccessTokenIndex}
-            defaultSelectedPersonAccessTokenIndex={defaultSelectedPersonAccessTokenIndex}
         />
     )
 }

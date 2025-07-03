@@ -1,4 +1,3 @@
-import { PersonAccessToken } from "@prisma/client";
 import { AccessToken } from "@prisma/client";
 import { prisma } from "./prisma";
 import { getCurrentSession } from "./session";
@@ -45,24 +44,13 @@ export async function isAllowedToAccessFolder(folderId: string, shareToken?: str
     }
 
     if (shareToken) {
-        let access;
-        if (tokenType === "p") {
-            access = await prisma.personAccessToken.findUnique({
-                where: { token: shareToken },
-                include: {
-                    folder: { select: { id: true } }
-                },
-                omit: { pinCode: false }
-            });
-        } else {
-            access = await prisma.accessToken.findUnique({
-                where: {token: shareToken },
-                include: {
-                    folder: { select: { id: true } }
-                },
-                omit: { pinCode: false }
-            });
-        }
+        const access = await prisma.accessToken.findUnique({
+            where: { token: shareToken },
+            include: {
+                folder: { select: { id: true } }
+            },
+            omit: { pinCode: false }
+        });
 
         if (!access) {
             return 0;
@@ -86,7 +74,7 @@ export async function isAllowedToAccessFolder(folderId: string, shareToken?: str
     return 0;
 }
 
-export async function isAllowedToAccessFile(fileId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: string | null): Promise<boolean> {
+export async function isAllowedToAccessFile(fileId: string, shareToken?: string | null, accessKey?: string | null): Promise<boolean> {
     const { user } = await getCurrentSession();
 
     if (user) {
@@ -103,40 +91,21 @@ export async function isAllowedToAccessFile(fileId: string, shareToken?: string 
     }
 
     if (shareToken) {
-        let access;
-        if (tokenType === "p") {
-            access = await prisma.personAccessToken.findUnique({
-                where: {
-                    token: shareToken
-                },
-                include: {
-                    folder: {
-                        select: {
-                            id: true
-                        }
+        const access = await prisma.accessToken.findUnique({
+            where: {
+                token: shareToken
+            },
+            include: {
+                folder: {
+                    select: {
+                        id: true
                     }
-                },
-                omit: {
-                    pinCode: false
                 }
-            });
-        } else {
-            access = await prisma.accessToken.findUnique({
-                where: {
-                    token: shareToken
-                },
-                include: {
-                    folder: {
-                        select: {
-                            id: true
-                        }
-                    }
-                },
-                omit: {
-                    pinCode: false
-                }
-            });
-        }
+            },
+            omit: {
+                pinCode: false
+            }
+        });
 
         if (!access) {
             return false;
@@ -160,7 +129,7 @@ export async function isAllowedToAccessFile(fileId: string, shareToken?: string 
     return false;
 }
 
-export async function isAllowedToDeleteComment(commentId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
+export async function isAllowedToDeleteComment(commentId: string, shareToken?: string | null, accessKey?: string | null) {
     const comment = await prisma.comment.findUnique({
         where: { id: commentId },
         include: { file: { select: { id: true } } }
@@ -181,11 +150,11 @@ export async function isAllowedToDeleteComment(commentId: string, shareToken?: s
     }
 
     if (comment.createdByEmail) {
-        if (!shareToken || !isAllowedToAccessFile(comment.fileId, shareToken, accessKey, tokenType) || tokenType !== "personAccessToken") {
+        if (!shareToken || !isAllowedToAccessFile(comment.fileId, shareToken, accessKey)) {
             return false;
         }
 
-        const token = await getToken(shareToken, "personAccessToken") as PersonAccessToken;
+        const token = await prisma.accessToken.findUnique({ where: { token: shareToken } });
 
         if (!token || !token.email) {
             return false;
@@ -197,9 +166,19 @@ export async function isAllowedToDeleteComment(commentId: string, shareToken?: s
     return false;
 }
 
-export async function canLikeFile(fileId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
+export async function canLikeFile(fileId: string, shareToken?: string | null, accessKey?: string | null) {
     // Only email-shared people and owners can like files
-    return await isAllowedToAccessFile(fileId, shareToken, accessKey, "personAccessToken");
+    if (!shareToken) {
+        return false;
+    }
+
+    const token = await prisma.accessToken.findUnique({ where: { token: shareToken } });
+
+    if (!token?.email) {
+        return false;
+    }
+
+    return await isAllowedToAccessFile(fileId, shareToken, accessKey);
 }
 
 export async function canLikeComment(commentId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
@@ -218,20 +197,20 @@ export async function canLikeComment(commentId: string, shareToken?: string | nu
         return isAllowedToAccessFile(comment.fileId);
     }
 
-    if (!shareToken || tokenType !== "personAccessToken") {
+    if (!shareToken) {
         return false;
     }
 
-    const token = await getToken(shareToken, "personAccessToken");
+    const token = await prisma.accessToken.findUnique({ where: { token: shareToken } });
 
-    if (!token) {
+    if (!token || !token.email) {
         return false;
     }
 
-    return isAllowedToAccessFile(comment.fileId, shareToken, accessKey, "personAccessToken");
+    return isAllowedToAccessFile(comment.fileId, shareToken, accessKey);
 }
 
-export async function canAccessMap(shareToken?: string | null, accessKey?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
+export async function canAccessMap(shareToken?: string | null, accessKey?: string | null) {
     const { user } = await getCurrentSession();
 
     // Priority is set to access token if user is logged in
@@ -239,15 +218,15 @@ export async function canAccessMap(shareToken?: string | null, accessKey?: strin
         return true;
     }
 
-    if (!shareToken || !tokenType) {
+    if (!shareToken) {
         return false;
     }
 
-    if (!isAccessWithTokenValid(shareToken, accessKey, tokenType)) {
+    if (!isAccessWithTokenValid(shareToken, accessKey)) {
         return false;
     }
 
-    const token = await getToken(shareToken, tokenType);
+    const token = await prisma.accessToken.findUnique({ where: { token: shareToken } });
 
     if (token?.allowMap) {
         return true;
@@ -256,28 +235,12 @@ export async function canAccessMap(shareToken?: string | null, accessKey?: strin
     return false;
 }
 
-export async function getToken(shareToken: string, tokenType: "accessToken" | "personAccessToken"): Promise<AccessToken | PersonAccessToken | null> {
-    if (tokenType === "accessToken") {
-        return await prisma.accessToken.findUnique({ where: { token: shareToken } });
-    } else {
-        return await prisma.personAccessToken.findUnique({ where: { token: shareToken } });
-    }
-}
-
-async function getTokenWithPinCode(shareToken: string, tokenType: "accessToken" | "personAccessToken"): Promise<AccessToken | PersonAccessToken | null> {
-    if (tokenType === "accessToken") {
-        return await prisma.accessToken.findUnique({ where: { token: shareToken }, omit: { pinCode: false } });
-    } else {
-        return await prisma.personAccessToken.findUnique({ where: { token: shareToken }, omit: { pinCode: false } });
-    }
-}
-
-export async function isAccessWithTokenValid(shareToken?: string | null, key?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
-    if (!shareToken || !tokenType) {
+export async function isAccessWithTokenValid(shareToken?: string | null, key?: string | null) {
+    if (!shareToken) {
         return false;
     }
 
-    const token = await getTokenWithPinCode(shareToken, tokenType);
+    const token = await prisma.accessToken.findUnique({ where: { token: shareToken }, omit: { pinCode: false } });
 
     if (!token) {
         return false;

@@ -51,7 +51,6 @@ export default function EditCommentDialog({ comment, open, setOpen, children }: 
             data.content,
             searchParams.get("share"),
             searchParams.get("h"),
-            searchParams.get("t") === "p" ? "personAccessToken" : "accessToken"
         );
         setEditing(false);
 
