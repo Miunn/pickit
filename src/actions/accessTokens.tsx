@@ -78,8 +78,9 @@ export async function createMultipleAccessTokens(folderId: string, tokens: { ema
     error: string | null
 }> {
     const errors: string[] = [];
+    console.log("Create multiple access tokens", tokens);
     tokens.forEach(async (token) => {
-        const r = await createNewAccessToken(folderId, token.permission, token.expiryDate);
+        const r = await createNewAccessToken(folderId, token.permission, token.expiryDate, token.email);
         if (r.error) errors.push(r.error);
     });
 
