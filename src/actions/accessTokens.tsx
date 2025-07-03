@@ -11,7 +11,7 @@ import { render } from "@react-email/components";
 import ShareFolderTemplate from "@/components/emails/ShareFolderTemplate";
 import NotifyAboutUploadTemplate from "@/components/emails/NotifyAboutUpload";
 
-export async function createNewAccessToken(folderId: string, permission: FolderTokenPermission, expiryDate: Date): Promise<{
+export async function createNewAccessToken(folderId: string, permission: FolderTokenPermission, expiryDate: Date, email?: string): Promise<{
     error: string | null,
     accessToken?: AccessToken
 }> {
@@ -48,16 +48,19 @@ export async function createNewAccessToken(folderId: string, permission: FolderT
     try {
         const accessToken = await prisma.accessToken.create({
             data: {
-                folder: {
-                    connect: {
-                        id: folderId
-                    }
-                },
+                folder: { connect: { id: folderId } },
                 token: token,
                 permission: permission,
-                expires: expiryDate
-            }
+                expires: expiryDate,
+                email: email
+            },
+            include: { folder: { select: { name: true } } }
         });
+
+        if (email) {
+            await sendShareFolderEmail([{ email: email, link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${accessToken.folderId}?share=${token}&t=p`, locked: accessToken.locked }], user.name!, accessToken.folder.name)
+        }
+
         revalidatePath("/app/links");
         revalidatePath("/app/folders/[folderId]");
         return { error: null, accessToken: accessToken }
