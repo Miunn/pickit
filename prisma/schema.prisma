@@ -56,8 +56,7 @@ model Folder {
   createdById       String
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
-  AccessToken       AccessToken[]
-  PersonAccessToken PersonAccessToken[]
+  accessTokens       AccessToken[]
   tags              FolderTag[]
 }
 
@@ -160,23 +159,7 @@ model CommentLike {
 model AccessToken {
   id         String                @id @default(cuid())
   token      String                @unique @default(cuid())
-  folder     Folder                @relation(fields: [folderId], references: [id], onDelete: Cascade)
-  folderId   String
-  uses       Int                   @default(0)
-  isActive   Boolean               @default(true)
-  permission FolderTokenPermission @default(READ)
-  allowMap   Boolean               @default(false)
-  locked     Boolean               @default(false)
-  pinCode    String?
-  expires    DateTime
-  createdAt  DateTime              @default(now())
-  updatedAt  DateTime              @updatedAt
-}
-
-model PersonAccessToken {
-  id         String                @id @default(cuid())
-  token      String                @unique @default(cuid())
-  email      String
+  email      String?
   folder     Folder                @relation(fields: [folderId], references: [id], onDelete: Cascade)
   folderId   String
   uses       Int                   @default(0)

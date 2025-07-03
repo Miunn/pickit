@@ -10,9 +10,8 @@ export async function GET(
     const params = await props.params;
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
-    const tokenType = req.nextUrl.searchParams.get("t");
 
-    if (!isAllowedToAccessFile(params.image, shareToken, accessKey, tokenType)) {
+    if (!isAllowedToAccessFile(params.image, shareToken, accessKey)) {
         return Response.json({ error: "You need to be authenticated or have a magic link to access this resource" }, { status: 400 })
     }
 

@@ -313,8 +313,8 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
                             <DropdownMenuItem onClick={() => setDeleteOpen(true)} className="text-red-600 focus:text-red-600 font-semibold">{t('delete.label')}</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <LockTokenDialog tokenId={accessToken.id} tokenType="accessToken" openState={lockOpen} setOpenState={setLockOpen} />
-                    <DeleteAccessTokenDialog tokens={[accessToken.token]} tokensType="links" openState={deleteOpen} setOpenState={setDeleteOpen} />
+                    <LockTokenDialog tokenId={accessToken.id} openState={lockOpen} setOpenState={setLockOpen} />
+                    <DeleteAccessTokenDialog tokens={[accessToken.token]} openState={deleteOpen} setOpenState={setDeleteOpen} />
                 </>
             )
         },

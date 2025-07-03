@@ -3,7 +3,7 @@ import { redirect } from '@/i18n/navigation';
 import { prisma } from '@/lib/prisma';
 import { getCurrentSession } from '@/lib/session';
 import { generateV4DownloadUrl } from '@/lib/bucket';
-import { canAccessMap, getToken } from '@/lib/dal';
+import { canAccessMap } from '@/lib/dal';
 import { FilesProvider } from '@/context/FilesContext';
 import { TokenProvider } from '@/context/TokenContext';
 import { ViewState } from '@/components/folders/ViewSelector';
@@ -16,7 +16,7 @@ export default async function MapPage(
 
     const { user } = await getCurrentSession();
 
-    if (!(await canAccessMap(searchParams.share, searchParams.h, searchParams.t === "p" ? "personAccessToken" : "accessToken"))) {
+    if (!(await canAccessMap(searchParams.share, searchParams.h))) {
         if (user) {
             // Surely have a residual access token in URL, this clears it
             return redirect({ href: "/app/map", locale: params.locale });
@@ -29,7 +29,7 @@ export default async function MapPage(
     let accessToken = null;
     // Get files from share token
     if (searchParams.share) {
-        accessToken = await getToken(searchParams.share, searchParams.t === "p" ? "personAccessToken" : "accessToken");
+        accessToken = await prisma.accessToken.findUnique({ where: { token: searchParams.share } });
 
         if (!accessToken) {
             return redirect({ href: "/app/map", locale: params.locale });

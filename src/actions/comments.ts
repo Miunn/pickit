@@ -1,6 +1,6 @@
 'use server'
 
-import { CommentWithCreatedBy, CreateCommentFormSchema, FolderWithAccessToken, FolderWithCreatedBy, FolderWithFilesWithFolderAndCommentsAndCreatedBy, FolderWithPersonAccessToken } from "@/lib/definitions";
+import { CommentWithCreatedBy, CreateCommentFormSchema, FolderWithAccessToken, FolderWithFilesWithFolderAndCommentsAndCreatedBy } from "@/lib/definitions";
 import { getCurrentSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
@@ -30,8 +30,7 @@ export async function createComment(
                 include: {
                     files: { include: { folder: true, comments: { include: { createdBy: true } } } },
                     createdBy: true,
-                    AccessToken: { omit: { pinCode: false } },
-                    PersonAccessToken: { omit: { pinCode: false } }
+                    accessTokens: { omit: { pinCode: false } }
                 }
             }
         }
@@ -41,7 +40,7 @@ export async function createComment(
         return null;
     }
 
-    const folder: FolderWithFilesWithFolderAndCommentsAndCreatedBy & FolderWithAccessToken & FolderWithPersonAccessToken = file.folder;
+    const folder: FolderWithFilesWithFolderAndCommentsAndCreatedBy & FolderWithAccessToken = file.folder;
     let commentName = "Anonymous";
     let createdByEmail = null;
 
@@ -50,9 +49,7 @@ export async function createComment(
             return null;
         }
 
-        if (type === "personAccessToken") {
-            const accessToken = folder.PersonAccessToken.find(a => a.token === shareToken && a.expires >= new Date());
-
+        const accessToken = folder.accessTokens.find(a => a.token === shareToken && a.expires >= new Date());
             if (!accessToken) {
                 return null;
             }
@@ -68,27 +65,11 @@ export async function createComment(
                     return null;
                 }
             }
-            commentName = accessToken.email.split("@")[0];
-            createdByEmail = accessToken.email;
-        } else {
-            const accessToken = folder.AccessToken.find(a => a.token === shareToken && a.expires >= new Date());
 
-            if (!accessToken) {
-                return null;
+            if (accessToken.email) {
+                commentName = accessToken.email.split("@")[0];
+                createdByEmail = accessToken.email;
             }
-
-            if (accessToken.locked) {
-                if (!h) {
-                    return null;
-                }
-
-                const match = bcrypt.compareSync(accessToken.pinCode as string, h);
-
-                if (!match) {
-                    return null;
-                }
-            }
-        }
     } else {
         commentName = user.name;
         createdByEmail = user.email;
@@ -137,8 +118,8 @@ export async function createComment(
     }
 }
 
-export async function deleteComment(commentId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
-    const isAllowed = await isAllowedToDeleteComment(commentId, shareToken, accessKey, tokenType);
+export async function deleteComment(commentId: string, shareToken?: string | null, accessKey?: string | null) {
+    const isAllowed = await isAllowedToDeleteComment(commentId, shareToken, accessKey);
 
     if (!isAllowed) {
         return false;
@@ -163,10 +144,9 @@ export async function updateComment(
     commentId: string,
     text: string,
     shareToken?: string | null,
-    accessKey?: string | null,
-    tokenType?: "accessToken" | "personAccessToken" | null
+    accessKey?: string | null
 ): Promise<CommentWithCreatedBy | null> {
-    const isAllowed = await isAllowedToDeleteComment(commentId, shareToken, accessKey, tokenType);
+    const isAllowed = await isAllowedToDeleteComment(commentId, shareToken, accessKey);
 
     if (!isAllowed) {
         return null;

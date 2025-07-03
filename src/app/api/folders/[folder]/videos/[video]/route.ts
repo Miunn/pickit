@@ -9,12 +9,9 @@ export async function GET(req: NextRequest, props: { params: Promise<{ video: st
     const params = await props.params;
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
-    const tokenType = req.nextUrl.searchParams.get("t");
     const { user } = await getCurrentSession();
     if (shareToken && shareToken !== "undefined" && shareToken !== "null") {
-        let access;
-        if (tokenType === "p") {
-            access = await prisma.personAccessToken.findUnique({
+        const access = await prisma.accessToken.findUnique({
                 where: {
                     token: shareToken
                 },
@@ -29,23 +26,6 @@ export async function GET(req: NextRequest, props: { params: Promise<{ video: st
                     pinCode: false
                 }
             });
-        } else {
-            access = await prisma.accessToken.findUnique({
-                where: {
-                    token: shareToken
-                },
-                include: {
-                    folder: {
-                        select: {
-                            id: true
-                        }
-                    }
-                },
-                omit: {
-                    pinCode: false
-                }
-            });
-        }
 
         if (!access) {
             return NextResponse.json({ error: "Invalid share token" });

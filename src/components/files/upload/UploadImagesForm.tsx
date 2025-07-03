@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { FileUploader } from "@/components/files/FileUploader";
-import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -16,7 +15,7 @@ import { Progress } from "@/components/ui/progress";
 import { ContextFile } from "@/context/FilesContext";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { notifyAboutUpload } from "@/actions/accessTokensPerson";
+import { notifyAboutUpload } from "@/actions/accessTokens";
 
 interface UploadImagesFormProps {
     folderId: string;

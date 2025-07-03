@@ -1,6 +1,6 @@
 "use client"
 
-import { changePersonAccessTokenActiveState, changePersonAccessTokenAllowMap, sendAgainPersonAccessToken, unlockPersonAccessToken } from "@/actions/accessTokensPerson";
+import { changeAccessTokenActiveState, changeAccessTokenAllowMap, sendAgainAccessToken, unlockAccessToken } from "@/actions/accessTokens";
 import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessTokenDialog";
 import LockTokenDialog from "@/components/folders/LockTokenDialog";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "@/i18n/navigation";
-import { PersonAccessTokenWithFolder } from "@/lib/definitions"
+import { AccessTokenWithFolder } from "@/lib/definitions"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, BadgeCheck, BadgeMinus, CircleHelp, Eye, Lock, LockOpen, MapPin, MapPinOff, MoreHorizontal, Pencil, PencilOff } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -23,7 +23,7 @@ const PERMISSIONS = {
     ADMIN: 'ADMIN' as const,
 } as const;
 
-export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
+export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -261,7 +261,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                                     title: t('sendAgain.inProgress.title'),
                                     description: t('sendAgain.inProgress.description'),
                                 })
-                                const r = await sendAgainPersonAccessToken(accessToken.token);
+                                const r = await sendAgainAccessToken(accessToken.token);
 
                                 if (r.error) {
                                     toast({
@@ -284,7 +284,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                             </DropdownMenuItem>
                             {accessToken.isActive
                                 ? <DropdownMenuItem onClick={async () => {
-                                    const r = await changePersonAccessTokenActiveState(accessToken.token, false);
+                                    const r = await changeAccessTokenActiveState(accessToken.token, false);
                                     if (r.error) {
                                         toast({
                                             title: t('setInactive.error.title'),
@@ -298,7 +298,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                                     });
                                 }}>{t('setInactive.label')}</DropdownMenuItem>
                                 : <DropdownMenuItem onClick={async () => {
-                                    const r = await changePersonAccessTokenActiveState(accessToken.token, true)
+                                    const r = await changeAccessTokenActiveState(accessToken.token, true)
                                     if (r.error) {
                                         toast({
                                             title: t('setActive.error.title'),
@@ -314,7 +314,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                             }
                             {accessToken.allowMap
                                 ? <DropdownMenuItem onClick={async () => {
-                                    const r = await changePersonAccessTokenAllowMap(accessToken.id, false)
+                                    const r = await changeAccessTokenAllowMap(accessToken.id, false)
                                     if (r.error) {
                                         toast({
                                             title: t('allowMap.disable.error.title'),
@@ -328,7 +328,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                                     });
                                 }}>{t('allowMap.disable.label')}</DropdownMenuItem>
                                 : <DropdownMenuItem onClick={async () => {
-                                    const r = await changePersonAccessTokenAllowMap(accessToken.id, true)
+                                    const r = await changeAccessTokenAllowMap(accessToken.id, true)
                                     if (r.error) {
                                         toast({
                                             title: t('allowMap.enable.error.title'),
@@ -344,7 +344,7 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                             }
                             {accessToken.locked
                                 ? <DropdownMenuItem onClick={async () => {
-                                    const r = await unlockPersonAccessToken(accessToken.id)
+                                    const r = await unlockAccessToken(accessToken.id)
 
                                     if (r.error) {
                                         toast({
@@ -366,8 +366,8 @@ export const personColumns: ColumnDef<PersonAccessTokenWithFolder>[] = [
                             <DropdownMenuItem onClick={() => setDeleteOpen(true)} className="text-red-600 focus:text-red-600 font-semibold">{t('delete.label')}</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <LockTokenDialog tokenId={accessToken.id} tokenType="personAccessToken" openState={lockOpen} setOpenState={setLockOpen} />
-                    <DeleteAccessTokenDialog tokens={[accessToken.token]} tokensType="persons" openState={deleteOpen} setOpenState={setDeleteOpen} />
+                    <LockTokenDialog tokenId={accessToken.id} openState={lockOpen} setOpenState={setLockOpen} />
+                    <DeleteAccessTokenDialog tokens={[accessToken.token]} openState={deleteOpen} setOpenState={setDeleteOpen} />
                 </>
             )
         },

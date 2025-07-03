@@ -10,9 +10,8 @@ export async function GET(
     const params = await props.params;
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
-    const tokenType = req.nextUrl.searchParams.get("t");
 
-    if (!isAllowedToAccessFile(params.video, shareToken, accessKey, tokenType)) {
+    if (!isAllowedToAccessFile(params.video, shareToken, accessKey)) {
         return Response.json({ error: "You need to be authenticated or have a magic link to access this resource" }, { status: 400 })
     }
 
@@ -27,15 +26,11 @@ export async function GET(
         return Response.json({ error: "No videos found in this folder" }, { status: 404 });
     }
 
-    console.log("Starting fetching google");
     const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.id}`);
-    console.log("Got google file");
     const [buffer] = await file.download();
-    console.log("Got buffer");
     const res = new NextResponse(buffer);
     res.headers.set('Content-Type', 'video/' + video.extension);
     res.headers.set('Content-Disposition', `attachment; filename=${video.name}.${video.extension}`);
     res.headers.set('Content-Length', buffer.length.toString());
-    console.log("Returning response");
     return res;
 }
