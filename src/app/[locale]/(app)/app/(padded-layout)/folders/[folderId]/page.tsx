@@ -18,7 +18,7 @@ import { TokenProvider } from "@/context/TokenContext";
 import { generateV4DownloadUrl } from "@/lib/bucket";
 
 export async function generateMetadata(
-    props: { params: Promise<{ folderId: string, locale: string }>, searchParams: Promise<{ sort?: ImagesSortMethod, view?: ViewState, share?: string, t?: string, h?: string }> }
+    props: { params: Promise<{ folderId: string, locale: string }>, searchParams: Promise<{ sort?: ImagesSortMethod, view?: ViewState, share?: string, h?: string }> }
 ): Promise<Metadata> {
     const searchParams = await props.searchParams;
     const params = await props.params;
@@ -35,17 +35,10 @@ export async function generateMetadata(
         }
     }
 
-    if (searchParams.t === "p") {
-        folderNameAndDescription = await prisma.personAccessToken.findUnique({
-            where: { token: searchParams.share },
-            select: { folder: { select: { name: true, description: true } } }
-        }).then(result => result ? { name: result.folder.name, description: result.folder.description } : null);
-    } else {
-        folderNameAndDescription = await prisma.accessToken.findUnique({
-            where: { token: searchParams.share },
-            select: { folder: { select: { name: true, description: true } } }
-        }).then(result => result ? { name: result.folder.name, description: result.folder.description } : null);
-    }
+    folderNameAndDescription = await prisma.accessToken.findUnique({
+        where: { token: searchParams.share },
+        select: { folder: { select: { name: true, description: true } } }
+    }).then(result => result ? { name: result.folder.name, description: result.folder.description } : null);
 
     if (!folderNameAndDescription) {
         return {
@@ -67,7 +60,7 @@ export async function generateMetadata(
             images: [
                 {
                     alt: "Echomori",
-                    url: `${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folderId}/og?${searchParams.share ? `share=${searchParams.share}` : ""}&${searchParams.t ? `t=${searchParams.t}` : ""}&${searchParams.h ? `h=${searchParams.h}` : ""}`,
+                    url: `${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folderId}/og?${searchParams.share ? `share=${searchParams.share}` : ""}&${searchParams.h ? `h=${searchParams.h}` : ""}`,
                     type: "image/png",
                     width: 1200,
                     height: 630
@@ -92,7 +85,6 @@ export default async function FolderPage(
         return redirect({ href: "/signin", locale: params.locale });
     }
 
-    const { session } = await getCurrentSession();
     const folder = await prisma.folder.findUnique({
         where: { id: params.folderId },
         include: {
@@ -105,19 +97,13 @@ export default async function FolderPage(
                 },
             },
             createdBy: true,
-            AccessToken: true,
-            PersonAccessToken: true
+            accessTokens: true
         }
     });
 
     let accessToken = null;
 
-    if (searchParams.share && searchParams.t === "p") {
-        accessToken = await prisma.personAccessToken.findUnique({
-            where: { token: searchParams.share },
-            include: { folder: true }
-        });
-    } else if (searchParams.share) {
+    if (searchParams.share) {
         accessToken = await prisma.accessToken.findUnique({
             where: { token: searchParams.share },
             include: { folder: true }
@@ -160,9 +146,8 @@ export default async function FolderPage(
             <FolderProvider
                 folderData={getSortedFolderContent(folder, searchParams.sort || ImagesSortMethod.DateDesc) as FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments}
                 tokenData={accessToken}
-                tokenType={searchParams.t === "p" ? "personAccessToken" : "accessToken"}
                 tokenHash={searchParams.h ?? null}
-                isShared={folder.PersonAccessToken.length > 0}
+                isShared={folder.accessTokens.filter(token => token.email).length > 0}
             >
                 <TokenProvider token={accessToken}>
                     <FilesProvider filesData={filesWithSignedUrls} defaultView={searchParams.view || ViewState.Grid}>

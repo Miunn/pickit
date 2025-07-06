@@ -32,7 +32,7 @@ export default async function FoldersPage(
         },
         include: {
             cover: true,
-            AccessToken: true,
+            accessTokens: true,
             files: { include: { folder: { include: { tags: true } }, comments: { include: { createdBy: true } }, tags: true } },
             createdBy: true,
             _count: { select: { files: true } }

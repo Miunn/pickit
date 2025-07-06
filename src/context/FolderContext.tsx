@@ -2,18 +2,16 @@
 
 import { FolderWithAccessToken, FolderWithCover, FolderWithCreatedBy, FolderWithFilesCount } from "@/lib/definitions";
 import { createVault, loadVault } from "@/lib/e2ee/vault";
-import { AccessToken, PersonAccessToken } from "@prisma/client";
+import { AccessToken } from "@prisma/client";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useE2EEncryptionContext } from "./E2EEncryptionContext";
 import { updateFolderKey } from "@/actions/folders";
-import { loadKeys, passwordToKey } from "@/lib/e2ee/e2ee";
 
 type FolderContextType = {
     folder: FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover;
     setFolder: (folder: FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover) => void;
-    token: AccessToken | PersonAccessToken | null;
-    setToken: (token: AccessToken | PersonAccessToken | null) => void;
-    tokenType: "accessToken" | "personAccessToken" | null;
+    token: AccessToken | null;
+    setToken: (token: AccessToken | null) => void;
     tokenHash: string | null;
     isShared: boolean;
 };
@@ -30,12 +28,12 @@ export const useFolderContext = () => {
     return context;
 };
 
-export function FolderProvider({ children, folderData, tokenData, tokenType, tokenHash, isShared }: { children: React.ReactNode, folderData: FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover, tokenData: AccessToken | PersonAccessToken | null, tokenType: "accessToken" | "personAccessToken" | null, tokenHash: string | null, isShared: boolean }) {
+export function FolderProvider({ children, folderData, tokenData, tokenHash, isShared }: { children: React.ReactNode, folderData: FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover, tokenData: AccessToken | null, tokenHash: string | null, isShared: boolean }) {
     const [folder, setFolder] = useState<FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover>(folderData);
-    const [token, setToken] = useState<AccessToken | PersonAccessToken | null>(tokenData);
+    const [token, setToken] = useState<AccessToken | null>(tokenData);
     const [encryptionKey, setEncryptionKey] = useState<CryptoKey | null>(null);
 
-    const { wrappingKey, loadWrappingKeyFromSessionStorage } = useE2EEncryptionContext();
+    const { wrappingKey } = useE2EEncryptionContext();
 
     useEffect(() => {
             if (!wrappingKey) {
@@ -65,7 +63,7 @@ export function FolderProvider({ children, folderData, tokenData, tokenType, tok
     }, [folder, wrappingKey]);
 
     return (
-        <FolderContext.Provider value={{ folder, setFolder, token, setToken, tokenType, tokenHash, isShared }}>
+        <FolderContext.Provider value={{ folder, setFolder, token, setToken, tokenHash, isShared }}>
             {children}
         </FolderContext.Provider>
     );

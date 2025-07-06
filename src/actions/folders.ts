@@ -26,7 +26,7 @@ export async function createFolder(name: string): Promise<{
                     id: user.id as string
                 }
             },
-            AccessToken: {
+            accessTokens: {
                 create: [
                     {
                         token: readToken,

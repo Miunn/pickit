@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useLocale, useTranslations } from "next-intl";
-import { CalendarIcon, ChevronLeft, Eye, Loader2, Lock, MessageSquare, Pen, Share2, Unlock, X } from "lucide-react";
+import { CalendarIcon, ChevronLeft, Eye, Loader2, Lock, Pen, Share2, Unlock, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -22,14 +22,14 @@ import { CreatePersonAccessTokenFormSchema, FolderWithAccessToken } from "@/lib/
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AccessToken, FolderTokenPermission, PersonAccessToken } from "@prisma/client";
+import { AccessToken, FolderTokenPermission } from "@prisma/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { addMonths, format, set } from "date-fns";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
-import { createMultiplePersonAccessTokens } from "@/actions/accessTokensPerson";
+import { createMultipleAccessTokens } from "@/actions/accessTokens";
 import { unlockAccessToken } from "@/actions/accessTokens";
 import LockTokenDialog from "./LockTokenDialog";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
@@ -43,10 +43,10 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
     const [loadingShare, setLoadingShare] = useState(false);
     const [tokenList, setTokenList] = useState<{ email: string, permission: FolderTokenPermission, expiryDate: Date, pinCode?: string, allowMap?: boolean }[]>([]);
     const emailScroll = useRef<HTMLDivElement>(null);
-    const validTokens = folder.AccessToken.filter((token) => token.expires > new Date() && token.isActive);
+    const validTokens = folder.accessTokens.filter((token) => token.expires > new Date() && token.isActive);
 
     const [openLockToken, setOpenLockToken] = useState(false);
-    const [lockToken, setLockToken] = useState<AccessToken | PersonAccessToken | null>(null);
+    const [lockToken, setLockToken] = useState<AccessToken | null>(null);
     const [lockTokenType, setLockTokenType] = useState<"accessToken" | "personAccessToken">("accessToken");
 
     const [openExpiryDatePopover, setOpenExpiryDatePopover] = useState(false);
@@ -102,7 +102,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
     const submitSharePersonTokens = async () => {
         setLoadingShare(true);
         console.log("Submit share person tokens", { tokenList, shareMessage });
-        const r = await createMultiplePersonAccessTokens(folder.id, tokenList.map(token => ({
+        const r = await createMultipleAccessTokens(folder.id, tokenList.map(token => ({
             ...token,
             message: shareMessage
         })));
@@ -519,7 +519,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
                     </motion.div>
                 </DialogContent>
             </Dialog>
-            <LockTokenDialog tokenId={lockToken?.id || ""} tokenType={lockTokenType} openState={openLockToken} setOpenState={setOpenLockToken} />
+            <LockTokenDialog tokenId={lockToken?.id || ""} openState={openLockToken} setOpenState={setOpenLockToken} />
         </>
     )
 }

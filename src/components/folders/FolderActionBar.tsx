@@ -16,7 +16,7 @@ import { Link } from "@/i18n/navigation";
 
 export default function FolderActionBar() {
     const { isGuest } = useSession();
-    const { folder, token, tokenType, tokenHash, isShared } = useFolderContext();
+    const { folder, token, tokenHash, isShared } = useFolderContext();
     const { viewState, sortState, setViewState, setSortState, files, setFiles } = useFilesContext();
     const t = useTranslations("folders");
     const downloadT = useTranslations("components.download");
@@ -52,7 +52,7 @@ export default function FolderActionBar() {
                         }
                         {!!!isGuest || (token?.token && token.allowMap)
                             ? <DropdownMenuItem asChild>
-                                <Link href={`/app/map${token?.token ? `?share=${token?.token}&t=${tokenType === "personAccessToken" ? "p" : "a"}&h=${tokenHash}` : ""}`}>
+                                <Link href={`/app/map${token?.token ? `?share=${token?.token}&h=${tokenHash}` : ""}`}>
                                     {t('actions.map')}
                                 </Link>
                             </DropdownMenuItem>
@@ -63,7 +63,7 @@ export default function FolderActionBar() {
                                 {t('share.label')}
                             </DropdownMenuItem>
                             : null}
-                        <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, files, folder.name, token?.token, tokenType, tokenHash)}>
+                        <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, files, folder.name, token?.token, tokenHash)}>
                             {t('download.label')}
                         </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -154,7 +154,7 @@ export default function FolderActionBar() {
                     }
                     {!!!isGuest || (token?.token && token.allowMap)
                         ? <DropdownMenuItem asChild>
-                            <Link href={`/app/map${token?.token ? `?share=${token?.token}&t=${tokenType === "personAccessToken" ? "p" : "a"}&h=${tokenHash}` : ""}`}>
+                            <Link href={`/app/map${token?.token ? `?share=${token?.token}&h=${tokenHash}` : ""}`}>
                                 {t('actions.map')}
                             </Link>
                         </DropdownMenuItem>
@@ -170,7 +170,7 @@ export default function FolderActionBar() {
                             {t('share.label')}
                         </DropdownMenuItem>
                         : null}
-                    <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, files, folder.name, token?.token, tokenType, tokenHash)}>
+                    <DropdownMenuItem onClick={() => downloadClientFiles(downloadT, files, folder.name, token?.token, tokenHash)}>
                         {t('download.label')}
                     </DropdownMenuItem>
                 </DropdownMenuContent>

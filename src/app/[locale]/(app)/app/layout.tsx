@@ -10,7 +10,7 @@ import BreadcrumbWrapper from "@/components/layout/BreadcrumbWrapper";
 import UnverifiedEmail from "@/components/layout/UnverifiedEmail";
 import { addDays } from "date-fns";
 import SwitchLocale from "@/components/generic/SwitchLocale";
-import { Role } from "@prisma/client";
+import { Prisma, Role } from "@prisma/client";
 import { getCurrentSession } from "@/lib/session";
 import { CommandSearch } from "@/components/generic/CommandSearch";
 import { NuqsAdapter } from 'nuqs/adapters/react'
@@ -75,21 +75,20 @@ export default async function LocaleLayout(
     }) : [];
     const accessTokens = user ? await prisma.accessToken.findMany({
         where: {
-            folder: {
-                createdBy: { id: user.id }
-            }
+            folder: { createdBy: { id: user.id } },
+            email: null
         },
         include: { folder: true },
         orderBy: [ { folder: { name: "asc" } } ]
     }) : [];
-    const personsAccessTokens = user ? await prisma.personAccessToken.findMany({
+    const personsAccessTokens = user ? await prisma.accessToken.findMany({
         where: {
-            folder: { createdBy: { id: user.id } }
+            folder: { createdBy: { id: user.id } }, email: { not: null}
         },
         include: { folder: true},
         orderBy: [ { folder: { name: "asc" } } ]
     }) : [];
-    const sharedWithMeFolders = user ? await prisma.personAccessToken.findMany({
+    const sharedWithMeFolders = user ? await prisma.accessToken.findMany({
         where: { email: user.email },
         include: { folder: { include: { createdBy: true } } }
     }) : [];
