@@ -13,6 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Plan {
+  FREE
+  EFFICIENT
+  PRO
+}
+
 enum FolderTokenPermission {
   READ
   WRITE
@@ -43,21 +49,21 @@ enum NotificationType {
 }
 
 model Folder {
-  id                String              @id @default(cuid())
-  name              String
-  description       String?
-  key               String              @default("")
-  iv                String              @default("")
-  files             File[]              @relation("FolderFiles")
-  size              Int                 @default(0)
-  cover             File?               @relation(fields: [coverId], references: [id])
-  coverId           String?             @unique
-  createdBy         User                @relation("UserFolders", fields: [createdById], references: [id], onDelete: Cascade)
-  createdById       String
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  accessTokens       AccessToken[]
-  tags              FolderTag[]
+  id           String        @id @default(cuid())
+  name         String
+  description  String?
+  key          String        @default("")
+  iv           String        @default("")
+  files        File[]        @relation("FolderFiles")
+  size         Int           @default(0)
+  cover        File?         @relation(fields: [coverId], references: [id])
+  coverId      String?       @unique
+  createdBy    User          @relation("UserFolders", fields: [createdById], references: [id], onDelete: Cascade)
+  createdById  String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  accessTokens AccessToken[]
+  tags         FolderTag[]
 }
 
 model FolderTag {
@@ -174,16 +180,16 @@ model AccessToken {
 }
 
 model Notification {
-  id        String   @id @default(cuid())
-  type      NotificationType
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  isRead    Boolean   @default(false)
+  id         String           @id @default(cuid())
+  type       NotificationType
+  userId     String
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isRead     Boolean          @default(false)
   authorName String
   folderName String
   href       String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
 }
 
 model User {
@@ -198,6 +204,7 @@ model User {
   role                      Role[]    @default([USER])
   password                  String?
   sessions                  Session[]
+  plan                      Plan      @default(FREE)
 
   publicKey  String?
   privateKey String? // Encrypted, for device switching
@@ -212,12 +219,12 @@ model User {
   verifiedEmailRequest VerifyEmailRequest?
   passwordResetRequest PasswordResetRequest?
 
-  folders      Folder[]      @relation("UserFolders")
-  files        File[]        @relation("UserFiles")
-  comments     Comment[]
-  likes        FileLike[]
-  commentLikes CommentLike[]
-  tags FolderTag[]
+  folders       Folder[]       @relation("UserFolders")
+  files         File[]         @relation("UserFiles")
+  comments      Comment[]
+  likes         FileLike[]
+  commentLikes  CommentLike[]
+  tags          FolderTag[]
   notifications Notification[]
 }
 

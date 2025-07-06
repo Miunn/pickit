@@ -33,7 +33,7 @@ const plans = {
     },
     [PricingPlan.PRO]: {
         monthly: 20,
-        yearly: 200,
+        yearly: 180,
     }
 }
 
@@ -48,7 +48,7 @@ export const usePricingContext = () => {
 }
 
 export const PricingProvider = ({ children }: { children: React.ReactNode }) => {
-    const [selectedPeriod, setSelectedPeriod] = useState<"monthly" | "yearly">("monthly");
+    const [selectedPeriod, setSelectedPeriod] = useState<"monthly" | "yearly">("yearly");
     const [currency, setCurrency] = useState<SupportedCurrency>(SupportedCurrency.USD);
 
     const getPlanPrice = (plan: PricingPlan) => {

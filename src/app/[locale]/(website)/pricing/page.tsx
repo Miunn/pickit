@@ -1,7 +1,7 @@
 'use client'
 
 import { NumberTicker } from "@/components/magicui/number-ticker";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonProps } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -11,19 +11,22 @@ import { CheckIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Fragment } from "react";
 
-const PricingCard = ({ title, description, price, features, selectedPeriod }: { title: string, description: string, price: number, features: string[], selectedPeriod: "monthly" | "yearly" }) => {
+const PricingCard = ({ title, description, price, features, selectedPeriod, ctaVariant }: { title: string, description: string, price: number, features: string[], selectedPeriod: "monthly" | "yearly", ctaVariant: ButtonProps["variant"] }) => {
     const t = useTranslations("pages.pricing");
     const { getCurrencySymbol } = usePricingContext();
     return (
         <Card className="shadow-lg w-96">
             <CardHeader className="h-32">
+                <div className="flex items-center justify-between">
                 <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+                {selectedPeriod === "yearly" && <span className="text-muted-foreground text-xs">{t("billedYearly")}</span>}
+                </div>
                 <CardDescription className="text-muted-foreground">{description}</CardDescription>
             </CardHeader>
             <CardContent>
-                <p className="mb-4"><span className="text-3xl font-bold"><NumberTicker value={price} />{getCurrencySymbol()}</span> <span className="text-muted-foreground">{selectedPeriod === "monthly" ? t("monthly") : t("yearly")}</span></p>
-                <Button variant="outline" className="w-full mb-4" asChild>
-                    <Link href="/app">
+                <p className="mb-4"><span className="text-3xl font-bold"><NumberTicker value={selectedPeriod === "monthly" ? price : price / 12} />{getCurrencySymbol()}</span> <span className="text-muted-foreground">{t("monthly")}</span></p>
+                <Button variant={ctaVariant} className="w-full mb-4" asChild>
+                    <Link href="/signin?side=register">
                         {t("getStarted")}
                     </Link>
                 </Button>
@@ -41,11 +44,12 @@ export default function PricingPage() {
     const t = useTranslations("pages.pricing");
     const { selectedPeriod, setSelectedPeriod, getPlanPrice } = usePricingContext();
 
-    const cards = [
+    const cards: { plan: PricingPlan, title: string, description: string, ctaVariant: ButtonProps["variant"], features: string[] }[] = [
         {
             plan: PricingPlan.FREE,
             title: t("cards.free.title"),
             description: t("cards.free.description"),
+            ctaVariant: "outline",
             features: [
                 t("cards.free.features.0"),
                 t("cards.free.features.1"),
@@ -56,6 +60,7 @@ export default function PricingPage() {
             plan: PricingPlan.EFFICIENT,
             title: t("cards.efficient.title"),
             description: t("cards.efficient.description"),
+            ctaVariant: "default",
             features: [
                 t("cards.efficient.features.0"),
                 t("cards.efficient.features.1"),
@@ -68,6 +73,7 @@ export default function PricingPage() {
             plan: PricingPlan.PRO,
             title: t("cards.pro.title"),
             description: t("cards.pro.description"),
+            ctaVariant: "outline",
             features: [
                 t("cards.pro.features.0"),
                 t("cards.pro.features.1"),
