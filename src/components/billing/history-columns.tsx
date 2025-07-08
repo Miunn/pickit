@@ -1,0 +1,58 @@
+import { Checkbox } from "../ui/checkbox";
+import { ColumnDef } from "@tanstack/react-table";
+
+export type BillingHistory = {
+    date: Date;
+    plan: string;
+    amount: number;
+    status: string;
+    paymentMethod: string;
+}
+
+export const historyColumns: ColumnDef<BillingHistory>[] = [
+    {
+        id: "select",
+        header: ({ table }) => (
+            <Checkbox
+                checked={table.getIsAllPageRowsSelected()}
+                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                aria-label="Select all"
+            />
+        ),
+        cell: ({ row }) => (
+            <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                aria-label="Select row"
+            />
+        ),
+    },
+    {
+        accessorKey: "date",
+        header: "Date",
+        cell: ({ row }) => {
+            return <div>{row.original.date.toLocaleDateString()}</div>
+        }
+    },
+    {
+        accessorKey: "amount",
+        header: "Amount",
+        cell: ({ row }) => {
+            return <div>{row.original.amount}</div>
+        }
+    },
+    {
+        accessorKey: "status",
+        header: "Status",
+        cell: ({ row }) => {
+            return <div>{row.original.status}</div>
+        }
+    },
+    {
+        accessorKey: "paymentMethod",
+        header: "Payment Method",
+        cell: ({ row }) => {
+            return <div>{row.original.paymentMethod}</div>
+        }
+    }
+]

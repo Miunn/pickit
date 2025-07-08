@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "maxAlbums" INTEGER NOT NULL DEFAULT 10,
+ADD COLUMN     "maxSharingLinks" INTEGER NOT NULL DEFAULT 50;

@@ -1,4 +1,6 @@
 import { getCurrentSession } from "@/lib/session";
+import { getPlanFromPriceId } from "@/lib/utils";
+import { Plan } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -22,7 +24,9 @@ export async function POST(request: NextRequest) {
             },
         ],
         mode: "subscription",
+        customer_email: user.email,
         return_url: `${process.env.NEXT_PUBLIC_APP_URL}/app/account/billing?session_id={CHECKOUT_SESSION_ID}`,
+        metadata: { userId: user.id, plan: getPlanFromPriceId(priceId) ?? Plan.FREE }
     });
 
     return NextResponse.json({ clientSecret: session.client_secret });

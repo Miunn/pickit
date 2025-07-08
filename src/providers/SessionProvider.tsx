@@ -1,17 +1,18 @@
 'use client'
 
-import { Session, User } from "@prisma/client";
+import { Session } from "@prisma/client";
+import { UserWithCounts } from "@/lib/definitions";
 import { createContext, useContext } from "react";
 
 interface SessionProviderType {
-    user: User | null;
+    user: UserWithCounts | null;
     session: Session | null;
     isGuest: boolean;
 }
 
 const SessionContext = createContext<SessionProviderType>({} as SessionProviderType);
 
-export default function SessionProvider({ children, user, session }: { children: React.ReactNode, user: User | null, session: Session | null }) {
+export default function SessionProvider({ children, user, session }: { children: React.ReactNode, user: UserWithCounts | null, session: Session | null }) {
     const isGuest = !session;
 
     return <SessionContext.Provider value={{ user, session, isGuest }}>{children}</SessionContext.Provider>;

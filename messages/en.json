@@ -1952,6 +1952,13 @@
       },
       "myplan": {
         "title": "Your plan"
+      },
+      "currentPlan": "Current plan",
+      "albums": {
+        "using": "Created {used} of {max} albums"
+      },
+      "sharing": {
+        "using": "{used} of {max} sharing links created"
       }
     }
   }

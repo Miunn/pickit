@@ -231,6 +231,12 @@ const userWithNotifications = Prisma.validator<Prisma.UserDefaultArgs>()({
 
 export type UserWithNotifications = Prisma.UserGetPayload<typeof userWithNotifications>
 
+const userWithCounts = Prisma.validator<Prisma.UserDefaultArgs>()({
+    include: { _count: { select: { folders: true } } }
+})
+
+export type UserWithCounts = Prisma.UserGetPayload<typeof userWithCounts>
+
 const lightFolders = Prisma.validator<Prisma.FolderDefaultArgs>()({
     select: { id: true, name: true }
 })

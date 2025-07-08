@@ -194,13 +194,16 @@ model Notification {
 
 model User {
   id                        String    @id @default(cuid())
+  stripeCustomerId          String?   @unique
   name                      String
   email                     String    @unique
   emailVerified             Boolean   @default(false)
   emailVerificationDeadline DateTime?
   image                     String?
   usedStorage               BigInt    @default(0)
-  maxStorage                BigInt    @default(5368709120)
+  maxStorage                BigInt    @default(5000000000)
+  maxAlbums                 Int       @default(10)
+  maxSharingLinks           Int       @default(50)
   role                      Role[]    @default([USER])
   password                  String?
   sessions                  Session[]

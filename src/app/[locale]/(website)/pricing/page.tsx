@@ -11,20 +11,20 @@ import { CheckIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Fragment } from "react";
 
-const PricingCard = ({ title, description, price, features, selectedPeriod, ctaVariant }: { title: string, description: string, price: number, features: string[], selectedPeriod: "monthly" | "yearly", ctaVariant: ButtonProps["variant"] }) => {
+const PricingCard = ({ name, description, price, features, selectedPeriod, ctaVariant }: { name: string, description: string, price: { monthly: number, yearly: number }, features: string[], selectedPeriod: "monthly" | "yearly", ctaVariant: ButtonProps["variant"] }) => {
     const t = useTranslations("pages.pricing");
     const { getCurrencySymbol } = usePricingContext();
     return (
         <Card className="shadow-lg w-96">
             <CardHeader className="h-32">
                 <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+                <CardTitle className="text-2xl font-bold">{name}</CardTitle>
                 {selectedPeriod === "yearly" && <span className="text-muted-foreground text-xs">{t("billedYearly")}</span>}
                 </div>
                 <CardDescription className="text-muted-foreground">{description}</CardDescription>
             </CardHeader>
             <CardContent>
-                <p className="mb-4"><span className="text-3xl font-bold"><NumberTicker value={selectedPeriod === "monthly" ? price : price / 12} />{getCurrencySymbol()}</span> <span className="text-muted-foreground">{t("monthly")}</span></p>
+                <p className="mb-4"><span className="text-3xl font-bold"><NumberTicker value={selectedPeriod === "monthly" ? price.monthly : price.yearly / 12} />{getCurrencySymbol()}</span> <span className="text-muted-foreground">{t("monthly")}</span></p>
                 <Button variant={ctaVariant} className="w-full mb-4" asChild>
                     <Link href="/signin?side=register">
                         {t("getStarted")}
@@ -42,46 +42,7 @@ const PricingCard = ({ title, description, price, features, selectedPeriod, ctaV
 
 export default function PricingPage() {
     const t = useTranslations("pages.pricing");
-    const { selectedPeriod, setSelectedPeriod, getPlanPrice } = usePricingContext();
-
-    const cards: { plan: PricingPlan, title: string, description: string, ctaVariant: ButtonProps["variant"], features: string[] }[] = [
-        {
-            plan: PricingPlan.FREE,
-            title: t("cards.free.title"),
-            description: t("cards.free.description"),
-            ctaVariant: "outline",
-            features: [
-                t("cards.free.features.0"),
-                t("cards.free.features.1"),
-                t("cards.free.features.2"),
-            ],
-        },
-        {
-            plan: PricingPlan.EFFICIENT,
-            title: t("cards.efficient.title"),
-            description: t("cards.efficient.description"),
-            ctaVariant: "default",
-            features: [
-                t("cards.efficient.features.0"),
-                t("cards.efficient.features.1"),
-                t("cards.efficient.features.2"),
-                t("cards.efficient.features.3"),
-                t("cards.efficient.features.4"),
-            ],
-        },
-        {
-            plan: PricingPlan.PRO,
-            title: t("cards.pro.title"),
-            description: t("cards.pro.description"),
-            ctaVariant: "outline",
-            features: [
-                t("cards.pro.features.0"),
-                t("cards.pro.features.1"),
-                t("cards.pro.features.2"),
-                t("cards.pro.features.3"),
-            ],
-        }
-    ]
+    const { selectedPeriod, setSelectedPeriod, getPlanPrice, plans } = usePricingContext();
 
     return (
         <div className="max-w-7xl mx-auto mt-24">
@@ -95,9 +56,9 @@ export default function PricingPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 content-center">
-                {cards.map((card) => (
-                    <Fragment key={card.title}>
-                        <PricingCard price={getPlanPrice(card.plan)} selectedPeriod={selectedPeriod} {...card} />
+                {Object.entries(plans).map(([plan, value]) => (
+                    <Fragment key={plan}>
+                        <PricingCard selectedPeriod={selectedPeriod} {...value} />
                     </Fragment>
                 ))}
             </div>

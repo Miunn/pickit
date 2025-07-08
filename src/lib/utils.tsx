@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { FileType } from "@prisma/client";
+import { FileType, Plan } from "@prisma/client";
 import { FolderWithFilesWithFolderAndComments, FileWithFolder } from "./definitions";
 import { toast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner"
@@ -10,6 +10,24 @@ import JSZip from "jszip";
 import { Progress } from "@/components/ui/progress";
 import axios, { AxiosRequestConfig } from "axios";
 import { Loader2 } from "lucide-react";
+
+export const plansBenefits: Record<Plan, { storage: number, albums: number, sharingLinks: number }> = {
+    [Plan.FREE]: {
+        storage: 5000000000,
+        albums: 10,
+        sharingLinks: 50,
+    },
+    [Plan.EFFICIENT]: {
+        storage: 10000000000,
+        albums: 20,
+        sharingLinks: 100,
+    },
+    [Plan.PRO]: {
+        storage: 20000000000,
+        albums: 50,
+        sharingLinks: 200,
+    }
+}
 
 export function formatBytes(
 	bytes: number,
@@ -234,6 +252,65 @@ export const getSortedImagesVideosContent = (arr: FileWithFolder[], sort: Images
 			return arr.sort((a, b) => b.position - a.position)
 		default:
 			return arr;
+	}
+}
+
+export const getPlanFromString = (plan: string): Plan => {
+	switch (plan.toLowerCase()) {
+		case "free":
+			return Plan.FREE;
+		case "efficient":
+			return Plan.EFFICIENT;
+		case "pro":
+			return Plan.PRO;
+		default:
+			return Plan.FREE;
+	}
+}
+
+export const getPlanFromPriceId = (priceId: string) => {
+	switch (priceId) {
+		case process.env.NEXT_PUBLIC_PRICING_BASIC_YEARLY:
+		case process.env.NEXT_PUBLIC_PRICING_BASIC_MONTHLY:
+			return Plan.FREE;
+		case process.env.NEXT_PUBLIC_PRICING_EFFICIENT_YEARLY:
+		case process.env.NEXT_PUBLIC_PRICING_EFFICIENT_MONTHLY:
+			return Plan.EFFICIENT;
+		case process.env.NEXT_PUBLIC_PRICING_PRO_YEARLY:
+		case process.env.NEXT_PUBLIC_PRICING_PRO_MONTHLY:
+			return Plan.PRO;
+		default:
+			return null;
+	}
+}
+
+export const getLimitsFromPlan = (plan: Plan): { storage: number, albums: number, sharingLinks: number } => {
+	console.log("Benefits", plansBenefits.PRO);
+	switch (plan) {
+		case Plan.FREE:
+			return {
+				storage: plansBenefits.FREE.storage,
+				albums: plansBenefits.FREE.albums,
+				sharingLinks: plansBenefits.FREE.sharingLinks,
+			}
+		case Plan.EFFICIENT:
+			return {
+				storage: plansBenefits.EFFICIENT.storage,
+				albums: plansBenefits.EFFICIENT.albums,
+				sharingLinks: plansBenefits.EFFICIENT.sharingLinks,
+			}
+		case Plan.PRO:
+			return {
+				storage: plansBenefits.PRO.storage,
+				albums: plansBenefits.PRO.albums,
+				sharingLinks: plansBenefits.PRO.sharingLinks,
+			}
+		default:
+			return {
+				storage: 0,
+				albums: 0,
+				sharingLinks: 0,
+			}
 	}
 }
 

@@ -1,9 +1,10 @@
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from "@oslojs/encoding";
 import { sha256 } from "@oslojs/crypto/sha2";
 import { prisma } from "./prisma";
-import type { User, Session } from "@prisma/client";
+import type { Session } from "@prisma/client";
 import { cookies } from "next/headers";
 import { cache } from "react";
+import { UserWithCounts } from "./definitions";
 
 export function generateSessionToken(): string {
 	const bytes = new Uint8Array(20);
@@ -29,7 +30,7 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 	const result = await prisma.session.findUnique({
 		where: { sessionToken: sessionId },
-		include: { user: true }
+		include: { user: { include: { _count: { select: { folders: true } } } } }
 	});
 	if (result === null) {
 		return { session: null, user: null };
@@ -92,5 +93,5 @@ export async function deleteSessionTokenCookie(): Promise<void> {
 }
 
 export type SessionValidationResult =
-	| { session: Session; user: User }
+	| { session: Session; user: UserWithCounts }
 	| { session: null; user: null };

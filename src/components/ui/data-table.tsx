@@ -31,6 +31,7 @@ interface DataTableProps<TData, TValue> {
   filterPlaceholder?: string
   filterColumn?: string
   rightHeadingNodes?: React.ReactNode
+  hideHeader?: boolean
 }
 
 export function DataTable<TData, TValue>({
@@ -40,7 +41,8 @@ export function DataTable<TData, TValue>({
   setSelection,
   filterPlaceholder,
   filterColumn,
-  rightHeadingNodes
+  rightHeadingNodes,
+  hideHeader
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
 
@@ -65,7 +67,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between py-4">
+      <div className={`flex items-center justify-between py-4 ${hideHeader ? "hidden" : ""}`}>
         {
           filterColumn
             ? <Input

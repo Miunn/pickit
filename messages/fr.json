@@ -2081,6 +2081,13 @@
       },
       "myplan": {
         "title": "Mon abonnement"
+      },
+      "currentPlan": "Actuel",
+      "sharing": {
+        "using": "{used} sur {max} liens de partage créés"
+      },
+      "albums": {
+        "using": "{used} sur {max} albums créés"
       }
     }
   }
