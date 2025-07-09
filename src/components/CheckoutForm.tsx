@@ -6,6 +6,7 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
+import { useSession } from "@/providers/SessionProvider";
 
 const validateEmail = async (email: string, checkout: CheckoutContextValue) => {
 	const updateResult = await checkout.updateEmail(email);
@@ -14,7 +15,7 @@ const validateEmail = async (email: string, checkout: CheckoutContextValue) => {
 	return { isValid, message: !isValid ? updateResult.error.message : null };
 }
 
-const EmailInput = ({ email, setEmail, error, setError }: { email: string, setEmail: (email: string) => void, error: string | null, setError: React.Dispatch<React.SetStateAction<string | null>> }) => {
+const EmailInput = ({ email, setEmail, error, setError, disabled }: { email: string, setEmail: (email: string) => void, error: string | null, setError: React.Dispatch<React.SetStateAction<string | null>>, disabled?: boolean }) => {
 	const checkout = useCheckout();
 
 	const handleBlur = async () => {
@@ -35,7 +36,7 @@ const EmailInput = ({ email, setEmail, error, setError }: { email: string, setEm
 
 	return (
 		<>
-			<Label htmlFor="email">Email</Label>
+			<Label htmlFor="email" className="font-normal">Email</Label>
 			<Input
 					id="email"
 					type="text"
@@ -43,6 +44,7 @@ const EmailInput = ({ email, setEmail, error, setError }: { email: string, setEm
 					onChange={handleChange}
 					onBlur={handleBlur}
 					placeholder="you@example.com"
+					disabled={disabled}
 				/>
 			{error && <div id="email-errors" className="text-destructive text-sm mt-1">{error}</div>}
 		</>
@@ -51,8 +53,9 @@ const EmailInput = ({ email, setEmail, error, setError }: { email: string, setEm
 
 export default function CheckoutForm() {
 	const checkout = useCheckout();
+	const { user } = useSession();
+	const [email, setEmail] = useState(user?.email || "");
 
-	const [email, setEmail] = useState("");
 	const [emailError, setEmailError] = useState<string | null>(null);
 	const [message, setMessage] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
@@ -85,12 +88,13 @@ export default function CheckoutForm() {
 	};
 
 	return (
-		<form onSubmit={handleSubmit} className="max-w-lg border border-gray-200 rounded-lg p-4">
+		<form onSubmit={handleSubmit} className="border border-gray-200 rounded-lg p-4 space-y-2">
 			<EmailInput
 				email={email}
 				setEmail={setEmail}
 				error={emailError}
 				setError={setEmailError}
+				disabled={true}
 			/>
 			<PaymentElement id="payment-element" options={{
 				layout: {

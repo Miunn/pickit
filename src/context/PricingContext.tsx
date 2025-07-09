@@ -11,12 +11,14 @@ type PricingContextType = {
     getPlanPrice: (plan: Plan) => number;
     getCurrencySymbol: () => string;
     plans: Record<Plan, PricingPlan>;
+    getPriceId: (plan: Plan, period: "monthly" | "yearly") => string;
 }
 
 const PricingContext = createContext<PricingContextType | undefined>(undefined);
 
 export type PricingPlan = {
     plan: Plan;
+    priceId: { monthly: string, yearly: string };
     name: string;
     price: { monthly: number, yearly: number };
     ctaVariant: ButtonProps["variant"];
@@ -41,13 +43,17 @@ export const usePricingContext = () => {
 
 export const PricingProvider = ({ children }: { children: React.ReactNode }) => {
     const [selectedPeriod, setSelectedPeriod] = useState<"monthly" | "yearly">("yearly");
-    const [currency, setCurrency] = useState<SupportedCurrency>(SupportedCurrency.USD);
+    const [currency, setCurrency] = useState<SupportedCurrency>(SupportedCurrency.EUR);
 
     const t = useTranslations("pages.pricing");
 
     const plans: Record<Plan, PricingPlan> = {
         [Plan.FREE]: {
             plan: Plan.FREE,
+            priceId: {
+                monthly: process.env.NEXT_PUBLIC_PRICING_FREE_MONTHLY!,
+                yearly: process.env.NEXT_PUBLIC_PRICING_FREE_YEARLY!,
+            },
             name: t("cards.free.title"),
             price: { monthly: 0, yearly: 0 },
             description: t("cards.free.description"),
@@ -60,8 +66,12 @@ export const PricingProvider = ({ children }: { children: React.ReactNode }) => 
         },
         [Plan.EFFICIENT]: {
             plan: Plan.EFFICIENT,
+            priceId: {
+                monthly: process.env.NEXT_PUBLIC_PRICING_EFFICIENT_MONTHLY!,
+                yearly: process.env.NEXT_PUBLIC_PRICING_EFFICIENT_YEARLY!,
+            },
             name: t("cards.efficient.title"),
-            price: { monthly: 10, yearly: 100 },
+            price: { monthly: 5, yearly: 50 },
             description: t("cards.efficient.description"),
             ctaVariant: "default",
             features: [
@@ -74,8 +84,12 @@ export const PricingProvider = ({ children }: { children: React.ReactNode }) => 
         },
         [Plan.PRO]: {
             plan: Plan.PRO,
+            priceId: {
+                monthly: process.env.NEXT_PUBLIC_PRICING_PRO_MONTHLY!,
+                yearly: process.env.NEXT_PUBLIC_PRICING_PRO_YEARLY!,
+            },
             name: t("cards.pro.title"),
-            price: { monthly: 20, yearly: 180 },
+            price: { monthly: 10, yearly: 100 },
             description: t("cards.pro.description"),
             ctaVariant: "outline",
             features: [
@@ -91,6 +105,10 @@ export const PricingProvider = ({ children }: { children: React.ReactNode }) => 
         return plans[plan].price[selectedPeriod];
     }
 
+    const getPriceId = (plan: Plan, period: "monthly" | "yearly") => {
+        return plans[plan].priceId[period];
+    }
+
     const getCurrencySymbol = () => {
         switch (currency) {
             case SupportedCurrency.USD:
@@ -101,7 +119,7 @@ export const PricingProvider = ({ children }: { children: React.ReactNode }) => 
     }
 
     return (
-        <PricingContext.Provider value={{ selectedPeriod, setSelectedPeriod, getPlanPrice, getCurrencySymbol, plans }}>
+        <PricingContext.Provider value={{ selectedPeriod, setSelectedPeriod, getPlanPrice, getCurrencySymbol, plans, getPriceId }}>
             {children}
         </PricingContext.Provider>
     )

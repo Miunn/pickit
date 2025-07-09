@@ -1948,7 +1948,12 @@
       },
       "upgrade": {
         "title": "Upgrade your plan",
-        "description": "Need more space ? More albums ? More features ? Upgrade your plan right here"
+        "description": "Need more space ? More albums ? More features ? Upgrade your plan right here",
+        "yearly": "Annual bill",
+        "monthly": "Monthly bill",
+        "billedYearly": "Billed yearly",
+        "button": "Upgrade my plan",
+        "backToFree": "Go back to free"
       },
       "myplan": {
         "title": "Your plan"
@@ -1959,7 +1964,11 @@
       },
       "sharing": {
         "using": "{used} of {max} sharing links created"
-      }
+      },
+      "byMonth": "/ month"
+    },
+    "checkoutDialog": {
+      "title": "Go to {plan}"
     }
   }
 }

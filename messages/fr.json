@@ -2077,7 +2077,12 @@
       },
       "upgrade": {
         "title": "Changer d'abonnement",
-        "description": "Besoin de plus d'espace ? D'albums ? D'autres fonctionnalités ? Changez votre abonnement juste ici"
+        "description": "Besoin de plus d'espace ? D'albums ? D'autres fonctionnalités ? Changez votre abonnement juste ici",
+        "yearly": "Annuellement",
+        "monthly": "Mensuellement",
+        "billedYearly": "Facturé annuellement",
+        "button": "Mettre à jour mon abonnement",
+        "backToFree": "Retour à l'abonnement gratuit"
       },
       "myplan": {
         "title": "Mon abonnement"
@@ -2088,7 +2093,11 @@
       },
       "albums": {
         "using": "{used} sur {max} albums créés"
-      }
+      },
+      "byMonth": "/ mois"
+    },
+    "checkoutDialog": {
+      "title": "Abonnement {plan}"
     }
   }
 }
