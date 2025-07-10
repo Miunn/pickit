@@ -17,7 +17,7 @@ export default function CheckoutDialog({ plan, children, open, onOpenChange }: {
     const { getPriceId, selectedPeriod, plans } = usePricingContext();
 
     const clientSecretPromise = useMemo(async () => {
-        const response = await fetch('/api/stripe/checkout', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/stripe/checkout`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
