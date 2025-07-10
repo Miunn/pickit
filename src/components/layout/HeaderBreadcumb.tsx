@@ -35,6 +35,8 @@ function getCurrentPath(pathname: string, folderName?: string): { path: Breadcru
         return { path: pathMap[tokens[1]] || null };
     } else if (tokens[1] === 'folders' && tokens[2]) {
         return { path: { type: 'folder', folderId: tokens[2], folderName } };
+    } else if (tokens[1] === 'account') {
+        return { path: { type: 'account' } };
     } else if (tokens[1] === 'administration' && tokens[2] === 'users' && tokens[3]) {
         return { 
             path: { type: 'administrationUsers', userId: tokens[3] },

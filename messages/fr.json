@@ -233,7 +233,12 @@
             "500 liens de partage"
           ]
         }
-      }
+      },
+      "billedYearly": "Facturé annuellement"
+    },
+    "billing": {
+      "plan": "Abonnement {plan, select, free {gratuit} efficient {efficace} pro {pro} other {gratuit}}",
+      "subtitle": "Gérez votre abonnement"
     }
   },
   "components": {
@@ -2063,6 +2068,37 @@
       "clickButtonToAccess": "Cliquez ci-dessous pour ouvrir l'album",
       "lockedFolder": "{name} a vérouillé ce dossier par un code que vous devrez renseigner avant de pouvoir accéder à son contenu.                                         Si vous ne connaissez pas ce code, veuillez contacter {name} pour l'obtenir.",
       "regard": "Cordialement,<br/>Léquipe <strong>{appName}</strong>"
+    }
+  },
+  "billing": {
+    "dashboard": {
+      "storage": {
+        "using": "Vous utilisez actuellement {used} de vos {max} d'espace"
+      },
+      "upgrade": {
+        "title": "Changer d'abonnement",
+        "description": "Besoin de plus d'espace ? D'albums ? D'autres fonctionnalités ? Changez votre abonnement juste ici",
+        "yearly": "Annuellement",
+        "monthly": "Mensuellement",
+        "billedYearly": "Facturé annuellement",
+        "button": "Mettre à jour mon abonnement",
+        "backToFree": "Retour à l'abonnement gratuit",
+        "changePlan": "Changer d'abonnement"
+      },
+      "myplan": {
+        "title": "Mon abonnement"
+      },
+      "currentPlan": "Actuel",
+      "sharing": {
+        "using": "{used} sur {max} liens de partage créés"
+      },
+      "albums": {
+        "using": "{used} sur {max} albums créés"
+      },
+      "byMonth": "/ mois"
+    },
+    "checkoutDialog": {
+      "title": "Abonnement {plan}"
     }
   }
 }

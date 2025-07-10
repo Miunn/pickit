@@ -232,7 +232,12 @@
             "500 sharing links"
           ]
         }
-      }
+      },
+      "billedYearly": "Billed yearly"
+    },
+    "billing": {
+      "plan": "{plan, select, free {Free} efficient {Efficient} pro {Pro} other {Free}} plan",
+      "subtitle": "Manage your subscription"
     }
   },
   "components": {
@@ -1934,6 +1939,37 @@
       "nameAddedFiles": "{name} added {count, plural, =1 {a new file} other {# new files}} to {folderName}",
       "clickButtonToAccess": "Click below to open the album",
       "regard": "Best regards,<br/>The <strong>{appName}</strong> team"
+    }
+  },
+  "billing": {
+    "dashboard": {
+      "storage": {
+        "using": "You're currently using {used} over your {max} of storage"
+      },
+      "upgrade": {
+        "title": "Upgrade your plan",
+        "description": "Need more space ? More albums ? More features ? Upgrade your plan right here",
+        "yearly": "Annual bill",
+        "monthly": "Monthly bill",
+        "billedYearly": "Billed yearly",
+        "button": "Upgrade my plan",
+        "backToFree": "Go back to free",
+        "changePlan": "Change plan"
+      },
+      "myplan": {
+        "title": "Your plan"
+      },
+      "currentPlan": "Current plan",
+      "albums": {
+        "using": "Created {used} of {max} albums"
+      },
+      "sharing": {
+        "using": "{used} of {max} sharing links created"
+      },
+      "byMonth": "/ month"
+    },
+    "checkoutDialog": {
+      "title": "Go to {plan}"
     }
   }
 }
