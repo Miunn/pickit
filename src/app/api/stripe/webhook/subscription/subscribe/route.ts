@@ -20,11 +20,12 @@ export async function POST(request: NextRequest) {
         return new NextResponse("Invalid signature", { status: 400 });
     }
 
-    if (event.type !== "payment_intent.succeeded") {
+    if (event.type !== "checkout.session.completed") {
         return new NextResponse("Invalid event type", { status: 400 });
     }
 
-    const subscription: Stripe.PaymentIntent = event.data.object;
+    const session = event.data.object as Stripe.Checkout.Session;
+    const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
 
     const userId = subscription.metadata.userId;
     const plan = getPlanFromString(subscription.metadata.plan);

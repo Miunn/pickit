@@ -26,7 +26,8 @@ export async function POST(request: NextRequest) {
         mode: "subscription",
         customer_email: user.email,
         return_url: `${process.env.NEXT_PUBLIC_APP_URL}/app/account/billing?session_id={CHECKOUT_SESSION_ID}`,
-        metadata: { userId: user.id, plan: getPlanFromPriceId(priceId) ?? Plan.FREE }
+        metadata: { userId: user.id, plan: getPlanFromPriceId(priceId) ?? Plan.FREE },
+        automatic_tax: { enabled: true }
     });
 
     return NextResponse.json({ clientSecret: session.client_secret });

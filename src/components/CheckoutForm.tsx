@@ -1,12 +1,13 @@
 'use client'
 
-import { CheckoutContextValue, PaymentElement, useCheckout } from "@stripe/react-stripe-js"
+import { AddressElement, CheckoutContextValue, PaymentElement, useCheckout } from "@stripe/react-stripe-js"
 import { useState } from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
 import { useSession } from "@/providers/SessionProvider";
+import { updateSubscription } from "@/actions/subscriptions";
 
 const validateEmail = async (email: string, checkout: CheckoutContextValue) => {
 	const updateResult = await checkout.updateEmail(email);
@@ -64,15 +65,7 @@ export default function CheckoutForm() {
 		e.preventDefault();
 
 		setIsLoading(true);
-
-		const { isValid, message } = await validateEmail(email, checkout);
-		if (!isValid) {
-			setEmailError(message);
-			setMessage(message);
-			setIsLoading(false);
-			return;
-		}
-
+		
 		const confirmResult = await checkout.confirm();
 
 		// This point will only be reached if there is an immediate error when
@@ -102,6 +95,11 @@ export default function CheckoutForm() {
 					defaultCollapsed: false,
 				}
 			}} />
+			<AddressElement
+				options={{
+					mode: "billing",
+				}}
+			/>
 			<Button disabled={isLoading} id="submit" className="w-full my-3">
 				{isLoading ? (
 					<Loader2 className="size-4 animate-spin" />

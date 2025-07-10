@@ -1,13 +1,14 @@
 'use client'
 
-import { CheckoutProvider } from "@stripe/react-stripe-js";
-import { useMemo } from "react";
+import { CheckoutProvider, Elements } from "@stripe/react-stripe-js";
+import { useEffect, useMemo, useState } from "react";
 import CheckoutForm from "../CheckoutForm";
 import { loadStripe } from "@stripe/stripe-js";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { usePricingContext } from "@/context/PricingContext";
 import { Plan } from "@prisma/client";
 import { useTranslations } from "next-intl";
+import { createStripeSubscription } from "@/actions/create";
 
 const stripe = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -16,15 +17,16 @@ export default function CheckoutDialog({ plan, children, open, onOpenChange }: {
     const { getPriceId, selectedPeriod, plans } = usePricingContext();
 
     const clientSecretPromise = useMemo(async () => {
-        const res = await fetch("/api/stripe/checkout", {
-            method: "POST",
-            body: JSON.stringify({
-                priceId: getPriceId(plan, selectedPeriod),
-            }),
-        });
-        const data = await res.json();
+        const response = await fetch('/api/stripe/checkout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ priceId: getPriceId(plan, selectedPeriod) }),
+        })
+        const data = await response.json();
         return data.clientSecret;
-    }, [getPriceId, plan, selectedPeriod]);
+    }, [plan, getPriceId, selectedPeriod]);
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -48,7 +50,7 @@ export default function CheckoutDialog({ plan, children, open, onOpenChange }: {
                                     colorPrimary: '#1f7551',
                                 }
                             }
-                        },
+                        }
                     }}>
                     <CheckoutForm />
                 </CheckoutProvider>

@@ -2,6 +2,9 @@ import { AccessToken } from "@prisma/client";
 import { prisma } from "./prisma";
 import { getCurrentSession } from "./session";
 import * as bcrypt from "bcryptjs";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function hasFolderOwnerAccess(folderId: string): Promise<boolean> {
     const { user } = await getCurrentSession();
@@ -255,4 +258,20 @@ export async function isAccessWithTokenValid(shareToken?: string | null, key?: s
     }
 
     return true;
+}
+
+export async function hasActiveSubscription(): Promise<boolean> {
+    const { user } = await getCurrentSession();
+
+    if (!user) {
+        return false;
+    }
+
+    if (!user.stripeSubscriptionId) {
+        return false;
+    }
+
+    const subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
+
+    return subscription.status === "active" || subscription.status === "trialing";
 }

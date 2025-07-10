@@ -10,6 +10,9 @@ import { Badge } from "../ui/badge";
 import { Switch } from "../ui/switch";
 import { Button } from "../ui/button";
 import CheckoutDialog from "./CheckoutDialog";
+import { updateSubscription } from "@/actions/subscriptions";
+import { Loader2 } from "lucide-react";
+import { cancelStripeSubscription } from "@/actions/create";
 
 const PlanCard = ({ selected, isCurrentPlan, plan, name, price, currency, isYearly, features }: { selected: boolean, isCurrentPlan: boolean, plan: Plan, name: string, price: { monthly: number, yearly: number }, currency: string, isYearly: boolean, features: string[] }) => {
     const t = useTranslations("billing.dashboard");
@@ -36,10 +39,14 @@ const PlanCard = ({ selected, isCurrentPlan, plan, name, price, currency, isYear
 
 export default function UpdatePlan({ currentPlan }: { currentPlan: Plan }) {
     const t = useTranslations("billing.dashboard");
-    const { plans, getCurrencySymbol } = usePricingContext();
+    const { plans, getCurrencySymbol, getPriceId } = usePricingContext();
 
     const [selectedPlan, setSelectedPlan] = useState<Plan>(currentPlan);
     const [isYearly, setIsYearly] = useState(true);
+
+    const [backToFree, setBackToFree] = useState(false);
+    const [upgrade, setUpgrade] = useState(false);
+    const [changePlan, setChangePlan] = useState(false);
 
     return (
         <Card className="h-auto flex flex-col items-start gap-1">
@@ -59,16 +66,29 @@ export default function UpdatePlan({ currentPlan }: { currentPlan: Plan }) {
                     ))}
                 </RadioGroup>
 
-                {selectedPlan !== Plan.FREE
-                    ? <CheckoutDialog plan={selectedPlan}>
-                        <Button className="w-full text-center mt-2" disabled={selectedPlan === currentPlan}>
+                {currentPlan === Plan.FREE ? (
+                    <CheckoutDialog plan={selectedPlan}>
+                        <Button className="w-full text-center mt-2" disabled={selectedPlan === currentPlan || upgrade}>
                             {t("upgrade.button")}
                         </Button>
                     </CheckoutDialog>
-                    : <Button className="w-full text-center mt-2" disabled={selectedPlan === currentPlan}>
-                        {t("upgrade.backToFree")}
+                ) : selectedPlan === Plan.FREE ? (
+                    <Button className="w-full text-center mt-2" disabled={backToFree} onClick={async () => {
+                        setBackToFree(true);
+                        await cancelStripeSubscription();
+                        setBackToFree(false);
+                    }}>
+                        {backToFree && <Loader2 className="w-4 h-4 animate-spin mr-2" />} {t("upgrade.backToFree")}
                     </Button>
-                }
+                ) : (
+                    <Button className="w-full text-center mt-2" disabled={selectedPlan === currentPlan || changePlan} onClick={async () => {
+                        setChangePlan(true);
+                        await updateSubscription(getPriceId(selectedPlan, isYearly ? "yearly" : "monthly"));
+                        setChangePlan(false);
+                    }}>
+                        {t("upgrade.changePlan")}
+                    </Button>
+                )}
             </CardContent>
         </Card>
     )

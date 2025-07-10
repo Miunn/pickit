@@ -5,8 +5,7 @@ const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 const useBillingHistorySWR = () => {
     const { data, error, isLoading, mutate } = useSWR<BillingHistory[]>("/api/stripe/billing/history", fetcher, {
-        revalidateOnFocus: true,
-        refreshInterval: 0,
+        revalidateOnFocus: true
     });
 
     return {

@@ -1953,7 +1953,8 @@
         "monthly": "Monthly bill",
         "billedYearly": "Billed yearly",
         "button": "Upgrade my plan",
-        "backToFree": "Go back to free"
+        "backToFree": "Go back to free",
+        "changePlan": "Change plan"
       },
       "myplan": {
         "title": "Your plan"

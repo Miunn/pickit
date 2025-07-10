@@ -22,6 +22,7 @@ import {
 import { useEffect, useState } from "react"
 import { Input } from "./input"
 import { DataTablePagination } from "./data-table-pagination"
+import { useFormatter } from "next-intl"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -44,7 +45,8 @@ export function DataTable<TData, TValue>({
   rightHeadingNodes,
   hideHeader
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([])
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const formatter = useFormatter();
 
   const table = useReactTable({
     data,
@@ -59,6 +61,11 @@ export function DataTable<TData, TValue>({
       sorting,
       rowSelection: selection,
     },
+    meta: {
+      intl: {
+        formatter
+      }
+    }
   });
 
   useEffect(() => {

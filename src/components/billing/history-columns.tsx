@@ -30,8 +30,15 @@ export const historyColumns: ColumnDef<BillingHistory>[] = [
     {
         accessorKey: "date",
         header: "Date",
-        cell: ({ row }) => {
-            return <div>{row.original.date.toLocaleDateString()}</div>
+        cell: ({ row, table }) => {
+            const formatter = table.options.meta?.intl?.formatter;
+            const date = new Date(row.original.date);
+
+            if (formatter) {
+                return <div className="capitalize">{formatter.dateTime(date, { dateStyle: "long" })}</div>
+            }
+
+            return <div>{date.toLocaleDateString()}</div>
         }
     },
     {
