@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     const session = event.data.object as Stripe.Checkout.Session;
     const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
 
-    const userId = subscription.metadata.userId;
+    const userId = event.data.object.metadata?.userId;
     const plan = getPlanFromString(event.data.object.metadata?.plan ?? Plan.FREE);
     const limits = getLimitsFromPlan(plan);
 
