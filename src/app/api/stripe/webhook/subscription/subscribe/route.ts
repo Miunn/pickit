@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getLimitsFromPlan, getPlanFromString } from "@/lib/utils";
+import { Plan } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -28,7 +29,7 @@ export async function POST(request: NextRequest) {
     const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
 
     const userId = subscription.metadata.userId;
-    const plan = getPlanFromString(subscription.metadata.plan);
+    const plan = getPlanFromString(event.data.object.metadata?.plan ?? Plan.FREE);
     const limits = getLimitsFromPlan(plan);
 
     if (!userId) {
