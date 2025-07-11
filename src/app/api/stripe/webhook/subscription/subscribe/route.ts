@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
         where: { id: userId },
         data: {
             stripeCustomerId: subscription.customer?.toString(),
+            stripeSubscriptionId: subscription.id,
             plan: plan,
             maxStorage: limits.storage,
             maxAlbums: limits.albums,
