@@ -17,16 +17,20 @@ export const updateSubscription = async (priceId: string) => {
         };
     }
 
-    let subscription: Stripe.Subscription;
-
     if (!user.stripeSubscriptionId) {
-        subscription = await createStripeSubscription(priceId);
-    } else {
-        subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
+        return {
+            status: "error",
+            message: "Subscription not found"
+        };
     }
 
+    const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);;
+
     if (subscription.status === "incomplete_expired") {
-        subscription = await createStripeSubscription(priceId);
+        return {
+            status: "error",
+            message: "Subscription is incomplete"
+        }
     }
 
     await stripe.subscriptions.update(subscription.id, {

@@ -12,7 +12,7 @@
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://remicaulier.fr:5434/postgres</jdbc-url>
+      <jdbc-url>jdbc:postgresql://echomori.fr:5434/postgres</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
     <data-source source="LOCAL" name="Production" uuid="27ff650f-71ca-44f2-858f-886b2b67a877">
