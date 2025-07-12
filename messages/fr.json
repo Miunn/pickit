@@ -2107,7 +2107,9 @@
       },
       "now": {
         "title": "Aujourd'hui"
-      }
+      },
+      "freeCredits": "{credits} en crédits",
+      "changePlan": "Changer d'abonnement"
     }
   }
 }

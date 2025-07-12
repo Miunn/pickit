@@ -1978,7 +1978,9 @@
       },
       "now": {
         "title": "Today"
-      }
+      },
+      "freeCredits": "{credits} in credits",
+      "changePlan": "Change plan"
     }
   }
 }
