@@ -60,7 +60,7 @@ export default function UpdatePlan({ currentPlan }: { currentPlan: Plan }) {
                     <Switch id="isYearly" checked={isYearly} onCheckedChange={setIsYearly} />
                     <Label htmlFor="isYearly">{isYearly ? t("upgrade.yearly") : t("upgrade.monthly")}</Label>
                 </div>
-                <RadioGroup value={selectedPlan} onValueChange={(value) => setSelectedPlan(value as Plan)} className="space-y-2">
+                <RadioGroup value={selectedPlan} onValueChange={(value) => setSelectedPlan(value as Plan)} className="space-y-2 mt-2">
                     {Object.values(plans).map((plan) => (
                         <PlanCard key={plan.plan} selected={plan.plan === selectedPlan} isCurrentPlan={plan.plan === currentPlan} currency={getCurrencySymbol()} isYearly={isYearly} {...plan} />
                     ))}

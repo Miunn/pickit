@@ -39,7 +39,9 @@ export const updateSubscription = async (priceId: string) => {
                 id: subscription.items.data[0].id,
                 price: priceId
             }
-        ]
+        ],
+        proration_behavior: "create_prorations",
+        billing_cycle_anchor: "now"
     });
 
     if (subscription.pending_setup_intent !== null) {
