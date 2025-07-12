@@ -140,7 +140,9 @@ export const cancelStripeSubscription = async (): Promise<void> => {
     }
 
     try {
-        await stripe.subscriptions.cancel(user.stripeSubscriptionId);
+        await stripe.subscriptions.update(user.stripeSubscriptionId, {
+            cancel_at_period_end: true
+        });
     } catch (e) {
         console.error(e);
     }

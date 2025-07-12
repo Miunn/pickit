@@ -39,13 +39,10 @@ export const getPreviewInvoiceBeforeUpdate = async (priceId: string) => {
             proration_date: Math.floor(Date.now() / 1000)
         }
     });
-    
-    console.log(invoice);
-    console.log(invoice.lines.data);
 
     return {
         status: "ok",
-        nextAmount: invoice.lines.data[0].amount
+        nextAmount: invoice.lines.data[0].amount / 100
     }
 }
 

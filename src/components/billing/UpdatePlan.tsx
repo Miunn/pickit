@@ -14,6 +14,7 @@ import { getPreviewInvoiceBeforeUpdate, updateSubscription } from "@/actions/sub
 import { Loader2 } from "lucide-react";
 import { cancelStripeSubscription } from "@/actions/create";
 import { toast } from "sonner";
+import ChangePlanDialog from "./ChangePlanDialog";
 
 const PlanCard = ({ selected, isCurrentPlan, plan, name, price, currency, isYearly, features }: { selected: boolean, isCurrentPlan: boolean, plan: Plan, name: string, price: { monthly: number, yearly: number }, currency: string, isYearly: boolean, features: string[] }) => {
     const t = useTranslations("billing.dashboard");
@@ -47,9 +48,13 @@ export default function UpdatePlan({ currentPlan }: { currentPlan: Plan }) {
 
     const [backToFree, setBackToFree] = useState(false);
     const [upgrade, setUpgrade] = useState(false);
+
     const [changePlan, setChangePlan] = useState(false);
+    const [changePlanDialogOpen, setChangePlanDialogOpen] = useState(false);
+    const [nextAmount, setNextAmount] = useState(0);
 
     return (
+        <>
         <Card className="h-auto flex flex-col items-start gap-1">
             <CardHeader>
                 <CardTitle>{t("upgrade.title")}</CardTitle>
@@ -85,20 +90,20 @@ export default function UpdatePlan({ currentPlan }: { currentPlan: Plan }) {
                     <Button className="w-full text-center mt-2" disabled={selectedPlan === currentPlan || changePlan} onClick={async () => {
                         setChangePlan(true);
                         const { status, nextAmount } = await getPreviewInvoiceBeforeUpdate(getPriceId(selectedPlan, isYearly ? "yearly" : "monthly"));
+                        setChangePlan(false);
                         if (status === "error") {
                             toast.error(t("upgrade.error"));
-                            setChangePlan(false);
                             return;
                         }
-                        console.log(nextAmount);
-                        
-                        await updateSubscription(getPriceId(selectedPlan, isYearly ? "yearly" : "monthly"));
-                        setChangePlan(false);
+                        setNextAmount(nextAmount ?? 0);
+                        setChangePlanDialogOpen(true);
                     }}>
                         {t("upgrade.changePlan")}
                     </Button>
                 )}
             </CardContent>
         </Card>
+        <ChangePlanDialog open={changePlanDialogOpen} setOpen={setChangePlanDialogOpen} newPlan={selectedPlan} nextAmount={nextAmount} isYearly={isYearly} />
+        </>
     )
 }
