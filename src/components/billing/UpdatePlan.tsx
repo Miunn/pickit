@@ -10,9 +10,10 @@ import { Badge } from "../ui/badge";
 import { Switch } from "../ui/switch";
 import { Button } from "../ui/button";
 import CheckoutDialog from "./CheckoutDialog";
-import { updateSubscription } from "@/actions/subscriptions";
+import { getPreviewInvoiceBeforeUpdate, updateSubscription } from "@/actions/subscriptions";
 import { Loader2 } from "lucide-react";
 import { cancelStripeSubscription } from "@/actions/create";
+import { toast } from "sonner";
 
 const PlanCard = ({ selected, isCurrentPlan, plan, name, price, currency, isYearly, features }: { selected: boolean, isCurrentPlan: boolean, plan: Plan, name: string, price: { monthly: number, yearly: number }, currency: string, isYearly: boolean, features: string[] }) => {
     const t = useTranslations("billing.dashboard");
@@ -83,6 +84,14 @@ export default function UpdatePlan({ currentPlan }: { currentPlan: Plan }) {
                 ) : (
                     <Button className="w-full text-center mt-2" disabled={selectedPlan === currentPlan || changePlan} onClick={async () => {
                         setChangePlan(true);
+                        const { status, nextAmount } = await getPreviewInvoiceBeforeUpdate(getPriceId(selectedPlan, isYearly ? "yearly" : "monthly"));
+                        if (status === "error") {
+                            toast.error(t("upgrade.error"));
+                            setChangePlan(false);
+                            return;
+                        }
+                        console.log(nextAmount);
+                        
                         await updateSubscription(getPriceId(selectedPlan, isYearly ? "yearly" : "monthly"));
                         setChangePlan(false);
                     }}>
