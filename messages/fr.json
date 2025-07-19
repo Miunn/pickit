@@ -2099,6 +2099,17 @@
     },
     "checkoutDialog": {
       "title": "Abonnement {plan}"
+    },
+    "changePlanPreview": {
+      "title": "Récapitulatif des prochaines étapes vis-à-vis de votre abonnement",
+      "before": {
+        "title": "Avant"
+      },
+      "now": {
+        "title": "Aujourd'hui"
+      },
+      "freeCredits": "{credits} en crédits",
+      "changePlan": "Changer d'abonnement"
     }
   }
 }
