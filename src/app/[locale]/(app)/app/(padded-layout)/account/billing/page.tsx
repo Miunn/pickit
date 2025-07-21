@@ -17,7 +17,7 @@ export default async function BillingPage(props: { params: Promise<{ locale: str
 
     return (
         <div className="flex flex-col gap-1">
-            <h3 className="font-semibold">{t("plan", { plan: user.plan })}</h3>
+            <h3 className="font-semibold">{t("plan", { plan: user.plan.toString().toLowerCase() })}</h3>
             <p className="text-sm text-muted-foreground my-0">{t("subtitle")}</p>
 
             <Separator orientation="horizontal" className="my-6" />

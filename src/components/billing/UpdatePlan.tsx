@@ -10,9 +10,11 @@ import { Badge } from "../ui/badge";
 import { Switch } from "../ui/switch";
 import { Button } from "../ui/button";
 import CheckoutDialog from "./CheckoutDialog";
-import { updateSubscription } from "@/actions/subscriptions";
+import { getPreviewInvoiceBeforeUpdate, updateSubscription } from "@/actions/subscriptions";
 import { Loader2 } from "lucide-react";
 import { cancelStripeSubscription } from "@/actions/create";
+import { toast } from "sonner";
+import ChangePlanDialog from "./ChangePlanDialog";
 
 const PlanCard = ({ selected, isCurrentPlan, plan, name, price, currency, isYearly, features }: { selected: boolean, isCurrentPlan: boolean, plan: Plan, name: string, price: { monthly: number, yearly: number }, currency: string, isYearly: boolean, features: string[] }) => {
     const t = useTranslations("billing.dashboard");
@@ -46,9 +48,13 @@ export default function UpdatePlan({ currentPlan }: { currentPlan: Plan }) {
 
     const [backToFree, setBackToFree] = useState(false);
     const [upgrade, setUpgrade] = useState(false);
+
     const [changePlan, setChangePlan] = useState(false);
+    const [changePlanDialogOpen, setChangePlanDialogOpen] = useState(false);
+    const [nextAmount, setNextAmount] = useState(0);
 
     return (
+        <>
         <Card className="h-auto flex flex-col items-start gap-1">
             <CardHeader>
                 <CardTitle>{t("upgrade.title")}</CardTitle>
@@ -60,7 +66,7 @@ export default function UpdatePlan({ currentPlan }: { currentPlan: Plan }) {
                     <Switch id="isYearly" checked={isYearly} onCheckedChange={setIsYearly} />
                     <Label htmlFor="isYearly">{isYearly ? t("upgrade.yearly") : t("upgrade.monthly")}</Label>
                 </div>
-                <RadioGroup value={selectedPlan} onValueChange={(value) => setSelectedPlan(value as Plan)} className="space-y-2">
+                <RadioGroup value={selectedPlan} onValueChange={(value) => setSelectedPlan(value as Plan)} className="space-y-2 mt-2">
                     {Object.values(plans).map((plan) => (
                         <PlanCard key={plan.plan} selected={plan.plan === selectedPlan} isCurrentPlan={plan.plan === currentPlan} currency={getCurrencySymbol()} isYearly={isYearly} {...plan} />
                     ))}
@@ -83,13 +89,21 @@ export default function UpdatePlan({ currentPlan }: { currentPlan: Plan }) {
                 ) : (
                     <Button className="w-full text-center mt-2" disabled={selectedPlan === currentPlan || changePlan} onClick={async () => {
                         setChangePlan(true);
-                        await updateSubscription(getPriceId(selectedPlan, isYearly ? "yearly" : "monthly"));
+                        const { status, nextAmount } = await getPreviewInvoiceBeforeUpdate(getPriceId(selectedPlan, isYearly ? "yearly" : "monthly"));
                         setChangePlan(false);
+                        if (status === "error") {
+                            toast.error(t("upgrade.error"));
+                            return;
+                        }
+                        setNextAmount(nextAmount ?? 0);
+                        setChangePlanDialogOpen(true);
                     }}>
                         {t("upgrade.changePlan")}
                     </Button>
                 )}
             </CardContent>
         </Card>
+        <ChangePlanDialog open={changePlanDialogOpen} setOpen={setChangePlanDialogOpen} newPlan={selectedPlan} nextAmount={nextAmount} isYearly={isYearly} />
+        </>
     )
 }
