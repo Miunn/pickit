@@ -54,12 +54,5 @@ export const historyColumns: ColumnDef<BillingHistory>[] = [
         cell: ({ row }) => {
             return <div>{row.original.status}</div>
         }
-    },
-    {
-        accessorKey: "paymentMethod",
-        header: "Payment Method",
-        cell: ({ row }) => {
-            return <div>{row.original.paymentMethod}</div>
-        }
     }
 ]
