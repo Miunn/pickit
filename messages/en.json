@@ -205,11 +205,7 @@
         "free": {
           "title": "Basic",
           "description": "To save a few photos and videos",
-          "features": [
-            "5Go of storage",
-            "10 albums",
-            "20 sharing links"
-          ]
+          "features": ["5Go of storage", "10 albums", "20 sharing links"]
         },
         "efficient": {
           "title": "Efficient",
@@ -287,6 +283,10 @@
             "action": "Login"
           },
           "error": {
+            "email": {
+              "title": "Email address already in use",
+              "description": "The email address you entered is currently used by another account. Try to login or use a different address"
+            },
             "unknown": {
               "title": "Can't create your account",
               "description": "An error happened while creating your account."
@@ -1164,6 +1164,7 @@
           "description": "The image has been deleted successfully"
         }
       },
+      "manageTags": "Gérer les tags",
       "deleteMultiple": {
         "trigger": "Delete",
         "title": "Delete images",
@@ -1810,6 +1811,7 @@
     "new": "New",
     "newFiles": "Recently added files",
     "albumContent": "All files",
+    "manageTags": "Manage tags",
     "page": {
       "title": "{folder} images",
       "subtitle": "{folder} uploaded images",

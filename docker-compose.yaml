@@ -1,0 +1,24 @@
+services:
+  db:
+    container_name: echomori-db
+    image: postgis/postgis:17-master
+    platform: linux/amd64
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - echomori_db_data:/var/lib/postgresql/data
+
+volumes:
+  echomori_db_data:
+    driver: local
