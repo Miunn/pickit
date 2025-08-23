@@ -288,6 +288,10 @@
             "action": "Connexion"
           },
           "error": {
+            "email": {
+              "title": "Adresse mail déjà utilisé",
+              "description": "Cette adresse est actuellement utilisée. Connectez-vous ou utilisez une autre adresse"
+            },
             "unknown": {
               "title": "Impossible de créer votre compte",
               "description": "Une erreur est survenue lors de la création de votre compte"
@@ -1869,6 +1873,7 @@
     "new": "Nouveau",
     "newFiles": "Fichiers ajoutés récemment",
     "albumContent": "Tous les fichiers",
+    "manageTags": "Gérer les tags",
     "page": {
       "title": "{folder} images",
       "subtitle": "{folder} uploaded images",
