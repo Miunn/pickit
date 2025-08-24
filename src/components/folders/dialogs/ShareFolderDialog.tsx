@@ -23,17 +23,17 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccessToken, FolderTokenPermission } from "@prisma/client";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { addMonths, format, set } from "date-fns";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "@/lib/utils";
-import { Calendar } from "../ui/calendar";
+import { Calendar } from "../../ui/calendar";
 import { createMultipleAccessTokens } from "@/actions/accessTokens";
 import { unlockAccessToken } from "@/actions/accessTokens";
 import LockTokenDialog from "./LockTokenDialog";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "../ui/input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "../../ui/input-otp";
 import { motion, AnimatePresence } from "motion/react";
 
 export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWithAccessToken, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
@@ -43,7 +43,7 @@ export const ShareFolderDialog = ({ folder, open, setOpen }: { folder: FolderWit
     const [loadingShare, setLoadingShare] = useState(false);
     const [tokenList, setTokenList] = useState<{ email: string, permission: FolderTokenPermission, expiryDate: Date, pinCode?: string, allowMap?: boolean }[]>([]);
     const emailScroll = useRef<HTMLDivElement>(null);
-    const validTokens = folder.accessTokens.filter((token) => token.expires > new Date() && token.isActive);
+    const validTokens = useMemo(() => folder.accessTokens.filter((token) => token.expires > new Date() && token.isActive && !token.email), [folder.accessTokens]);
 
     const [openLockToken, setOpenLockToken] = useState(false);
     const [lockToken, setLockToken] = useState<AccessToken | null>(null);

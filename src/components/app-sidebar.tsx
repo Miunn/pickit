@@ -13,7 +13,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { Button } from "./ui/button"
-import CreateFolderDialog from "./folders/CreateFolderDialog"
+import CreateFolderDialog from "./folders/dialogs/CreateFolderDialog"
 import { DialogTrigger } from "./ui/dialog"
 import { UserLight } from "@/lib/definitions"
 import Link from "next/link"

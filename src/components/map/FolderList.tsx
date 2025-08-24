@@ -1,5 +1,4 @@
-import { Folder } from "@prisma/client";
-import { Images, List, MoreHorizontal } from "lucide-react";
+import { Images, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import { TooltipContent, TooltipProvider } from "../ui/tooltip";
 import { TooltipTrigger } from "../ui/tooltip";

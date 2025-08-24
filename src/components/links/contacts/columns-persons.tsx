@@ -2,7 +2,7 @@
 
 import { changeAccessTokenActiveState, changeAccessTokenAllowMap, sendAgainAccessToken, unlockAccessToken } from "@/actions/accessTokens";
 import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessTokenDialog";
-import LockTokenDialog from "@/components/folders/LockTokenDialog";
+import LockTokenDialog from "@/components/folders/dialogs/LockTokenDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
