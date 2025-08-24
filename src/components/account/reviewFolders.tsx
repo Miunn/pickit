@@ -1,6 +1,6 @@
 "use client"
 
-import DeleteFolderDialog from "@/components/folders/DeleteFolderDialog";
+import DeleteFolderDialog from "@/components/folders/dialogs/DeleteFolderDialog";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
