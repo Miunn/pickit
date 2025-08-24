@@ -42,3 +42,5 @@ next-env.d.ts
 /dkim/*
 echomori-app-gcp-keyfile.json
 migrations/*
+
+scripts

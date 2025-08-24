@@ -471,7 +471,8 @@
         "options": {
           "name": "Name",
           "size": "Size",
-          "date": "Date"
+          "date": "Upload date",
+          "taken": "Taken at"
         }
       },
       "carousel": {
