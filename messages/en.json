@@ -205,7 +205,11 @@
         "free": {
           "title": "Basic",
           "description": "To save a few photos and videos",
-          "features": ["5Go of storage", "10 albums", "20 sharing links"]
+          "features": [
+            "5Go of storage",
+            "10 albums",
+            "20 sharing links"
+          ]
         },
         "efficient": {
           "title": "Efficient",
@@ -1937,6 +1941,19 @@
       "nameAddedFiles": "{name} added {count, plural, =1 {a new file} other {# new files}} to {folderName}",
       "clickButtonToAccess": "Click below to open the album",
       "regard": "Best regards,<br/>The <strong>{appName}</strong> team"
+    }
+  },
+  "files": {
+    "grid": {
+      "selectingBar": {
+        "delete": "Delete",
+        "manageTags": "Manage tags",
+        "addTag": {
+          "errorAdd": "Error while adding tag",
+          "errorRemove": "Error while removing tag"
+        },
+        "selected": "{count, plural, =1 {# image} other {# images}} selected"
+      }
     }
   }
 }

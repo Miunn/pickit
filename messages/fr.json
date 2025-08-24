@@ -2070,5 +2070,18 @@
       "lockedFolder": "{name} a vérouillé ce dossier par un code que vous devrez renseigner avant de pouvoir accéder à son contenu.                                         Si vous ne connaissez pas ce code, veuillez contacter {name} pour l'obtenir.",
       "regard": "Cordialement,<br/>Léquipe <strong>{appName}</strong>"
     }
+  },
+  "files": {
+    "grid": {
+      "selectingBar": {
+        "delete": "Supprimer",
+        "manageTags": "Gérer les tags",
+        "addTag": {
+          "errorAdd": "Erreur lors de l'ajout de l'étiquette",
+          "errorRemove": "Erreur lors de la suppression de l'étiquette"
+        },
+        "selected": "{count, plural, =0 {Aucune image sélectionnée} =1 {# image sélectionnée} other {# images sélectionnées}}"
+      }
+    }
   }
 }
