@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { FolderWithAccessToken, FolderWithFilesCount, FileWithComments, FileWithFolder, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithFilesCount, FileWithComments, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
 import { downloadClientFiles, formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Images, MoreHorizontal } from "lucide-react";
