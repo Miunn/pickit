@@ -11,11 +11,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../
 import RenameFolderDialog from "../../dialogs/RenameFolderDialog";
 import ChangeCoverFolderDialog from "../../dialogs/ChangeCoverFolderDialog";
 import { ShareFolderDialog } from "../../dialogs/ShareFolderDialog";
-import FolderPropertiesDialog from "./FolderPropertiesDialogs";
 import DeleteFolderDialog from "../../dialogs/DeleteFolderDialog";
 import { downloadClientFiles } from "@/lib/utils";
 import { FileType } from "@prisma/client";
 import { Link } from "@/i18n/navigation";
+import FolderPropertiesDialog from "../../dialogs/FolderPropertiesDialogs";
 
 export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & { files: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[] } }) {
     const t = useTranslations("folders");
