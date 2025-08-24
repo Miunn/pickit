@@ -11,7 +11,7 @@ import React, {
 } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Trash2, Pencil } from "lucide-react";
+import { Trash2, Pencil, X } from "lucide-react";
 import { CarouselDialog } from "@/components/files/carousel/CarouselDialog";
 import { cn, getSortedImagesVideosContent } from "@/lib/utils";
 import { UploadImagesForm } from "@/components/files/upload/UploadImagesForm";
@@ -30,11 +30,10 @@ import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { updateFilePosition } from "@/actions/files";
 import { useFolderContext } from "@/context/FolderContext";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
-import EditDescriptionDialog from "@/components/folders/dialogs/EditDescriptionDialog";
-import DeleteDescriptionDialog from "@/components/folders/dialogs/DeleteDescriptionDialog";
 import { useFilesContext } from "@/context/FilesContext";
 import { ContextFile } from "@/context/FilesContext";
 import SelectingBar from "./SelectingBar";
+import FolderDescription from "@/components/folders/views/grid/FolderDescription";
 
 export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
   const { user } = useSession();
@@ -42,6 +41,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
   const { files, setFiles } = useFilesContext();
 
   const t = useTranslations("images");
+  const recentRef = useRef<HTMLDivElement>(null);
   const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
   const [startIndex, setStartIndex] = useState(0);
 
@@ -401,8 +401,18 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
   return (
     <div className="mt-10">
       {newFiles.length > 0 && (
-        <>
-          <h2 className="text-lg font-medium">{t("newFiles")}</h2>
+        <div ref={recentRef}>
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-medium">{t("newFiles")}</h2>
+            <button
+              onClick={() => {
+                recentRef.current?.remove();
+              }}
+              className="mr-2"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
           <hr className="mt-1 mb-5" />
           <div className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] justify-items-start gap-3 sm:gap-2 mx-auto mb-3">
             {newFiles.map((file) => (
@@ -422,7 +432,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
 
           <h2 className="text-lg font-medium mt-8">{t("albumContent")}</h2>
           <hr className="mt-1 mb-5" />
-        </>
+        </div>
       )}
       {selecting ? (
         <SelectingBar
@@ -436,64 +446,18 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
         />
       ) : null}
       {folder.description ? (
-        <div
-          className={cn(
-            "block sm:hidden w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto mb-3",
-            "border border-primary rounded-lg p-4"
-          )}
-        >
-          <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>
-            {folder.description}
-          </p>
-          {folder.createdById === user?.id ? (
-            <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
-              <EditDescriptionDialog folder={folder}>
-                <Button variant="ghost" size="icon">
-                  <Pencil className={"w-4 h-4"} />
-                </Button>
-              </EditDescriptionDialog>
-              <DeleteDescriptionDialog folder={folder}>
-                <Button variant="ghost" size="icon">
-                  <Trash2 className={"w-4 h-4"} />
-                </Button>
-              </DeleteDescriptionDialog>
-            </div>
-          ) : null}
-        </div>
+        <FolderDescription className="block sm:hidden mb-3" />
       ) : null}
       <div
         className={cn(
           files.length === 0
             ? "flex flex-col lg:flex-row justify-center"
-            : "grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] justify-items-start gap-3 sm:gap-3 mx-auto",
+            : "grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] justify-items-start gap-3 sm:gap-2 mx-auto",
           "relative"
         )}
       >
         {folder.description ? (
-          <div
-            className={cn(
-              "hidden sm:block w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto",
-              "border border-primary rounded-lg p-4"
-            )}
-          >
-            <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>
-              {folder.description}
-            </p>
-            {folder.createdById === user?.id ? (
-              <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
-                <EditDescriptionDialog folder={folder}>
-                  <Button variant="ghost" size="icon">
-                    <Pencil className={"w-4 h-4"} />
-                  </Button>
-                </EditDescriptionDialog>
-                <DeleteDescriptionDialog folder={folder}>
-                  <Button variant="ghost" size="icon">
-                    <Trash2 className={"w-4 h-4"} />
-                  </Button>
-                </DeleteDescriptionDialog>
-              </div>
-            ) : null}
-          </div>
+          <FolderDescription className="hidden sm:block" />
         ) : null}
         {renderGrid()}
       </div>
