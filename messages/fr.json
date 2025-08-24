@@ -476,7 +476,8 @@
         "options": {
           "name": "Nom",
           "size": "Taille",
-          "date": "Date"
+          "date": "Date",
+          "taken": "Date de prise"
         }
       },
       "carousel": {
