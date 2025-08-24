@@ -11,10 +11,9 @@ import React, {
 } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Trash2, X, Pencil, Tag } from "lucide-react";
-import { DeleteMultipleImagesDialog } from "@/components/files/DeleteMultipleImagesDialog";
+import { Trash2, Pencil, X } from "lucide-react";
 import { CarouselDialog } from "@/components/files/carousel/CarouselDialog";
-import { cn, formatBytes, getSortedImagesVideosContent } from "@/lib/utils";
+import { cn, getSortedImagesVideosContent } from "@/lib/utils";
 import { UploadImagesForm } from "@/components/files/upload/UploadImagesForm";
 import { useSession } from "@/providers/SessionProvider";
 import {
@@ -31,26 +30,18 @@ import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { updateFilePosition } from "@/actions/files";
 import { useFolderContext } from "@/context/FolderContext";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
-import EditDescriptionDialog from "@/components/folders/dialogs/EditDescriptionDialog";
-import DeleteDescriptionDialog from "@/components/folders/dialogs/DeleteDescriptionDialog";
 import { useFilesContext } from "@/context/FilesContext";
 import { ContextFile } from "@/context/FilesContext";
-import ManageTagsDialog from "../../ManageTagsDialog";
-import { FolderTag } from "@prisma/client";
-import { toast } from "sonner";
-import { addTagsToFiles, removeTagsFromFiles } from "@/actions/tags";
+import SelectingBar from "./SelectingBar";
+import FolderDescription from "@/components/folders/views/grid/FolderDescription";
+import RecentlyAdded from "./RecentlyAdded";
 
 export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
   const { user } = useSession();
   const { folder, isShared } = useFolderContext();
   const { files, setFiles } = useFilesContext();
 
-  const t = useTranslations("images");
-  const deleteMultipleTranslations = useTranslations(
-    "dialogs.images.deleteMultiple",
-  );
   const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
-  const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
   const [startIndex, setStartIndex] = useState(0);
 
   const [selecting, setSelecting] = useState<boolean>(false);
@@ -76,16 +67,16 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
 
       const orderedItems = [...files];
       const sortedItems = [...orderedItems].sort(
-        (a, b) => a.position - b.position,
+        (a, b) => a.position - b.position
       );
       return sortedItems;
     },
-    [sortState, sortStrategy],
+    [sortState, sortStrategy]
   );
 
   const defaultSortedFiles = useMemo(
     () => getSortedFiles(files),
-    [getSortedFiles],
+    [getSortedFiles]
   );
 
   const [sortedFiles, setSortedFiles] =
@@ -108,7 +99,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
         delay: 90,
         tolerance: 5,
       },
-    }),
+    })
   );
 
   useEffect(() => {
@@ -131,7 +122,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
 
     const containerRect = container.getBoundingClientRect();
     const draggedItem = document.querySelector(
-      `[data-id="${active.id}"]`,
+      `[data-id="${active.id}"]`
     ) as HTMLElement;
 
     if (!draggedItem) return;
@@ -176,7 +167,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
           await updateFilePosition(
             activeId,
             sortedFiles[sortedFiles.length - 2].id,
-            undefined,
+            undefined
           )
         ).newPosition;
       } else {
@@ -187,7 +178,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             await updateFilePosition(
               activeId,
               sortedFiles[overIndex].id,
-              sortedFiles[overIndex + 1].id,
+              sortedFiles[overIndex + 1].id
             )
           ).newPosition;
         } else {
@@ -195,7 +186,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             await updateFilePosition(
               activeId,
               sortedFiles[overIndex - 1].id,
-              sortedFiles[overIndex].id,
+              sortedFiles[overIndex].id
             )
           ).newPosition;
         }
@@ -204,8 +195,8 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
       if (newPosition) {
         setFiles(
           files.map((file) =>
-            file.id === activeId ? { ...file, position: newPosition } : file,
-          ),
+            file.id === activeId ? { ...file, position: newPosition } : file
+          )
         );
       }
     }, 0);
@@ -220,7 +211,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
         newOrder.splice(
           newIndex,
           0,
-          currentOrder.find((file) => file.id === activeId)!,
+          currentOrder.find((file) => file.id === activeId)!
         );
         return newOrder;
       }
@@ -269,27 +260,27 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                         if (e?.shiftKey && selected.length > 0) {
                           const lastSelectedId = selected[selected.length - 1];
                           const lastSelectedIndex = files.findIndex(
-                            (item) => item.id === lastSelectedId,
+                            (item) => item.id === lastSelectedId
                           );
                           const currentIndex = files.findIndex(
-                            (item) => item.id === file.id,
+                            (item) => item.id === file.id
                           );
 
                           if (lastSelectedIndex !== -1 && currentIndex !== -1) {
                             const start = Math.min(
                               lastSelectedIndex,
-                              currentIndex,
+                              currentIndex
                             );
                             const end = Math.max(
                               lastSelectedIndex,
-                              currentIndex,
+                              currentIndex
                             );
                             const range = files.slice(start, end + 1);
 
                             const newSelectedIds = range.map((item) => item.id);
                             const newSize = range.reduce(
                               (acc, item) => acc + item.size,
-                              0,
+                              0
                             );
 
                             setSelected([
@@ -349,10 +340,10 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
               if (e?.shiftKey && selected.length > 0) {
                 const lastSelectedId = selected[selected.length - 1];
                 const lastSelectedIndex = files.findIndex(
-                  (item) => item.id === lastSelectedId,
+                  (item) => item.id === lastSelectedId
                 );
                 const currentIndex = files.findIndex(
-                  (item) => item.id === file.id,
+                  (item) => item.id === file.id
                 );
 
                 if (lastSelectedIndex !== -1 && currentIndex !== -1) {
@@ -363,7 +354,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                   const newSelectedIds = range.map((item) => item.id);
                   const newSize = range.reduce(
                     (acc, item) => acc + item.size,
-                    0,
+                    0
                   );
 
                   setSelected([...new Set([...selected, ...newSelectedIds])]);
@@ -396,204 +387,38 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     ));
   };
 
-  const newFiles = useMemo(() => {
-    return files.filter((file) => {
-      const now = new Date();
-      const fileDate = new Date(file.createdAt);
-      const diffTime = Math.abs(now.getTime() - fileDate.getTime());
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      return diffDays <= 3;
-    });
-  }, [files]);
-
   return (
     <div className="mt-10">
-      {newFiles.length > 0 && (
-        <>
-          <h2 className="text-lg font-medium">{t("newFiles")}</h2>
-          <hr className="mt-1 mb-5" />
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] justify-items-start gap-3 sm:gap-3 mx-auto mb-3">
-            {newFiles.map((file) => (
-              <Fragment key={file.id}>
-                <ImagePreviewGrid
-                  file={file}
-                  selected={selected}
-                  onClick={() => {
-                    setStartIndex(files.indexOf(file));
-                    setCarouselOpen(true);
-                  }}
-                  onSelect={() => {}}
-                />
-              </Fragment>
-            ))}
-          </div>
-
-          <h2 className="text-lg font-medium mt-8">{t("albumContent")}</h2>
-          <hr className="mt-1 mb-5" />
-        </>
-      )}
       {selecting ? (
-        <div
-          className={
-            "flex justify-between items-center mb-5 bg-gray-50 dark:bg-primary/30 rounded-2xl w-full p-2"
-          }
-        >
-          <div className={"flex gap-2 items-center"}>
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setSelected([]);
-                setSizeSelected(0);
-                setSelecting(false);
-              }}
-              size="icon"
-            >
-              <X className={"w-4 h-4"} />
-            </Button>
-            <h2>
-              <span className={"font-semibold"}>
-                {t("selected", { count: selected.length })}
-              </span>{" "}
-              - {formatBytes(sizeSelected, { decimals: 2, sizeType: "normal" })}
-            </h2>
-          </div>
-
-          <div className="space-x-2">
-            <ManageTagsDialog
-              selectedTags={[]}
-              availableTags={folder.tags}
-              onTagAdded={async (tag: FolderTag) => {
-                setFiles((prev: ContextFile[]) =>
-                  prev.map((f) =>
-                    selected.includes(f.id)
-                      ? { ...f, tags: [...f.tags, tag] }
-                      : f,
-                  ),
-                );
-
-                return true;
-              }}
-              onTagSelected={async (tag: FolderTag) => {
-                setFiles((prev: ContextFile[]) => {
-                  return prev.map((f) =>
-                    selected.includes(f.id)
-                      ? { ...f, tags: [...f.tags, tag] }
-                      : f,
-                  );
-                });
-                const result = await addTagsToFiles(selected, [tag.id]);
-                if (!result.success) {
-                  toast.error(t("addTag.errorAdd"));
-
-                  setFiles((prev: ContextFile[]) => {
-                    return prev.map((f) =>
-                      selected.includes(f.id)
-                        ? { ...f, tags: f.tags.filter((t) => t.id !== tag.id) }
-                        : f,
-                    );
-                  });
-                }
-
-                return result.success;
-              }}
-              onTagUnselected={async (tag: FolderTag) => {
-                setFiles((prev) =>
-                  prev.map((f) =>
-                    selected.includes(f.id)
-                      ? { ...f, tags: f.tags.filter((t) => t.id !== tag.id) }
-                      : f,
-                  ),
-                );
-                const result = await removeTagsFromFiles(selected, [tag.id]);
-                if (!result.success) {
-                  toast.error(t("addTag.errorRemove"));
-                  setFiles((prev) =>
-                    prev.map((f) =>
-                      selected.includes(f.id)
-                        ? { ...f, tags: [...f.tags, tag] }
-                        : f,
-                    ),
-                  );
-                }
-
-                return result.success;
-              }}
-            >
-              <Button variant={"outline"}>
-                <Tag className="mr-2" /> {t("manageTags")}
-              </Button>
-            </ManageTagsDialog>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setOpenDeleteMultiple(true);
-              }}
-            >
-              <Trash2 className={"mr-2"} />{" "}
-              {deleteMultipleTranslations("trigger")}
-            </Button>
-          </div>
-        </div>
+        <SelectingBar
+          selected={selected}
+          sizeSelected={sizeSelected}
+          onClose={() => {
+            setSelected([]);
+            setSizeSelected(0);
+            setSelecting(false);
+          }}
+        />
       ) : null}
       {folder.description ? (
-        <div
-          className={cn(
-            "block sm:hidden w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto mb-3",
-            "border border-primary rounded-lg p-4",
-          )}
-        >
-          <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>
-            {folder.description}
-          </p>
-          {folder.createdById === user?.id ? (
-            <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
-              <EditDescriptionDialog folder={folder}>
-                <Button variant="ghost" size="icon">
-                  <Pencil className={"w-4 h-4"} />
-                </Button>
-              </EditDescriptionDialog>
-              <DeleteDescriptionDialog folder={folder}>
-                <Button variant="ghost" size="icon">
-                  <Trash2 className={"w-4 h-4"} />
-                </Button>
-              </DeleteDescriptionDialog>
-            </div>
-          ) : null}
-        </div>
+        <FolderDescription className="block sm:hidden mb-3" />
       ) : null}
+      <RecentlyAdded
+        onClickImage={(file) => {
+          setStartIndex(files.indexOf(file));
+          setCarouselOpen(true);
+        }}
+      />
       <div
         className={cn(
           files.length === 0
             ? "flex flex-col lg:flex-row justify-center"
-            : "grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] justify-items-start gap-3 sm:gap-3 mx-auto",
-          "relative",
+            : "grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] justify-items-start gap-3 sm:gap-2 mx-auto",
+          "relative"
         )}
       >
         {folder.description ? (
-          <div
-            className={cn(
-              "hidden sm:block w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto",
-              "border border-primary rounded-lg p-4",
-            )}
-          >
-            <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>
-              {folder.description}
-            </p>
-            {folder.createdById === user?.id ? (
-              <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
-                <EditDescriptionDialog folder={folder}>
-                  <Button variant="ghost" size="icon">
-                    <Pencil className={"w-4 h-4"} />
-                  </Button>
-                </EditDescriptionDialog>
-                <DeleteDescriptionDialog folder={folder}>
-                  <Button variant="ghost" size="icon">
-                    <Trash2 className={"w-4 h-4"} />
-                  </Button>
-                </DeleteDescriptionDialog>
-              </div>
-            ) : null}
-          </div>
+          <FolderDescription className="hidden sm:block" />
         ) : null}
         {renderGrid()}
       </div>
@@ -604,15 +429,6 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
         carouselOpen={carouselOpen}
         setCarouselOpen={setCarouselOpen}
         startIndex={startIndex}
-      />
-      <DeleteMultipleImagesDialog
-        files={files.filter((file) => selected.includes(file.id))}
-        open={openDeleteMultiple}
-        setOpen={setOpenDeleteMultiple}
-        onDelete={() => {
-          setSelected([]);
-          setSelecting(false);
-        }}
       />
     </div>
   );
