@@ -91,6 +91,10 @@ export const FilesProvider = ({
           return ImagesSortMethod.DateAsc;
         case "date-desc":
           return ImagesSortMethod.DateDesc;
+        case "taken-asc":
+          return ImagesSortMethod.TakenAsc;
+        case "taken-desc":
+          return ImagesSortMethod.TakenDesc;
         case "position-asc":
           return ImagesSortMethod.PositionAsc;
         case "position-desc":
