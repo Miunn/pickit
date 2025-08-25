@@ -21,8 +21,14 @@ export default function UnverifiedEmail({
   };
 
   return (
-    <div ref={ref} className="relative w-full h-12 bg-orange-400 hover:bg-orange-500 cursor-pointer mb-4">
-      <Link href={`/${locale}/app/account`} className="w-full h-full flex justify-center items-center">
+    <div
+      ref={ref}
+      className="relative w-full h-12 bg-orange-400 hover:bg-orange-500 cursor-pointer"
+    >
+      <Link
+        href={`/${locale}/app/account`}
+        className="w-full h-full flex justify-center items-center"
+      >
         <p className="text-center text-sm font-bold px-9">
           {t("message", {
             date: intlFormatter.dateTime(userDeletionDate, {
