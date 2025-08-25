@@ -6,7 +6,7 @@ import { Plus, Trash2, X } from "lucide-react";
 import { cn, formatBytes } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { CarouselDialog } from "../../carousel/CarouselDialog";
-import { DeleteMultipleImagesDialog } from "../../DeleteMultipleImagesDialog";
+import { DeleteMultipleImagesDialog } from "../../dialogs/DeleteMultipleImagesDialog";
 import { useFolderContext } from "@/context/FolderContext";
 import { Separator } from "@/components/ui/separator";
 import { FolderTag } from "@prisma/client";
@@ -16,6 +16,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import SelectingBar from "./SelectingBar";
 
 export default function TagGroupedGrid() {
   const { folder } = useFolderContext();
@@ -86,7 +87,7 @@ export default function TagGroupedGrid() {
           className={cn(
             files.length === 0
               ? "flex flex-col lg:flex-row justify-center"
-              : "grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] justify-items-start gap-3 sm:gap-3 mx-auto",
+              : "grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] justify-items-start gap-3 sm:gap-2 mx-auto",
             "relative pt-3"
           )}
         >
@@ -156,41 +157,15 @@ export default function TagGroupedGrid() {
   return (
     <>
       {selecting ? (
-        <div
-          className={
-            "flex justify-between items-center mb-5 bg-gray-50 dark:bg-primary/30 rounded-2xl w-full p-2"
-          }
-        >
-          <div className={"flex gap-2 items-center"}>
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setSelected([]);
-                setSizeSelected(0);
-                setSelecting(false);
-              }}
-              size="icon"
-            >
-              <X className={"w-4 h-4"} />
-            </Button>
-            <h2>
-              <span className={"font-semibold"}>
-                {t("selected", { count: selected.length })}
-              </span>{" "}
-              - {formatBytes(sizeSelected, { decimals: 2, sizeType: "normal" })}
-            </h2>
-          </div>
-
-          <Button
-            variant="outline"
-            onClick={() => {
-              setOpenDeleteMultiple(true);
-            }}
-          >
-            <Trash2 className={"mr-2"} />{" "}
-            {deleteMultipleTranslations("trigger")}
-          </Button>
-        </div>
+        <SelectingBar
+          selected={selected}
+          sizeSelected={sizeSelected}
+          onClose={() => {
+            setSelected([]);
+            setSizeSelected(0);
+            setSelecting(false);
+          }}
+        />
       ) : null}
       <Accordion
         type="multiple"

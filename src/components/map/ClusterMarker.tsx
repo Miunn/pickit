@@ -1,49 +1,52 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from "react";
 import {
-    AdvancedMarker,
-    AdvancedMarkerAnchorPoint,
-    useAdvancedMarkerRef
-} from '@vis.gl/react-google-maps';
-import { useTranslations } from 'next-intl';
-import { cn } from '@/lib/utils';
-import { BookImage } from 'lucide-react';
+  AdvancedMarker,
+  AdvancedMarkerAnchorPoint,
+  useAdvancedMarkerRef,
+} from "@vis.gl/react-google-maps";
+import { useTranslations } from "next-intl";
+import { BookImage } from "lucide-react";
 
 type TreeClusterMarkerProps = {
-    clusterId: number;
-    onMarkerClick?: (
-        marker: google.maps.marker.AdvancedMarkerElement,
-        clusterId: number
-    ) => void;
-    position: google.maps.LatLngLiteral;
-    size: number;
-    folders: { name: string, count: number }[];
+  clusterId: number;
+  onMarkerClick?: (
+    marker: google.maps.marker.AdvancedMarkerElement,
+    clusterId: number
+  ) => void;
+  position: google.maps.LatLngLiteral;
+  size: number;
+  folders: { name: string; count: number }[];
 };
 
 export const ClusterMarker = ({
-    position,
-    size,
-    onMarkerClick,
-    clusterId,
-    folders
+  position,
+  size,
+  onMarkerClick,
+  clusterId,
+  folders,
 }: TreeClusterMarkerProps) => {
-    const t = useTranslations("components.map.cluster");
+  const t = useTranslations("components.map.cluster");
 
-    const [markerRef, marker] = useAdvancedMarkerRef();
-    const handleClick = useCallback(
-        () => onMarkerClick && onMarkerClick(marker!, clusterId),
-        [onMarkerClick, marker, clusterId]
-    );
+  const [markerRef, marker] = useAdvancedMarkerRef();
+  const handleClick = useCallback(
+    () => onMarkerClick && onMarkerClick(marker!, clusterId),
+    [onMarkerClick, marker, clusterId]
+  );
 
-    const totalCount = useMemo(() => folders.reduce((acc, folder) => acc + folder.count, 0), [folders]);
+  const totalCount = useMemo(
+    () => folders.reduce((acc, folder) => acc + folder.count, 0),
+    [folders]
+  );
 
-    return (
-        <AdvancedMarker
-            ref={markerRef}
-            position={position}
-            zIndex={size}
-            onClick={handleClick}
-            anchorPoint={AdvancedMarkerAnchorPoint.CENTER}>
-            {/* <div className="w-40 max-h-48 bg-white border border-primary rounded-lg">
+  return (
+    <AdvancedMarker
+      ref={markerRef}
+      position={position}
+      zIndex={size}
+      onClick={handleClick}
+      anchorPoint={AdvancedMarkerAnchorPoint.CENTER}
+    >
+      {/* <div className="w-40 max-h-48 bg-white border border-primary rounded-lg">
                 <div className="flex flex-col">
                     {folders.slice(0, 2).map((folder, index) => (
                         <p key={folder.name} className={cn(
@@ -60,11 +63,13 @@ export const ClusterMarker = ({
                 </div>
             </div> */}
 
-            <div className='bg-white rounded-full border border-primary size-16 flex flex-col justify-center items-center gap-1'>
-                <BookImage className='size-6' />
+      <div className="bg-white rounded-full border border-primary size-16 flex flex-col justify-center items-center gap-1">
+        <BookImage className="size-6" />
 
-                <p className='text-xs text-primary font-medium'>{t('folder.count', {count: totalCount > 999 ? '999+' : totalCount})}</p>
-            </div>
-        </AdvancedMarker>
-    );
+        <p className="text-xs text-primary font-medium">
+          {t("folder.count", { count: totalCount > 999 ? "999+" : totalCount })}
+        </p>
+      </div>
+    </AdvancedMarker>
+  );
 };

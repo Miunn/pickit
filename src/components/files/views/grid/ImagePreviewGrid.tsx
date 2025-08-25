@@ -26,11 +26,10 @@ import { useSession } from "@/providers/SessionProvider";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { FileType, FolderTag } from "@prisma/client";
-import RenameImageDialog from "../../RenameImageDialog";
-import { DeleteImageDialog } from "../../DeleteImageDialog";
-import ImagePropertiesDialog from "../../ImagePropertiesDialog";
-import ManageTagsDialog from "../../ManageTagsDialog";
-import { Badge } from "@/components/ui/badge";
+import RenameImageDialog from "../../dialogs/RenameImageDialog";
+import { DeleteImageDialog } from "../../dialogs/DeleteImageDialog";
+import ImagePropertiesDialog from "../../dialogs/ImagePropertiesDialog";
+import ManageTagsDialog from "../../dialogs/ManageTagsDialog";
 import TagChip from "@/components/tags/TagChip";
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { addTagsToFile, removeTagsFromFile } from "@/actions/tags";
@@ -89,7 +88,7 @@ export const ImagePreviewGrid = ({
   const handleTagSelected = async (tag: FolderTag) => {
     setFiles((prev: ContextFile[]) => {
       return prev.map((f) =>
-        f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f,
+        f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f
       );
     });
     const result = await addTagsToFile(file.id, [tag.id]);
@@ -103,7 +102,7 @@ export const ImagePreviewGrid = ({
                 ...f,
                 tags: f.tags.filter((t) => t.id !== tag.id),
               }
-            : f,
+            : f
         );
       });
     }
@@ -126,7 +125,7 @@ export const ImagePreviewGrid = ({
             <div
               className={cn(
                 `inline-block w-full rounded-2xl ${selected.includes(file.id) ? "bg-accent" : ""}`,
-                className,
+                className
               )}
             >
               <div
@@ -266,8 +265,8 @@ export const ImagePreviewGrid = ({
                 onTagAdded={async (tag: FolderTag) => {
                   setFiles((prev: ContextFile[]) =>
                     prev.map((f) =>
-                      f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f,
-                    ),
+                      f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f
+                    )
                   );
                   const r = await handleTagSelected(tag);
 
@@ -279,7 +278,7 @@ export const ImagePreviewGrid = ({
                               ...f,
                               tags: f.tags.filter((t) => t.id !== tag.id),
                             }
-                          : f,
+                          : f
                       );
                     });
                   }
@@ -292,16 +291,16 @@ export const ImagePreviewGrid = ({
                     prev.map((f) =>
                       f.id === file.id
                         ? { ...f, tags: f.tags.filter((t) => t.id !== tag.id) }
-                        : f,
-                    ),
+                        : f
+                    )
                   );
                   const result = await removeTagsFromFile(file.id, [tag.id]);
                   if (!result.success) {
                     sonnerToast.error(t("addTag.errorRemove"));
                     setFiles((prev) =>
                       prev.map((f) =>
-                        f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f,
-                      ),
+                        f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f
+                      )
                     );
                   }
 
@@ -326,7 +325,7 @@ export const ImagePreviewGrid = ({
                   toast({
                     title: t("actions.setAsCover.errors.unknown.title"),
                     description: t(
-                      "actions.setAsCover.errors.unknown.description",
+                      "actions.setAsCover.errors.unknown.description"
                     ),
                     variant: "destructive",
                   });

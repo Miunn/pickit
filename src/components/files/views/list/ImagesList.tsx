@@ -31,7 +31,7 @@ import { cn, formatBytes } from "@/lib/utils";
 import { CarouselDialog } from "../../carousel/CarouselDialog";
 import { Button } from "../../../ui/button";
 import { useTranslations } from "next-intl";
-import { DeleteMultipleImagesDialog } from "../../DeleteMultipleImagesDialog";
+import { DeleteMultipleImagesDialog } from "../../dialogs/DeleteMultipleImagesDialog";
 import {
   Select,
   SelectItem,

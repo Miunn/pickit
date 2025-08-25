@@ -1,10 +1,10 @@
-import React, {useCallback} from 'react';
+import React, { useCallback } from "react";
 import {
   AdvancedMarker,
   AdvancedMarkerAnchorPoint,
-  useAdvancedMarkerRef
-} from '@vis.gl/react-google-maps';
-import { Aperture } from 'lucide-react';
+  useAdvancedMarkerRef,
+} from "@vis.gl/react-google-maps";
+import { Aperture } from "lucide-react";
 
 type TreeMarkerProps = {
   position: google.maps.LatLngLiteral;
@@ -18,7 +18,7 @@ type TreeMarkerProps = {
 export const PoiMarker = ({
   position,
   featureId,
-  onMarkerClick
+  onMarkerClick,
 }: TreeMarkerProps) => {
   const [markerRef, marker] = useAdvancedMarkerRef();
   const handleClick = useCallback(
@@ -32,9 +32,14 @@ export const PoiMarker = ({
       position={position}
       onClick={handleClick}
       anchorPoint={AdvancedMarkerAnchorPoint.CENTER}
-      className={'marker feature'}>
-      <div className="bg-white border border-primary rounded-full p-1">
-        <Aperture className='size-6' />
+      className={"marker feature"}
+    >
+      <div className="bg-primary/50 rounded-full p-1">
+        <div className="bg-primary border border-primary rounded-full p-0.5">
+          <div className="bg-white rounded-full p-0.5">
+            <div className="bg-primary rounded-full p-1" />
+          </div>
+        </div>
       </div>
     </AdvancedMarker>
   );

@@ -6,22 +6,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
+} from "../../ui/dialog";
 import { FileWithTags, FolderWithTags } from "@/lib/definitions";
-import { Label } from "../ui/label";
+import { Label } from "../../ui/label";
 import { BrushCleaning, Loader2 } from "lucide-react";
 import {
   PopoverNonPortal,
   PopoverContent,
   PopoverTrigger,
-} from "../ui/popover-non-portal";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+} from "../../ui/popover-non-portal";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
 import { useState } from "react";
 import { addTagsToFile, createTag, removeTagsFromFile } from "@/actions/tags";
 import { toast } from "sonner";
 import { FolderTag } from "@prisma/client";
-import TagChip from "../tags/TagChip";
+import TagChip from "../../tags/TagChip";
 import { useFilesContext } from "@/context/FilesContext";
 import { cn } from "@/lib/utils";
 import { useFolderContext } from "@/context/FolderContext";
@@ -96,7 +96,7 @@ const AddTagPopover = ({ onTagAdded, folderId }: AddTagPopoverProps) => {
                 className={cn(
                   "h-9 rounded-md cursor-pointer transition-all duration-75 ease-in-out outline outline-0 outline-offset-0 outline-transparent",
                   selectedColor === color &&
-                    "outline outline-2 outline-offset-2 outline-primary",
+                    "outline outline-2 outline-offset-2 outline-primary"
                 )}
                 style={{ backgroundColor: color }}
                 onClick={() => setSelectedColor(color)}
