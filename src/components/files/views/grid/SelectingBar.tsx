@@ -125,11 +125,9 @@ export default function SelectingBar({
           </Button>
         </ManageTagsDialog>
         <DeleteMultipleImagesDialog fileIds={selected} onDelete={onClose}>
-          <>
-            <Button variant="outline">
-              <Trash2 className={"mr-2"} /> {t("delete")}
-            </Button>
-          </>
+          <Button variant="outline">
+            <Trash2 className={"mr-2"} /> {t("delete")}
+          </Button>
         </DeleteMultipleImagesDialog>
       </div>
     </div>
