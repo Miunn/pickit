@@ -29,7 +29,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import ManageTagsDialog from "../ManageTagsDialog";
+import ManageTagsDialog from "../dialogs/ManageTagsDialog";
 import { useSession } from "@/providers/SessionProvider";
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { addTagsToFile, removeTagsFromFile } from "@/actions/tags";
@@ -60,7 +60,7 @@ export default function FileOptions({
   const handleTagSelected = async (tag: FolderTag): Promise<boolean> => {
     setFiles((prev: ContextFile[]) => {
       return prev.map((f) =>
-        f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f,
+        f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f
       );
     });
     const result = await addTagsToFile(file.id, [tag.id]);
@@ -71,7 +71,7 @@ export default function FileOptions({
         return prev.map((f) =>
           f.id === file.id
             ? { ...f, tags: f.tags.filter((t) => t.id !== tag.id) }
-            : f,
+            : f
         );
       });
     }
@@ -84,16 +84,16 @@ export default function FileOptions({
       prev.map((f) =>
         f.id === file.id
           ? { ...f, tags: f.tags.filter((t) => t.id !== tag.id) }
-          : f,
-      ),
+          : f
+      )
     );
     const result = await removeTagsFromFile(file.id, [tag.id]);
     if (!result.success) {
       sonnerToast.error(t("addTag.errorRemove"));
       setFiles((prev) =>
         prev.map((f) =>
-          f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f,
-        ),
+          f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f
+        )
       );
     }
 
@@ -102,9 +102,7 @@ export default function FileOptions({
 
   const handleTagAdded = async (tag: FolderTag) => {
     setFiles((prev: ContextFile[]) =>
-      prev.map((f) =>
-        f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f,
-      ),
+      prev.map((f) => (f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f))
     );
 
     const r = await handleTagSelected(tag);
@@ -112,8 +110,8 @@ export default function FileOptions({
     if (!r) {
       setFiles((prev) =>
         prev.map((f) =>
-          f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f,
-        ),
+          f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f
+        )
       );
     }
 
@@ -180,7 +178,7 @@ export default function FileOptions({
               toast({
                 title: t("copy.errors.video-copy-unavailable.title"),
                 description: t(
-                  "copy.errors.video-copy-unavailable.description",
+                  "copy.errors.video-copy-unavailable.description"
                 ),
                 variant: "destructive",
               });
@@ -191,7 +189,7 @@ export default function FileOptions({
               file.id || "",
               shareToken || "",
               shareHashPin || "",
-              tokenType,
+              tokenType
             );
 
             setCopied(true);
@@ -316,7 +314,7 @@ export default function FileOptions({
                   toast({
                     title: t("copy.errors.video-copy-unavailable.title"),
                     description: t(
-                      "copy.errors.video-copy-unavailable.description",
+                      "copy.errors.video-copy-unavailable.description"
                     ),
                     variant: "destructive",
                   });
@@ -327,7 +325,7 @@ export default function FileOptions({
                   file.id || "",
                   shareToken || "",
                   shareHashPin || "",
-                  tokenType,
+                  tokenType
                 );
 
                 setCopied(true);

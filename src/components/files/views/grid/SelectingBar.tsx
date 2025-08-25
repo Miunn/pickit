@@ -3,12 +3,12 @@ import { cn, formatBytes } from "@/lib/utils";
 import { FolderTag } from "@prisma/client";
 import { Tag, Trash2, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import ManageTagsDialog from "../../ManageTagsDialog";
+import ManageTagsDialog from "../../dialogs/ManageTagsDialog";
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { useFolderContext } from "@/context/FolderContext";
 import { addTagsToFiles, removeTagsFromFiles } from "@/actions/tags";
 import { toast } from "sonner";
-import { DeleteMultipleImagesDialog } from "../../DeleteMultipleImagesDialog";
+import { DeleteMultipleImagesDialog } from "../../dialogs/DeleteMultipleImagesDialog";
 import { useEffect, useRef, useState } from "react";
 
 export default function SelectingBar({
