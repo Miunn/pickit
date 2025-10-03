@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { decodeIdToken } from "arctic";
 import { redirect } from "next/navigation";
 import type { OAuth2Tokens } from "arctic";
-import { prisma } from "@/lib/prisma";
+import { UserService } from "@/data/user-service";
 
 export async function GET(request: Request): Promise<Response> {
     const url = new URL(request.url);
@@ -19,7 +19,7 @@ export async function GET(request: Request): Promise<Response> {
 
     if (state !== storedState) {
         return new Response(null, {
-            status: 400
+            status: 400,
         });
     }
 
@@ -30,7 +30,7 @@ export async function GET(request: Request): Promise<Response> {
         // Invalid code or client credentials
         console.log("Error validating code", e);
         return new Response(null, {
-            status: 400
+            status: 400,
         });
     }
 
@@ -39,8 +39,8 @@ export async function GET(request: Request): Promise<Response> {
     const googleUserId = claims.sub;
     const username = claims.name;
 
-    const existingUser = await prisma.user.findUnique({
-        where: { googleId: googleUserId }
+    const existingUser = await UserService.get({
+        where: { googleId: googleUserId },
     });
 
     if (existingUser !== null) {
@@ -50,14 +50,14 @@ export async function GET(request: Request): Promise<Response> {
         return new Response(null, {
             status: 302,
             headers: {
-                Location: "/app"
-            }
+                Location: "/app",
+            },
         });
     }
 
     // Handle existing user with same email
-    const existingEmailUser = await prisma.user.findUnique({
-        where: { email: claims.email }
+    const existingEmailUser = await UserService.get({
+        where: { email: claims.email },
     });
 
     if (existingEmailUser !== null) {
@@ -65,18 +65,16 @@ export async function GET(request: Request): Promise<Response> {
             status: 302,
             headers: {
                 Location: "/signin?error=provider-google-email-exists",
-            }
+            },
         });
     }
 
-    const user = await prisma.user.create({
-        data: {
-            googleId: googleUserId,
-            name: username,
-            email: claims.email,
-            emailVerified: claims.email_verified,
-            image: claims.picture
-        }
+    const user = await UserService.create({
+        googleId: googleUserId,
+        name: username,
+        email: claims.email,
+        emailVerified: claims.email_verified,
+        image: claims.picture,
     });
 
     const sessionToken = generateSessionToken();
@@ -85,7 +83,7 @@ export async function GET(request: Request): Promise<Response> {
     return new Response(null, {
         status: 302,
         headers: {
-            Location: "/app"
-        }
+            Location: "/app",
+        },
     });
 }

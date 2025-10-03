@@ -1,117 +1,130 @@
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
 import { FileWithComments, FileWithFolder } from "@/lib/definitions";
 import { downloadClientImageHandler, formatBytes } from "@/lib/utils";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
-import Image from "next/image";
 import RenameImageDialog from "../../RenameImageDialog";
 import { DeleteImageDialog } from "../../DeleteImageDialog";
 import ImagePropertiesDialog from "../../ImagePropertiesDialog";
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { changeFolderCover } from "@/actions/folders";
 import LoadingImage from "@/components/files/LoadingImage";
 import { FileType } from "@prisma/client";
 
 // Memoized dropdown menu component
-const ImageActionsDropdown = React.memo(({
-    row,
-    t,
-    setCarouselOpen,
-    setStartIndex,
-    setOpenRename,
-    setOpenProperties,
-    setOpenDelete
-}: {
-    row: any,
-    t: any,
-    setCarouselOpen: any,
-    setStartIndex: any,
-    setOpenRename: any,
-    setOpenProperties: any,
-    setOpenDelete: any
-}) => {
-    const handleSetAsCover = useCallback(async () => {
-        if (!row?.original?.folderId || !row?.original?.id) return;
+const ImageActionsDropdown = React.memo(
+    ({
+        row,
+        t,
+        setCarouselOpen,
+        setStartIndex,
+        setOpenRename,
+        setOpenProperties,
+        setOpenDelete,
+    }: {
+        row: Row<FileWithFolder & FileWithComments>;
+        t: ReturnType<typeof useTranslations>;
+        setCarouselOpen?: (open: boolean) => void;
+        setStartIndex?: (index: number) => void;
+        setOpenRename: (open: boolean) => void;
+        setOpenProperties: (open: boolean) => void;
+        setOpenDelete: (open: boolean) => void;
+    }) => {
+        const handleSetAsCover = useCallback(async () => {
+            if (!row?.original?.folderId || !row?.original?.id) return;
 
-        const r = await changeFolderCover(row.original.folderId, row.original.id);
+            const r = await changeFolderCover(row.original.folderId, row.original.id);
 
-        if (r.error) {
+            if (r.error) {
+                toast({
+                    title: t("setAsCover.error.title"),
+                    description: t("setAsCover.error.description"),
+                    variant: "destructive",
+                });
+                return;
+            }
+
             toast({
-                title: t('setAsCover.error.title'),
-                description: t('setAsCover.error.description'),
-                variant: "destructive"
+                title: t("setAsCover.success.title"),
+                description: t("setAsCover.success.description"),
             });
-            return;
-        }
+        }, [row?.original?.folderId, row?.original?.id, t]);
 
-        toast({
-            title: t('setAsCover.success.title'),
-            description: t('setAsCover.success.description')
-        });
-    }, [row?.original?.folderId, row?.original?.id, t]);
+        return (
+            <DropdownMenu modal={false}>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-40">
+                    <DropdownMenuLabel>{t("label")}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                        onClick={() => {
+                            if (setCarouselOpen && setStartIndex && row?.index !== undefined) {
+                                setStartIndex(row.index);
+                                setCarouselOpen(true);
+                            }
+                        }}
+                    >
+                        {t("view")}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => row?.toggleSelected && row.toggleSelected(!row.getIsSelected())}>
+                        {row?.getIsSelected() ? t("deselect") : t("select")}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => row?.original && downloadClientImageHandler(row.original)}>
+                        {t("download")}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setOpenRename(true)}>{t("rename")}</DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleSetAsCover}>{t("setAsCover.label")}</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setOpenProperties(true)}>{t("properties")}</DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => setOpenDelete(true)}
+                        className="text-destructive focus:text-destructive font-semibold"
+                    >
+                        {t("delete")}
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        );
+    }
+);
 
-    return (
-        <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Open menu</span>
-                    <MoreHorizontal />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-40">
-                <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => {
-                    if (setCarouselOpen && setStartIndex && row?.index !== undefined) {
-                        setStartIndex(row.index);
-                        setCarouselOpen(true);
-                    }
-                }}>{t('view')}</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => row?.toggleSelected && row.toggleSelected(!row.getIsSelected())}>
-                    {row?.getIsSelected()
-                        ? t('deselect')
-                        : t('select')
-                    }
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => row?.original && downloadClientImageHandler(row.original)}>{t('download')}</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setOpenRename(true)}>{t('rename')}</DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSetAsCover}>{t('setAsCover.label')}</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setOpenProperties(true)}>{t('properties')}</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-destructive focus:text-destructive font-semibold">{t('delete')}</DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    );
-});
-
-ImageActionsDropdown.displayName = 'ImageActionsDropdown';
+ImageActionsDropdown.displayName = "ImageActionsDropdown";
 
 export const imagesListViewColumns: ColumnDef<FileWithFolder & FileWithComments>[] = [
     {
         id: "select",
         header: ({ table }) => (
             <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+                onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
                 aria-label="Select all"
             />
         ),
         cell: ({ row }) => (
             <Checkbox
                 checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                onCheckedChange={value => row.toggleSelected(!!value)}
                 aria-label="Select row"
             />
         ),
         enableSorting: false,
         enableHiding: false,
-        size: 25
+        size: 25,
     },
     {
         header: "Name",
@@ -122,102 +135,102 @@ export const imagesListViewColumns: ColumnDef<FileWithFolder & FileWithComments>
             const setCarouselOpen = table.options.meta?.imagesListActions?.setCarouselOpen;
             const setStartIndex = table.options.meta?.imagesListActions?.setStartIndex;
 
-            return <div className="truncate font-medium flex items-center gap-2">
-                <div className="relative w-[40px] h-[40px]">
-                    {row.original.type === FileType.VIDEO
-                        ? <LoadingImage
-                            src={`/api/folders/${row.original.folder.id}/videos/${row.original.id}/thumbnail`}
-                            width={40}
-                            height={40}
-                            alt={row.getValue("name") || ''}
-                            className="w-[40px] h-[40px] object-cover rounded-xl"
-                            loading="lazy"
-                            // placeholder="blur"
-                            quality={50}
-                            sizes="40px"
-                        // blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZjBmMGYwIi8+PC9zdmc+"
-                        />
-                        : <LoadingImage
-                            src={`/api/folders/${row.original.folder.id}/images/${row.original.id}`}
-                            width={40}
-                            height={40}
-                            alt={row.getValue("name") || ''}
-                            className="w-[40px] h-[40px] object-cover rounded-xl"
-                            loading="lazy"
-                            // placeholder="blur"
-                            sizes="40px"
-                            quality={50}
-                        // blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZjBmMGYwIi8+PC9zdmc+"
-                        />
-                    }
+            return (
+                <div className="truncate font-medium flex items-center gap-2">
+                    <div className="relative w-[40px] h-[40px]">
+                        {row.original.type === FileType.VIDEO ? (
+                            <LoadingImage
+                                src={`/api/folders/${row.original.folder.id}/videos/${row.original.id}/thumbnail`}
+                                width={40}
+                                height={40}
+                                alt={row.getValue("name") || ""}
+                                className="w-[40px] h-[40px] object-cover rounded-xl"
+                                loading="lazy"
+                                // placeholder="blur"
+                                quality={50}
+                                sizes="40px"
+                                // blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZjBmMGYwIi8+PC9zdmc+"
+                            />
+                        ) : (
+                            <LoadingImage
+                                src={`/api/folders/${row.original.folder.id}/images/${row.original.id}`}
+                                width={40}
+                                height={40}
+                                alt={row.getValue("name") || ""}
+                                className="w-[40px] h-[40px] object-cover rounded-xl"
+                                loading="lazy"
+                                // placeholder="blur"
+                                sizes="40px"
+                                quality={50}
+                                // blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZjBmMGYwIi8+PC9zdmc+"
+                            />
+                        )}
+                    </div>
+                    <p
+                        onClick={() => {
+                            if (setCarouselOpen && setStartIndex && row?.index !== undefined) {
+                                setStartIndex(row.index);
+                                setCarouselOpen(true);
+                            }
+                        }}
+                        className="hover:underline cursor-pointer"
+                    >{`${row.getValue("name") || ""}.${row.original.extension || ""}`}</p>
                 </div>
-                <p onClick={() => {
-                    if (setCarouselOpen && setStartIndex && row?.index !== undefined) {
-                        setStartIndex(row.index);
-                        setCarouselOpen(true);
-                    }
-                }} className="hover:underline cursor-pointer">{`${row.getValue("name") || ''}.${row.original.extension || ''}`}</p>
-            </div>
+            );
         },
         sortUndefined: "last",
         sortDescFirst: false,
     },
     {
         accessorKey: "folder_name",
-        accessorFn: (row) => row?.folder?.name || '',
+        accessorFn: row => row?.folder?.name || "",
         header: () => {
             const t = useTranslations("images.views.list.header");
-            return (
-                <p>{t('folder')}</p>
-            )
+            return <p>{t("folder")}</p>;
         },
     },
     {
         accessorKey: "size",
         header: () => {
             const t = useTranslations("images.views.list.header");
-            return (
-                <p>{t('size')}</p>
-            )
+            return <p>{t("size")}</p>;
         },
-        cell: ({ row }) => (
-            <p>{formatBytes(row.original.size)}</p>
-        ),
+        cell: ({ row }) => <p>{formatBytes(row.original.size)}</p>,
     },
     {
         accessorKey: "comments",
         header: () => {
             const t = useTranslations("images.views.list.header");
-            return (
-                <p>{t('comments')}</p>
-            )
+            return <p>{t("comments")}</p>;
         },
         cell: ({ row }) => {
             const t = useTranslations("images.views.list.columns");
-            if (!row?.original?.comments) return <p>{t('comments', { count: 0 })}</p>;
+            if (!row?.original?.comments) return <p>{t("comments", { count: 0 })}</p>;
 
-            return <p>{t('comments', { count: row.original.comments.length })}</p>
-        }
+            return <p>{t("comments", { count: row.original.comments.length })}</p>;
+        },
     },
     {
         accessorKey: "createdAt",
         header: () => {
             const t = useTranslations("images.views.list.header");
-            return (
-                <p>{t('uploadedAt')}</p>
-            )
+            return <p>{t("uploadedAt")}</p>;
         },
         cell: ({ row }) => {
             const formatter = useFormatter();
 
-            return <p className="capitalize">{formatter.dateTime(row.original.createdAt, {
-                weekday: "long",
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-                hour: "numeric",
-                minute: "numeric"
-            })}</p>
+            return (
+                <p className="capitalize">
+                    {formatter.dateTime(row.original.createdAt, {
+                        weekday: "long",
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                        hour: "numeric",
+                        minute: "numeric",
+                    })}
+                </p>
+            );
         },
     },
     {
@@ -251,6 +264,6 @@ export const imagesListViewColumns: ColumnDef<FileWithFolder & FileWithComments>
                 </>
             );
         },
-        size: 50
-    }
+        size: 50,
+    },
 ];

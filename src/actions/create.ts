@@ -1,8 +1,7 @@
 "use server";
 
-import {prisma} from "@/lib/prisma";
-import {ActionResult, SignupFormSchema} from "@/lib/definitions";
-import * as bcrypt from 'bcryptjs';
+import { ActionResult, SignupFormSchema } from "@/lib/definitions";
+import * as bcrypt from "bcryptjs";
 import { z } from "zod";
 import { Plan, Prisma } from "@prisma/client";
 import { addDays } from "date-fns";
@@ -10,68 +9,68 @@ import Stripe from "stripe";
 import { getCurrentSession } from "@/lib/session";
 import { getLimitsFromPlan } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
+import { UserService } from "@/data/user-service";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-export async function createUserHandler({name, email, password, passwordConfirmation}: z.infer<typeof SignupFormSchema>): Promise<ActionResult> {
-    let errors = [];
-
+export async function createUserHandler({
+    name,
+    email,
+    password,
+    passwordConfirmation,
+}: z.infer<typeof SignupFormSchema>): Promise<ActionResult> {
     try {
-        SignupFormSchema.safeParse({email, password, passwordConfirmation: password});
-    } catch (e: any) {
-        errors.push(e.message);
+        SignupFormSchema.safeParse({ email, password, passwordConfirmation: password });
+    } catch {
         return {
-            status: 'error',
-            message: e.message
+            status: "error",
+            message: "invalid-data",
         };
     }
 
     if (password !== passwordConfirmation) {
         return {
-            status: 'error',
-            message: "Passwords don't match"
+            status: "error",
+            message: "Passwords don't match",
         };
     }
 
     try {
-        const salt = bcrypt.genSaltSync(10)
+        const salt = bcrypt.genSaltSync(10);
         const hashedPassword = bcrypt.hashSync(password, salt);
         const verificationToken = crypto.randomUUID();
-        const user = await prisma.user.create({
-            data: {
-                name: name,
-                email: email,
-                emailVerificationDeadline: addDays(new Date(), 7),
-                password: hashedPassword,
-                verifiedEmailRequest: {
-                    create: {
-                        token: verificationToken,
-                        expires: addDays(new Date(), 7)
-                    }
-                }
+        await UserService.create({
+            name: name,
+            email: email,
+            emailVerificationDeadline: addDays(new Date(), 7),
+            password: hashedPassword,
+            verifiedEmailRequest: {
+                create: {
+                    token: verificationToken,
+                    expires: addDays(new Date(), 7),
+                },
             },
         });
 
         await createStripeCustomer();
 
         return {
-            status: 'ok'
+            status: "ok",
         };
     } catch (e) {
-        if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+        if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
             return {
                 status: "error",
-                message: "An account with the same email already exists"
-            }
+                message: "An account with the same email already exists",
+            };
         }
 
         return {
             status: "error",
-            message: "An unknown error happened while creating your account"
-        }
+            message: "An unknown error happened while creating your account",
+        };
     }
 }
-
 
 export const createStripeCustomer = async (): Promise<string> => {
     const { user } = await getCurrentSession();
@@ -85,13 +84,10 @@ export const createStripeCustomer = async (): Promise<string> => {
         name: user.name,
     });
 
-    await prisma.user.update({
-        where: { id: user.id },
-        data: { stripeCustomerId: customer.id }
-    });
+    await UserService.update(user.id, { stripeCustomerId: customer.id });
 
     return customer.id;
-}
+};
 
 export const createStripeSubscription = async (priceId: string): Promise<Stripe.Subscription> => {
     const { user } = await getCurrentSession();
@@ -113,20 +109,17 @@ export const createStripeSubscription = async (priceId: string): Promise<Stripe.
     const subscription = await stripe.subscriptions.create({
         customer: customerId,
         items: [{ price: priceId }],
-        payment_behavior: 'default_incomplete',
-        payment_settings: { save_default_payment_method: 'on_subscription' },
-        expand: ['latest_invoice.confirmation_secret'],
+        payment_behavior: "default_incomplete",
+        payment_settings: { save_default_payment_method: "on_subscription" },
+        expand: ["latest_invoice.confirmation_secret"],
         automatic_tax: { enabled: true },
-        metadata: { userId: user.id }
+        metadata: { userId: user.id },
     });
 
-    await prisma.user.update({
-        where: { id: user.id },
-        data: { stripeSubscriptionId: subscription.id }
-    });
+    await UserService.update(user.id, { stripeSubscriptionId: subscription.id });
 
     return subscription;
-}
+};
 
 export const cancelStripeSubscription = async (): Promise<void> => {
     const { user } = await getCurrentSession();
@@ -141,7 +134,7 @@ export const cancelStripeSubscription = async (): Promise<void> => {
 
     try {
         await stripe.subscriptions.update(user.stripeSubscriptionId, {
-            cancel_at_period_end: true
+            cancel_at_period_end: true,
         });
     } catch (e) {
         console.error(e);
@@ -149,16 +142,13 @@ export const cancelStripeSubscription = async (): Promise<void> => {
 
     const limits = getLimitsFromPlan(Plan.FREE);
 
-    await prisma.user.update({
-        where: { id: user.id },
-        data: {
-            stripeSubscriptionId: null,
-            plan: Plan.FREE,
-            maxStorage: limits.storage,
-            maxAlbums: limits.albums,
-            maxSharingLinks: limits.sharingLinks
-        }
+    await UserService.update(user.id, {
+        stripeSubscriptionId: null,
+        plan: Plan.FREE,
+        maxStorage: limits.storage,
+        maxAlbums: limits.albums,
+        maxSharingLinks: limits.sharingLinks,
     });
 
     revalidatePath("/app/account/billing");
-}
+};

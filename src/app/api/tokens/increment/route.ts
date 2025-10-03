@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { AccessTokenService } from "@/data/access-token-service";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -7,34 +7,21 @@ export async function GET(req: NextRequest) {
 
     if (!token) return;
 
-    const accessToken = await prisma.accessToken.findUnique({   
+    const accessToken = await AccessTokenService.get({
         where: {
-            token: token
-        }
+            token: token,
+        },
     });
 
     if (accessToken) {
-        await prisma.accessToken.update({
-            where: {
-                token: token
+        await AccessTokenService.update(token, {
+            uses: {
+                increment: 1,
             },
-            data: {
-                uses: {
-                    increment: 1
-                }
-            }
-        })
-        revalidatePath("/app/links");
-        return NextResponse.json({
-            message: "Token was successfullly incremented"
-        }, {
-            status: 200
         });
+        revalidatePath("/app/links");
+        return NextResponse.json({ message: "Token was successfullly incremented" }, { status: 200 });
     }
 
-    return NextResponse.json({
-        message: "Token not found"
-    }, {
-        status: 404
-    });
+    return NextResponse.json({ message: "Token not found" }, { status: 404 });
 }

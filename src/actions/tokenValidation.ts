@@ -1,64 +1,62 @@
-'use server'
+"use server";
 
-import { prisma } from "@/lib/prisma";
 import { FolderTokenPermission } from "@prisma/client";
 import { FolderWithAccessToken, FolderWithCreatedBy, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
 import * as bcrypt from "bcryptjs";
+import { AccessTokenService } from "@/data/access-token-service";
 
 export async function validateShareToken(
-  folderId: string,
-  token: string,
-  hashedPinCode?: string | null
+    folderId: string,
+    token: string,
+    hashedPinCode?: string | null
 ): Promise<{
-  error: string | null,
-  folder: (FolderWithCreatedBy & FolderWithFilesWithFolderAndComments & FolderWithAccessToken) | null,
-  permission?: FolderTokenPermission
+    error: string | null;
+    folder: (FolderWithCreatedBy & FolderWithFilesWithFolderAndComments & FolderWithAccessToken) | null;
+    permission?: FolderTokenPermission;
 }> {
-  const accessToken = await prisma.accessToken.findUnique({
-    where: {
-      token: token,
-      folderId: folderId,
-      expires: {
-        gte: new Date()
-      }
-    },
-    include: {
-      folder: {
+    const accessToken = await AccessTokenService.get({
+        where: {
+            token: token,
+            folderId: folderId,
+            expires: {
+                gte: new Date(),
+            },
+        },
         include: {
-          files: {
-            include: {
-              folder: true,
-              comments: { include: { createdBy: true } }
-            }
-          },
-          createdBy: true
+            pinCode: true,
+            folder: {
+                include: {
+                    files: {
+                        include: {
+                            folder: true,
+                            comments: { include: { createdBy: true } },
+                        },
+                    },
+                    createdBy: true,
+                },
+            },
+        },
+    });
+
+    if (!accessToken || !accessToken.isActive) {
+        return { error: "invalid-token", folder: null };
+    }
+
+    if (accessToken.locked && !hashedPinCode) {
+        return { error: "code-needed", folder: null };
+    }
+
+    if (accessToken.locked) {
+        if (!hashedPinCode) {
+            return { error: "wrong-pin", folder: null };
         }
-      }
-    },
-    omit: {
-      pinCode: false
-    }
-  });
 
-  if (!accessToken || !accessToken.isActive) {
-    return { error: "invalid-token", folder: null };
-  }
+        const match = bcrypt.compareSync(accessToken.pinCode as string, hashedPinCode);
 
-  if (accessToken.locked && !hashedPinCode) {
-    return { error: "code-needed", folder: null };
-  }
-
-  if (accessToken.locked) {
-    if (!hashedPinCode) {
-      return { error: "wrong-pin", folder: null };
+        if (!match) {
+            return { error: "wrong-pin", folder: null };
+        }
     }
 
-    const match = bcrypt.compareSync(accessToken.pinCode as string, hashedPinCode);
-
-    if (!match) {
-      return { error: "wrong-pin", folder: null };
-    }
-  }
-
-  return { error: null, folder: { ...accessToken.folder, accessTokens: [] }, permission: accessToken.permission };
+    return { error: null, folder: { ...accessToken.folder, accessTokens: [] }, permission: accessToken.permission };
 }

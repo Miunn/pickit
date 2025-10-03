@@ -1,8 +1,7 @@
-'use server'
+"use server";
 
-import { prisma } from "@/lib/prisma";
+import { NotificationService } from "@/data/notification-service";
 import { getCurrentSession } from "@/lib/session";
-import { revalidatePath } from "next/cache";
 
 export async function markAllNotificationsAsRead() {
     const { user } = await getCurrentSession();
@@ -11,10 +10,7 @@ export async function markAllNotificationsAsRead() {
         return { error: "Unauthorized" };
     }
 
-    await prisma.notification.updateMany({
-        where: { userId: user.id, isRead: false },
-        data: { isRead: true }
-    });
+    await NotificationService.updateMany({ userId: user.id, isRead: false }, { isRead: true });
 
     return { success: true };
 }
@@ -25,11 +21,8 @@ export async function markNotificationAsRead(notificationId: string) {
     if (!user) {
         return { error: "Unauthorized" };
     }
-    
-    await prisma.notification.update({
-        where: { id: notificationId, userId: user.id },
-        data: { isRead: true }
-    });
+
+    await NotificationService.update(notificationId, { isRead: true });
 
     return { success: true };
 }

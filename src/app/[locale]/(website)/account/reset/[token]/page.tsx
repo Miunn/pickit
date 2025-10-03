@@ -1,5 +1,5 @@
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
-import { prisma } from "@/lib/prisma";
+import { PasswordResetRequestService } from "@/data/password-reset-service";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
@@ -9,14 +9,14 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
         title: t("title"),
         description: t("description"),
-    }
+    };
 }
 
-export default async function ResetPasswordPage(props: { params: Promise<{ locale: string, token: string }> }) {
+export default async function ResetPasswordPage(props: { params: Promise<{ locale: string; token: string }> }) {
     const params = await props.params;
 
-    const verifyPasswordResetToken = await prisma.passwordResetRequest.findUnique({
-        where: { token: params.token }
+    const verifyPasswordResetToken = await PasswordResetRequestService.get({
+        where: { token: params.token },
     });
 
     if (!verifyPasswordResetToken) {

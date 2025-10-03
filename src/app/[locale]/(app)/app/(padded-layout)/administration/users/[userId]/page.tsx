@@ -1,45 +1,47 @@
 import AccountForm from "@/components/account/accountForm";
 import BreadcrumbPortal from "@/components/layout/BreadcrumbPortal";
 import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
+import { UserService } from "@/data/user-service";
 import { redirect } from "@/i18n/navigation";
-import { prisma } from "@/lib/prisma";
 
-export default async function AdminUser(props: { params: Promise<{ locale: string, userId: string }> }) {
-    const params = await props.params;
+export default async function AdminUser(props: {
+  params: Promise<{ locale: string; userId: string }>;
+}) {
+  const params = await props.params;
 
-    const user = await prisma.user.findUnique({
-        where: { id: params.userId },
+  const user = await UserService.get({
+    where: { id: params.userId },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      emailVerified: true,
+      emailVerificationDeadline: true,
+      image: true,
+      role: true,
+      usedStorage: true,
+      maxStorage: true,
+      createdAt: true,
+      updatedAt: true,
+      _count: {
         select: {
-            id: true,
-            name: true,
-            email: true,
-            emailVerified: true,
-            emailVerificationDeadline: true,
-            image: true,
-            role: true,
-            usedStorage: true,
-            maxStorage: true,
-            createdAt: true,
-            updatedAt: true,
-            _count: {
-                select: {
-                    folders: true,
-                    files: true
-                }
-            }
-        }
-    });
+          folders: true,
+          files: true,
+        },
+      },
+    },
+  });
 
-    if (!user) {
-        return redirect({ href: "/administration/users", locale: params.locale });
-    }
+  if (!user) {
+    return redirect({ href: "/administration/users", locale: params.locale });
+  }
 
-    return (
-        <div>
-            <BreadcrumbPortal>
-                <HeaderBreadcumb adminUser={user} />
-            </BreadcrumbPortal>
-            <AccountForm user={user} />
-        </div>
-    );
+  return (
+    <div>
+      <BreadcrumbPortal>
+        <HeaderBreadcumb adminUser={user} />
+      </BreadcrumbPortal>
+      <AccountForm user={user} />
+    </div>
+  );
 }

@@ -1,31 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import * as bcrypt from "bcryptjs";
-import fs from "fs";
 import { getCurrentSession } from "@/lib/session";
 import { GoogleBucket } from "@/lib/bucket";
+import { AccessTokenService } from "@/data/access-token-service";
+import { FileService } from "@/data/file-service";
 
-export async function GET(req: NextRequest, props: { params: Promise<{ video: string }>, }): Promise<NextResponse> {
+export async function GET(req: NextRequest, props: { params: Promise<{ video: string }> }): Promise<NextResponse> {
     const params = await props.params;
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
     const { user } = await getCurrentSession();
     if (shareToken && shareToken !== "undefined" && shareToken !== "null") {
-        const access = await prisma.accessToken.findUnique({
-                where: {
-                    token: shareToken
+        const access = await AccessTokenService.get({
+            where: {
+                token: shareToken,
+            },
+            include: {
+                pinCode: true,
+                folder: {
+                    select: {
+                        id: true,
+                    },
                 },
-                include: {
-                    folder: {
-                        select: {
-                            id: true
-                        }
-                    }
-                },
-                omit: {
-                    pinCode: false
-                }
-            });
+            },
+        });
 
         if (!access) {
             return NextResponse.json({ error: "Invalid share token" });
@@ -43,13 +41,13 @@ export async function GET(req: NextRequest, props: { params: Promise<{ video: st
             }
         }
 
-        const video = await prisma.file.findUnique({
+        const video = await FileService.get({
             where: {
                 id: params.video,
                 folder: {
-                    id: access.folder.id as string
-                }
-            }
+                    id: access.folder.id as string,
+                },
+            },
         });
 
         if (!video) {
@@ -59,17 +57,17 @@ export async function GET(req: NextRequest, props: { params: Promise<{ video: st
         const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.id}`);
         const [buffer] = await file.download();
         const res = new NextResponse(buffer);
-        res.headers.set('Content-Disposition', 'inline');
-        res.headers.set('Content-Type', `video/${video.extension}`);
+        res.headers.set("Content-Disposition", "inline");
+        res.headers.set("Content-Type", `video/${video.extension}`);
         return res;
     } else if (user) {
-        const video = await prisma.file.findUnique({
+        const video = await FileService.get({
             where: {
                 id: params.video,
                 createdBy: {
-                    id: user.id as string
-                }
-            }
+                    id: user.id as string,
+                },
+            },
         });
 
         if (!video) {
@@ -79,8 +77,8 @@ export async function GET(req: NextRequest, props: { params: Promise<{ video: st
         const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.id}`);
         const [buffer] = await file.download();
         const res = new NextResponse(buffer);
-        res.headers.set('Content-Disposition', 'inline');
-        res.headers.set('Content-Type', `video/${video.extension}`);
+        res.headers.set("Content-Disposition", "inline");
+        res.headers.set("Content-Type", `video/${video.extension}`);
         return res;
     } else {
         return NextResponse.json({ error: "Unauthorized" });

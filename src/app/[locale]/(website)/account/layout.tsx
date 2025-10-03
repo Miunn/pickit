@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import Header from "@/components/layout/Header";
 import { Toaster } from "@/components/ui/toaster";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
     title: "Echomori",
@@ -15,9 +12,7 @@ export default async function LocaleLayout(
         children: React.ReactNode;
     }>
 ) {
-    const {
-        children
-    } = props;
+    const { children } = props;
 
     return (
         <>

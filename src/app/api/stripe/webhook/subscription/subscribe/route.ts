@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { UserService } from "@/data/user-service";
 import { getLimitsFromPlan, getPlanFromString } from "@/lib/utils";
 import { Plan } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
@@ -16,8 +16,12 @@ export async function POST(request: NextRequest) {
     let event;
 
     try {
-        event = stripe.webhooks.constructEvent(await request.text(), signature, process.env.STRIPE_SUBSCRIBE_WEBHOOK_SECRET!);
-    } catch (error) {
+        event = stripe.webhooks.constructEvent(
+            await request.text(),
+            signature,
+            process.env.STRIPE_SUBSCRIBE_WEBHOOK_SECRET!
+        );
+    } catch {
         return new NextResponse("Invalid signature", { status: 400 });
     }
 
@@ -36,17 +40,14 @@ export async function POST(request: NextRequest) {
         return new NextResponse("No user id", { status: 400 });
     }
 
-    await prisma.user.update({
-        where: { id: userId },
-        data: {
-            stripeCustomerId: subscription.customer?.toString(),
-            stripeSubscriptionId: subscription.id,
-            plan: plan,
-            maxStorage: limits.storage,
-            maxAlbums: limits.albums,
-            maxSharingLinks: limits.sharingLinks,
-        }
-    })
+    await UserService.update(userId, {
+        stripeCustomerId: subscription.customer?.toString(),
+        stripeSubscriptionId: subscription.id,
+        plan: plan,
+        maxStorage: limits.storage,
+        maxAlbums: limits.albums,
+        maxSharingLinks: limits.sharingLinks,
+    });
 
     return new NextResponse("OK", { status: 200 });
 }

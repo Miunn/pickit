@@ -1,8 +1,7 @@
-"use server"
+"use server";
 
+import { UserService } from "@/data/user-service";
 import { getCurrentSession, invalidateAllSessions } from "@/lib/session";
-import { UserAdministration } from "@/lib/definitions";
-import { prisma } from "@/lib/prisma";
 import { Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
@@ -13,12 +12,10 @@ export async function deleteUser(userId: string) {
         return { error: "unauthorized" };
     }
 
-    await prisma.user.delete({
-        where: { id: userId },
-    })
+    await UserService.delete(userId);
 
     invalidateAllSessions(userId);
 
-    revalidatePath("/app/administration")
+    revalidatePath("/app/administration");
     return { error: null };
 }

@@ -14,13 +14,7 @@ import { useFilesContext } from "@/context/FilesContext";
 
 export function Comment({ comment }: { comment: CommentType }) {
     const { user } = useSession();
-    const token = (() => {
-        try {
-            return useFolderContext().token;
-        } catch (error) {
-            return undefined;
-        }
-    })();
+    const { token } = useFolderContext();
     const { files, setFiles } = useFilesContext();
 
     const formatter = useFormatter();
@@ -28,20 +22,30 @@ export function Comment({ comment }: { comment: CommentType }) {
     const [openDelete, setOpenDelete] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
 
-    const canEditComment = comment.createdById === user?.id || (token && 'email' in token && comment.createdByEmail === token.email);
+    const canEditComment =
+        comment.createdById === user?.id || (token && "email" in token && comment.createdByEmail === token.email);
 
     return (
         <div className="relative">
             <div className="text-sm font-semibold flex items-center gap-2">
-                <p>
-                    {comment.name}
-                </p>
+                <p>{comment.name}</p>
                 <Tooltip>
                     <TooltipTrigger>
-                        <p className="font-light text-gray-500">{formatter.relativeTime(comment.createdAt, new Date())}</p>
+                        <p className="font-light text-gray-500">
+                            {formatter.relativeTime(comment.createdAt, new Date())}
+                        </p>
                     </TooltipTrigger>
                     <TooltipContent>
-                        <span className="capitalize">{formatter.dateTime(comment.createdAt, { weekday: "long", day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "numeric" })}</span>
+                        <span className="capitalize">
+                            {formatter.dateTime(comment.createdAt, {
+                                weekday: "long",
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                                hour: "numeric",
+                                minute: "numeric",
+                            })}
+                        </span>
                     </TooltipContent>
                 </Tooltip>
             </div>
@@ -56,25 +60,28 @@ export function Comment({ comment }: { comment: CommentType }) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         <DropdownMenuItem onClick={() => setOpenEdit(true)}>{t("edit")}</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-destructive font-semibold">{t("delete")}</DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => setOpenDelete(true)}
+                            className="text-destructive font-semibold"
+                        >
+                            {t("delete")}
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             ) : null}
 
-            <EditCommentDialog
-                comment={comment}
-                open={openEdit}
-                setOpen={setOpenEdit}
-            />
+            <EditCommentDialog comment={comment} open={openEdit} setOpen={setOpenEdit} />
 
             <DeleteCommentDialog
                 comment={comment}
                 open={openDelete}
                 setOpen={setOpenDelete}
                 onDelete={() => {
-                    setFiles(files.map((file) => ({ ...file, comments: file.comments.filter((c) => c.id !== comment.id) })))
+                    setFiles(
+                        files.map(file => ({ ...file, comments: file.comments.filter(c => c.id !== comment.id) }))
+                    );
                 }}
             />
         </div>
-    )
+    );
 }

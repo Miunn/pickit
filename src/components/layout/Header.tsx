@@ -1,18 +1,14 @@
-'use client'
+"use client";
 
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { Command, Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import React from "react";
 import SwitchLocale from "../generic/SwitchLocale";
 import { useLocale, useTranslations } from "next-intl";
 import { SwitchTheme } from "../generic/SwitchTheme";
-import {
-    Sheet,
-    SheetContent,
-    SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import LogoImage from "../generic/LogoImage";
 
 export default function Header({ className }: { className?: string }) {
@@ -45,14 +41,26 @@ export default function Header({ className }: { className?: string }) {
 
     const NavLinks = () => (
         <>
-            <Link href={`/${locale}/features`} className="hover:text-primary transition-colors">{t('nav.features')}</Link>
-            <Link href={`/${locale}/pricing`} className="hover:text-primary transition-colors">{t('nav.pricing')}</Link>
-            <Link href={`/${locale}/contact`} className="hover:text-primary transition-colors">{t('nav.contact')}</Link>
+            <Link href={`/${locale}/features`} className="hover:text-primary transition-colors">
+                {t("nav.features")}
+            </Link>
+            <Link href={`/${locale}/pricing`} className="hover:text-primary transition-colors">
+                {t("nav.pricing")}
+            </Link>
+            <Link href={`/${locale}/contact`} className="hover:text-primary transition-colors">
+                {t("nav.contact")}
+            </Link>
         </>
     );
 
     return (
-        <header className={cn("flex items-center justify-between py-4", "sticky top-0 z-50 bg-background/90 backdrop-blur", className)}>
+        <header
+            className={cn(
+                "flex items-center justify-between py-4",
+                "sticky top-0 z-50 bg-background/90 backdrop-blur",
+                className
+            )}
+        >
             <div className={"w-full grid grid-cols-3 items-center max-w-7xl mx-auto px-4"}>
                 <Link href={`/${locale}`} className="w-fit flex items-center gap-2">
                     <LogoImage size="small" />
@@ -68,7 +76,7 @@ export default function Header({ className }: { className?: string }) {
                 <div className="w-fit place-self-end flex gap-2 items-center justify-end">
                     <div className="hidden md:flex gap-2">
                         <Button asChild>
-                            <Link href={`/${locale}/signin`}>{t('nav.login')}</Link>
+                            <Link href={`/${locale}/signin`}>{t("nav.login")}</Link>
                         </Button>
                         <SwitchLocale locale={locale} />
                         <SwitchTheme />
@@ -85,7 +93,7 @@ export default function Header({ className }: { className?: string }) {
                                 <NavLinks />
                                 <div className="flex flex-col gap-4 mt-4">
                                     <Button asChild className="w-full">
-                                        <Link href={`/${locale}/signin`}>{t('nav.login')}</Link>
+                                        <Link href={`/${locale}/signin`}>{t("nav.login")}</Link>
                                     </Button>
                                     <div className="flex justify-center gap-4 relative">
                                         <div className="relative z-[101]">
@@ -102,7 +110,10 @@ export default function Header({ className }: { className?: string }) {
                 </div>
             </div>
 
-            <hr ref={headerRowRef} className="absolute w-full bottom-0 transition-opacity duration-300 ease-in-out opacity-0"></hr>
+            <hr
+                ref={headerRowRef}
+                className="absolute w-full bottom-0 transition-opacity duration-300 ease-in-out opacity-0"
+            ></hr>
         </header>
     );
 }

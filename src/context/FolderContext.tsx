@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { FolderWithAccessToken, FolderWithCover, FolderWithCreatedBy, FolderWithFilesCount } from "@/lib/definitions";
 import { createVault, loadVault } from "@/lib/e2ee/vault";
@@ -28,38 +28,64 @@ export const useFolderContext = () => {
     return context;
 };
 
-export function FolderProvider({ children, folderData, tokenData, tokenHash, isShared }: { children: React.ReactNode, folderData: FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover, tokenData: AccessToken | null, tokenHash: string | null, isShared: boolean }) {
-    const [folder, setFolder] = useState<FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover>(folderData);
+export function FolderProvider({
+    children,
+    folderData,
+    tokenData,
+    tokenHash,
+    isShared,
+}: {
+    children: React.ReactNode;
+    folderData: FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover;
+    tokenData: AccessToken | null;
+    tokenHash: string | null;
+    isShared: boolean;
+}) {
+    const [folder, setFolder] = useState<
+        FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover
+    >(folderData);
     const [token, setToken] = useState<AccessToken | null>(tokenData);
-    const [encryptionKey, setEncryptionKey] = useState<CryptoKey | null>(null);
+    //const [encryptionKey, setEncryptionKey] = useState<CryptoKey | null>(null);
 
     const { wrappingKey } = useE2EEncryptionContext();
 
     useEffect(() => {
-            if (!wrappingKey) {
-                console.warn("Wrapping key not found, skipping folder key loading");
-                return;
-            }
+        if (!wrappingKey) {
+            console.warn("Wrapping key not found, skipping folder key loading");
+            return;
+        }
 
-            if (!folder.key) {
-                createVault(folder.id, wrappingKey).then(({ key, encryptedKey, iv }) => {
-                    setEncryptionKey(key);
-                    setFolder({ ...folder, key: Buffer.from(encryptedKey).toString("base64"), iv: Buffer.from(iv).toString("base64") });
-                    updateFolderKey(folder.id, Buffer.from(encryptedKey).toString("base64"), Buffer.from(iv).toString("base64")).then(({ error }) => {
-                        if (error) {
-                            console.error("Error updating folder key", error);
-                        }
-                    });
+        if (!folder.key) {
+            createVault(folder.id, wrappingKey).then(({ key, encryptedKey, iv }) => {
+                //setEncryptionKey(key);
+                setFolder({
+                    ...folder,
+                    key: Buffer.from(encryptedKey).toString("base64"),
+                    iv: Buffer.from(iv).toString("base64"),
+                });
+                updateFolderKey(
+                    folder.id,
+                    Buffer.from(encryptedKey).toString("base64"),
+                    Buffer.from(iv).toString("base64")
+                ).then(({ error }) => {
+                    if (error) {
+                        console.error("Error updating folder key", error);
+                    }
+                });
 
-                    console.log("Created folder key", key);
-                    console.log("Created iv", iv);
-                });
-            } else {
-                loadVault(Buffer.from(folder.key, "base64").buffer, new Uint8Array(Buffer.from(folder.iv, "base64")), wrappingKey).then((key) => {
-                    setEncryptionKey(key);
-                    console.log("Loaded folder key from server", key);
-                });
-            }
+                console.log("Created folder key", key);
+                console.log("Created iv", iv);
+            });
+        } else {
+            loadVault(
+                Buffer.from(folder.key, "base64").buffer,
+                new Uint8Array(Buffer.from(folder.iv, "base64")),
+                wrappingKey
+            ).then(key => {
+                //setEncryptionKey(key);
+                console.log("Loaded folder key from server", key);
+            });
+        }
     }, [folder, wrappingKey]);
 
     return (
@@ -68,5 +94,3 @@ export function FolderProvider({ children, folderData, tokenData, tokenHash, isS
         </FolderContext.Provider>
     );
 }
-
-

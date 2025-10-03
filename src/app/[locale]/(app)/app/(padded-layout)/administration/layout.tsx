@@ -3,30 +3,19 @@ import { getCurrentSession } from "@/lib/session";
 import { Role } from "@prisma/client";
 
 export default async function AdminLayout(
-    props: Readonly<{
-        children: React.ReactNode;
-        params: Promise<{ locale: string }>;
-    }>
+  props: Readonly<{
+    children: React.ReactNode;
+    params: Promise<{ locale: string }>;
+  }>,
 ) {
-    const params = await props.params;
+  const { locale } = await props.params;
+  const { children } = props;
 
-    const {
-        locale
-    } = params;
+  const { user } = await getCurrentSession();
 
-    const {
-        children
-    } = props;
+  if (!user?.role.includes(Role.ADMIN)) {
+    return redirect({ href: `/app`, locale: locale });
+  }
 
-    const { user } = await getCurrentSession();
-
-    if (!user?.role.includes(Role.ADMIN)) {
-        return redirect({ href: `/app`, locale: locale });
-    }
-
-    return (
-        <div className={"min-h-screen"}>
-            {children}
-        </div>
-    );
+  return <div className={"min-h-screen"}>{children}</div>;
 }
