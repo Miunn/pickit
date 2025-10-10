@@ -31,6 +31,7 @@ import EditDescriptionDialog from "@/components/folders/dialogs/EditDescriptionD
 import DeleteDescriptionDialog from "@/components/folders/dialogs/DeleteDescriptionDialog";
 import { useFilesContext } from "@/context/FilesContext";
 import { ContextFile } from "@/context/FilesContext";
+import SelectingBar from "./SelectingBar";
 
 export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     const { user } = useSession();
@@ -368,38 +369,14 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                 </>
             )}
             {selecting ? (
-                <div
-                    className={
-                        "flex justify-between items-center mb-5 bg-gray-50 dark:bg-primary/30 rounded-2xl w-full p-2"
-                    }
-                >
-                    <div className={"flex gap-2 items-center"}>
-                        <Button
-                            variant="ghost"
-                            onClick={() => {
-                                setSelected([]);
-                                setSizeSelected(0);
-                                setSelecting(false);
-                            }}
-                            size="icon"
-                        >
-                            <X className={"w-4 h-4"} />
-                        </Button>
-                        <h2>
-                            <span className={"font-semibold"}>{t("selected", { count: selected.length })}</span> -{" "}
-                            {formatBytes(sizeSelected, { decimals: 2, sizeType: "normal" })}
-                        </h2>
-                    </div>
-
-                    <Button
-                        variant="outline"
-                        onClick={() => {
-                            setOpenDeleteMultiple(true);
-                        }}
-                    >
-                        <Trash2 className={"mr-2"} /> {deleteMultipleTranslations("trigger")}
-                    </Button>
-                </div>
+                <SelectingBar
+                    selected={selected}
+                    sizeSelected={sizeSelected}
+                    onClose={() => {
+                        setSelected([]);
+                        setSizeSelected(0);
+                    }}
+                />
             ) : null}
             {folder.description ? (
                 <div
