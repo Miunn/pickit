@@ -1,12 +1,12 @@
 export async function withIndexedDB(callback: (db: IDBDatabase) => void) {
     const request = indexedDB.open("echomori-e2ee", 1);
-    request.onerror = (event) => {
+    request.onerror = event => {
         console.error("Error opening indexedDB", event);
     };
-    request.onsuccess = (event) => {
+    request.onsuccess = () => {
         callback(request.result);
     };
-    request.onupgradeneeded = (event) => {
+    request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result;
         createStore(db);
     };
@@ -34,7 +34,7 @@ export async function generateKeys() {
             namedCurve: "P-256",
         },
         true,
-        ["deriveKey", "deriveBits"],
+        ["deriveKey", "deriveBits"]
     );
 
     return { publicKey, privateKey };
@@ -55,20 +55,14 @@ export async function passwordToKey(password: string, salt: Uint8Array) {
             name: "PBKDF2",
             salt,
             iterations: 100000,
-            hash: "SHA-256"
+            hash: "SHA-256",
         },
         keyMaterial,
         256 // 256 bits for AES-GCM
     );
 
     // Then create an AES-GCM key from the derived bits
-    const key = await crypto.subtle.importKey(
-        "raw",
-        derivedBits,
-        { name: "AES-GCM" },
-        true,
-        ["wrapKey", "unwrapKey"]
-    );
+    const key = await crypto.subtle.importKey("raw", derivedBits, { name: "AES-GCM" }, true, ["wrapKey", "unwrapKey"]);
 
     // Save it to session storage
     const exportedWrappingKey = await crypto.subtle.exportKey("jwk", key);
@@ -77,22 +71,23 @@ export async function passwordToKey(password: string, salt: Uint8Array) {
     return { key };
 }
 
-export async function storeKeys(publicKey: CryptoKey, privateKey: CryptoKey, iv: Uint8Array, salt: Uint8Array, password: string): Promise<{ publicKey: CryptoKey, privateKey: CryptoKey, wrappingKey: CryptoKey, wrappedPrivateKey: ArrayBuffer }> {
+export async function storeKeys(
+    publicKey: CryptoKey,
+    privateKey: CryptoKey,
+    iv: Uint8Array,
+    salt: Uint8Array,
+    password: string
+): Promise<{ publicKey: CryptoKey; privateKey: CryptoKey; wrappingKey: CryptoKey; wrappedPrivateKey: ArrayBuffer }> {
     const { key: wrappingKey } = await passwordToKey(password, salt);
 
     const exportedPublicKey = await crypto.subtle.exportKey("spki", publicKey);
-    const wrappedPrivateKey = await crypto.subtle.wrapKey(
-        "jwk",
-        privateKey,
-        wrappingKey,
-        {
-            name: "AES-GCM",
-            iv,
-        }
-    );
+    const wrappedPrivateKey = await crypto.subtle.wrapKey("jwk", privateKey, wrappingKey, {
+        name: "AES-GCM",
+        iv,
+    });
 
     // Store keys in the device
-    withIndexedDB((db) => {
+    withIndexedDB(db => {
         const transaction = db.transaction("keys", "readwrite");
 
         if (!transaction.objectStoreNames.contains("keys")) {
@@ -105,14 +100,14 @@ export async function storeKeys(publicKey: CryptoKey, privateKey: CryptoKey, iv:
             publicKey: exportedPublicKey,
             privateKey: wrappedPrivateKey,
             iv,
-            salt
+            salt,
         });
 
-        result.onsuccess = (event) => {
+        result.onsuccess = event => {
             console.log("Keys stored successfully", event);
         };
 
-        result.onerror = (event) => {
+        result.onerror = event => {
             console.error("Error storing keys", event);
         };
     });
@@ -120,17 +115,26 @@ export async function storeKeys(publicKey: CryptoKey, privateKey: CryptoKey, iv:
     return { publicKey, privateKey, wrappingKey, wrappedPrivateKey };
 }
 
-export async function loadKeys(password: string, callback: (keys: { publicKey: CryptoKey, privateKey: CryptoKey, wrappingKey: CryptoKey }) => void, onError: () => void) {
-    withIndexedDB((db) => {
+export async function loadKeys(
+    password: string,
+    callback: (keys: { publicKey: CryptoKey; privateKey: CryptoKey; wrappingKey: CryptoKey }) => void,
+    onError: () => void
+) {
+    withIndexedDB(db => {
         const transaction = db.transaction("keys", "readonly");
         const store = transaction.objectStore("keys");
         const result = store.get(1);
 
-        result.onsuccess = async (event) => {
+        result.onsuccess = async event => {
             const keys = (event.target as IDBRequest).result;
             if (keys) {
                 const { key: wrappingKey } = await passwordToKey(password, keys.salt);
-                const { publicKey, privateKey } = await importKeyPair(keys.publicKey, keys.privateKey, wrappingKey, keys.iv);
+                const { publicKey, privateKey } = await importKeyPair(
+                    keys.publicKey,
+                    keys.privateKey,
+                    wrappingKey,
+                    keys.iv
+                );
                 callback({ publicKey, privateKey, wrappingKey });
             } else {
                 console.warn("No keys found");
@@ -138,13 +142,18 @@ export async function loadKeys(password: string, callback: (keys: { publicKey: C
             }
         };
 
-        result.onerror = (event) => {
+        result.onerror = event => {
             console.error("Error loading keys", event);
         };
     });
 }
 
-export async function exportKeyPair(publicKey: CryptoKey, privateKey: CryptoKey, wrappingKey: CryptoKey, iv: Uint8Array) {
+export async function exportKeyPair(
+    publicKey: CryptoKey,
+    privateKey: CryptoKey,
+    wrappingKey: CryptoKey,
+    iv: Uint8Array
+) {
     const exportedPublicKey = await crypto.subtle.exportKey("spki", publicKey);
     const exportedPrivateKey = await crypto.subtle.wrapKey("jwk", privateKey, wrappingKey, { name: "AES-GCM", iv });
     return { exportedPublicKey, exportedPrivateKey };
@@ -158,13 +167,7 @@ export async function exportKeyPair(publicKey: CryptoKey, privateKey: CryptoKey,
  * @returns The private CryptoKey
  */
 export async function importKeyPair(pbKey: ArrayBuffer, prKey: ArrayBuffer, wrappingKey: CryptoKey, iv: Uint8Array) {
-    const publicKey = await crypto.subtle.importKey(
-        "spki",
-        pbKey,
-        { name: "ECDH", namedCurve: "P-256" },
-        true,
-        []
-    );
+    const publicKey = await crypto.subtle.importKey("spki", pbKey, { name: "ECDH", namedCurve: "P-256" }, true, []);
 
     const privateKey = await crypto.subtle.unwrapKey(
         "jwk",
@@ -172,11 +175,11 @@ export async function importKeyPair(pbKey: ArrayBuffer, prKey: ArrayBuffer, wrap
         wrappingKey,
         {
             name: "AES-GCM",
-            iv: iv
+            iv: iv,
         },
         {
             name: "ECDH",
-            namedCurve: "P-256"
+            namedCurve: "P-256",
         },
         false,
         ["deriveKey", "deriveBits"]
@@ -206,4 +209,3 @@ export async function importKeyPair(pbKey: ArrayBuffer, prKey: ArrayBuffer, wrap
 
 //     return { publicKey };
 // }
-

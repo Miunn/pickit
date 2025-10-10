@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { ButtonProps } from "@/components/ui/button";
 import { Plan } from "@prisma/client";
@@ -12,23 +12,23 @@ type PricingContextType = {
     getCurrencySymbol: () => string;
     plans: Record<Plan, PricingPlan>;
     getPriceId: (plan: Plan, period: "monthly" | "yearly") => string;
-}
+};
 
 const PricingContext = createContext<PricingContextType | undefined>(undefined);
 
 export type PricingPlan = {
     plan: Plan;
-    priceId: { monthly: string, yearly: string };
+    priceId: { monthly: string; yearly: string };
     name: string;
-    price: { monthly: number, yearly: number };
+    price: { monthly: number; yearly: number };
     ctaVariant: ButtonProps["variant"];
     description: string;
     features: string[];
-}
+};
 
 export enum SupportedCurrency {
     USD = "USD",
-    EUR = "EUR"
+    EUR = "EUR",
 }
 
 export const usePricingContext = () => {
@@ -39,11 +39,10 @@ export const usePricingContext = () => {
     }
 
     return context;
-}
+};
 
 export const PricingProvider = ({ children }: { children: React.ReactNode }) => {
     const [selectedPeriod, setSelectedPeriod] = useState<"monthly" | "yearly">("yearly");
-    const [currency, setCurrency] = useState<SupportedCurrency>(SupportedCurrency.EUR);
 
     const t = useTranslations("pages.pricing");
 
@@ -58,11 +57,7 @@ export const PricingProvider = ({ children }: { children: React.ReactNode }) => 
             price: { monthly: 0, yearly: 0 },
             description: t("cards.free.description"),
             ctaVariant: "outline",
-            features: [
-                t("cards.free.features.0"),
-                t("cards.free.features.1"),
-                t("cards.free.features.2"),
-            ],
+            features: [t("cards.free.features.0"), t("cards.free.features.1"), t("cards.free.features.2")],
         },
         [Plan.EFFICIENT]: {
             plan: Plan.EFFICIENT,
@@ -98,29 +93,26 @@ export const PricingProvider = ({ children }: { children: React.ReactNode }) => 
                 t("cards.pro.features.2"),
                 t("cards.pro.features.3"),
             ],
-        }
-    }
+        },
+    };
 
     const getPlanPrice = (plan: Plan) => {
         return plans[plan].price[selectedPeriod];
-    }
+    };
 
     const getPriceId = (plan: Plan, period: "monthly" | "yearly") => {
         return plans[plan].priceId[period];
-    }
+    };
 
     const getCurrencySymbol = () => {
-        switch (currency) {
-            case SupportedCurrency.USD:
-                return "$";
-            case SupportedCurrency.EUR:
-                return "€";
-        }
-    }
+        return "€";
+    };
 
     return (
-        <PricingContext.Provider value={{ selectedPeriod, setSelectedPeriod, getPlanPrice, getCurrencySymbol, plans, getPriceId }}>
+        <PricingContext.Provider
+            value={{ selectedPeriod, setSelectedPeriod, getPlanPrice, getCurrencySymbol, plans, getPriceId }}
+        >
             {children}
         </PricingContext.Provider>
-    )
-}
+    );
+};

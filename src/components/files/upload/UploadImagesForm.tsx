@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { UploadImagesFormSchema } from "@/lib/definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,13 +9,14 @@ import { FileUploader } from "@/components/files/FileUploader";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import { initiateFileUpload, finalizeFileUpload } from "@/actions/files";
 import { Progress } from "@/components/ui/progress";
 import { ContextFile } from "@/context/FilesContext";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { notifyAboutUpload } from "@/actions/accessTokens";
+import { useSearchParams } from "next/navigation";
 
 interface UploadImagesFormProps {
     folderId: string;
@@ -32,13 +33,14 @@ interface InitiateUploadResult {
 
 export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = true }: UploadImagesFormProps) {
     const t = useTranslations("components.images.uploadImagesForm");
+    const searchParams = useSearchParams();
 
     const uploadImageForm = useForm<z.infer<typeof UploadImagesFormSchema>>({
         resolver: zodResolver(UploadImagesFormSchema),
         defaultValues: {
             images: [],
-            shouldNotify: true
-        }
+            shouldNotify: true,
+        },
     });
 
     const onSubmit = async (data: z.infer<typeof UploadImagesFormSchema>) => {
@@ -46,7 +48,7 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
 
         toast(
             <div className="w-full">
-                {t('ongoing.title', { current: 0, total: data.images.length })}
+                {t("ongoing.title", { current: 0, total: data.images.length })}
                 <Progress value={0} className="w-full mt-2" />
             </div>,
             {
@@ -54,15 +56,15 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
                 duration: Infinity,
                 classNames: {
                     content: "w-full",
-                    title: "w-full"
-                }
+                    title: "w-full",
+                },
             }
         );
 
         try {
             let uploadedCount = 0;
             const results = await Promise.all(
-                data.images.map(async (file: File, i: number) => {
+                data.images.map(async (file: File) => {
                     try {
                         // Step 1: Prepare file samples
                         const sampleSize = 1024 * 1024; // 1MB
@@ -71,7 +73,7 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
 
                         for (let i = 0; i < fileBuffer.byteLength; i += sampleSize) {
                             const chunk = fileBuffer.slice(i, Math.min(i + sampleSize, fileBuffer.byteLength));
-                            const hashBuffer = await crypto.subtle.digest('SHA-256', chunk);
+                            const hashBuffer = await crypto.subtle.digest("SHA-256", chunk);
                             const hashArray = Array.from(new Uint8Array(hashBuffer));
                             const hashBase64 = btoa(String.fromCharCode.apply(null, hashArray));
                             samples.push(hashBase64);
@@ -84,7 +86,12 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
                         verificationFormData.append("fileType", file.type);
                         verificationFormData.append("fileSamples", JSON.stringify(samples));
 
-                        const verificationResult = await initiateFileUpload(verificationFormData, folderId) as InitiateUploadResult;
+                        const verificationResult = (await initiateFileUpload(
+                            verificationFormData,
+                            folderId,
+                            searchParams.get("share") ?? undefined,
+                            searchParams.get("h") ?? undefined
+                        )) as InitiateUploadResult;
 
                         if (verificationResult.error) {
                             throw new Error(verificationResult.error);
@@ -99,8 +106,8 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
                             method: "PUT",
                             body: file,
                             headers: {
-                                "Content-Type": file.type
-                            }
+                                "Content-Type": file.type,
+                            },
                         });
 
                         if (!uploadResponse.ok) {
@@ -112,7 +119,12 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
                         finalizeFormData.append("verificationToken", verificationResult.verificationToken || "");
                         finalizeFormData.append("fileId", verificationResult.fileId || "");
 
-                        const finalizeResult = await finalizeFileUpload(finalizeFormData, folderId);
+                        const finalizeResult = await finalizeFileUpload(
+                            finalizeFormData,
+                            folderId,
+                            searchParams.get("share") ?? undefined,
+                            searchParams.get("h") ?? undefined
+                        );
 
                         if (finalizeResult.error) {
                             throw new Error(finalizeResult.error);
@@ -121,30 +133,32 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
                         uploadedCount += 1;
                         toast(
                             <div className="w-full">
-                                {t('ongoing.title', { current: uploadedCount, total: data.images.length })}
-                                <Progress value={uploadedCount / data.images.length * 100} className="w-full mt-2" />
+                                {t("ongoing.title", {
+                                    current: uploadedCount,
+                                    total: data.images.length,
+                                })}
+                                <Progress value={(uploadedCount / data.images.length) * 100} className="w-full mt-2" />
                             </div>,
                             {
-                                id: "progress-toast"
+                                id: "progress-toast",
                             }
-                        )
+                        );
                         return {
                             success: true,
-                            file: finalizeResult.file
+                            file: finalizeResult.file,
                         };
                     } catch (error) {
                         console.error(`Error uploading ${file.name}:`, error);
                         return {
                             success: false,
                             file: null,
-                            error: error instanceof Error ? error.message : "Unknown error"
+                            error: error instanceof Error ? error.message : "Unknown error",
                         };
                     }
                 })
             );
 
             const successfulUploads = results.filter(r => r.success);
-            const failedUploads = results.filter(r => !r.success);
 
             setTimeout(() => {
                 toast.dismiss("progress-toast");
@@ -154,7 +168,7 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
                 await notifyAboutUpload(folderId, successfulUploads.length);
             }
 
-            toast.success(t('success', { count: successfulUploads.length }));
+            toast.success(t("success", { count: successfulUploads.length }));
 
             onUpload?.(successfulUploads.map(r => r.file));
         } catch (error) {
@@ -169,27 +183,27 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
                 <FormField
                     control={uploadImageForm.control}
                     name="images"
-                    render={({ field: { value, onChange, ...fieldProps } }) => (
+                    render={({ field: { /*value,*/ onChange, ...fieldProps } }) => (
                         <FormItem className="max-w-[443px]">
-                            <FormLabel>{t('label')}</FormLabel>
+                            <FormLabel>{t("label")}</FormLabel>
                             <FormControl>
                                 <FileUploader
                                     multiple={true}
                                     maxSize={1024 * 1024 * 1000}
                                     maxFileCount={999}
                                     accept={{
-                                        'image/png': ['.png'],
-                                        'image/jpeg': ['.jpg', '.jpeg'],
-                                        'image/gif': ['.gif'],
-                                        'image/webp': ['.webp'],
-                                        'video/x-msvideo': ['.avi'],
-                                        'video/mp4': ['.mp4', '.MP4'],
-                                        'video/quicktime': ['.mov'],
-                                        'video/mpeg': ['.mpg', '.mpeg'],
-                                        'video/x-flv': ['.flv'],
-                                        'video/*': ['.webm']
+                                        "image/png": [".png"],
+                                        "image/jpeg": [".jpg", ".jpeg"],
+                                        "image/gif": [".gif"],
+                                        "image/webp": [".webp"],
+                                        "video/x-msvideo": [".avi"],
+                                        "video/mp4": [".mp4", ".MP4"],
+                                        "video/quicktime": [".mov"],
+                                        "video/mpeg": [".mpg", ".mpeg"],
+                                        "video/x-flv": [".flv"],
+                                        "video/*": [".webm"],
                                     }}
-                                    onValueChange={(files) => onChange(files)}
+                                    onValueChange={files => onChange(files)}
                                     {...fieldProps}
                                 />
                             </FormControl>
@@ -199,20 +213,29 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
                 />
 
                 <div className="flex justify-between">
-                    {shouldDisplayNotify ? <div className="flex items-center gap-2">
-                        <Switch
-                            id="shouldNotify"
-                            checked={uploadImageForm.watch('shouldNotify')}
-                            onCheckedChange={(checked) => uploadImageForm.setValue('shouldNotify', checked)}
-                        />
-                        <Label className="max-w-[200px]" htmlFor="shouldNotify">{t('shouldNotify')}</Label>
-                    </div> : null}
-                    {uploadImageForm.formState.isSubmitting
-                        ? <Button className="ml-auto flex" type="button" disabled><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t('actions.submitting')}</Button>
-                        : <Button className="ml-auto flex" type="submit">{t('actions.submit')}</Button>
-                    }
+                    {shouldDisplayNotify ? (
+                        <div className="flex items-center gap-2">
+                            <Switch
+                                id="shouldNotify"
+                                checked={uploadImageForm.watch("shouldNotify")}
+                                onCheckedChange={checked => uploadImageForm.setValue("shouldNotify", checked)}
+                            />
+                            <Label className="max-w-[200px]" htmlFor="shouldNotify">
+                                {t("shouldNotify")}
+                            </Label>
+                        </div>
+                    ) : null}
+                    {uploadImageForm.formState.isSubmitting ? (
+                        <Button className="ml-auto flex" type="button" disabled>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("actions.submitting")}
+                        </Button>
+                    ) : (
+                        <Button className="ml-auto flex" type="submit">
+                            {t("actions.submit")}
+                        </Button>
+                    )}
                 </div>
             </form>
         </Form>
-    )
+    );
 }

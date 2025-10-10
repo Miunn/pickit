@@ -1970,6 +1970,17 @@
     },
     "checkoutDialog": {
       "title": "Go to {plan}"
+    },
+    "changePlanPreview": {
+      "title": "Recap of the next steps for your subscription",
+      "before": {
+        "title": "Before"
+      },
+      "now": {
+        "title": "Today"
+      },
+      "freeCredits": "{credits} in credits",
+      "changePlan": "Change plan"
     }
   }
 }

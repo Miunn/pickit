@@ -1,6 +1,11 @@
-'use client'
+"use client";
 
-import { FolderWithAccessToken, FolderWithCover, FolderWithFilesCount, FolderWithFilesWithFolderAndComments } from "@/lib/definitions";
+import {
+    FolderWithAccessToken,
+    FolderWithCover,
+    FolderWithFilesCount,
+    FolderWithFilesWithFolderAndComments,
+} from "@/lib/definitions";
 import { flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import React from "react";
 import { ChevronDownIcon, ChevronUpIcon, Trash2, X } from "lucide-react";
@@ -10,12 +15,14 @@ import { Button } from "@/components/ui/button";
 import { foldersListViewColumns } from "./columns";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-export default function FoldersList({ folders }: { folders: (FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments)[] }) {
-
+export default function FoldersList({
+    folders,
+}: {
+    folders: (FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments)[];
+}) {
     const t = useTranslations("folders.views.list.table");
-    const [openDeleteSelection, setOpenDeleteSelection] = React.useState<boolean>(false);
     const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [rowSelection, setRowSelection] = React.useState({})
+    const [rowSelection, setRowSelection] = React.useState({});
 
     const table = useReactTable({
         data: folders,
@@ -29,31 +36,47 @@ export default function FoldersList({ folders }: { folders: (FolderWithAccessTok
             rowSelection,
         },
         enableSortingRemoval: false,
-        getRowId: (row) => row.id,
+        getRowId: row => row.id,
     });
 
     return (
         <>
-            {Object.keys(rowSelection).length > 0
-                ? <div className={"flex justify-between items-center mb-5 bg-gray-50 rounded-2xl w-full p-2"}>
+            {Object.keys(rowSelection).length > 0 ? (
+                <div className={"flex justify-between items-center mb-5 bg-gray-50 rounded-2xl w-full p-2"}>
                     <div className={"flex gap-2 items-center"}>
-                        <Button variant="ghost" onClick={() => { setRowSelection({}) }} size="icon"><X className={"w-4 h-4"} /></Button>
-                        <h2><span className={"font-semibold"}>{t('selection', { count: Object.keys(rowSelection).length })}</span> - {formatBytes(folders.filter((i) => Object.keys(rowSelection).includes(i.id)).reduce((a, b) => a + b.size, 0), { decimals: 2, sizeType: "normal" })}</h2>
+                        <Button
+                            variant="ghost"
+                            onClick={() => {
+                                setRowSelection({});
+                            }}
+                            size="icon"
+                        >
+                            <X className={"w-4 h-4"} />
+                        </Button>
+                        <h2>
+                            <span className={"font-semibold"}>
+                                {t("selection", { count: Object.keys(rowSelection).length })}
+                            </span>{" "}
+                            -{" "}
+                            {formatBytes(
+                                folders
+                                    .filter(i => Object.keys(rowSelection).includes(i.id))
+                                    .reduce((a, b) => a + b.size, 0),
+                                { decimals: 2, sizeType: "normal" }
+                            )}
+                        </h2>
                     </div>
 
-                    <Button variant="outline" onClick={() => {
-                        setOpenDeleteSelection(true);
-                    }}>
-                        <Trash2 className={"mr-2"} /> {t('deleteSelected')}
+                    <Button variant="outline">
+                        <Trash2 className={"mr-2"} /> {t("deleteSelected")}
                     </Button>
                 </div>
-                : null
-            }
+            ) : null}
             <Table className="w-full">
                 <TableHeader>
-                    {table.getHeaderGroups().map((headerGroup) => (
+                    {table.getHeaderGroups().map(headerGroup => (
                         <TableRow key={headerGroup.id} className="hover:bg-transparent">
-                            {headerGroup.headers.map((header) => {
+                            {headerGroup.headers.map(header => {
                                 return (
                                     <TableHead
                                         key={header.id}
@@ -61,8 +84,8 @@ export default function FoldersList({ folders }: { folders: (FolderWithAccessTok
                                             header.column.getIsSorted() === "asc"
                                                 ? "ascending"
                                                 : header.column.getIsSorted() === "desc"
-                                                    ? "descending"
-                                                    : "none"
+                                                  ? "descending"
+                                                  : "none"
                                         }
                                         {...{
                                             colSpan: header.colSpan,
@@ -75,12 +98,15 @@ export default function FoldersList({ folders }: { folders: (FolderWithAccessTok
                                             <div
                                                 className={cn(
                                                     header.column.getCanSort() &&
-                                                    "flex h-full cursor-pointer items-center justify-between gap-2 select-none",
+                                                        "flex h-full cursor-pointer items-center justify-between gap-2 select-none"
                                                 )}
                                                 onClick={header.column.getToggleSortingHandler()}
-                                                onKeyDown={(e) => {
+                                                onKeyDown={e => {
                                                     // Enhanced keyboard handling for sorting
-                                                    if (header.column.getCanSort() && (e.key === "Enter" || e.key === " ")) {
+                                                    if (
+                                                        header.column.getCanSort() &&
+                                                        (e.key === "Enter" || e.key === " ")
+                                                    ) {
                                                         e.preventDefault();
                                                         header.column.getToggleSortingHandler()?.(e);
                                                     }
@@ -116,9 +142,9 @@ export default function FoldersList({ folders }: { folders: (FolderWithAccessTok
                 </TableHeader>
                 <TableBody>
                     {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
+                        table.getRowModel().rows.map(row => (
                             <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                                {row.getVisibleCells().map((cell) => (
+                                {row.getVisibleCells().map(cell => (
                                     <TableCell key={cell.id} className="truncate">
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </TableCell>
@@ -128,13 +154,12 @@ export default function FoldersList({ folders }: { folders: (FolderWithAccessTok
                     ) : (
                         <TableRow>
                             <TableCell colSpan={foldersListViewColumns.length} className="h-24 text-center">
-                                { t('empty') }
+                                {t("empty")}
                             </TableCell>
                         </TableRow>
                     )}
                 </TableBody>
             </Table>
-            
         </>
-    )
+    );
 }

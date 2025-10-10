@@ -1,25 +1,25 @@
 import { GoogleBucket } from "@/lib/bucket";
-import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { isAllowedToAccessFile } from "@/lib/dal";
+import { FileService } from "@/data/file-service";
 
-export async function GET(
-    req: NextRequest,
-    props: { params: Promise<{ folder: string, video: string }> }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ folder: string; video: string }> }) {
     const params = await props.params;
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
 
     if (!isAllowedToAccessFile(params.video, shareToken, accessKey)) {
-        return Response.json({ error: "You need to be authenticated or have a magic link to access this resource" }, { status: 400 })
+        return Response.json(
+            { error: "You need to be authenticated or have a magic link to access this resource" },
+            { status: 400 }
+        );
     }
 
-    const video = await prisma.file.findUnique({
+    const video = await FileService.get({
         where: {
             id: params.video,
-            folderId: params.folder
-        }
+            folderId: params.folder,
+        },
     });
 
     if (!video) {

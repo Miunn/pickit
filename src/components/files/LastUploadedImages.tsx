@@ -28,82 +28,110 @@ export const LastUploadedImages = () => {
 
     return (
         <>
-            <h2 className={"font-semibold mb-5"}>{t('lastUploadedImages')}</h2>
+            <h2 className={"font-semibold mb-5"}>{t("lastUploadedImages")}</h2>
 
-            {selecting
-                ? <div className={"flex justify-between items-center mb-5 bg-gray-50 rounded-2xl w-full p-2"}>
+            {selecting ? (
+                <div className={"flex justify-between items-center mb-5 bg-gray-50 rounded-2xl w-full p-2"}>
                     <div className={"flex gap-2 items-center"}>
-                        <Button variant="ghost" onClick={() => {
-                            setSelected([]);
-                            setSelecting(false);
-                        }} size="icon"><X className={"size-4"} /></Button>
-                        <h2 className={"font-semibold"}>{t('selected', { count: selected.length })}</h2>
+                        <Button
+                            variant="ghost"
+                            onClick={() => {
+                                setSelected([]);
+                                setSelecting(false);
+                            }}
+                            size="icon"
+                        >
+                            <X className={"size-4"} />
+                        </Button>
+                        <h2 className={"font-semibold"}>{t("selected", { count: selected.length })}</h2>
                     </div>
 
-                    <Button variant="outline" onClick={() => {
-                        setOpenDeleteMultiple(true);
-                    }}>
-                        <Trash2 className={"mr-2"} /> {t('actions.delete')}
+                    <Button
+                        variant="outline"
+                        onClick={() => {
+                            setOpenDeleteMultiple(true);
+                        }}
+                    >
+                        <Trash2 className={"mr-2"} /> {t("actions.delete")}
                     </Button>
                 </div>
-                : null
-            }
-            <div className={`grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] gap-3 ${files.length == 0 && "justify-center"}`}>
-                {files.length == 0
-                    ? <div className={"flex flex-col justify-center items-center"}>
+            ) : null}
+            <div
+                className={`grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] gap-3 ${files.length === 0 && "justify-center"}`}
+            >
+                {files.length === 0 ? (
+                    <div className={"col-span-full flex flex-col justify-center items-center"}>
                         <ImageOff className={"w-32 h-32 opacity-20"} />
-                        <p>{t('empty')}</p>
+                        <p>{t("empty")}</p>
                     </div>
-                    : files.map((file, index) => (
+                ) : (
+                    files.map((file, index) => (
                         <Fragment key={file.id}>
-                        <ImagePreviewGrid
-                            file={file}
-                            selected={selected}
-                            onClick={(e) => {
-                                if (selecting) {
-                                    if (e?.shiftKey) {
-                                        if (!selected.includes(file.id)) {
-                                            const lastSelected = files.findIndex((f) => f.id === selected[selected.length - 1]);
-                                            const currentSelected = files.findIndex((f) => f.id === file.id);
-                                            const range = files.slice(Math.min(lastSelected, currentSelected), Math.max(lastSelected, currentSelected) + 1);
-                                            setSelected([...selected, ...range.map((f) => f.id)]);
-                                            setSizeSelected(sizeSelected + range.reduce((acc, f) => acc + f.size, 0));
+                            <ImagePreviewGrid
+                                file={file}
+                                selected={selected}
+                                onClick={e => {
+                                    if (selecting) {
+                                        if (e?.shiftKey) {
+                                            if (!selected.includes(file.id)) {
+                                                const lastSelected = files.findIndex(
+                                                    f => f.id === selected[selected.length - 1]
+                                                );
+                                                const currentSelected = files.findIndex(f => f.id === file.id);
+                                                const range = files.slice(
+                                                    Math.min(lastSelected, currentSelected),
+                                                    Math.max(lastSelected, currentSelected) + 1
+                                                );
+                                                setSelected([...selected, ...range.map(f => f.id)]);
+                                                setSizeSelected(
+                                                    sizeSelected + range.reduce((acc, f) => acc + f.size, 0)
+                                                );
+                                            }
+                                        } else if (selected.includes(file.id)) {
+                                            setSelected(selected.filter(id => id !== file.id));
+                                            setSizeSelected(sizeSelected - file.size);
+                                        } else {
+                                            setSelected([...selected, file.id]);
+                                            setSizeSelected(sizeSelected + file.size);
                                         }
-                                    } else if (selected.includes(file.id)) {
-                                        setSelected(selected.filter((id) => id !== file.id));
+                                    } else {
+                                        setStartIndex(index);
+                                        setCarouselOpen(true);
+                                    }
+                                }}
+                                onSelect={() => {
+                                    if (selected.includes(file.id)) {
+                                        setSelected(selected.filter(id => id !== file.id));
                                         setSizeSelected(sizeSelected - file.size);
                                     } else {
+                                        setSelecting(true);
                                         setSelected([...selected, file.id]);
                                         setSizeSelected(sizeSelected + file.size);
                                     }
-                                } else {
-                                    setStartIndex(index);
-                                    setCarouselOpen(true);
-                                }
-                            }}
-                            onSelect={() => {
-                                if (selected.includes(file.id)) {
-                                    setSelected(selected.filter((id) => id !== file.id));
-                                    setSizeSelected(sizeSelected - file.size);
-                                } else {
-                                    setSelecting(true);
-                                    setSelected([...selected, file.id]);
-                                    setSizeSelected(sizeSelected + file.size);
-                                }
-                            }}
-                        />
+                                }}
+                            />
                         </Fragment>
                     ))
-                }
+                )}
             </div>
 
-            <CarouselDialog files={files} title={"Last uploaded files"} carouselOpen={carouselOpen}
-                setCarouselOpen={setCarouselOpen} startIndex={startIndex} />
-            <DeleteMultipleImagesDialog files={files.filter((file) => selected.includes(file.id))} open={openDeleteMultiple} setOpen={setOpenDeleteMultiple} onDelete={() => {
-                setSelected([]);
-                setSizeSelected(0);
-                setSelecting(false);
-            }} />
+            <CarouselDialog
+                files={files}
+                title={"Last uploaded files"}
+                carouselOpen={carouselOpen}
+                setCarouselOpen={setCarouselOpen}
+                startIndex={startIndex}
+            />
+            <DeleteMultipleImagesDialog
+                files={files.filter(file => selected.includes(file.id))}
+                open={openDeleteMultiple}
+                setOpen={setOpenDeleteMultiple}
+                onDelete={() => {
+                    setSelected([]);
+                    setSizeSelected(0);
+                    setSelecting(false);
+                }}
+            />
         </>
-    )
-}
+    );
+};

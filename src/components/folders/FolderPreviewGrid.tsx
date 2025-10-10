@@ -1,9 +1,22 @@
-'use client'
+"use client";
 
-import { FileWithComments, FileWithTags, FolderWithAccessToken, FolderWithCover, FolderWithFilesCount, FolderWithTags } from "@/lib/definitions";
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import {
+    FileWithComments,
+    FileWithTags,
+    FolderWithAccessToken,
+    FolderWithCover,
+    FolderWithFilesCount,
+    FolderWithTags,
+} from "@/lib/definitions";
+import { useFormatter, useTranslations } from "next-intl";
 import React from "react";
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../ui/context-menu";
+import {
+    ContextMenu,
+    ContextMenuContent,
+    ContextMenuItem,
+    ContextMenuSeparator,
+    ContextMenuTrigger,
+} from "../ui/context-menu";
 import Image from "next/image";
 import { Images } from "lucide-react";
 import { Separator } from "../ui/separator";
@@ -17,12 +30,17 @@ import { downloadClientFiles } from "@/lib/utils";
 import { FileType } from "@prisma/client";
 import { Link } from "@/i18n/navigation";
 
-export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & { files: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[] } }) {
+export default function FolderPreviewGrid({
+    folder,
+}: {
+    folder: FolderWithAccessToken &
+        FolderWithFilesCount &
+        FolderWithCover & { files: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[] };
+}) {
     const t = useTranslations("folders");
     const dialogsTranslations = useTranslations("dialogs.folders");
     const downloadT = useTranslations("components.download");
     const format = useFormatter();
-    const locale = useLocale();
 
     const [openRename, setOpenRename] = React.useState<boolean>(false);
     const [openChangeCover, setOpenChangeCover] = React.useState<boolean>(false);
@@ -34,40 +52,56 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
         <>
             <ContextMenu modal={false}>
                 <ContextMenuTrigger asChild>
-                    <Link href={`/app/folders/${folder.id}`}
-                        className={"inline-block w-full"}>
-                        {folder.cover
-                            ? <div className={`relative h-36 mb-4 flex justify-center items-center border border-primary rounded-xl`}>
-                                <Image src={`/api/folders/${folder.id}/images/${folder.coverId}`} alt={folder.cover.name}
-                                    className={"relative rounded-xl object-cover"} sizes="33vw" fill />
+                    <Link href={`/app/folders/${folder.id}`} className={"inline-block w-full"}>
+                        {folder.cover ? (
+                            <div
+                                className={`relative h-36 mb-4 flex justify-center items-center border border-primary rounded-xl`}
+                            >
+                                <Image
+                                    src={`/api/folders/${folder.id}/images/${folder.coverId}`}
+                                    alt={folder.cover.name}
+                                    className={"relative rounded-xl object-cover"}
+                                    sizes="33vw"
+                                    fill
+                                />
                             </div>
-                            : <div
-                                className={"border border-primary rounded-xl bg-gray-100 dark:bg-gray-800 h-36 mb-4 flex justify-center items-center"}>
+                        ) : (
+                            <div
+                                className={
+                                    "border border-primary rounded-xl bg-gray-100 dark:bg-gray-800 h-36 mb-4 flex justify-center items-center"
+                                }
+                            >
                                 <Images className={"opacity-50 dark:text-gray-400"} />
                             </div>
-                        }
+                        )}
                         <p className="truncate">{folder.name}</p>
                         <div className={"text-sm flex h-4 items-center flex-nowrap"}>
-                            <p className={"opacity-60 text-nowrap"}>{t('filesCount', {count: folder._count.files})}</p>
+                            <p className={"opacity-60 text-nowrap"}>
+                                {t("filesCount", { count: folder._count.files })}
+                            </p>
                             <Separator className="mx-2" orientation="vertical" />
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <p className={"opacity-60 capitalize truncate"}>{format.dateTime(folder.createdAt, {
-                                            day: "numeric",
-                                            month: "short",
-                                            year: "numeric",
-                                        })}</p>
+                                        <p className={"opacity-60 capitalize truncate"}>
+                                            {format.dateTime(folder.createdAt, {
+                                                day: "numeric",
+                                                month: "short",
+                                                year: "numeric",
+                                            })}
+                                        </p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p className={"capitalize"}>{format.dateTime(folder.createdAt, {
-                                            weekday: "long",
-                                            day: "numeric",
-                                            month: "short",
-                                            year: "numeric",
-                                            hour: "numeric",
-                                            minute: "numeric",
-                                        })}</p>
+                                        <p className={"capitalize"}>
+                                            {format.dateTime(folder.createdAt, {
+                                                weekday: "long",
+                                                day: "numeric",
+                                                month: "short",
+                                                year: "numeric",
+                                                hour: "numeric",
+                                                minute: "numeric",
+                                            })}
+                                        </p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -76,26 +110,53 @@ export default function FolderPreviewGrid({ folder }: { folder: FolderWithAccess
                 </ContextMenuTrigger>
                 <ContextMenuContent className="w-48">
                     <ContextMenuItem asChild>
-                        <Link href={`/app/folders/${folder.id}`}>
-                            {t('actions.open')}
-                        </Link>
+                        <Link href={`/app/folders/${folder.id}`}>{t("actions.open")}</Link>
                     </ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenRename(true)}>{dialogsTranslations('rename.trigger')}</ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenChangeCover(true)} disabled={folder.files.length === 0}>{dialogsTranslations('changeCover.trigger')}</ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenShare(true)}>{dialogsTranslations('share.trigger')}</ContextMenuItem>
-                    <ContextMenuItem onClick={() => downloadClientFiles(downloadT, folder.files, folder.name)} disabled={folder.files.length === 0}>{t('actions.download')}</ContextMenuItem>
-                    <ContextMenuItem onClick={() => setOpenProperties(true)}>{t('actions.properties')}</ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenRename(true)}>
+                        {dialogsTranslations("rename.trigger")}
+                    </ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenChangeCover(true)} disabled={folder.files.length === 0}>
+                        {dialogsTranslations("changeCover.trigger")}
+                    </ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenShare(true)}>
+                        {dialogsTranslations("share.trigger")}
+                    </ContextMenuItem>
+                    <ContextMenuItem
+                        onClick={() => downloadClientFiles(downloadT, folder.files, folder.name)}
+                        disabled={folder.files.length === 0}
+                    >
+                        {t("actions.download")}
+                    </ContextMenuItem>
+                    <ContextMenuItem onClick={() => setOpenProperties(true)}>{t("actions.properties")}</ContextMenuItem>
                     <ContextMenuSeparator />
-                    <ContextMenuItem onClick={() => setOpenDelete(true)} className="text-red-600 focus:text-red-600 font-semibold">{dialogsTranslations('delete.trigger')}</ContextMenuItem>
+                    <ContextMenuItem
+                        onClick={() => setOpenDelete(true)}
+                        className="text-red-600 focus:text-red-600 font-semibold"
+                    >
+                        {dialogsTranslations("delete.trigger")}
+                    </ContextMenuItem>
                 </ContextMenuContent>
             </ContextMenu>
-            <RenameFolderDialog folderId={folder.id} folderName={folder.name} openState={openRename}
-                setOpenState={setOpenRename} />
-            <ChangeCoverFolderDialog images={folder.files.filter((file) => file.type === FileType.IMAGE)} folderId={folder.id} open={openChangeCover} setOpen={setOpenChangeCover} />
+            <RenameFolderDialog
+                folderId={folder.id}
+                folderName={folder.name}
+                openState={openRename}
+                setOpenState={setOpenRename}
+            />
+            <ChangeCoverFolderDialog
+                images={folder.files.filter(file => file.type === FileType.IMAGE)}
+                folderId={folder.id}
+                open={openChangeCover}
+                setOpen={setOpenChangeCover}
+            />
             <ShareFolderDialog folder={folder} open={openShare} setOpen={setOpenShare} />
             <FolderPropertiesDialog folder={folder} open={openProperties} setOpen={setOpenProperties} />
-            <DeleteFolderDialog folderId={folder.id} folderName={folder.name} openState={openDelete}
-                setOpenState={setOpenDelete} />
+            <DeleteFolderDialog
+                folderId={folder.id}
+                folderName={folder.name}
+                openState={openDelete}
+                setOpenState={setOpenDelete}
+            />
         </>
-    )
+    );
 }

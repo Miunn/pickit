@@ -1,10 +1,10 @@
-'use server'
+"use server";
 
+import { ContactService } from "@/data/contact-service";
 import { ContactFormSchema } from "@/lib/definitions";
-import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
-export async function createContact(data: z.infer<typeof ContactFormSchema>): Promise<{error?: string}> {
+export async function createContact(data: z.infer<typeof ContactFormSchema>): Promise<{ error?: string }> {
     const parsed = ContactFormSchema.safeParse(data);
 
     if (!parsed.success) {
@@ -12,14 +12,12 @@ export async function createContact(data: z.infer<typeof ContactFormSchema>): Pr
     }
 
     try {
-        await prisma.contact.create({
-            data: {
-                name: parsed.data.name,
-                email: parsed.data.email,
-                message: parsed.data.message
-            }
-        })
-    } catch (error) {
+        await ContactService.create({
+            name: parsed.data.name,
+            email: parsed.data.email,
+            message: parsed.data.message,
+        });
+    } catch {
         return { error: "unknown" };
     }
 
