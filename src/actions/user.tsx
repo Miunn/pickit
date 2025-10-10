@@ -107,13 +107,11 @@ export async function sendVerificationEmail(email: string): Promise<{
     }
 
     await VerifyEmailRequestService.create({
-        data: {
-            token: token,
-            expires: addDays(new Date(), 7),
-            user: {
-                connect: {
-                    id: currentUser.id,
-                },
+        token: token,
+        expires: addDays(new Date(), 7),
+        user: {
+            connect: {
+                id: currentUser.id,
             },
         },
     });

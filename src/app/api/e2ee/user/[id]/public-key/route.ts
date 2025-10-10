@@ -1,17 +1,18 @@
 import { UserService } from "@/data/user-service";
 import { getCurrentSession } from "@/lib/session";
+import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-export async function GET(props: { params: Promise<{ id: string }> }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const session = await getCurrentSession();
     if (!session?.user) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const params = await props.params;
+    const p = await params;
 
     const user = await UserService.get({
-        where: { id: params.id },
+        where: { id: p.id },
         select: { publicKey: true },
     });
 
