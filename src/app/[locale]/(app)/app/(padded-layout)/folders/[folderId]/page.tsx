@@ -8,6 +8,7 @@ import {
     FolderWithCreatedBy,
     FolderWithFilesCount,
     FolderWithFilesWithFolderAndComments,
+    FolderWithTags,
 } from "@/lib/definitions";
 import { redirect } from "@/i18n/navigation";
 import { ViewState } from "@/components/folders/ViewSelector";
@@ -191,6 +192,7 @@ export default async function FolderPage(props: {
                         folder,
                         searchParams.sort || ImagesSortMethod.DateDesc
                     ) as FolderWithCreatedBy &
+                        FolderWithTags &
                         FolderWithAccessToken &
                         FolderWithFilesCount &
                         FolderWithCover &

@@ -16,7 +16,9 @@ import { useFilesContext } from "@/context/FilesContext";
 
 export type Poi = { key: string; location: google.maps.LatLngLiteral };
 
-export type MapFileWithFolderAndUrl = File & { folder: FolderWithFilesCount } & { signedUrl: string };
+export type MapFileWithFolderAndUrl = File & {
+    folder: FolderWithFilesCount;
+} & { signedUrl: string };
 
 const filterFilesWithLocation = (files: MapFileWithFolderAndUrl[], selectedFolders: Set<string>) => {
     return files.filter(file => file.latitude && file.longitude && selectedFolders.has(file.folder.id));
@@ -60,12 +62,6 @@ export default function FilesMap() {
     );
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
     const [carouselStartIndex, setCarouselStartIndex] = useState<number>(0);
-
-    // const uniqueLocatedFolders = useMemo(() => {
-    //     return locatedFiles
-    //         .map(file => file.folder)
-    //         .filter((folder, index, self) => self.findIndex(t => t.id === folder.id) === index);
-    // }, [locatedFiles]);
 
     const [clusterInfoData, setClusterInfoData] = useState<{
         anchor: google.maps.marker.AdvancedMarkerElement;
@@ -178,7 +174,11 @@ export default function FilesMap() {
                 )}
 
                 {poiInfoData && (
-                    <AdvancedMarker position={poiInfoData.anchor.position} anchorPoint={["50%", "101.5%"]}>
+                    <AdvancedMarker
+                        position={poiInfoData.anchor.position}
+                        anchorPoint={["50%", "101.5%"]}
+                        style={{ zIndex: 1000 }}
+                    >
                         <PoiWindowContent file={poiInfoData.feature.properties} onClose={handlePoiInfoWindowClose} />
                     </AdvancedMarker>
                 )}

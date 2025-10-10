@@ -12,8 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, LayoutGrid, List, ArrowUp, ArrowDown, Tag } from "lucide-react";
 import { UploadImagesDialog } from "../files/upload/UploadImagesDialog";
-import EditDescriptionDialog from "./EditDescriptionDialog";
-import { ShareFolderDialog } from "./ShareFolderDialog";
+import EditDescriptionDialog from "./dialogs/EditDescriptionDialog";
+import { ShareFolderDialog } from "./dialogs/ShareFolderDialog";
 import SortImages, { ImagesSortMethod } from "./SortImages";
 import ViewSelector, { ViewState } from "./ViewSelector";
 import { useFolderContext } from "@/context/FolderContext";

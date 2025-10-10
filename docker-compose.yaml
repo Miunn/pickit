@@ -1,68 +1,68 @@
 services:
-  db:
-    container_name: echomori-db
-    image: postgres:17
-    platform: linux/amd64
-    ports:
-      - 5432:5432
-    env_file:
-      - .env
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    volumes:
-      - db_data:/var/lib/postgresql/data
-    networks:
-      - echomori-network
+    db:
+        container_name: echomori-db
+        image: postgres:17
+        platform: linux/amd64
+        ports:
+            - 5432:5432
+        env_file:
+            - .env
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        volumes:
+            - db_data:/var/lib/postgresql/data
+        networks:
+            - echomori-network
 
-  migrations:
-    container_name: echomori-migrations
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: npx prisma migrate deploy
-    env_file:
-      - .env
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - echomori-network
+    migrations:
+        container_name: echomori-migrations
+        build:
+            context: .
+            dockerfile: Dockerfile
+        command: npx prisma migrate deploy
+        env_file:
+            - .env
+        depends_on:
+            db:
+                condition: service_healthy
+        networks:
+            - echomori-network
 
-  app:
-    container_name: echomori-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    restart: always
-    depends_on:
-      db:
-        condition: service_healthy
-    env_file:
-      - .env
-    networks:
-      - echomori-network
-    ports:
-      - 3000:3000
-      - 5555:5555
-    develop:
-      watch:
-        - path: .
-          action: sync
-          target: /app
-          ignore:
-            - node_modules/
+    app:
+        container_name: echomori-app
+        build:
+            context: .
+            dockerfile: Dockerfile
+        restart: always
+        depends_on:
+            db:
+                condition: service_healthy
+        env_file:
+            - .env
+        networks:
+            - echomori-network
+        ports:
+            - 3000:3000
+            - 5555:5555
+        develop:
+            watch:
+                - path: .
+                  action: sync
+                  target: /app
+                  ignore:
+                      - node_modules/
 
 networks:
-  echomori-network:
-    driver: bridge
+    echomori-network:
+        driver: bridge
 
 volumes:
-  db_data:
-    driver: local
+    db_data:
+        driver: local

@@ -1,2115 +1,2124 @@
 {
-  "metadata": {
-    "landing": {
-      "title": "Echomori - Sauvegardez des moments de vie",
-      "description": "Sauvegardez vos photos, organisez vos albums et partagez vos souvenirs. Ne laissez plus aucun souvenir s'échapper"
-    },
-    "signin": {
-      "title": "Connexion - Echomori",
-      "description": "Connexion à votre compte Echomori"
-    },
-    "signup": {
-      "title": "Création de compte - Echomori",
-      "description": "Création de compte Echomori"
-    },
-    "verifyEmail": {
-      "title": "Vérification de l'adresse mail - Echomori",
-      "description": "Vérifier votre adresse mail pour accéder à votre compte Echomori"
-    },
-    "forgotPassword": {
-      "title": "Mot de passe oublié - Echomori",
-      "description": "Réinitialiser le mot de passe de votre compte Echomori"
-    },
-    "resetPassword": {
-      "title": "Réinitialiser le mot de passe - Echomori",
-      "description": "Réinitialiser le mot de passe de votre compte Echomori"
-    },
-    "dashboard": {
-      "title": "Tableau de bord - Echomori",
-      "description": "Tableau de bord"
-    },
-    "folders": {
-      "title": "Dossiers - Echomori",
-      "description": "Dossiers"
-    },
-    "folder": {
-      "title": "{folderName} - Echomori",
-      "description": "Gérer votre dossier",
-      "openGraph": {
-        "title": "{folderName} - Echomori",
-        "description": "Voir les photos et vidéos hébergées dans {folderName}"
-      }
-    },
-    "links": {
-      "title": "Liens - Echomori",
-      "description": "Liens"
-    },
-    "account": {
-      "title": "Compte - Echomori",
-      "description": "Compte"
-    },
-    "contact": {
-      "title": "Contact - Echomori",
-      "description": "Contact"
-    }
-  },
-  "auth": {
-    "signInTab": "Se connecter",
-    "signUpTab": "Créer un compte"
-  },
-  "sidebar": {
-    "title": "Echomori",
-    "message": "Sauvegardez des moments de vie",
-    "main": {
-      "title": "Vos sauvegardes",
-      "folders": "Dossiers",
-      "images": "Images",
-      "links": "Liens",
-      "sharedWithMe": "Partagés avec moi",
-      "map": "Carte"
-    },
-    "secondary": {
-      "used": "Espace utilisé"
-    },
-    "user": {
-      "upgrade": "Changer de plan",
-      "account": "Compte",
-      "billing": "Facturation",
-      "notifications": "Notifications",
-      "logout": "Déconnexion"
-    }
-  },
-  "breadcumb": {
-    "dashboard": "Tableau de bord",
-    "folders": "Dossiers",
-    "images": "Images",
-    "links": "Liens",
-    "map": "Carte",
-    "account": "Compte",
-    "administration": "Administration",
-    "administrationUsers": "Utilisateurs"
-  },
-  "pages": {
-    "landing": {
-      "hero": {
-        "introduction": "Introduction du tri personnalisé de vos fichiers",
-        "title": "Sauvegardez des moments de vie",
-        "description": "Sauvegardez vos photos, organisez vos albums et partagez vos souvenirs. Ne laissez plus aucun souvenir s'échapper",
-        "getStarted": "Commencer",
-        "seeMore": "Voir plus"
-      },
-      "featuresTitle": "Ne sauvegardez pas juste des photos,<br />Capturez des souvenirs et partagez-les avec d'autres"
-    },
-    "features": {
-      "title": "Liste des fonctionnalités",
-      "description": "Ici sont listées les fonctionnalités que vous pourrez retrouver au sein d'Echomori",
-      "albums": {
-        "label": "Albums",
-        "feature1": "Créez un nombre ilimité d'albums",
-        "feature2": "Importez vos photos",
-        "feature3": "Configurez des photos de couverture",
-        "feature4": "Téléchargez vos albums",
-        "feature5": "Partagez vos albums",
-        "feature6": "Et bien d'autres (Renommez, Gérez l'affichage, Triez vos photos, ...)"
-      },
-      "images": {
-        "label": "Photos",
-        "feature1": "Commentez sur vos photos",
-        "feature2": "Téléchargez à la carte",
-        "feature3": "Accédez aux détails de vos photos",
-        "feature4": "Accédez aux métadonnées (ISO, Focale, Contraste, Exposition, Données GPS, ...)",
-        "feature5": "Copiez vers le presse-papier",
-        "feature6": "Et bien d'autres (Renommez, Visualisez en plein-écran, ...)"
-      },
-      "sharing": {
-        "label": "Partage",
-        "feature1": "Créez des liens de partage",
-        "feature2": "Gérez tous vos liens en un endroit",
-        "feature3": "Paramétrez des mots de passe sur vos liens",
-        "feature4": "Configurez des dates d'expiration",
-        "feature5": "Configurez les permissions associées",
-        "feature6": "Partagez directement à vos contacts en entrant leurs adresses mail",
-        "feature7": "Suivez le nombre d'utilisations de vos liens",
-        "feature8": "Partagez sur vos réseaux sociaux",
-        "feature9": "Et d'autres (Suppression, Modification des permissions, ...)"
-      },
-      "search": {
-        "label": "Recherche",
-        "feature1": "Palette de commande",
-        "feature2": "Cherchez parmi vos albums",
-        "feature3": "Cherchez parmi vos images",
-        "feature4": "Cherchez parmi vos liens",
-        "feature5": "Cherchez des réglages"
-      },
-      "footer": {
-        "title": "Prêt à sauvegardez vos souvenirs ?",
-        "description": "Commencez avec Echomori et prévenez l'oubli de vos souvenirs dès maintenant !",
-        "cta": "Commencez"
-      }
-    },
-    "contact": {
-      "title": "Entrons en contact",
-      "titleMini": "Contact",
-      "description": "Vous avez une question, une suggestion ou besoin d'aide ? N'hésitez pas à nous contacter en remplissant le formulaire ci-contre ou en nous envoyant un email. Nous serons ravis de vous aider.",
-      "sendEmail": "Envoyer un email"
-    },
-    "dashboard": {
-      "title": "Echomori - Dashboard",
-      "folders": {
-        "lastUpdatedFolders": "Derniers dossiers mis à jour",
-        "empty": "Aucun dossier créé"
-      },
-      "images": {
-        "lastUploadedImages": "Dernières images importées",
-        "selected": "{count, plural, =1 {# image sélectionnée} other {# images sélectionnées}}",
-        "empty": "Aucune image téléchargée",
-        "actions": {
-          "delete": "Supprimer"
-        }
-      },
-      "contextMenu": {
-        "createFolder": "Nouveau dossier"
-      }
-    },
-    "folders": {
-      "title": "Echomori - Dosseris",
-      "headline": "Vos dossiers créés",
-      "empty": "Aucun dossier créé",
-      "contextMenu": {
-        "createFolder": "Nouveau dossier"
-      }
-    },
-    "links": {
-      "title": "Echomori - Links",
-      "persons": {
-        "title": "Gestion des partage aux contacts"
-      },
-      "links": {
-        "title": "Gestion des liens"
-      }
-    },
-    "account": {
-      "title": "Echomori - Compte",
-      "headline": "Votre compte",
-      "subtitle": "Gérer les paramètres de votre compte"
-    },
-    "pricing": {
-      "title": "Choisissez un plan qui vous convient",
-      "description": "Un abonnement transparent que vous pouvez toujours ajustez plus tard",
-      "getStarted": "Commencer",
-      "monthlyLabel": "Mensuel",
-      "yearlyLabel": "Annuel",
-      "monthly": "/ mois",
-      "yearly": "/ an",
-      "cards": {
-        "free": {
-          "title": "Gratuit",
-          "description": "Pour sauvegarder quelques photos et vidéos",
-          "features": [
-            "5Go de stockage",
-            "10 albums",
-            "20 liens de partage",
-            "Gestion des liens de partage"
-          ]
+    "metadata": {
+        "landing": {
+            "title": "Echomori - Sauvegardez des moments de vie",
+            "description": "Sauvegardez vos photos, organisez vos albums et partagez vos souvenirs. Ne laissez plus aucun souvenir s'échapper"
         },
-        "efficient": {
-          "title": "Efficient",
-          "description": "Idéal pour les hobbyistes",
-          "features": [
-            "100Go de stockage",
-            "100 albums",
-            "200 liens de partage",
-            "Expiration des liens",
-            "Protection par mot de passe"
-          ]
+        "signin": {
+            "title": "Connexion - Echomori",
+            "description": "Connexion à votre compte Echomori"
         },
-        "pro": {
-          "title": "Pro",
-          "description": "Lorsque vous avez besoin de stocker plus de fichiers",
-          "features": [
-            "Tout dans Efficient plus",
-            "1To de stockage",
-            "1000 albums",
-            "500 liens de partage"
-          ]
+        "signup": {
+            "title": "Création de compte - Echomori",
+            "description": "Création de compte Echomori"
+        },
+        "verifyEmail": {
+            "title": "Vérification de l'adresse mail - Echomori",
+            "description": "Vérifier votre adresse mail pour accéder à votre compte Echomori"
+        },
+        "forgotPassword": {
+            "title": "Mot de passe oublié - Echomori",
+            "description": "Réinitialiser le mot de passe de votre compte Echomori"
+        },
+        "resetPassword": {
+            "title": "Réinitialiser le mot de passe - Echomori",
+            "description": "Réinitialiser le mot de passe de votre compte Echomori"
+        },
+        "dashboard": {
+            "title": "Tableau de bord - Echomori",
+            "description": "Tableau de bord"
+        },
+        "folders": {
+            "title": "Dossiers - Echomori",
+            "description": "Dossiers"
+        },
+        "folder": {
+            "title": "{folderName} - Echomori",
+            "description": "Gérer votre dossier",
+            "openGraph": {
+                "title": "{folderName} - Echomori",
+                "description": "Voir les photos et vidéos hébergées dans {folderName}"
+            }
+        },
+        "links": {
+            "title": "Liens - Echomori",
+            "description": "Liens"
+        },
+        "account": {
+            "title": "Compte - Echomori",
+            "description": "Compte"
+        },
+        "contact": {
+            "title": "Contact - Echomori",
+            "description": "Contact"
         }
-      },
-      "billedYearly": "Facturé annuellement"
-    },
-    "billing": {
-      "plan": "Abonnement {plan, select, free {gratuit} efficient {efficace} pro {pro} other {gratuit}}",
-      "subtitle": "Gérez votre abonnement"
-    }
-  },
-  "components": {
-    "header": {
-      "nav": {
-        "features": "Fonctionnalités",
-        "pricing": "Tarifs",
-        "contact": "Contact",
-        "login": "Connexion"
-      }
-    },
-    "unverifiedEmail": {
-      "message": "Votre adresse mail n'est pas encore vérifiée. Confirmez votre adresse mail avant le {date} afin d'éviter la suppression de votre compte"
     },
     "auth": {
-      "signIn": {
-        "title": "Connexion",
-        "description": "Connectez-vous à votre compte Echomori",
-        "form": {
-          "email": "Adresse mail",
-          "password": "Mot de passe",
-          "forgotPassword": "Mot de passe oublié",
-          "submit": "Se connecter",
-          "submitting": "Connexion",
-          "error": {
-            "title": "Echec de connexion",
-            "message": "Adresse mail ou mot de passe invalide"
-          }
-        },
-        "or": "Ou",
-        "google": "Se connecter avec Google",
-        "errors": {
-          "provider-google-email-exists": {
-            "title": "Adresse mail déjà utilisée",
-            "description": "Un compte existe déjà avec cette adresse mail. Veuillez vous connecter avec votre adresse mail et mot de passe"
-          }
-        }
-      },
-      "signUp": {
-        "title": "Créer un compte",
-        "description": "Créez votre compte Echomori",
-        "form": {
-          "name": "Nom",
-          "email": "Adresse mail",
-          "password": "Mot de passe",
-          "confirmPassword": "Confirmez votre mot de passe",
-          "submit": "Créer un compte",
-          "submitting": "Création",
-          "success": {
-            "title": "Compte créé",
-            "description": "Compte créé avec succès. Vous pouvez désormais vous connecter",
-            "action": "Connexion"
-          },
-          "error": {
-            "unknown": {
-              "title": "Impossible de créer votre compte",
-              "description": "Une erreur est survenue lors de la création de votre compte"
-            }
-          }
-        },
-        "or": "Ou",
-        "google": "Se connecter avec Google",
-        "errors": {
-          "provider-google-email-exists": {
-            "title": "Adresse mail déjà utilisée",
-            "description": "Un compte existe déjà avec cette adresse mail. Veuillez vous connecter avec votre adresse mail et mot de passe"
-          }
-        }
-      },
-      "requestPasswordReset": {
-        "title": "Réinitialiser votre mot de passe",
-        "description": "Entrez l'adresse mail associée à votre compte",
-        "form": {
-          "email": {
-            "label": "Adresse mail",
-            "placeholder": "Adresse mail"
-          }
-        },
-        "actions": {
-          "backToLogin": "Retour à la connexion",
-          "submit": "Réinitialiser votre mot de passe",
-          "submitting": "Réinitialisation"
-        },
-        "errors": {
-          "invalid-data": {
-            "title": "Données invalides",
-            "description": "L'adresse mail fournie n'est pas valide"
-          },
-          "recent-request": {
-            "title": "Réinitialisation déjà demandée",
-            "description": "Une demande de réinitialisation de mot de passe a déjà été effectuée pour cette adresse mail. Veuillez vérifier votre boîte de réception ou réessayer plus tard"
-          },
-          "unknown": {
-            "title": "Impossible de réinitialiser votre mot de passe",
-            "description": "Une erreur inconnue est survenue lors de la réinitialisation de votre mot de passe"
-          }
-        },
-        "success": {
-          "title": "Demande de réinitialisation prise en compte",
-          "description": "Si un compte existe avec l'adresse mail fournie, un message de réinitialisation de mot de passe a été envoyé"
-        }
-      },
-      "resetPasswordForm": {
-        "title": "Réinitialiser votre mot de passe",
-        "description": "Entrez votre nouveau mot de passe",
-        "invalid": {
-          "title": "This reset password link has expired or is invalid"
-        },
-        "form": {
-          "password": {
-            "label": "Mot de passe",
-            "placeholder": "Mot de passe"
-          },
-          "confirmPassword": {
-            "label": "Confirmez votre mot de passe",
-            "placeholder": "Confirmez votre mot de passe"
-          }
-        },
-        "actions": {
-          "submit": "Réinitialiser",
-          "submitting": "Réinitialisation"
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de réinitialiser votre mot de passe",
-            "description": "Une erreur inconnue est survenue lors de la réinitialisation de votre mot de passe"
-          }
-        },
-        "success": {
-          "title": "Mot de passe réinitialisé",
-          "description": "Votre mot de passe a été réinitialisé avec succès",
-          "action": "Connexion",
-          "actionLong": "Connexion à votre compte"
-        }
-      }
+        "signInTab": "Se connecter",
+        "signUpTab": "Créer un compte"
     },
-    "account": {
-      "accountForm": {
-        "form": {
-          "profilePicture": {
-            "label": "Photo de profil",
-            "description": "Cliquez pour changer votre photo de profil"
-          },
-          "name": {
-            "label": "Changez votre nom",
-            "placeholder": "John Doe"
-          },
-          "email": {
-            "label": "Changez votre adresse mail",
-            "placeholder": "exemple@mail.fr",
-            "warning": "Changer votre adresse mail nécessitera une nouvelle vérification",
-            "requestVerification": "Renvoyer l'email de vérification",
-            "verified": "Adresse mail vérifiée",
-            "unverified": "Votre adresse mail n'est pas vérifiée"
-          },
-          "actions": {
-            "submit": "Sauvegarder",
-            "submitting": "Sauvegarde"
-          }
+    "sidebar": {
+        "title": "Echomori",
+        "message": "Sauvegardez des moments de vie",
+        "main": {
+            "title": "Vos sauvegardes",
+            "folders": "Dossiers",
+            "images": "Images",
+            "links": "Liens",
+            "sharedWithMe": "Partagés avec moi",
+            "map": "Carte"
         },
-        "passwordForm": {
-          "title": "Changer votre mot de passe",
-          "currentPassword": {
-            "label": "Mot de passe actuel",
-            "placeholder": "••••••••"
-          },
-          "newPassword": {
-            "label": "Nouveau mot de passe",
-            "placeholder": "••••••••"
-          },
-          "confirmPassword": {
-            "label": "Confirmez votre mot de passe",
-            "placeholder": "••••••••"
-          },
-          "actions": {
-            "submit": "Changer",
-            "submitting": "Changement"
-          }
+        "secondary": {
+            "used": "Espace utilisé"
         },
-        "errors": {
-          "unknown": {
-            "title": "Can't change your password",
-            "description": "An unknown error happened while changing your password. Please try again"
-          }
-        },
-        "success": {
-          "title": "Password changed",
-          "description": "Your password has been changed successfully"
+        "user": {
+            "upgrade": "Changer de plan",
+            "account": "Compte",
+            "billing": "Facturation",
+            "notifications": "Notifications",
+            "logout": "Déconnexion"
         }
-      },
-      "reviewFolders": {
-        "title": "Passez en revue vos dossiers",
-        "empty": "Aucun dossier à passer en revue",
-        "folder": {
-          "images": "{count, plural, one {# image} other {# images}}",
-          "dropdown": {
-            "fallback": "Actions",
-            "label": "Actions",
-            "openFolder": "Ouvrir",
-            "manageAccesses": "Gérer les accès"
-          }
-        }
-      }
     },
-    "fileUploader": {
-      "title": "Déplacer et déposer vos fichiers ici ou cliquez pour les importer",
-      "dragActiveTitle": "Déposez vos fichiers ici",
-      "description": "Vous pouvez télécharger {count, plural, one {un fichier} other {vos images}} jusqu'à {maxSize} {count, plural, one {} other {chacune}}",
-      "remove": "Supprimer",
-      "errors": {
-        "fileSize": {
-          "title": "Fichier trop volumineux",
-          "description": "{name} est trop volumineux. La taille maximale autorisée par fichier est de {maxSize}"
-        },
-        "fileType": {
-          "title": "Invalid file type",
-          "description": "Le fichier {name} n'est pas autorisé. Les types de fichiers autorisés sont {allowedTypes}"
-        },
-        "unknown": {
-          "title": "Impossible de télécharger le fichier",
-          "description": "Une erreur inconnue est survenue lors du téléchargement du fichier"
-        }
-      }
-    },
-    "viewSelector": {
-      "placeholder": "Sélectionnez une vue",
-      "options": {
-        "grid": "Grille",
-        "list": "Liste",
-        "tagGrouped": "Grouper par étiquette"
-      }
-    },
-    "images": {
-      "sort": {
-        "trigger": "Trier par",
-        "options": {
-          "name": "Nom",
-          "size": "Taille",
-          "date": "Date"
-        }
-      },
-      "carousel": {
-        "slide": "Image {current} sur {total}",
-        "noDescription": "Aucune description",
-        "actions": {
-          "expand": "Etendre",
-          "openInNew": "Ouvrir dans un nouvel onglet",
-          "download": "Télécharger",
-          "copy": {
-            "title": "Copier",
-            "success": {
-              "title": "Image copiée",
-              "description": "L'image a été copiée dans votre presse-papiers"
-            },
-            "errors": {
-              "video-copy-unavailable": {
-                "title": "Impossible to copy video",
-                "description": "Video copying is not available. Please use the download button to download the video"
-              }
-            }
-          },
-          "metadata": "Métadonnées",
-          "manageTags": "Gérer les étiquettes"
-        }
-      },
-      "comments": {
-        "trigger": "{count, plural, zero {Aucun commentaire} one {# Commentaire} other {# Commentaires}}",
-        "form": {
-          "text": {
-            "label": "{count, plural, =0 {Aucun commentaire} =1 {1 commentaire} other {# commentaires}}",
-            "placeholder": "Partagez vos pensées sur la photo..."
-          }
-        },
-        "actions": {
-          "submit": "Poster",
-          "submitting": "Envoi"
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible d'envoyer le commentaire",
-            "description": "Une erreur inconnue est survenue lors de l'envoi du commentaire"
-          }
-        },
-        "success": {
-          "title": "Commentaire posté",
-          "description": "Votre commentaire a été posté avec succès"
-        },
-        "privacy": {
-          "trigger": "Comment sont traités vos commentaires ?",
-          "content": "Si vous êtes connecté, votre nom apparaitra au dessus de votre commentaire.<br />Si vous n'êtes pas connecté mais que ce dossier vous a été partagé par e-mail, la première partie de votre adresse e-mail apparaitra au dessus de votre commentaire.<br />Si vous n'êtes pas connecté et que ce dossier vous a été partagé par un lien, votre commentaire sera anonyme.<br /><br />Les commentaires ne sont partagés qu'aux personnes ayant accès au dossier."
-        },
-        "comment": {
-          "dropdown": {
-            "edit": "Modifier",
-            "delete": "Supprimer"
-          }
-        }
-      },
-      "uploadImagesForm": {
-        "label": "Importer des images",
-        "ongoing": {
-          "title": "Importation en cours ({current}/{total})"
-        },
-        "success": "{count, plural, one {# fichier importé} other {# fichiers importés}} avec succès",
-        "actions": {
-          "submit": "Importer",
-          "submitting": "Importation..."
-        },
-        "errors": {
-          "not-enough-storage": "Vous n'avez pas assez d'espace de stockage restant pour importer {name}. Votre stockage est actuellement de {used} / {max}",
-          "invalid-file": "{name} n'est pas un fichier que vous pouvez importer. Chaque fichier doit être soit une image soit une vidéo"
-        },
-        "shouldNotify": "Notifier les personnes à qui vous avez partagé cet album"
-      }
-    },
-    "accessTokens": {
-      "unlock": {
-        "form": {
-          "pin": {
-            "label": "Code PIN",
-            "description": "Ce dossier est protégé par un code PIN"
-          }
-        },
-        "actions": {
-          "submit": "Dévérouiller",
-          "submitting": "Dévérouillage"
-        },
-        "errors": {
-          "empty": {
-            "title": "Code PIN vide",
-            "description": "Le code PIN ne peut pas être vide"
-          },
-          "unauthorized": {
-            "title": "Accès refusé",
-            "description": "Le code PIN fourni est incorrect"
-          },
-          "unknown": {
-            "title": "Impossible de dévérouiller le dossier",
-            "description": "Une erreur inconnue est survenue lors du dévérouillage du dossier"
-          }
-        }
-      }
-    },
-    "commandSearch": {
-      "placeholder": "Chercher une ressource...",
-      "noResults": "Aucun résultat.",
-      "sections": {
-        "pages": "Pages",
-        "folders": "Dossiers",
-        "images": "Images",
-        "account": "Compte"
-      },
-      "pages": {
+    "breadcumb": {
         "dashboard": "Tableau de bord",
         "folders": "Dossiers",
         "images": "Images",
         "links": "Liens",
-        "sharedWithMe": "Partagés avec moi",
-        "account": "Compte"
-      },
-      "actions": {
+        "map": "Carte",
+        "account": "Compte",
+        "administration": "Administration",
+        "administrationUsers": "Utilisateurs"
+    },
+    "pages": {
+        "landing": {
+            "hero": {
+                "introduction": "Introduction du tri personnalisé de vos fichiers",
+                "title": "Sauvegardez des moments de vie",
+                "description": "Sauvegardez vos photos, organisez vos albums et partagez vos souvenirs. Ne laissez plus aucun souvenir s'échapper",
+                "getStarted": "Commencer",
+                "seeMore": "Voir plus"
+            },
+            "featuresTitle": "Ne sauvegardez pas juste des photos,<br />Capturez des souvenirs et partagez-les avec d'autres"
+        },
+        "features": {
+            "title": "Liste des fonctionnalités",
+            "description": "Ici sont listées les fonctionnalités que vous pourrez retrouver au sein d'Echomori",
+            "albums": {
+                "label": "Albums",
+                "feature1": "Créez un nombre ilimité d'albums",
+                "feature2": "Importez vos photos",
+                "feature3": "Configurez des photos de couverture",
+                "feature4": "Téléchargez vos albums",
+                "feature5": "Partagez vos albums",
+                "feature6": "Et bien d'autres (Renommez, Gérez l'affichage, Triez vos photos, ...)"
+            },
+            "images": {
+                "label": "Photos",
+                "feature1": "Commentez sur vos photos",
+                "feature2": "Téléchargez à la carte",
+                "feature3": "Accédez aux détails de vos photos",
+                "feature4": "Accédez aux métadonnées (ISO, Focale, Contraste, Exposition, Données GPS, ...)",
+                "feature5": "Copiez vers le presse-papier",
+                "feature6": "Et bien d'autres (Renommez, Visualisez en plein-écran, ...)"
+            },
+            "sharing": {
+                "label": "Partage",
+                "feature1": "Créez des liens de partage",
+                "feature2": "Gérez tous vos liens en un endroit",
+                "feature3": "Paramétrez des mots de passe sur vos liens",
+                "feature4": "Configurez des dates d'expiration",
+                "feature5": "Configurez les permissions associées",
+                "feature6": "Partagez directement à vos contacts en entrant leurs adresses mail",
+                "feature7": "Suivez le nombre d'utilisations de vos liens",
+                "feature8": "Partagez sur vos réseaux sociaux",
+                "feature9": "Et d'autres (Suppression, Modification des permissions, ...)"
+            },
+            "search": {
+                "label": "Recherche",
+                "feature1": "Palette de commande",
+                "feature2": "Cherchez parmi vos albums",
+                "feature3": "Cherchez parmi vos images",
+                "feature4": "Cherchez parmi vos liens",
+                "feature5": "Cherchez des réglages"
+            },
+            "footer": {
+                "title": "Prêt à sauvegardez vos souvenirs ?",
+                "description": "Commencez avec Echomori et prévenez l'oubli de vos souvenirs dès maintenant !",
+                "cta": "Commencez"
+            }
+        },
+        "contact": {
+            "title": "Entrons en contact",
+            "titleMini": "Contact",
+            "description": "Vous avez une question, une suggestion ou besoin d'aide ? N'hésitez pas à nous contacter en remplissant le formulaire ci-contre ou en nous envoyant un email. Nous serons ravis de vous aider.",
+            "sendEmail": "Envoyer un email"
+        },
+        "dashboard": {
+            "title": "Echomori - Dashboard",
+            "folders": {
+                "lastUpdatedFolders": "Derniers dossiers mis à jour",
+                "empty": "Aucun dossier créé"
+            },
+            "images": {
+                "lastUploadedImages": "Dernières images importées",
+                "selected": "{count, plural, =1 {# image sélectionnée} other {# images sélectionnées}}",
+                "empty": "Aucune image téléchargée",
+                "actions": {
+                    "delete": "Supprimer"
+                }
+            },
+            "contextMenu": {
+                "createFolder": "Nouveau dossier"
+            }
+        },
         "folders": {
-          "create": "Créer un dossier"
+            "title": "Echomori - Dosseris",
+            "headline": "Vos dossiers créés",
+            "empty": "Aucun dossier créé",
+            "contextMenu": {
+                "createFolder": "Nouveau dossier"
+            }
+        },
+        "links": {
+            "title": "Echomori - Links",
+            "persons": {
+                "title": "Gestion des partage aux contacts"
+            },
+            "links": {
+                "title": "Gestion des liens"
+            }
         },
         "account": {
-          "changeEmail": "Changer d'adresse mail",
-          "changePassword": "Changer de mot de passe",
-          "logout": "Se déconnecter"
-        }
-      }
-    },
-    "switchTheme": {
-      "light": "Clair",
-      "dark": "Sombre",
-      "system": "Système"
-    },
-    "featuresCarousel": {
-      "section1": {
-        "title": "Créez votre album",
-        "description": "Créez un album pour organiser vos photos. Vous pouvez en créer un depuis la barre latérale, en utilisant la palette de commande ou en faisant un clic droit depuis presque n'importe où dans l'application."
-      },
-      "section2": {
-        "title": "Enregistrez vos photos",
-        "description": "Une fois votre album créé, vous pouvez directement télécharger vos photos dedans en les glissant-déposant dans votre album ou en cliquant sur le bouton de téléchargement."
-      },
-      "section3": {
-        "title": "Discutez avec vos albums",
-        "description": "Discutez avec un assistant pour vous remémorer vos souvenirs. Vous pouvez également ajouter des commentaires à vos photos pour vous souvenir du contexte du moment."
-      },
-      "section4": {
-        "title": "Partagez vos souvenirs",
-        "description": "Partagez vos albums avec vos amis et votre famille. Vous pouvez partager un album avec un lien ou en renseignant leur adresse mail."
-      }
-    },
-    "faq": {
-      "titleMini": "FAQ",
-      "title": "Questions fréquentes",
-      "question1": {
-        "title": "Comment créer un nouveau dossier ?",
-        "answer": "Vous pouvez créer un nouveau dossier en cliquant sur le bouton 'Nouveau dossier' dans la barre latérale, en utilisant la palette de commande '<kbd>'Ctrl'</kbd>' + '<kbd>'K'</kbd>' ou en faisant un clic droit n'importe où dans l'application."
-      },
-      "question2": {
-        "title": "Comment télécharger des images ?",
-        "answer": "Vous pouvez télécharger des images en les glissant-déposant dans votre dossier ou en cliquant sur le bouton de téléchargement."
-      },
-      "question3": {
-        "title": "Je ne veux plus partager un album, comment faire ?",
-        "answer": "Vous pouvez gérer tous vos liens de partage depuis la page de gestion des liens où vous trouverez deux tableaux : un pour les liens de partage et un pour les personnes avec qui vous avez partagé votre album. Vous pouvez modifier les propriétés des liens ou les supprimer à tout moment."
-      },
-      "question4": {
-        "title": "Puis-je changer mon adresse mail ?",
-        "answer": "Oui ! Vous pouvez changer votre adresse mail dans les paramètres de votre compte. Vous devrez vérifier votre nouvelle adresse mail."
-      },
-      "question5": {
-        "title": "Comment sont stockées mes photos ?",
-        "answer": "Vos photos sont stockées sur nos serveurs de manière sécurisée. Nous utilisons les dernières technologies pour assurer la sécurité de vos données."
-      }
-    },
-    "contactForm": {
-      "fields": {
-        "name": {
-          "label": "Nom",
-          "placeholder": "John Doe"
+            "title": "Echomori - Compte",
+            "headline": "Votre compte",
+            "subtitle": "Gérer les paramètres de votre compte"
         },
-        "email": {
-          "label": "Adresse mail",
-          "description": "Nous vous répondrons à cette adresse mail"
-        },
-        "message": {
-          "label": "Votre message",
-          "placeholder": "J'aimerais que vous ajoutiez la possibilité de..."
-        }
-      },
-      "actions": {
-        "submit": "Envoyer",
-        "submitting": "Envoi"
-      },
-      "errors": {
-        "unknown": {
-          "title": "Impossible d'envoyer votre message",
-          "description": "Une erreur inconnue est survenue lors de l'envoi de votre message"
-        }
-      },
-      "success": {
-        "title": "Message envoyé",
-        "description": "Votre message a été envoyé avec succès"
-      }
-    },
-    "footer": {
-      "about": {
-        "title": "A propos",
-        "features": "Fonctionnalités",
-        "pricing": "Tarifs",
-        "contact": "Contact"
-      },
-      "documentation": {
-        "title": "Documentation",
-        "faq": "FAQ",
-        "support": "Support"
-      },
-      "legal": {
-        "title": "Légal",
-        "terms": "Conditions d'utilisation",
-        "privacy": "Politique de confidentialité"
-      },
-      "copyright": {
-        "text": "© 2025 Echomori. Tous droits réservés."
-      }
-    },
-    "download": {
-      "ongoing": {
-        "title": "{name} - Téléchargement en cours",
-        "description": {
-          "name": "{name}",
-          "progress": "{currentPercentage}% - {count} / {total}"
-        }
-      },
-      "success": {
-        "title": "{name} - Téléchargement terminé",
-        "description": "{name} a été téléchargé avec succès"
-      },
-      "actions": {
-        "groupBy": {
-          "tag": "Grouper par étiquette"
-        }
-      }
-    },
-    "files": {
-      "likeButton": {
-        "cannotLike": "Vous devez être connecté pour aimer des fichiers"
-      }
-    },
-    "map": {
-      "cluster": {
-        "folder": {
-          "count": "{count, plural, =0 {0 fichier} =1 {1 fichier} other {# fichiers}}"
-        }
-      },
-      "folderList": {
-        "folderCard": {
-          "folderCount": "{count, plural, =0 {0 fichier} =1 {1 fichier} other {# fichiers}}"
-        }
-      }
-    }
-  },
-  "dialogs": {
-    "folders": {
-      "changeCover": {
-        "trigger": "Changer la couverture",
-        "title": "Changer la couverture du dossier",
-        "description": "Choisissez une image pour définir la couverture du dossier",
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Sélectionner",
-          "submitting": "Mise à jour"
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de changer la couverture du dossier",
-            "description": "Une erreur inconnue est survenue lors de la mise à jour de la couverture du dossier"
-          }
-        },
-        "success": {
-          "title": "Couverture du dossier mise à jour",
-          "description": "La couverture du dossier a été mise à jour avec succès"
-        },
-        "slide": "Image {current} sur {total}"
-      },
-      "editDescription": {
-        "trigger": "Modifier la description",
-        "title": "Modifier la description du dossier",
-        "description": "Changez la description pour {folder}",
-        "form": {
-          "description": {
-            "label": "Description",
-            "placeholder": "Souvenirs du voyage en famille à Cancun pendant les vacances d'été 2025",
-            "description": "La description sera affichée à côté des images et vidéos importées"
-          }
-        },
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Enregistrer",
-          "submitting": "Enregistrement"
-        },
-        "success": {
-          "title": "Description du dossier modifiée",
-          "description": "La description du dossier a été modifiée avec succès"
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de modifier la description du dossier",
-            "description": "Une erreur inconnue est survenue lors de la modification de la description du dossier"
-          }
-        }
-      },
-      "deleteDescription": {
-        "title": "Supprimer la description",
-        "description": "Êtes-vous sûr de vouloir supprimer la description de {name} ? Cette action est irréversible.",
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Supprimer",
-          "submitting": "Suppression..."
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de supprimer la description",
-            "description": "Une erreur inconnue est survenue lors de la suppression de la description"
-          }
-        },
-        "success": {
-          "title": "Description supprimée",
-          "description": "La description a été supprimée avec succès"
-        }
-      },
-      "create": {
-        "trigger": "Nouveau dossier",
-        "title": "Créer un nouveau dossier",
-        "description": "Créez un nouveau dossier pour organiser vos images",
-        "form": {
-          "name": {
-            "label": "Nom du dossier",
-            "placeholder": "Anniversaire de Julien",
-            "description": "Cela sera le nom de votre album"
-          }
-        },
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Créer",
-          "submitting": "Création"
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de créer le dossier",
-            "description": "Une erreur inconnue est survenue lors de la création du dossier"
-          }
-        },
-        "success": {
-          "title": "Dossier créé",
-          "description": "Le dossier a été créé avec succès"
-        }
-      },
-      "rename": {
-        "trigger": "Renommer",
-        "title": "Renommer le dossier",
-        "description": "Entrez le nouveau nom pour {folder}",
-        "form": {
-          "name": {
-            "label": "Nom du dossier",
-            "placeholder": "Anniversaire de Julien",
-            "description": "Cela sera le nouveau nom pour {folder}"
-          }
-        },
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Renommer",
-          "submitting": "Renommage"
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de renommer le dossier",
-            "description": "Une erreur inconnue est survenue lors du renommage du dossier"
-          }
-        },
-        "success": {
-          "title": "Dossier renommé",
-          "description": "Le dossier a été renommé avec succès"
-        }
-      },
-      "share": {
-        "trigger": "Partager",
-        "title": "Partager le dossier",
-        "description": "Partagez le dossier avec d'autres personnes",
-        "manageAccesses": "Gérer les accès",
-        "links": {
-          "label": "Liens de partage",
-          "empty": "Aucun lien de partage créé pour le moment",
-          "link": {
-            "permissions": {
-              "read": "Lecture",
-              "write": "Modification"
+        "pricing": {
+            "title": "Choisissez un plan qui vous convient",
+            "description": "Un abonnement transparent que vous pouvez toujours ajustez plus tard",
+            "getStarted": "Commencer",
+            "monthlyLabel": "Mensuel",
+            "yearlyLabel": "Annuel",
+            "monthly": "/ mois",
+            "yearly": "/ an",
+            "cards": {
+                "free": {
+                    "title": "Gratuit",
+                    "description": "Pour sauvegarder quelques photos et vidéos",
+                    "features": ["5Go de stockage", "10 albums", "20 liens de partage", "Gestion des liens de partage"]
+                },
+                "efficient": {
+                    "title": "Efficient",
+                    "description": "Idéal pour les hobbyistes",
+                    "features": [
+                        "100Go de stockage",
+                        "100 albums",
+                        "200 liens de partage",
+                        "Expiration des liens",
+                        "Protection par mot de passe"
+                    ]
+                },
+                "pro": {
+                    "title": "Pro",
+                    "description": "Lorsque vous avez besoin de stocker plus de fichiers",
+                    "features": ["Tout dans Efficient plus", "1To de stockage", "1000 albums", "500 liens de partage"]
+                }
             },
-            "placeholder": "Lien de partage",
-            "copy": "Copier le lien"
-          }
+            "billedYearly": "Facturé annuellement"
         },
-        "people": {
-          "title": "Contacts",
-          "empty": "Aucun contact pour le moment",
-          "form": {
-            "permission": {
-              "label": "Permission",
-              "placeholder": "Sélectionnez une permission",
-              "options": {
-                "read": "Voir",
-                "write": "Modifier"
-              }
-            },
-            "email": {
-              "label": "Adresse mail",
-              "placeholder": "Adresse mail",
-              "description": "Entrez l'adresse mail de la personne à inviter"
-            },
-            "expiryDate": {
-              "label": "Date d'expiration",
-              "description": "Le lien de partage deviendra invalide après cette date"
-            },
-            "pinCode": {
-              "label": "Lien vérouillé :",
-              "description": "Ce code PIN sera nécessaire pour accéder au dossier",
-              "yes": "Oui",
-              "no": "Non",
-              "dialog": {
-                "title": "Vérouiller avec un code PIN",
-                "description": "Vous devrez communiquer ce code avec la personne à qui vous partagez ce dossier",
-                "cancel": "Annuler",
-                "save": "Vérouiller",
-                "remove": "Supprimer le code"
-              }
-            },
-            "allowMap": {
-              "label": "Autoriser l'accès à la carte :",
-              "yes": "Oui",
-              "no": "Non"
+        "billing": {
+            "plan": "Abonnement {plan, select, free {gratuit} efficient {efficace} pro {pro} other {gratuit}}",
+            "subtitle": "Gérez votre abonnement"
+        }
+    },
+    "components": {
+        "header": {
+            "nav": {
+                "features": "Fonctionnalités",
+                "pricing": "Tarifs",
+                "contact": "Contact",
+                "login": "Connexion"
             }
-          }
         },
-        "buttons": {
-          "copy": "Copier le lien",
-          "emailAdd": "Ajouter",
-          "emailRemove": "Supprimer"
+        "unverifiedEmail": {
+            "message": "Votre adresse mail n'est pas encore vérifiée. Confirmez votre adresse mail avant le {date} afin d'éviter la suppression de votre compte"
         },
-        "toast": {
-          "emailAdd": {
-            "success": {
-              "title": "Adresse mail ajoutée",
-              "description": "L'adresse mail a été ajoutée avec succès"
+        "auth": {
+            "signIn": {
+                "title": "Connexion",
+                "description": "Connectez-vous à votre compte Echomori",
+                "form": {
+                    "email": "Adresse mail",
+                    "password": "Mot de passe",
+                    "forgotPassword": "Mot de passe oublié",
+                    "submit": "Se connecter",
+                    "submitting": "Connexion",
+                    "error": {
+                        "title": "Echec de connexion",
+                        "message": "Adresse mail ou mot de passe invalide"
+                    }
+                },
+                "or": "Ou",
+                "google": "Se connecter avec Google",
+                "errors": {
+                    "provider-google-email-exists": {
+                        "title": "Adresse mail déjà utilisée",
+                        "description": "Un compte existe déjà avec cette adresse mail. Veuillez vous connecter avec votre adresse mail et mot de passe"
+                    }
+                }
             },
-            "error": {
-              "title": "Adresse mail invalide",
-              "description": "L'adresse mail fournie est invalide ou existe déjà dans la liste"
-            }
-          },
-          "copy": {
-            "success": {
-              "title": "Lien copié",
-              "description": "Le lien a été copié dans votre presse-papiers"
+            "signUp": {
+                "title": "Créer un compte",
+                "description": "Créez votre compte Echomori",
+                "form": {
+                    "name": "Nom",
+                    "email": "Adresse mail",
+                    "password": "Mot de passe",
+                    "confirmPassword": "Confirmez votre mot de passe",
+                    "submit": "Créer un compte",
+                    "submitting": "Création",
+                    "success": {
+                        "title": "Compte créé",
+                        "description": "Compte créé avec succès. Vous pouvez désormais vous connecter",
+                        "action": "Connexion"
+                    },
+                    "error": {
+                        "email": {
+                            "title": "Adresse mail déjà utilisé",
+                            "description": "Cette adresse est actuellement utilisée. Connectez-vous ou utilisez une autre adresse"
+                        },
+                        "unknown": {
+                            "title": "Impossible de créer votre compte",
+                            "description": "Une erreur est survenue lors de la création de votre compte"
+                        }
+                    }
+                },
+                "or": "Ou",
+                "google": "Se connecter avec Google",
+                "errors": {
+                    "provider-google-email-exists": {
+                        "title": "Adresse mail déjà utilisée",
+                        "description": "Un compte existe déjà avec cette adresse mail. Veuillez vous connecter avec votre adresse mail et mot de passe"
+                    }
+                }
             },
-            "error": {
-              "title": "Erreur",
-              "description": "Une erreur est survenue lors de la copie du lien"
-            }
-          },
-          "submit": {
-            "success": {
-              "title": "Personnes invitées",
-              "description": "Les personnes ont été invitées avec succès"
+            "requestPasswordReset": {
+                "title": "Réinitialiser votre mot de passe",
+                "description": "Entrez l'adresse mail associée à votre compte",
+                "form": {
+                    "email": {
+                        "label": "Adresse mail",
+                        "placeholder": "Adresse mail"
+                    }
+                },
+                "actions": {
+                    "backToLogin": "Retour à la connexion",
+                    "submit": "Réinitialiser votre mot de passe",
+                    "submitting": "Réinitialisation"
+                },
+                "errors": {
+                    "invalid-data": {
+                        "title": "Données invalides",
+                        "description": "L'adresse mail fournie n'est pas valide"
+                    },
+                    "recent-request": {
+                        "title": "Réinitialisation déjà demandée",
+                        "description": "Une demande de réinitialisation de mot de passe a déjà été effectuée pour cette adresse mail. Veuillez vérifier votre boîte de réception ou réessayer plus tard"
+                    },
+                    "unknown": {
+                        "title": "Impossible de réinitialiser votre mot de passe",
+                        "description": "Une erreur inconnue est survenue lors de la réinitialisation de votre mot de passe"
+                    }
+                },
+                "success": {
+                    "title": "Demande de réinitialisation prise en compte",
+                    "description": "Si un compte existe avec l'adresse mail fournie, un message de réinitialisation de mot de passe a été envoyé"
+                }
             },
-            "error": {
-              "title": "Impossible de partager le dossier",
-              "description": "Une erreur est survenue lors du partage du dossier"
+            "resetPasswordForm": {
+                "title": "Réinitialiser votre mot de passe",
+                "description": "Entrez votre nouveau mot de passe",
+                "invalid": {
+                    "title": "This reset password link has expired or is invalid"
+                },
+                "form": {
+                    "password": {
+                        "label": "Mot de passe",
+                        "placeholder": "Mot de passe"
+                    },
+                    "confirmPassword": {
+                        "label": "Confirmez votre mot de passe",
+                        "placeholder": "Confirmez votre mot de passe"
+                    }
+                },
+                "actions": {
+                    "submit": "Réinitialiser",
+                    "submitting": "Réinitialisation"
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible de réinitialiser votre mot de passe",
+                        "description": "Une erreur inconnue est survenue lors de la réinitialisation de votre mot de passe"
+                    }
+                },
+                "success": {
+                    "title": "Mot de passe réinitialisé",
+                    "description": "Votre mot de passe a été réinitialisé avec succès",
+                    "action": "Connexion",
+                    "actionLong": "Connexion à votre compte"
+                }
             }
-          },
-          "noContacts": {
-            "title": "Aucun contact",
-            "description": "Veuillez ajouter au moins un contact avant de partager"
-          }
         },
-        "message": {
-          "title": "Écrire un message à partager avec vos contacts",
-          "description": "Ce message sera partagé dans l'email envoyé aux destinataires",
-          "back": "Retour aux contacts",
-          "recipients": "Destinataires",
-          "label": "Ajouter un message (optionnel)",
-          "placeholder": "Jetez un coup d'oeil à cet album...",
-          "sending": "Envoi des emails",
-          "send": "Envoyer"
-        },
-        "cancel": "Annuler",
-        "share": "Partager"
-      },
-      "properties": {
-        "title": "Propriétés du dossier",
-        "description": "Propriétés de {name}",
-        "name": "Nom",
-        "imagesAmount": {
-          "label": "Nombre d'images",
-          "value": "{count, plural, zero {Aucune image} one {# image} other {# images}}"
-        },
-        "size": "Taille",
-        "createdAt": "Créé le",
-        "updatedAt": "Mis à jour le",
-        "actions": {
-          "download": {
-            "trigger": "Télécharger",
-            "downloading": "Téléchargement",
-            "title": "Dossier téléchargé",
-            "description": "Le dossier a été téléchargé avec succès"
-          },
-          "delete": "Supprimer"
-        }
-      },
-      "delete": {
-        "trigger": "Supprimer",
-        "title": "Supprimer le dossier",
-        "description": "Êtes-vous sûr de vouloir supprimer {folder} ? Toutes les images associées seront également supprimées. Cette action est irréversible.",
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Supprimer",
-          "submitting": "Suppression"
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de supprimer le dossier",
-            "description": "Une erreur inconnue est survenue lors de la suppression du dossier"
-          }
-        },
-        "success": {
-          "title": "Dossier supprimé",
-          "description": "Le dossier a été supprimé avec succès"
-        }
-      }
-    },
-    "images": {
-      "carousel": {
-        "description": "Images"
-      },
-      "exif": {
-        "title": "Données EXIF",
-        "description": "Données EXIF de {name}",
-        "noData": "Aucune donnée",
-        "width": {
-          "label": "Largeur"
-        },
-        "height": {
-          "label": "Hauteur"
-        },
-        "make": {
-          "label": "Marque"
-        },
-        "model": {
-          "label": "Modèle"
-        },
-        "software": {
-          "label": "Logiciel"
-        },
-        "orientation": {
-          "label": "Orientation"
-        },
-        "exposureTime": {
-          "label": "Temps d'exposition"
-        },
-        "fNumber": {
-          "label": "F/Number"
-        },
-        "iso": {
-          "label": "ISO"
-        },
-        "takenAt": {
-          "label": "Prise le"
-        },
-        "modifiedAt": {
-          "label": "Modifiée le"
-        },
-        "flash": {
-          "label": "Flash"
-        },
-        "focalLength": {
-          "label": "Focale"
-        },
-        "contrast": {
-          "label": "Contraste"
-        },
-        "saturation": {
-          "label": "Saturation"
-        },
-        "sharpness": {
-          "label": "Netteté"
-        },
-        "whiteBalance": {
-          "label": "Balance des blancs"
-        },
-        "gps": {
-          "coordinates": {
-            "label": "Coordonnées GPS"
-          },
-          "latitude": {
-            "label": "Latitude"
-          },
-          "longitude": {
-            "label": "Longitude"
-          },
-          "altitude": {
-            "label": "Altitude"
-          }
-        },
-        "close": "Fermer"
-      },
-      "rename": {
-        "title": "Renommer l'image",
-        "description": "Entrez le nouveau nom pour {name}",
-        "form": {
-          "name": {
-            "label": "Nom de l'image",
-            "placeholder": "Todirostre tacheté",
-            "description": "Cela sera le nouveau nom pour {name}"
-          }
-        },
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Renommer",
-          "submitting": "Renommage"
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de renommer l'image",
-            "description": "Une erreur inconnue est survenue lors du renommage de l'image"
-          }
-        },
-        "success": {
-          "title": "Image renommée",
-          "description": "L'image a été renommée avec succès"
-        }
-      },
-      "properties": {
-        "title": "Propriétés de l'image",
-        "description": "Propriétés de {name}",
-        "name": "Nom",
-        "parentFolder": "Dossier parent",
-        "size": "Taille",
-        "dimensions": "Dimensions",
-        "uploadedAt": "Téléchargée le",
-        "actions": {
-          "copy": {
-            "trigger": "Copier",
-            "copying": "Copie...",
-            "copied": "Copiée",
-            "title": "Image copiée",
-            "description": "L'image a été copiée dans votre presse-papiers"
-          },
-          "download": {
-            "trigger": "Télécharger",
-            "downloading": "Téléchargement...",
-            "title": "Image téléchargée",
-            "description": "L'image a été téléchargée avec succès"
-          },
-          "delete": "Supprimer"
-        }
-      },
-      "delete": {
-        "trigger": "Supprimer",
-        "title": "Supprimer l'image",
-        "description": "Êtes-vous sûr de vouloir supprimer {image} ? Cette action est irréversible.",
-        "actions": {
-          "submit": "Supprimer",
-          "submitting": "Suppression...",
-          "cancel": "Annuler"
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de supprimer l'image",
-            "description": "Une erreur inconnue est survenue lors de la suppression de l'image"
-          }
-        },
-        "success": {
-          "title": "Image supprimée",
-          "description": "L'image a été supprimée avec succès"
-        }
-      },
-      "deleteMultiple": {
-        "trigger": "Supprimer",
-        "title": "Supprimer les images",
-        "description": "Êtes-vous sûr de vouloir supprimer {n, plural, =1 {image} other {# images}} ? Cette action est irréversible.",
-        "actions": {
-          "submit": "Supprimer",
-          "submitting": "Suppression...",
-          "cancel": "Annuler"
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de supprimer les images",
-            "description": "Une erreur inconnue est survenue lors de la suppression des images"
-          }
-        },
-        "success": {
-          "title": "Images supprimées",
-          "description": "{n, plural, zero {aucune image n'a été supprimée} one {# image a été supprimée} other {# images ont été supprimées}} avec succès"
-        }
-      },
-      "editDescription": {
-        "title": "Modifier la description",
-        "description": "Modifier la description de {name}",
-        "form": {
-          "description": {
-            "label": "Description",
-            "placeholder": "Entrez une description pour ce fichier",
-            "help": "Rappelez-vous le contexte et ce que ce {fileType} représente",
-            "fileType": {
-              "image": "image",
-              "video": "vidéo"
+        "account": {
+            "accountForm": {
+                "form": {
+                    "profilePicture": {
+                        "label": "Photo de profil",
+                        "description": "Cliquez pour changer votre photo de profil"
+                    },
+                    "name": {
+                        "label": "Changez votre nom",
+                        "placeholder": "John Doe"
+                    },
+                    "email": {
+                        "label": "Changez votre adresse mail",
+                        "placeholder": "exemple@mail.fr",
+                        "warning": "Changer votre adresse mail nécessitera une nouvelle vérification",
+                        "requestVerification": "Renvoyer l'email de vérification",
+                        "verified": "Adresse mail vérifiée",
+                        "unverified": "Votre adresse mail n'est pas vérifiée"
+                    },
+                    "actions": {
+                        "submit": "Sauvegarder",
+                        "submitting": "Sauvegarde"
+                    }
+                },
+                "passwordForm": {
+                    "title": "Changer votre mot de passe",
+                    "currentPassword": {
+                        "label": "Mot de passe actuel",
+                        "placeholder": "••••••••"
+                    },
+                    "newPassword": {
+                        "label": "Nouveau mot de passe",
+                        "placeholder": "••••••••"
+                    },
+                    "confirmPassword": {
+                        "label": "Confirmez votre mot de passe",
+                        "placeholder": "••••••••"
+                    },
+                    "actions": {
+                        "submit": "Changer",
+                        "submitting": "Changement"
+                    }
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Can't change your password",
+                        "description": "An unknown error happened while changing your password. Please try again"
+                    }
+                },
+                "success": {
+                    "title": "Password changed",
+                    "description": "Your password has been changed successfully"
+                }
+            },
+            "reviewFolders": {
+                "title": "Passez en revue vos dossiers",
+                "empty": "Aucun dossier à passer en revue",
+                "folder": {
+                    "images": "{count, plural, one {# image} other {# images}}",
+                    "dropdown": {
+                        "fallback": "Actions",
+                        "label": "Actions",
+                        "openFolder": "Ouvrir",
+                        "manageAccesses": "Gérer les accès"
+                    }
+                }
             }
-          }
         },
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Enregistrer",
-          "submitting": "Enregistrement..."
+        "fileUploader": {
+            "title": "Déplacer et déposer vos fichiers ici ou cliquez pour les importer",
+            "dragActiveTitle": "Déposez vos fichiers ici",
+            "description": "Vous pouvez télécharger {count, plural, one {un fichier} other {vos images}} jusqu'à {maxSize} {count, plural, one {} other {chacune}}",
+            "remove": "Supprimer",
+            "errors": {
+                "fileSize": {
+                    "title": "Fichier trop volumineux",
+                    "description": "{name} est trop volumineux. La taille maximale autorisée par fichier est de {maxSize}"
+                },
+                "fileType": {
+                    "title": "Invalid file type",
+                    "description": "Le fichier {name} n'est pas autorisé. Les types de fichiers autorisés sont {allowedTypes}"
+                },
+                "unknown": {
+                    "title": "Impossible de télécharger le fichier",
+                    "description": "Une erreur inconnue est survenue lors du téléchargement du fichier"
+                }
+            }
         },
-        "success": {
-          "title": "Succès",
-          "description": "Description mise à jour avec succès"
-        },
-        "errors": {
-          "unknown": {
-            "title": "Erreur",
-            "description": "Une erreur s'est produite lors de la mise à jour de la description"
-          }
-        }
-      },
-      "deleteDescription": {
-        "title": "Supprimer la description",
-        "description": "Êtes-vous sûr de vouloir supprimer la description de {name} ? Cette action est irréversible.",
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Supprimer",
-          "submitting": "Suppression..."
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de supprimer la description",
-            "description": "Une erreur inconnue est survenue lors de la suppression de la description"
-          }
-        },
-        "success": {
-          "title": "Description supprimée",
-          "description": "La description a été supprimée avec succès"
-        }
-      }
-    },
-    "accessTokens": {
-      "create": {
-        "title": "Créer un nouveau lien de partage",
-        "description": "Sélectionnez un dossier ainsi que les permissions d'accès afin de créer un nouveau lien de partage",
-        "form": {
-          "folder": {
-            "label": "Dossier"
-          },
-          "permissions": {
-            "label": "Les personnes consultant le lien devraient avoir le droit de",
+        "viewSelector": {
+            "placeholder": "Sélectionnez une vue",
             "options": {
-              "read": "Voir",
-              "write": "Modifier"
+                "grid": "Grille",
+                "list": "Liste",
+                "tagGrouped": "Grouper par étiquette"
             }
-          },
-          "expiry": {
-            "label": "Expiration",
-            "description": "Le lien deviendra invalide après cette date"
-          }
-        },
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Créer",
-          "submitting": "Création"
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de créer le lien de partage",
-            "description": "Une erreur inconnue est survenue lors de la création du lien de partage"
-          }
-        },
-        "success": {
-          "title": "Lien de partage créé",
-          "description": "Le lien de partage a été créé avec succès"
-        }
-      },
-      "lockToken": {
-        "title": "Vérouiller le lien de partage",
-        "description": "Vérouiller l'accès au dossier via ce lien de partage",
-        "form": {
-          "pin": {
-            "label": "Code PIN"
-          }
-        },
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Vérouiller",
-          "submitting": "Vérouillage"
-        },
-        "errors": {
-          "tokenType": {
-            "title": "Type de lien incorrect",
-            "description": "Le type de lien de partage n'est pas valide"
-          },
-          "unknown": {
-            "title": "Impossible de vérouiller le lien",
-            "description": "Une erreur inconnue est survenue lors du vérouillage du lien"
-          }
-        },
-        "success": {
-          "title": "Lien vérouillé",
-          "description": "Le lien de partage a été vérouillé avec succès"
-        }
-      },
-      "delete": {
-        "title": "{count, plural, one {Supprimer le lien de partage} other {Supprimer les liens de partage}}",
-        "description": "Êtes-vous sûr de vouloir supprimer {count, plural, one {le lien de partage} other {les liens de partage}} ? Cette action est irréversible.",
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Supprimer",
-          "submitting": "Suppression"
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de supprimer le lien",
-            "description": "Une erreur inconnue est survenue lors de la suppression du lien"
-          }
-        }
-      }
-    },
-    "account": {
-      "changeEmailConfirmation": {
-        "title": "Changer votre adresse mail ?",
-        "description": "Êtes-vous sûr de vouloir changer votre adresse mail ? Vous devrez la confirmer à nouveau",
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Changer l'adresse"
-        }
-      }
-    },
-    "admin": {
-      "users": {
-        "delete": {
-          "title": "Supprimer l'utilisateur",
-          "description": "Êtes-vous sûr de vouloir supprimer {name} ? Cette action est irréversible",
-          "confirmation": {
-            "label": "Entrez le nom de l'utilisateur pour confirmer",
-            "placeholder": "Nom de l'utilisateur"
-          },
-          "actions": {
-            "cancel": "Annuler",
-            "submit": "Supprimer",
-            "submitting": "Suppression"
-          },
-          "errors": {
-            "unknown": {
-              "title": "Impossible de supprimer l'utilisateur",
-              "description": "Une erreur inconnue est survenue lors de la suppression de l'utilisateur"
-            }
-          },
-          "success": {
-            "title": "Utilisateur supprimé",
-            "description": "L'utilisateur a été supprimé avec succès"
-          }
-        }
-      }
-    },
-    "comments": {
-      "delete": {
-        "title": "Supprimer le commentaire",
-        "description": "Êtes-vous sûr de vouloir supprimer ce commentaire ? Cette action est irréversible.",
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Supprimer",
-          "submitting": "Suppression en cours..."
-        },
-        "success": {
-          "title": "Commentaire supprimé",
-          "description": "Le commentaire a été supprimé avec succès."
-        },
-        "errors": {
-          "unknown": {
-            "title": "Erreur",
-            "description": "Une erreur est survenue lors de la suppression du commentaire."
-          }
-        }
-      },
-      "edit": {
-        "title": "Modifier le commentaire",
-        "description": "Modifiez votre commentaire ci-dessous.",
-        "content": {
-          "placeholder": "Écrivez votre commentaire ici..."
-        },
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Enregistrer",
-          "submitting": "Enregistrement en cours..."
-        },
-        "success": {
-          "title": "Commentaire mis à jour",
-          "description": "Le commentaire a été mis à jour avec succès."
-        },
-        "errors": {
-          "empty": {
-            "title": "Commentaire vide",
-            "description": "Veuillez écrire quelque chose dans votre commentaire."
-          },
-          "unknown": {
-            "title": "Erreur",
-            "description": "Une erreur est survenue lors de la mise à jour du commentaire."
-          }
-        }
-      }
-    },
-    "files": {
-      "addTag": {
-        "title": "Gérer les tags",
-        "description": "Ajoutez, supprimez ou créez des tags pour ce fichier",
-        "selectedTags": "Tags sélectionnés",
-        "folderTags": "Tags du dossier",
-        "otherTags": "Autres tags créés",
-        "noSelectedTags": "Aucun tag sélectionné pour ce fichier.",
-        "noFolderTags": "Aucun tag créé pour ce dossier.",
-        "addTag": {
-          "addFirst": "Ajouter",
-          "add": "Ajouter",
-          "name": "Nom de l'étiquette",
-          "success": "Etiquette ajoutée",
-          "color": "Sélectionnez la couleur",
-          "error": "Une erreur est survenue lors de l'ajout de l'étiquette",
-          "errorRemove": "Une erreur est survenue lors de la suppression de l'étiquette",
-          "errorAdd": "Une erreur est survenue lors de l'ajout de l'étiquette",
-          "errorEmpty": "Le nom ne doit pas être vide"
-        },
-        "noUserTags": "Aucune étiquette créé pour le moment"
-      }
-    }
-  },
-  "dataTables": {
-    "generic": {
-      "filtering": {
-        "selection": "{selected} sur {total, plural, one {# ligne} other {# lignes}} {selected, plural, zero {sélectionnée} one {sélectionnée} other {sélectionnées}}"
-      },
-      "pagination": {
-        "label": "Page {page} sur {pageCount}",
-        "previous": "Précédent",
-        "next": "Suivant",
-        "goToFirst": "Aller à la première page",
-        "goToLast": "Aller à la dernière page"
-      }
-    },
-    "people": {
-      "columns": {
-        "name": {
-          "header": "Nom"
-        },
-        "email": {
-          "header": "Adresse mail"
-        },
-        "permission": {
-          "header": "Permission",
-          "read": "Voir",
-          "write": "Modifier"
-        },
-        "active": {
-          "header": "Actif",
-          "tooltip": "Un lien inactif ne peut pas être utilisé pour accéder au dossier.<br />L'état peut être modifié à tout moment",
-          "active": "Actif",
-          "inactive": "Inactif"
-        },
-        "locked": {
-          "header": "Verrouillé",
-          "locked": "Verrouillé",
-          "unlocked": "Dévérouillé"
-        },
-        "views": {
-          "header": "Vues",
-          "count": "{count, plural, one {# vue} other {# vues}}"
-        },
-        "createdAt": {
-          "header": "Créé le"
-        },
-        "expiresAt": {
-          "header": "Expire le"
-        },
-        "actions": {
-          "label": "Actions",
-          "open": "Ouvrir",
-          "sendAgain": {
-            "label": "Renvoyer l'email",
-            "inProgress": {
-              "title": "En cours d'envoi",
-              "description": "L'email est en cours d'envoi"
-            },
-            "success": {
-              "title": "Email envoyé",
-              "description": "L'email a été envoyé avec succès"
-            },
-            "error": {
-              "title": "Impossible d'envoyer l'email",
-              "description": "Une erreur est survenue lors de l'envoi de l'email"
-            }
-          },
-          "edit": "Modifier les permissions",
-          "setActive": {
-            "label": "Définir comme actif",
-            "success": {
-              "title": "Accès activé",
-              "description": "L'accès pour cette personne a été activé"
-            },
-            "error": {
-              "title": "Impossible d'activer l'accès",
-              "description": "Une erreur est survenue lors de l'activation de l'accès"
-            }
-          },
-          "setInactive": {
-            "label": "Définir comme inactif",
-            "success": {
-              "title": "Accès désactivé",
-              "description": "L'accès pour cette personne a été désactivé"
-            },
-            "error": {
-              "title": "Impossible de désactiver l'accès",
-              "description": "Une erreur est survenue lors de la désactivation de l'accès"
-            }
-          },
-          "lock": "Vérouiller",
-          "unlock": {
-            "label": "Dévérouiller",
-            "error": {
-              "title": "Impossible de dévérouiller l'accès",
-              "description": "Une erreur est survenue lors du dévérouillage de l'accès"
-            },
-            "success": {
-              "title": "Accès dévérouillé",
-              "description": "L'accès pour cette personne a été dévérouillé"
-            }
-          },
-          "delete": {
-            "label": "Supprimer",
-            "success": {
-              "title": "Accès supprimée",
-              "description": "L'accès pour cette personne a été supprimé"
-            }
-          },
-          "allowMap": {
-            "disable": {
-              "label": "Supprimer l'accès à la carte",
-              "error": {
-                "title": "Impossible de supprimer l'accès",
-                "description": "Une erreur inconnue est survenue lors de la suppression de l'accès à la carte. Réessayez"
-              },
-              "success": {
-                "title": "Accès à la carte supprimé",
-                "description": "L'accès à la carte a été supprimé avec succès"
-              }
-            },
-            "enable": {
-              "label": "Activer l'accès à la carte",
-              "error": {
-                "title": "Impossible d'activer l'accès",
-                "description": "Une erreur inconnue est survenue lors de l'activation de l'accès à la carte. Réessayez"
-              },
-              "success": {
-                "title": "Accès à la carte activé",
-                "description": "L'accès à la carte a été activé avec succès"
-              }
-            }
-          }
-        },
-        "allowMap": {
-          "header": "Carte autorisée"
-        }
-      }
-    },
-    "links": {
-      "columns": {
-        "name": {
-          "header": "Nom"
-        },
-        "permission": {
-          "header": "Permission",
-          "read": "Voir",
-          "write": "Modifier"
-        },
-        "active": {
-          "header": "Actif",
-          "tooltip": "Un lien inactif ne peut pas être utilisé pour accéder au dossier.<br />L'état peut être modifié à tout moment",
-          "active": "Actif",
-          "inactive": "Inactif"
-        },
-        "locked": {
-          "header": "Verrouillé",
-          "locked": "Verrouillé",
-          "unlocked": "Dévérouillé"
-        },
-        "views": {
-          "header": "Vues",
-          "count": "{count, plural, one {# vue} other {# vues}}"
-        },
-        "createdAt": {
-          "header": "Créé le"
-        },
-        "expiresAt": {
-          "header": "Expire le"
-        },
-        "actions": {
-          "label": "Actions",
-          "open": "Ouvrir le dossier",
-          "copy": {
-            "label": "Copier le lien",
-            "success": {
-              "title": "Lien copié",
-              "description": "Le lien a été copié dans votre presse-papiers"
-            }
-          },
-          "edit": "Modifier les permissions",
-          "setActive": {
-            "label": "Définir comme actif",
-            "success": {
-              "title": "Accès activé",
-              "description": "L'accès pour ce lien a été activé"
-            },
-            "error": {
-              "title": "Impossible d'activer l'accès",
-              "description": "Une erreur est survenue lors de l'activation de l'accès"
-            }
-          },
-          "setInactive": {
-            "label": "Définir comme inactif",
-            "success": {
-              "title": "Accès désactivé",
-              "description": "L'accès pour ce lien a été désactivé"
-            },
-            "error": {
-              "title": "Impossible de désactiver l'accès",
-              "description": "Une erreur est survenue lors de la désactivation de l'accès"
-            }
-          },
-          "lock": "Vérouiller",
-          "unlock": "Dévérouiller",
-          "delete": {
-            "label": "Supprimer",
-            "success": {
-              "title": "Lien supprimé",
-              "description": "Le lien a été supprimé avec succès"
-            }
-          },
-          "allowMap": {
-            "disable": {
-              "label": "Supprimer l'accès à la carte",
-              "error": {
-                "title": "Impossible de supprimer l'accès",
-                "description": "Une erreur inconnue est survenue lors de la suppression de l'accès à la carte. Réessayez"
-              },
-              "success": {
-                "title": "Accès à la carte supprimé",
-                "description": "L'accès à la carte a été supprimé avec succès"
-              }
-            },
-            "enable": {
-              "label": "Activer l'accès à la carte",
-              "error": {
-                "title": "Impossible d'activer l'accès",
-                "description": "Une erreur inconnue est survenue lors de l'activation de l'accès à la carte. Réessayez"
-              },
-              "success": {
-                "title": "Accès à la carte activé",
-                "description": "L'accès à la carte a été activé avec succès"
-              }
-            }
-          }
-        },
-        "allowMap": {
-          "header": "Carte autorisée",
-          "allowed": "Oui",
-          "notAllowed": "Non"
-        }
-      },
-      "actions": {
-        "search": {
-          "placeholder": "Rechercher un lien..."
-        },
-        "create": "Nouveau lien",
-        "deleteSelected": "Supprimer les liens sélectionnés"
-      }
-    },
-    "users": {
-      "columns": {
-        "name": {
-          "header": "Nom"
-        },
-        "email": {
-          "header": "Adresse mail"
-        },
-        "emailVerified": {
-          "header": "Vérifié",
-          "verified": "Vérifié",
-          "unverified": "Non vérifié",
-          "unverifiedDeadline": "Vérification requise avant le {date}",
-          "unverifiedDeadlineNull": "No verification deadline"
-        },
-        "folders": {
-          "header": "Dossiers",
-          "count": "{count, plural, one {# dossier} other {# dossiers}}"
         },
         "images": {
-          "header": "Images",
-          "count": "{count, plural, one {# image} other {# images}}"
+            "sort": {
+                "trigger": "Trier par",
+                "options": {
+                    "name": "Nom",
+                    "size": "Taille",
+                    "date": "Date",
+                    "taken": "Date de prise"
+                }
+            },
+            "carousel": {
+                "slide": "Image {current} sur {total}",
+                "noDescription": "Aucune description",
+                "actions": {
+                    "expand": "Etendre",
+                    "openInNew": "Ouvrir dans un nouvel onglet",
+                    "download": "Télécharger",
+                    "copy": {
+                        "title": "Copier",
+                        "success": {
+                            "title": "Image copiée",
+                            "description": "L'image a été copiée dans votre presse-papiers"
+                        },
+                        "errors": {
+                            "video-copy-unavailable": {
+                                "title": "Impossible to copy video",
+                                "description": "Video copying is not available. Please use the download button to download the video"
+                            }
+                        }
+                    },
+                    "metadata": "Métadonnées",
+                    "manageTags": "Gérer les étiquettes"
+                }
+            },
+            "comments": {
+                "trigger": "{count, plural, zero {Aucun commentaire} one {# Commentaire} other {# Commentaires}}",
+                "form": {
+                    "text": {
+                        "label": "{count, plural, =0 {Aucun commentaire} =1 {1 commentaire} other {# commentaires}}",
+                        "placeholder": "Partagez vos pensées sur la photo..."
+                    }
+                },
+                "actions": {
+                    "submit": "Poster",
+                    "submitting": "Envoi"
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible d'envoyer le commentaire",
+                        "description": "Une erreur inconnue est survenue lors de l'envoi du commentaire"
+                    }
+                },
+                "success": {
+                    "title": "Commentaire posté",
+                    "description": "Votre commentaire a été posté avec succès"
+                },
+                "privacy": {
+                    "trigger": "Comment sont traités vos commentaires ?",
+                    "content": "Si vous êtes connecté, votre nom apparaitra au dessus de votre commentaire.<br />Si vous n'êtes pas connecté mais que ce dossier vous a été partagé par e-mail, la première partie de votre adresse e-mail apparaitra au dessus de votre commentaire.<br />Si vous n'êtes pas connecté et que ce dossier vous a été partagé par un lien, votre commentaire sera anonyme.<br /><br />Les commentaires ne sont partagés qu'aux personnes ayant accès au dossier."
+                },
+                "comment": {
+                    "dropdown": {
+                        "edit": "Modifier",
+                        "delete": "Supprimer"
+                    }
+                }
+            },
+            "uploadImagesForm": {
+                "label": "Importer des images",
+                "ongoing": {
+                    "title": "Importation en cours ({current}/{total})"
+                },
+                "success": "{count, plural, one {# fichier importé} other {# fichiers importés}} avec succès",
+                "actions": {
+                    "submit": "Importer",
+                    "submitting": "Importation..."
+                },
+                "errors": {
+                    "not-enough-storage": "Vous n'avez pas assez d'espace de stockage restant pour importer {name}. Votre stockage est actuellement de {used} / {max}",
+                    "invalid-file": "{name} n'est pas un fichier que vous pouvez importer. Chaque fichier doit être soit une image soit une vidéo"
+                },
+                "shouldNotify": "Notifier les personnes à qui vous avez partagé cet album"
+            }
         },
-        "usedStorage": {
-          "header": "Espace utilisé",
-          "count": "{count} utilisés"
+        "accessTokens": {
+            "unlock": {
+                "form": {
+                    "pin": {
+                        "label": "Code PIN",
+                        "description": "Ce dossier est protégé par un code PIN"
+                    }
+                },
+                "actions": {
+                    "submit": "Dévérouiller",
+                    "submitting": "Dévérouillage"
+                },
+                "errors": {
+                    "empty": {
+                        "title": "Code PIN vide",
+                        "description": "Le code PIN ne peut pas être vide"
+                    },
+                    "unauthorized": {
+                        "title": "Accès refusé",
+                        "description": "Le code PIN fourni est incorrect"
+                    },
+                    "unknown": {
+                        "title": "Impossible de dévérouiller le dossier",
+                        "description": "Une erreur inconnue est survenue lors du dévérouillage du dossier"
+                    }
+                }
+            }
         },
-        "createdAt": {
-          "header": "Créé le"
+        "commandSearch": {
+            "placeholder": "Chercher une ressource...",
+            "noResults": "Aucun résultat.",
+            "sections": {
+                "pages": "Pages",
+                "folders": "Dossiers",
+                "images": "Images",
+                "account": "Compte"
+            },
+            "pages": {
+                "dashboard": "Tableau de bord",
+                "folders": "Dossiers",
+                "images": "Images",
+                "links": "Liens",
+                "sharedWithMe": "Partagés avec moi",
+                "account": "Compte"
+            },
+            "actions": {
+                "folders": {
+                    "create": "Créer un dossier"
+                },
+                "account": {
+                    "changeEmail": "Changer d'adresse mail",
+                    "changePassword": "Changer de mot de passe",
+                    "logout": "Se déconnecter"
+                }
+            }
         },
-        "updatedAt": {
-          "header": "Mis à jour le"
+        "switchTheme": {
+            "light": "Clair",
+            "dark": "Sombre",
+            "system": "Système"
+        },
+        "featuresCarousel": {
+            "section1": {
+                "title": "Créez votre album",
+                "description": "Créez un album pour organiser vos photos. Vous pouvez en créer un depuis la barre latérale, en utilisant la palette de commande ou en faisant un clic droit depuis presque n'importe où dans l'application."
+            },
+            "section2": {
+                "title": "Enregistrez vos photos",
+                "description": "Une fois votre album créé, vous pouvez directement télécharger vos photos dedans en les glissant-déposant dans votre album ou en cliquant sur le bouton de téléchargement."
+            },
+            "section3": {
+                "title": "Discutez avec vos albums",
+                "description": "Discutez avec un assistant pour vous remémorer vos souvenirs. Vous pouvez également ajouter des commentaires à vos photos pour vous souvenir du contexte du moment."
+            },
+            "section4": {
+                "title": "Partagez vos souvenirs",
+                "description": "Partagez vos albums avec vos amis et votre famille. Vous pouvez partager un album avec un lien ou en renseignant leur adresse mail."
+            }
+        },
+        "faq": {
+            "titleMini": "FAQ",
+            "title": "Questions fréquentes",
+            "question1": {
+                "title": "Comment créer un nouveau dossier ?",
+                "answer": "Vous pouvez créer un nouveau dossier en cliquant sur le bouton 'Nouveau dossier' dans la barre latérale, en utilisant la palette de commande '<kbd>'Ctrl'</kbd>' + '<kbd>'K'</kbd>' ou en faisant un clic droit n'importe où dans l'application."
+            },
+            "question2": {
+                "title": "Comment télécharger des images ?",
+                "answer": "Vous pouvez télécharger des images en les glissant-déposant dans votre dossier ou en cliquant sur le bouton de téléchargement."
+            },
+            "question3": {
+                "title": "Je ne veux plus partager un album, comment faire ?",
+                "answer": "Vous pouvez gérer tous vos liens de partage depuis la page de gestion des liens où vous trouverez deux tableaux : un pour les liens de partage et un pour les personnes avec qui vous avez partagé votre album. Vous pouvez modifier les propriétés des liens ou les supprimer à tout moment."
+            },
+            "question4": {
+                "title": "Puis-je changer mon adresse mail ?",
+                "answer": "Oui ! Vous pouvez changer votre adresse mail dans les paramètres de votre compte. Vous devrez vérifier votre nouvelle adresse mail."
+            },
+            "question5": {
+                "title": "Comment sont stockées mes photos ?",
+                "answer": "Vos photos sont stockées sur nos serveurs de manière sécurisée. Nous utilisons les dernières technologies pour assurer la sécurité de vos données."
+            }
+        },
+        "contactForm": {
+            "fields": {
+                "name": {
+                    "label": "Nom",
+                    "placeholder": "John Doe"
+                },
+                "email": {
+                    "label": "Adresse mail",
+                    "description": "Nous vous répondrons à cette adresse mail"
+                },
+                "message": {
+                    "label": "Votre message",
+                    "placeholder": "J'aimerais que vous ajoutiez la possibilité de..."
+                }
+            },
+            "actions": {
+                "submit": "Envoyer",
+                "submitting": "Envoi"
+            },
+            "errors": {
+                "unknown": {
+                    "title": "Impossible d'envoyer votre message",
+                    "description": "Une erreur inconnue est survenue lors de l'envoi de votre message"
+                }
+            },
+            "success": {
+                "title": "Message envoyé",
+                "description": "Votre message a été envoyé avec succès"
+            }
+        },
+        "footer": {
+            "about": {
+                "title": "A propos",
+                "features": "Fonctionnalités",
+                "pricing": "Tarifs",
+                "contact": "Contact"
+            },
+            "documentation": {
+                "title": "Documentation",
+                "faq": "FAQ",
+                "support": "Support"
+            },
+            "legal": {
+                "title": "Légal",
+                "terms": "Conditions d'utilisation",
+                "privacy": "Politique de confidentialité"
+            },
+            "copyright": {
+                "text": "© 2025 Echomori. Tous droits réservés."
+            }
+        },
+        "download": {
+            "ongoing": {
+                "title": "{name} - Téléchargement en cours",
+                "description": {
+                    "name": "{name}",
+                    "progress": "{currentPercentage}% - {count} / {total}"
+                }
+            },
+            "success": {
+                "title": "{name} - Téléchargement terminé",
+                "description": "{name} a été téléchargé avec succès"
+            },
+            "actions": {
+                "groupBy": {
+                    "tag": "Grouper par étiquette"
+                }
+            }
+        },
+        "files": {
+            "likeButton": {
+                "cannotLike": "Vous devez être connecté pour aimer des fichiers"
+            }
+        },
+        "map": {
+            "cluster": {
+                "folder": {
+                    "count": "{count, plural, =0 {0 fichier} =1 {1 fichier} other {# fichiers}}"
+                }
+            },
+            "folderList": {
+                "folderCard": {
+                    "folderCount": "{count, plural, =0 {0 fichier} =1 {1 fichier} other {# fichiers}}"
+                }
+            }
+        }
+    },
+    "dialogs": {
+        "folders": {
+            "changeCover": {
+                "trigger": "Changer la couverture",
+                "title": "Changer la couverture du dossier",
+                "description": "Choisissez une image pour définir la couverture du dossier",
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Sélectionner",
+                    "submitting": "Mise à jour"
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible de changer la couverture du dossier",
+                        "description": "Une erreur inconnue est survenue lors de la mise à jour de la couverture du dossier"
+                    }
+                },
+                "success": {
+                    "title": "Couverture du dossier mise à jour",
+                    "description": "La couverture du dossier a été mise à jour avec succès"
+                },
+                "slide": "Image {current} sur {total}"
+            },
+            "editDescription": {
+                "trigger": "Modifier la description",
+                "title": "Modifier la description du dossier",
+                "description": "Changez la description pour {folder}",
+                "form": {
+                    "description": {
+                        "label": "Description",
+                        "placeholder": "Souvenirs du voyage en famille à Cancun pendant les vacances d'été 2025",
+                        "description": "La description sera affichée à côté des images et vidéos importées"
+                    }
+                },
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Enregistrer",
+                    "submitting": "Enregistrement"
+                },
+                "success": {
+                    "title": "Description du dossier modifiée",
+                    "description": "La description du dossier a été modifiée avec succès"
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible de modifier la description du dossier",
+                        "description": "Une erreur inconnue est survenue lors de la modification de la description du dossier"
+                    }
+                }
+            },
+            "deleteDescription": {
+                "title": "Supprimer la description",
+                "description": "Êtes-vous sûr de vouloir supprimer la description de {name} ? Cette action est irréversible.",
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Supprimer",
+                    "submitting": "Suppression..."
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible de supprimer la description",
+                        "description": "Une erreur inconnue est survenue lors de la suppression de la description"
+                    }
+                },
+                "success": {
+                    "title": "Description supprimée",
+                    "description": "La description a été supprimée avec succès"
+                }
+            },
+            "create": {
+                "trigger": "Nouveau dossier",
+                "title": "Créer un nouveau dossier",
+                "description": "Créez un nouveau dossier pour organiser vos images",
+                "form": {
+                    "name": {
+                        "label": "Nom du dossier",
+                        "placeholder": "Anniversaire de Julien",
+                        "description": "Cela sera le nom de votre album"
+                    }
+                },
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Créer",
+                    "submitting": "Création"
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible de créer le dossier",
+                        "description": "Une erreur inconnue est survenue lors de la création du dossier"
+                    }
+                },
+                "success": {
+                    "title": "Dossier créé",
+                    "description": "Le dossier a été créé avec succès"
+                }
+            },
+            "rename": {
+                "trigger": "Renommer",
+                "title": "Renommer le dossier",
+                "description": "Entrez le nouveau nom pour {folder}",
+                "form": {
+                    "name": {
+                        "label": "Nom du dossier",
+                        "placeholder": "Anniversaire de Julien",
+                        "description": "Cela sera le nouveau nom pour {folder}"
+                    }
+                },
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Renommer",
+                    "submitting": "Renommage"
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible de renommer le dossier",
+                        "description": "Une erreur inconnue est survenue lors du renommage du dossier"
+                    }
+                },
+                "success": {
+                    "title": "Dossier renommé",
+                    "description": "Le dossier a été renommé avec succès"
+                }
+            },
+            "share": {
+                "trigger": "Partager",
+                "title": "Partager le dossier",
+                "description": "Partagez le dossier avec d'autres personnes",
+                "manageAccesses": "Gérer les accès",
+                "links": {
+                    "label": "Liens de partage",
+                    "empty": "Aucun lien de partage créé pour le moment",
+                    "link": {
+                        "permissions": {
+                            "read": "Lecture",
+                            "write": "Modification"
+                        },
+                        "placeholder": "Lien de partage",
+                        "copy": "Copier le lien"
+                    }
+                },
+                "people": {
+                    "title": "Contacts",
+                    "empty": "Aucun contact pour le moment",
+                    "form": {
+                        "permission": {
+                            "label": "Permission",
+                            "placeholder": "Sélectionnez une permission",
+                            "options": {
+                                "read": "Voir",
+                                "write": "Modifier"
+                            }
+                        },
+                        "email": {
+                            "label": "Adresse mail",
+                            "placeholder": "Adresse mail",
+                            "description": "Entrez l'adresse mail de la personne à inviter"
+                        },
+                        "expiryDate": {
+                            "label": "Date d'expiration",
+                            "description": "Le lien de partage deviendra invalide après cette date"
+                        },
+                        "pinCode": {
+                            "label": "Lien vérouillé :",
+                            "description": "Ce code PIN sera nécessaire pour accéder au dossier",
+                            "yes": "Oui",
+                            "no": "Non",
+                            "dialog": {
+                                "title": "Vérouiller avec un code PIN",
+                                "description": "Vous devrez communiquer ce code avec la personne à qui vous partagez ce dossier",
+                                "cancel": "Annuler",
+                                "save": "Vérouiller",
+                                "remove": "Supprimer le code"
+                            }
+                        },
+                        "allowMap": {
+                            "label": "Autoriser l'accès à la carte :",
+                            "yes": "Oui",
+                            "no": "Non"
+                        }
+                    }
+                },
+                "buttons": {
+                    "copy": "Copier le lien",
+                    "emailAdd": "Ajouter",
+                    "emailRemove": "Supprimer"
+                },
+                "toast": {
+                    "emailAdd": {
+                        "success": {
+                            "title": "Adresse mail ajoutée",
+                            "description": "L'adresse mail a été ajoutée avec succès"
+                        },
+                        "error": {
+                            "title": "Adresse mail invalide",
+                            "description": "L'adresse mail fournie est invalide ou existe déjà dans la liste"
+                        }
+                    },
+                    "copy": {
+                        "success": {
+                            "title": "Lien copié",
+                            "description": "Le lien a été copié dans votre presse-papiers"
+                        },
+                        "error": {
+                            "title": "Erreur",
+                            "description": "Une erreur est survenue lors de la copie du lien"
+                        }
+                    },
+                    "submit": {
+                        "success": {
+                            "title": "Personnes invitées",
+                            "description": "Les personnes ont été invitées avec succès"
+                        },
+                        "error": {
+                            "title": "Impossible de partager le dossier",
+                            "description": "Une erreur est survenue lors du partage du dossier"
+                        }
+                    },
+                    "noContacts": {
+                        "title": "Aucun contact",
+                        "description": "Veuillez ajouter au moins un contact avant de partager"
+                    }
+                },
+                "message": {
+                    "title": "Écrire un message à partager avec vos contacts",
+                    "description": "Ce message sera partagé dans l'email envoyé aux destinataires",
+                    "back": "Retour aux contacts",
+                    "recipients": "Destinataires",
+                    "label": "Ajouter un message (optionnel)",
+                    "placeholder": "Jetez un coup d'oeil à cet album...",
+                    "sending": "Envoi des emails",
+                    "send": "Envoyer"
+                },
+                "cancel": "Annuler",
+                "share": "Partager"
+            },
+            "properties": {
+                "title": "Propriétés du dossier",
+                "description": "Propriétés de {name}",
+                "name": "Nom",
+                "imagesAmount": {
+                    "label": "Nombre d'images",
+                    "value": "{count, plural, zero {Aucune image} one {# image} other {# images}}"
+                },
+                "size": "Taille",
+                "createdAt": "Créé le",
+                "updatedAt": "Mis à jour le",
+                "actions": {
+                    "download": {
+                        "trigger": "Télécharger",
+                        "downloading": "Téléchargement",
+                        "title": "Dossier téléchargé",
+                        "description": "Le dossier a été téléchargé avec succès"
+                    },
+                    "delete": "Supprimer"
+                }
+            },
+            "delete": {
+                "trigger": "Supprimer",
+                "title": "Supprimer le dossier",
+                "description": "Êtes-vous sûr de vouloir supprimer {folder} ? Toutes les images associées seront également supprimées. Cette action est irréversible.",
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Supprimer",
+                    "submitting": "Suppression"
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible de supprimer le dossier",
+                        "description": "Une erreur inconnue est survenue lors de la suppression du dossier"
+                    }
+                },
+                "success": {
+                    "title": "Dossier supprimé",
+                    "description": "Le dossier a été supprimé avec succès"
+                }
+            }
+        },
+        "images": {
+            "carousel": {
+                "description": "Images"
+            },
+            "exif": {
+                "title": "Données EXIF",
+                "description": "Données EXIF de {name}",
+                "noData": "Aucune donnée",
+                "width": {
+                    "label": "Largeur"
+                },
+                "height": {
+                    "label": "Hauteur"
+                },
+                "make": {
+                    "label": "Marque"
+                },
+                "model": {
+                    "label": "Modèle"
+                },
+                "software": {
+                    "label": "Logiciel"
+                },
+                "orientation": {
+                    "label": "Orientation"
+                },
+                "exposureTime": {
+                    "label": "Temps d'exposition"
+                },
+                "fNumber": {
+                    "label": "F/Number"
+                },
+                "iso": {
+                    "label": "ISO"
+                },
+                "takenAt": {
+                    "label": "Prise le"
+                },
+                "modifiedAt": {
+                    "label": "Modifiée le"
+                },
+                "flash": {
+                    "label": "Flash"
+                },
+                "focalLength": {
+                    "label": "Focale"
+                },
+                "contrast": {
+                    "label": "Contraste"
+                },
+                "saturation": {
+                    "label": "Saturation"
+                },
+                "sharpness": {
+                    "label": "Netteté"
+                },
+                "whiteBalance": {
+                    "label": "Balance des blancs"
+                },
+                "gps": {
+                    "coordinates": {
+                        "label": "Coordonnées GPS"
+                    },
+                    "latitude": {
+                        "label": "Latitude"
+                    },
+                    "longitude": {
+                        "label": "Longitude"
+                    },
+                    "altitude": {
+                        "label": "Altitude"
+                    }
+                },
+                "close": "Fermer"
+            },
+            "rename": {
+                "title": "Renommer l'image",
+                "description": "Entrez le nouveau nom pour {name}",
+                "form": {
+                    "name": {
+                        "label": "Nom de l'image",
+                        "placeholder": "Todirostre tacheté",
+                        "description": "Cela sera le nouveau nom pour {name}"
+                    }
+                },
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Renommer",
+                    "submitting": "Renommage"
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible de renommer l'image",
+                        "description": "Une erreur inconnue est survenue lors du renommage de l'image"
+                    }
+                },
+                "success": {
+                    "title": "Image renommée",
+                    "description": "L'image a été renommée avec succès"
+                }
+            },
+            "properties": {
+                "title": "Propriétés de l'image",
+                "description": "Propriétés de {name}",
+                "name": "Nom",
+                "parentFolder": "Dossier parent",
+                "size": "Taille",
+                "dimensions": "Dimensions",
+                "uploadedAt": "Téléchargée le",
+                "actions": {
+                    "copy": {
+                        "trigger": "Copier",
+                        "copying": "Copie...",
+                        "copied": "Copiée",
+                        "title": "Image copiée",
+                        "description": "L'image a été copiée dans votre presse-papiers"
+                    },
+                    "download": {
+                        "trigger": "Télécharger",
+                        "downloading": "Téléchargement...",
+                        "title": "Image téléchargée",
+                        "description": "L'image a été téléchargée avec succès"
+                    },
+                    "delete": "Supprimer"
+                }
+            },
+            "delete": {
+                "trigger": "Supprimer",
+                "title": "Supprimer l'image",
+                "description": "Êtes-vous sûr de vouloir supprimer {image} ? Cette action est irréversible.",
+                "actions": {
+                    "submit": "Supprimer",
+                    "submitting": "Suppression...",
+                    "cancel": "Annuler"
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible de supprimer l'image",
+                        "description": "Une erreur inconnue est survenue lors de la suppression de l'image"
+                    }
+                },
+                "success": {
+                    "title": "Image supprimée",
+                    "description": "L'image a été supprimée avec succès"
+                }
+            },
+            "deleteMultiple": {
+                "trigger": "Supprimer",
+                "title": "Supprimer les images",
+                "description": "Êtes-vous sûr de vouloir supprimer {n, plural, =1 {image} other {# images}} ? Cette action est irréversible.",
+                "actions": {
+                    "submit": "Supprimer",
+                    "submitting": "Suppression...",
+                    "cancel": "Annuler"
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible de supprimer les images",
+                        "description": "Une erreur inconnue est survenue lors de la suppression des images"
+                    }
+                },
+                "success": {
+                    "title": "Images supprimées",
+                    "description": "{n, plural, zero {aucune image n'a été supprimée} one {# image a été supprimée} other {# images ont été supprimées}} avec succès"
+                }
+            },
+            "editDescription": {
+                "title": "Modifier la description",
+                "description": "Modifier la description de {name}",
+                "form": {
+                    "description": {
+                        "label": "Description",
+                        "placeholder": "Entrez une description pour ce fichier",
+                        "help": "Rappelez-vous le contexte et ce que ce {fileType} représente",
+                        "fileType": {
+                            "image": "image",
+                            "video": "vidéo"
+                        }
+                    }
+                },
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Enregistrer",
+                    "submitting": "Enregistrement..."
+                },
+                "success": {
+                    "title": "Succès",
+                    "description": "Description mise à jour avec succès"
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Erreur",
+                        "description": "Une erreur s'est produite lors de la mise à jour de la description"
+                    }
+                }
+            },
+            "deleteDescription": {
+                "title": "Supprimer la description",
+                "description": "Êtes-vous sûr de vouloir supprimer la description de {name} ? Cette action est irréversible.",
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Supprimer",
+                    "submitting": "Suppression..."
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible de supprimer la description",
+                        "description": "Une erreur inconnue est survenue lors de la suppression de la description"
+                    }
+                },
+                "success": {
+                    "title": "Description supprimée",
+                    "description": "La description a été supprimée avec succès"
+                }
+            }
+        },
+        "accessTokens": {
+            "create": {
+                "title": "Créer un nouveau lien de partage",
+                "description": "Sélectionnez un dossier ainsi que les permissions d'accès afin de créer un nouveau lien de partage",
+                "form": {
+                    "folder": {
+                        "label": "Dossier"
+                    },
+                    "permissions": {
+                        "label": "Les personnes consultant le lien devraient avoir le droit de",
+                        "options": {
+                            "read": "Voir",
+                            "write": "Modifier"
+                        }
+                    },
+                    "expiry": {
+                        "label": "Expiration",
+                        "description": "Le lien deviendra invalide après cette date"
+                    }
+                },
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Créer",
+                    "submitting": "Création"
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible de créer le lien de partage",
+                        "description": "Une erreur inconnue est survenue lors de la création du lien de partage"
+                    }
+                },
+                "success": {
+                    "title": "Lien de partage créé",
+                    "description": "Le lien de partage a été créé avec succès"
+                }
+            },
+            "lockToken": {
+                "title": "Vérouiller le lien de partage",
+                "description": "Vérouiller l'accès au dossier via ce lien de partage",
+                "form": {
+                    "pin": {
+                        "label": "Code PIN"
+                    }
+                },
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Vérouiller",
+                    "submitting": "Vérouillage"
+                },
+                "errors": {
+                    "tokenType": {
+                        "title": "Type de lien incorrect",
+                        "description": "Le type de lien de partage n'est pas valide"
+                    },
+                    "unknown": {
+                        "title": "Impossible de vérouiller le lien",
+                        "description": "Une erreur inconnue est survenue lors du vérouillage du lien"
+                    }
+                },
+                "success": {
+                    "title": "Lien vérouillé",
+                    "description": "Le lien de partage a été vérouillé avec succès"
+                }
+            },
+            "delete": {
+                "title": "{count, plural, one {Supprimer le lien de partage} other {Supprimer les liens de partage}}",
+                "description": "Êtes-vous sûr de vouloir supprimer {count, plural, one {le lien de partage} other {les liens de partage}} ? Cette action est irréversible.",
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Supprimer",
+                    "submitting": "Suppression"
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible de supprimer le lien",
+                        "description": "Une erreur inconnue est survenue lors de la suppression du lien"
+                    }
+                }
+            }
+        },
+        "account": {
+            "changeEmailConfirmation": {
+                "title": "Changer votre adresse mail ?",
+                "description": "Êtes-vous sûr de vouloir changer votre adresse mail ? Vous devrez la confirmer à nouveau",
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Changer l'adresse"
+                }
+            }
+        },
+        "admin": {
+            "users": {
+                "delete": {
+                    "title": "Supprimer l'utilisateur",
+                    "description": "Êtes-vous sûr de vouloir supprimer {name} ? Cette action est irréversible",
+                    "confirmation": {
+                        "label": "Entrez le nom de l'utilisateur pour confirmer",
+                        "placeholder": "Nom de l'utilisateur"
+                    },
+                    "actions": {
+                        "cancel": "Annuler",
+                        "submit": "Supprimer",
+                        "submitting": "Suppression"
+                    },
+                    "errors": {
+                        "unknown": {
+                            "title": "Impossible de supprimer l'utilisateur",
+                            "description": "Une erreur inconnue est survenue lors de la suppression de l'utilisateur"
+                        }
+                    },
+                    "success": {
+                        "title": "Utilisateur supprimé",
+                        "description": "L'utilisateur a été supprimé avec succès"
+                    }
+                }
+            }
+        },
+        "comments": {
+            "delete": {
+                "title": "Supprimer le commentaire",
+                "description": "Êtes-vous sûr de vouloir supprimer ce commentaire ? Cette action est irréversible.",
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Supprimer",
+                    "submitting": "Suppression en cours..."
+                },
+                "success": {
+                    "title": "Commentaire supprimé",
+                    "description": "Le commentaire a été supprimé avec succès."
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Erreur",
+                        "description": "Une erreur est survenue lors de la suppression du commentaire."
+                    }
+                }
+            },
+            "edit": {
+                "title": "Modifier le commentaire",
+                "description": "Modifiez votre commentaire ci-dessous.",
+                "content": {
+                    "placeholder": "Écrivez votre commentaire ici..."
+                },
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Enregistrer",
+                    "submitting": "Enregistrement en cours..."
+                },
+                "success": {
+                    "title": "Commentaire mis à jour",
+                    "description": "Le commentaire a été mis à jour avec succès."
+                },
+                "errors": {
+                    "empty": {
+                        "title": "Commentaire vide",
+                        "description": "Veuillez écrire quelque chose dans votre commentaire."
+                    },
+                    "unknown": {
+                        "title": "Erreur",
+                        "description": "Une erreur est survenue lors de la mise à jour du commentaire."
+                    }
+                }
+            }
+        },
+        "files": {
+            "addTag": {
+                "title": "Gérer les tags",
+                "description": "Ajoutez, supprimez ou créez des tags pour ce fichier",
+                "selectedTags": "Tags sélectionnés",
+                "folderTags": "Tags du dossier",
+                "otherTags": "Autres tags créés",
+                "noSelectedTags": "Aucun tag sélectionné pour ce fichier.",
+                "noFolderTags": "Aucun tag créé pour ce dossier.",
+                "addTag": {
+                    "addFirst": "Ajouter",
+                    "add": "Ajouter",
+                    "name": "Nom de l'étiquette",
+                    "success": "Etiquette ajoutée",
+                    "color": "Sélectionnez la couleur",
+                    "error": "Une erreur est survenue lors de l'ajout de l'étiquette",
+                    "errorRemove": "Une erreur est survenue lors de la suppression de l'étiquette",
+                    "errorAdd": "Une erreur est survenue lors de l'ajout de l'étiquette",
+                    "errorEmpty": "Le nom ne doit pas être vide"
+                },
+                "noUserTags": "Aucune étiquette créé pour le moment"
+            }
+        }
+    },
+    "dataTables": {
+        "generic": {
+            "filtering": {
+                "selection": "{selected} sur {total, plural, one {# ligne} other {# lignes}} {selected, plural, zero {sélectionnée} one {sélectionnée} other {sélectionnées}}"
+            },
+            "pagination": {
+                "label": "Page {page} sur {pageCount}",
+                "previous": "Précédent",
+                "next": "Suivant",
+                "goToFirst": "Aller à la première page",
+                "goToLast": "Aller à la dernière page"
+            }
+        },
+        "people": {
+            "columns": {
+                "name": {
+                    "header": "Nom"
+                },
+                "email": {
+                    "header": "Adresse mail"
+                },
+                "permission": {
+                    "header": "Permission",
+                    "read": "Voir",
+                    "write": "Modifier"
+                },
+                "active": {
+                    "header": "Actif",
+                    "tooltip": "Un lien inactif ne peut pas être utilisé pour accéder au dossier.<br />L'état peut être modifié à tout moment",
+                    "active": "Actif",
+                    "inactive": "Inactif"
+                },
+                "locked": {
+                    "header": "Verrouillé",
+                    "locked": "Verrouillé",
+                    "unlocked": "Dévérouillé"
+                },
+                "views": {
+                    "header": "Vues",
+                    "count": "{count, plural, one {# vue} other {# vues}}"
+                },
+                "createdAt": {
+                    "header": "Créé le"
+                },
+                "expiresAt": {
+                    "header": "Expire le"
+                },
+                "actions": {
+                    "label": "Actions",
+                    "open": "Ouvrir",
+                    "sendAgain": {
+                        "label": "Renvoyer l'email",
+                        "inProgress": {
+                            "title": "En cours d'envoi",
+                            "description": "L'email est en cours d'envoi"
+                        },
+                        "success": {
+                            "title": "Email envoyé",
+                            "description": "L'email a été envoyé avec succès"
+                        },
+                        "error": {
+                            "title": "Impossible d'envoyer l'email",
+                            "description": "Une erreur est survenue lors de l'envoi de l'email"
+                        }
+                    },
+                    "edit": "Modifier les permissions",
+                    "setActive": {
+                        "label": "Définir comme actif",
+                        "success": {
+                            "title": "Accès activé",
+                            "description": "L'accès pour cette personne a été activé"
+                        },
+                        "error": {
+                            "title": "Impossible d'activer l'accès",
+                            "description": "Une erreur est survenue lors de l'activation de l'accès"
+                        }
+                    },
+                    "setInactive": {
+                        "label": "Définir comme inactif",
+                        "success": {
+                            "title": "Accès désactivé",
+                            "description": "L'accès pour cette personne a été désactivé"
+                        },
+                        "error": {
+                            "title": "Impossible de désactiver l'accès",
+                            "description": "Une erreur est survenue lors de la désactivation de l'accès"
+                        }
+                    },
+                    "lock": "Vérouiller",
+                    "unlock": {
+                        "label": "Dévérouiller",
+                        "error": {
+                            "title": "Impossible de dévérouiller l'accès",
+                            "description": "Une erreur est survenue lors du dévérouillage de l'accès"
+                        },
+                        "success": {
+                            "title": "Accès dévérouillé",
+                            "description": "L'accès pour cette personne a été dévérouillé"
+                        }
+                    },
+                    "delete": {
+                        "label": "Supprimer",
+                        "success": {
+                            "title": "Accès supprimée",
+                            "description": "L'accès pour cette personne a été supprimé"
+                        }
+                    },
+                    "allowMap": {
+                        "disable": {
+                            "label": "Supprimer l'accès à la carte",
+                            "error": {
+                                "title": "Impossible de supprimer l'accès",
+                                "description": "Une erreur inconnue est survenue lors de la suppression de l'accès à la carte. Réessayez"
+                            },
+                            "success": {
+                                "title": "Accès à la carte supprimé",
+                                "description": "L'accès à la carte a été supprimé avec succès"
+                            }
+                        },
+                        "enable": {
+                            "label": "Activer l'accès à la carte",
+                            "error": {
+                                "title": "Impossible d'activer l'accès",
+                                "description": "Une erreur inconnue est survenue lors de l'activation de l'accès à la carte. Réessayez"
+                            },
+                            "success": {
+                                "title": "Accès à la carte activé",
+                                "description": "L'accès à la carte a été activé avec succès"
+                            }
+                        }
+                    }
+                },
+                "allowMap": {
+                    "header": "Carte autorisée"
+                }
+            }
+        },
+        "links": {
+            "columns": {
+                "name": {
+                    "header": "Nom"
+                },
+                "permission": {
+                    "header": "Permission",
+                    "read": "Voir",
+                    "write": "Modifier"
+                },
+                "active": {
+                    "header": "Actif",
+                    "tooltip": "Un lien inactif ne peut pas être utilisé pour accéder au dossier.<br />L'état peut être modifié à tout moment",
+                    "active": "Actif",
+                    "inactive": "Inactif"
+                },
+                "locked": {
+                    "header": "Verrouillé",
+                    "locked": "Verrouillé",
+                    "unlocked": "Dévérouillé"
+                },
+                "views": {
+                    "header": "Vues",
+                    "count": "{count, plural, one {# vue} other {# vues}}"
+                },
+                "createdAt": {
+                    "header": "Créé le"
+                },
+                "expiresAt": {
+                    "header": "Expire le"
+                },
+                "actions": {
+                    "label": "Actions",
+                    "open": "Ouvrir le dossier",
+                    "copy": {
+                        "label": "Copier le lien",
+                        "success": {
+                            "title": "Lien copié",
+                            "description": "Le lien a été copié dans votre presse-papiers"
+                        }
+                    },
+                    "edit": "Modifier les permissions",
+                    "setActive": {
+                        "label": "Définir comme actif",
+                        "success": {
+                            "title": "Accès activé",
+                            "description": "L'accès pour ce lien a été activé"
+                        },
+                        "error": {
+                            "title": "Impossible d'activer l'accès",
+                            "description": "Une erreur est survenue lors de l'activation de l'accès"
+                        }
+                    },
+                    "setInactive": {
+                        "label": "Définir comme inactif",
+                        "success": {
+                            "title": "Accès désactivé",
+                            "description": "L'accès pour ce lien a été désactivé"
+                        },
+                        "error": {
+                            "title": "Impossible de désactiver l'accès",
+                            "description": "Une erreur est survenue lors de la désactivation de l'accès"
+                        }
+                    },
+                    "lock": "Vérouiller",
+                    "unlock": "Dévérouiller",
+                    "delete": {
+                        "label": "Supprimer",
+                        "success": {
+                            "title": "Lien supprimé",
+                            "description": "Le lien a été supprimé avec succès"
+                        }
+                    },
+                    "allowMap": {
+                        "disable": {
+                            "label": "Supprimer l'accès à la carte",
+                            "error": {
+                                "title": "Impossible de supprimer l'accès",
+                                "description": "Une erreur inconnue est survenue lors de la suppression de l'accès à la carte. Réessayez"
+                            },
+                            "success": {
+                                "title": "Accès à la carte supprimé",
+                                "description": "L'accès à la carte a été supprimé avec succès"
+                            }
+                        },
+                        "enable": {
+                            "label": "Activer l'accès à la carte",
+                            "error": {
+                                "title": "Impossible d'activer l'accès",
+                                "description": "Une erreur inconnue est survenue lors de l'activation de l'accès à la carte. Réessayez"
+                            },
+                            "success": {
+                                "title": "Accès à la carte activé",
+                                "description": "L'accès à la carte a été activé avec succès"
+                            }
+                        }
+                    }
+                },
+                "allowMap": {
+                    "header": "Carte autorisée",
+                    "allowed": "Oui",
+                    "notAllowed": "Non"
+                }
+            },
+            "actions": {
+                "search": {
+                    "placeholder": "Rechercher un lien..."
+                },
+                "create": "Nouveau lien",
+                "deleteSelected": "Supprimer les liens sélectionnés"
+            }
+        },
+        "users": {
+            "columns": {
+                "name": {
+                    "header": "Nom"
+                },
+                "email": {
+                    "header": "Adresse mail"
+                },
+                "emailVerified": {
+                    "header": "Vérifié",
+                    "verified": "Vérifié",
+                    "unverified": "Non vérifié",
+                    "unverifiedDeadline": "Vérification requise avant le {date}",
+                    "unverifiedDeadlineNull": "No verification deadline"
+                },
+                "folders": {
+                    "header": "Dossiers",
+                    "count": "{count, plural, one {# dossier} other {# dossiers}}"
+                },
+                "images": {
+                    "header": "Images",
+                    "count": "{count, plural, one {# image} other {# images}}"
+                },
+                "usedStorage": {
+                    "header": "Espace utilisé",
+                    "count": "{count} utilisés"
+                },
+                "createdAt": {
+                    "header": "Créé le"
+                },
+                "updatedAt": {
+                    "header": "Mis à jour le"
+                },
+                "actions": {
+                    "label": "Actions",
+                    "edit": "Modifier",
+                    "delete": {
+                        "label": "Supprimer",
+                        "success": {
+                            "title": "Utilisateur supprimé",
+                            "description": "L'utilisateur a été supprimé avec succès"
+                        }
+                    }
+                }
+            }
+        },
+        "peopl": {
+            "columns": {
+                "allowMap": {
+                    "allowed": "Oui",
+                    "notAllowed": "Non"
+                }
+            }
+        }
+    },
+    "folders": {
+        "sharedBy": "Partagé par {name}",
+        "filesCount": "{count, plural, =0 {Aucun fichier} =1 {# fichier} other {# fichiers}}",
+        "addDescription": "Ajouter une description",
+        "page": {
+            "title": "Folders",
+            "subtitle": "Your created folders"
+        },
+        "views": {
+            "label": "Vue",
+            "options": {
+                "list": "Liste",
+                "grid": "Grille",
+                "tagGrouped": "Grouper par étiquette"
+            },
+            "list": {
+                "table": {
+                    "selection": "{count, plural, one {# dossier sélectionnée} other {# dossiers sélectionnées}} ",
+                    "delecteSelected": "Supprimer les dossiers sélectionnées",
+                    "empty": "Aucun dossier créé"
+                },
+                "header": {
+                    "name": "Nom",
+                    "size": "Taille",
+                    "createdAt": "Créé le",
+                    "updatedAt": "Mis à jour le"
+                },
+                "columns": {
+                    "actions": {
+                        "label": "Actions",
+                        "open": "Ouvrir",
+                        "select": "Sélectionner",
+                        "unselect": "Désélectionner",
+                        "share": "Partager",
+                        "changeCover": "Changer la couverture",
+                        "download": "Télécharger",
+                        "rename": "Renommer",
+                        "properties": "Propriétés",
+                        "delete": "Supprimer"
+                    }
+                }
+            }
         },
         "actions": {
-          "label": "Actions",
-          "edit": "Modifier",
-          "delete": {
-            "label": "Supprimer",
-            "success": {
-              "title": "Utilisateur supprimé",
-              "description": "L'utilisateur a été supprimé avec succès"
-            }
-          }
-        }
-      }
-    },
-    "peopl": {
-      "columns": {
-        "allowMap": {
-          "allowed": "Oui",
-          "notAllowed": "Non"
-        }
-      }
-    }
-  },
-  "folders": {
-    "sharedBy": "Partagé par {name}",
-    "filesCount": "{count, plural, =0 {Aucun fichier} =1 {# fichier} other {# fichiers}}",
-    "addDescription": "Ajouter une description",
-    "page": {
-      "title": "Folders",
-      "subtitle": "Your created folders"
-    },
-    "views": {
-      "label": "Vue",
-      "options": {
-        "list": "Liste",
-        "grid": "Grille",
-        "tagGrouped": "Grouper par étiquette"
-      },
-      "list": {
-        "table": {
-          "selection": "{count, plural, one {# dossier sélectionnée} other {# dossiers sélectionnées}} ",
-          "delecteSelected": "Supprimer les dossiers sélectionnées",
-          "empty": "Aucun dossier créé"
-        },
-        "header": {
-          "name": "Nom",
-          "size": "Taille",
-          "createdAt": "Créé le",
-          "updatedAt": "Mis à jour le"
-        },
-        "columns": {
-          "actions": {
-            "label": "Actions",
-            "open": "Ouvrir",
-            "select": "Sélectionner",
-            "unselect": "Désélectionner",
-            "share": "Partager",
-            "changeCover": "Changer la couverture",
+            "create": "Nouveau dossier",
+            "upload": "Importer",
+            "open": "Open",
+            "manage": "Manage links",
+            "properties": "Properties",
             "download": "Télécharger",
-            "rename": "Renommer",
-            "properties": "Propriétés",
-            "delete": "Supprimer"
-          }
-        }
-      }
-    },
-    "actions": {
-      "create": "Nouveau dossier",
-      "upload": "Importer",
-      "open": "Open",
-      "manage": "Manage links",
-      "properties": "Properties",
-      "download": "Télécharger",
-      "map": "Carte"
-    },
-    "dialog": {
-      "rename": {
-        "trigger": "Rename",
-        "title": "Rename folder",
-        "description": "Rename the folder",
-        "fields": {
-          "name": {
-            "label": "Folder's name",
-            "description": "The new name for {folder}"
-          }
+            "map": "Carte"
         },
-        "submit": "Rename",
-        "submitting": "Renaming...",
-        "cancel": "Cancel"
-      },
-      "share": {
-        "trigger": "Share",
-        "title": "Share folder",
-        "description": "Share the folder with others",
-        "fields": {
-          "link": {
-            "label": "Link",
-            "description": "Share this link with others",
-            "placeholder": "Link"
-          },
-          "email": {
-            "label": "Email",
-            "description": "Send this link to an email",
-            "placeholder": "Email address",
-            "error": {
-              "title": "Invalid email",
-              "description": "Provided email is invalid or already exists in the list"
-            }
-          }
-        },
-        "button": {
-          "copy": "Copy link",
-          "emailAdd": "Add email"
-        },
-        "toast": {
-          "copy": {
-            "success": {
-              "title": "Link copied",
-              "description": "The link has been copied to your clipboard"
+        "dialog": {
+            "rename": {
+                "trigger": "Rename",
+                "title": "Rename folder",
+                "description": "Rename the folder",
+                "fields": {
+                    "name": {
+                        "label": "Folder's name",
+                        "description": "The new name for {folder}"
+                    }
+                },
+                "submit": "Rename",
+                "submitting": "Renaming...",
+                "cancel": "Cancel"
             },
-            "error": {
-              "title": "Error",
-              "description": "An error occurred while copying the link"
+            "share": {
+                "trigger": "Share",
+                "title": "Share folder",
+                "description": "Share the folder with others",
+                "fields": {
+                    "link": {
+                        "label": "Link",
+                        "description": "Share this link with others",
+                        "placeholder": "Link"
+                    },
+                    "email": {
+                        "label": "Email",
+                        "description": "Send this link to an email",
+                        "placeholder": "Email address",
+                        "error": {
+                            "title": "Invalid email",
+                            "description": "Provided email is invalid or already exists in the list"
+                        }
+                    }
+                },
+                "button": {
+                    "copy": "Copy link",
+                    "emailAdd": "Add email"
+                },
+                "toast": {
+                    "copy": {
+                        "success": {
+                            "title": "Link copied",
+                            "description": "The link has been copied to your clipboard"
+                        },
+                        "error": {
+                            "title": "Error",
+                            "description": "An error occurred while copying the link"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "trigger": "Delete",
+                "title": "Delete folder",
+                "description": "Are you sure you want to delete {folder} ? Every related images will be deleted. This action cannot be undone.",
+                "submit": "Delete",
+                "submitting": "Deleting...",
+                "cancel": "Cancel"
             }
-          }
-        }
-      },
-      "delete": {
-        "trigger": "Delete",
-        "title": "Delete folder",
-        "description": "Are you sure you want to delete {folder} ? Every related images will be deleted. This action cannot be undone.",
-        "submit": "Delete",
-        "submitting": "Deleting...",
-        "cancel": "Cancel"
-      }
-    },
-    "sort": {
-      "label": "Trier par",
-      "options": {
-        "name": "Nom",
-        "size": "Taille",
-        "date": "Date"
-      }
-    },
-    "upload": {
-      "label": "Importer"
-    },
-    "share": {
-      "label": "Partager"
-    },
-    "download": {
-      "label": "Télécharger",
-      "ongoing": {
-        "title": "Téléchargement en cours",
-        "description": "{name} est en train d'être téléchargé. Patientez quelques instants pendant que nous préparons votre archive."
-      },
-      "success": "{name} a été téléchargé avec succès",
-      "empty": "Ce dossier ne contient aucune image a télécharger"
-    },
-    "empty": "Aucun dossier créé"
-  },
-  "images": {
-    "lastUploadedImages": "Dernières images importées",
-    "selected": "{count, plural, =1 {# image sélectionnée} other {# images sélectionnées}}",
-    "empty": "No images uploaded",
-    "new": "Nouveau",
-    "newFiles": "Fichiers ajoutés récemment",
-    "albumContent": "Tous les fichiers",
-    "page": {
-      "title": "{folder} images",
-      "subtitle": "{folder} uploaded images",
-      "startUpload": "Téléchargez vos premières images"
-    },
-    "actions": {
-      "view": "Ouvrir",
-      "select": "Sélectionner",
-      "unselect": "Désélectionner",
-      "download": "Télécharger",
-      "addTag": "Gérer les tags",
-      "rename": "Renommer",
-      "setAsCover": {
-        "label": "Définir comme couverture",
-        "errors": {
-          "video-cover-unavailable": {
-            "title": "Impossible de définir la couverture",
-            "description": "Une vidéo ne peut pas être définie comme couverture"
-          },
-          "unknown": {
-            "title": "Impossible de définir la couverture",
-            "description": "Une erreur est survenue lors de la définition de la couverture"
-          }
         },
-        "success": {
-          "title": "Couverture définie",
-          "description": "La couverture du dossier a été définie avec succès"
-        }
-      },
-      "properties": "Propriétés",
-      "upload": "Importer",
-      "delete": "Supprimer",
-      "share": "Partager"
+        "sort": {
+            "label": "Trier par",
+            "options": {
+                "name": "Nom",
+                "size": "Taille",
+                "date": "Date"
+            }
+        },
+        "upload": {
+            "label": "Importer"
+        },
+        "share": {
+            "label": "Partager"
+        },
+        "download": {
+            "label": "Télécharger",
+            "ongoing": {
+                "title": "Téléchargement en cours",
+                "description": "{name} est en train d'être téléchargé. Patientez quelques instants pendant que nous préparons votre archive."
+            },
+            "success": "{name} a été téléchargé avec succès",
+            "empty": "Ce dossier ne contient aucune image a télécharger"
+        },
+        "empty": "Aucun dossier créé"
     },
-    "views": {
-      "list": {
-        "table": {
-          "selection": "{count, plural, one {# image sélectionnée} other {# images sélectionnées}} ",
-          "deleteSelected": "Supprimer les images sélectionnées",
-          "empty": "Aucune image téléchargée",
-          "page": {
-            "label": "{pageStart} - {pageEnd} sur {count}",
-            "rowsPerPage": "Lignes par page",
-            "previous": "Précédent",
-            "next": "Suivant",
-            "goToFirst": "Aller à la première page",
-            "goToLast": "Aller à la dernière page"
-          }
+    "images": {
+        "lastUploadedImages": "Dernières images importées",
+        "selected": "{count, plural, =1 {# image sélectionnée} other {# images sélectionnées}}",
+        "empty": "No images uploaded",
+        "new": "Nouveau",
+        "newFiles": "Fichiers ajoutés récemment",
+        "albumContent": "Tous les fichiers",
+        "manageTags": "Gérer les tags",
+        "page": {
+            "title": "{folder} images",
+            "subtitle": "{folder} uploaded images",
+            "startUpload": "Téléchargez vos premières images"
         },
-        "header": {
-          "name": "Nom",
-          "size": "Taille",
-          "folder": "Dossier",
-          "comments": "Commentaires",
-          "uploadedAt": "Importée le"
-        },
-        "columns": {
-          "comments": "{count, plural, =0 {Aucun commentaire} =1 {# Commentaire} other {# Commentaires}}",
-          "actions": {
-            "label": "Actions",
+        "actions": {
             "view": "Ouvrir",
             "select": "Sélectionner",
+            "unselect": "Désélectionner",
             "download": "Télécharger",
+            "addTag": "Gérer les tags",
             "rename": "Renommer",
             "setAsCover": {
-              "label": "Définir comme couverture",
-              "error": {
-                "title": "Impossible de définir la couverture",
-                "description": "Une erreur est survenue lors de la définition de la couverture"
-              },
-              "success": {
-                "title": "Couverture définie",
-                "description": "La couverture du dossier a été définie avec succès"
-              }
+                "label": "Définir comme couverture",
+                "errors": {
+                    "video-cover-unavailable": {
+                        "title": "Impossible de définir la couverture",
+                        "description": "Une vidéo ne peut pas être définie comme couverture"
+                    },
+                    "unknown": {
+                        "title": "Impossible de définir la couverture",
+                        "description": "Une erreur est survenue lors de la définition de la couverture"
+                    }
+                },
+                "success": {
+                    "title": "Couverture définie",
+                    "description": "La couverture du dossier a été définie avec succès"
+                }
             },
             "properties": "Propriétés",
-            "delete": "Supprimer"
-          }
-        }
-      }
-    },
-    "dialog": {
-      "upload": {
-        "trigger": "Importer",
-        "title": "Importer des images",
-        "description": "Sélectionnez des images à ajouter à votre album",
-        "fields": {
-          "images": {
-            "label": "Images",
-            "description": "Chaque image doit avoir une taille inférieure à 5MB"
-          }
+            "upload": "Importer",
+            "delete": "Supprimer",
+            "share": "Partager"
         },
-        "submit": "Importer",
-        "submitting": "Importation..."
-      },
-      "delete": {
-        "trigger": "Supprimer",
-        "title": "Supprimer l'image",
-        "description": "Êtes-vous sûr de vouloir supprimer l'image {image} ? Cette actions est irréversible.",
-        "submit": "Supprimer",
-        "submitting": "Suppression...",
-        "cancel": "Annuler"
-      },
-      "deleteMultiple": {
-        "trigger": "Supprimer",
-        "title": "Supprimer les images",
-        "description": "Êtes-vous sûr de vouloir supprimer {n} images ? Cette action est irréversible.",
-        "actions": {
-          "submit": "Supprimer",
-          "submitting": "Suppression...",
-          "cancel": "Annuler"
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de supprimer les images",
-            "description": "Une erreur inconnue est survenue lors de la suppression des images"
-          }
-        },
-        "success": {
-          "title": "Images supprimées",
-          "description": "{n, plural, zero {aucune image n'a été supprimée} one {# image a été supprimée} other {# images ont été supprimées}} avec succès"
-        }
-      },
-      "editDescription": {
-        "title": "Modifier la description",
-        "description": "Modifier la description de {name}",
-        "form": {
-          "description": {
-            "label": "Description",
-            "placeholder": "Entrez une description pour ce fichier",
-            "help": "Rappelez-vous le contexte et ce que ce {fileType} représente",
-            "fileType": {
-              "image": "image",
-              "video": "vidéo"
+        "views": {
+            "list": {
+                "table": {
+                    "selection": "{count, plural, one {# image sélectionnée} other {# images sélectionnées}} ",
+                    "deleteSelected": "Supprimer les images sélectionnées",
+                    "empty": "Aucune image téléchargée",
+                    "page": {
+                        "label": "{pageStart} - {pageEnd} sur {count}",
+                        "rowsPerPage": "Lignes par page",
+                        "previous": "Précédent",
+                        "next": "Suivant",
+                        "goToFirst": "Aller à la première page",
+                        "goToLast": "Aller à la dernière page"
+                    }
+                },
+                "header": {
+                    "name": "Nom",
+                    "size": "Taille",
+                    "folder": "Dossier",
+                    "comments": "Commentaires",
+                    "uploadedAt": "Importée le"
+                },
+                "columns": {
+                    "comments": "{count, plural, =0 {Aucun commentaire} =1 {# Commentaire} other {# Commentaires}}",
+                    "actions": {
+                        "label": "Actions",
+                        "view": "Ouvrir",
+                        "select": "Sélectionner",
+                        "download": "Télécharger",
+                        "rename": "Renommer",
+                        "setAsCover": {
+                            "label": "Définir comme couverture",
+                            "error": {
+                                "title": "Impossible de définir la couverture",
+                                "description": "Une erreur est survenue lors de la définition de la couverture"
+                            },
+                            "success": {
+                                "title": "Couverture définie",
+                                "description": "La couverture du dossier a été définie avec succès"
+                            }
+                        },
+                        "properties": "Propriétés",
+                        "delete": "Supprimer"
+                    }
+                }
             }
-          }
         },
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Enregistrer",
-          "submitting": "Enregistrement..."
-        },
-        "success": {
-          "title": "Succès",
-          "description": "Description mise à jour avec succès"
-        },
-        "errors": {
-          "unknown": {
-            "title": "Erreur",
-            "description": "Une erreur s'est produite lors de la mise à jour de la description"
-          }
+        "dialog": {
+            "upload": {
+                "trigger": "Importer",
+                "title": "Importer des images",
+                "description": "Sélectionnez des images à ajouter à votre album",
+                "fields": {
+                    "images": {
+                        "label": "Images",
+                        "description": "Chaque image doit avoir une taille inférieure à 5MB"
+                    }
+                },
+                "submit": "Importer",
+                "submitting": "Importation..."
+            },
+            "delete": {
+                "trigger": "Supprimer",
+                "title": "Supprimer l'image",
+                "description": "Êtes-vous sûr de vouloir supprimer l'image {image} ? Cette actions est irréversible.",
+                "submit": "Supprimer",
+                "submitting": "Suppression...",
+                "cancel": "Annuler"
+            },
+            "deleteMultiple": {
+                "trigger": "Supprimer",
+                "title": "Supprimer les images",
+                "description": "Êtes-vous sûr de vouloir supprimer {n} images ? Cette action est irréversible.",
+                "actions": {
+                    "submit": "Supprimer",
+                    "submitting": "Suppression...",
+                    "cancel": "Annuler"
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible de supprimer les images",
+                        "description": "Une erreur inconnue est survenue lors de la suppression des images"
+                    }
+                },
+                "success": {
+                    "title": "Images supprimées",
+                    "description": "{n, plural, zero {aucune image n'a été supprimée} one {# image a été supprimée} other {# images ont été supprimées}} avec succès"
+                }
+            },
+            "editDescription": {
+                "title": "Modifier la description",
+                "description": "Modifier la description de {name}",
+                "form": {
+                    "description": {
+                        "label": "Description",
+                        "placeholder": "Entrez une description pour ce fichier",
+                        "help": "Rappelez-vous le contexte et ce que ce {fileType} représente",
+                        "fileType": {
+                            "image": "image",
+                            "video": "vidéo"
+                        }
+                    }
+                },
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Enregistrer",
+                    "submitting": "Enregistrement..."
+                },
+                "success": {
+                    "title": "Succès",
+                    "description": "Description mise à jour avec succès"
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Erreur",
+                        "description": "Une erreur s'est produite lors de la mise à jour de la description"
+                    }
+                }
+            },
+            "deleteDescription": {
+                "title": "Supprimer la description",
+                "description": "Êtes-vous sûr de vouloir supprimer la description de {name} ? Cette action est irréversible.",
+                "actions": {
+                    "cancel": "Annuler",
+                    "submit": "Supprimer",
+                    "submitting": "Suppression..."
+                },
+                "errors": {
+                    "unknown": {
+                        "title": "Impossible de supprimer la description",
+                        "description": "Une erreur inconnue est survenue lors de la suppression de la description"
+                    }
+                },
+                "success": {
+                    "title": "Description supprimée",
+                    "description": "La description a été supprimée avec succès"
+                }
+            }
         }
-      },
-      "deleteDescription": {
-        "title": "Supprimer la description",
-        "description": "Êtes-vous sûr de vouloir supprimer la description de {name} ? Cette action est irréversible.",
-        "actions": {
-          "cancel": "Annuler",
-          "submit": "Supprimer",
-          "submitting": "Suppression..."
-        },
-        "errors": {
-          "unknown": {
-            "title": "Impossible de supprimer la description",
-            "description": "Une erreur inconnue est survenue lors de la suppression de la description"
-          }
-        },
-        "success": {
-          "title": "Description supprimée",
-          "description": "La description a été supprimée avec succès"
+    },
+    "links": {
+        "page": {
+            "title": "Gérer les liens d'accès"
         }
-      }
-    }
-  },
-  "links": {
-    "page": {
-      "title": "Gérer les liens d'accès"
-    }
-  },
-  "invalidToken": {
-    "title": "Lien invalide ou expiré",
-    "description": "Il semble que ce lien ne mène pas à un dossier valide. Veuillez vérifier le lien ou contacter le propriétaire.",
-    "goBack": "Retour à la page d'accueil"
-  },
-  "NotFoundPage": {
-    "description": "La page que vous cherchez n'existe pas ou a été déplacée."
-  },
-  "emails": {
-    "notifyAboutUpload": {
-      "title": "Nouveaux fichiers ajoutés à {folderName}",
-      "nameAddedFiles": "{name} a jouté {count, plural, =1 {un nouveau fichier} other {# nouveaux fichiers}} à {folderName}",
-      "clickButtonToAccess": "Cliquez ci-dessous pour ouvrir l'album",
-      "lockedFolder": "{name} a vérouillé ce dossier par un code que vous devrez renseigner avant de pouvoir accéder à son contenu.                                         Si vous ne connaissez pas ce code, veuillez contacter {name} pour l'obtenir.",
-      "regard": "Cordialement,<br/>Léquipe <strong>{appName}</strong>"
-    }
-  },
-  "billing": {
-    "dashboard": {
-      "storage": {
-        "using": "Vous utilisez actuellement {used} de vos {max} d'espace"
-      },
-      "upgrade": {
-        "title": "Changer d'abonnement",
-        "description": "Besoin de plus d'espace ? D'albums ? D'autres fonctionnalités ? Changez votre abonnement juste ici",
-        "yearly": "Annuellement",
-        "monthly": "Mensuellement",
-        "billedYearly": "Facturé annuellement",
-        "button": "Mettre à jour mon abonnement",
-        "backToFree": "Retour à l'abonnement gratuit",
-        "changePlan": "Changer d'abonnement"
-      },
-      "myplan": {
-        "title": "Mon abonnement"
-      },
-      "currentPlan": "Actuel",
-      "sharing": {
-        "using": "{used} sur {max} liens de partage créés"
-      },
-      "albums": {
-        "using": "{used} sur {max} albums créés"
-      },
-      "byMonth": "/ mois"
     },
-    "checkoutDialog": {
-      "title": "Abonnement {plan}"
+    "invalidToken": {
+        "title": "Lien invalide ou expiré",
+        "description": "Il semble que ce lien ne mène pas à un dossier valide. Veuillez vérifier le lien ou contacter le propriétaire.",
+        "goBack": "Retour à la page d'accueil"
     },
-    "changePlanPreview": {
-      "title": "Récapitulatif des prochaines étapes vis-à-vis de votre abonnement",
-      "before": {
-        "title": "Avant"
-      },
-      "now": {
-        "title": "Aujourd'hui"
-      },
-      "freeCredits": "{credits} en crédits",
-      "changePlan": "Changer d'abonnement"
+    "NotFoundPage": {
+        "description": "La page que vous cherchez n'existe pas ou a été déplacée."
+    },
+    "emails": {
+        "notifyAboutUpload": {
+            "title": "Nouveaux fichiers ajoutés à {folderName}",
+            "nameAddedFiles": "{name} a jouté {count, plural, =1 {un nouveau fichier} other {# nouveaux fichiers}} à {folderName}",
+            "clickButtonToAccess": "Cliquez ci-dessous pour ouvrir l'album",
+            "lockedFolder": "{name} a vérouillé ce dossier par un code que vous devrez renseigner avant de pouvoir accéder à son contenu.                                         Si vous ne connaissez pas ce code, veuillez contacter {name} pour l'obtenir.",
+            "regard": "Cordialement,<br/>Léquipe <strong>{appName}</strong>"
+        }
+    },
+    "files": {
+        "grid": {
+            "selectingBar": {
+                "delete": "Supprimer",
+                "manageTags": "Gérer les tags",
+                "addTag": {
+                    "errorAdd": "Erreur lors de l'ajout de l'étiquette",
+                    "errorRemove": "Erreur lors de la suppression de l'étiquette"
+                },
+                "selected": "{count, plural, =0 {Aucune image sélectionnée} =1 {# image sélectionnée} other {# images sélectionnées}}"
+            }
+        }
+    },
+    "billing": {
+        "dashboard": {
+            "storage": {
+                "using": "Vous utilisez actuellement {used} de vos {max} d'espace"
+            },
+            "upgrade": {
+                "title": "Changer d'abonnement",
+                "description": "Besoin de plus d'espace ? D'albums ? D'autres fonctionnalités ? Changez votre abonnement juste ici",
+                "yearly": "Annuellement",
+                "monthly": "Mensuellement",
+                "billedYearly": "Facturé annuellement",
+                "button": "Mettre à jour mon abonnement",
+                "backToFree": "Retour à l'abonnement gratuit",
+                "changePlan": "Changer d'abonnement"
+            },
+            "myplan": {
+                "title": "Mon abonnement"
+            },
+            "currentPlan": "Actuel",
+            "sharing": {
+                "using": "{used} sur {max} liens de partage créés"
+            },
+            "albums": {
+                "using": "{used} sur {max} albums créés"
+            },
+            "byMonth": "/ mois"
+        },
+        "checkoutDialog": {
+            "title": "Abonnement {plan}"
+        },
+        "changePlanPreview": {
+            "title": "Récapitulatif des prochaines étapes vis-à-vis de votre abonnement",
+            "before": {
+                "title": "Avant"
+            },
+            "now": {
+                "title": "Aujourd'hui"
+            },
+            "freeCredits": "{credits} en crédits",
+            "changePlan": "Changer d'abonnement"
+        }
     }
-  }
 }

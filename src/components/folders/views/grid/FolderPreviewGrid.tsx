@@ -16,19 +16,19 @@ import {
     ContextMenuItem,
     ContextMenuSeparator,
     ContextMenuTrigger,
-} from "../ui/context-menu";
+} from "../../../ui/context-menu";
 import Image from "next/image";
 import { Images } from "lucide-react";
-import { Separator } from "../ui/separator";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-import RenameFolderDialog from "./RenameFolderDialog";
-import ChangeCoverFolderDialog from "./ChangeCoverFolderDialog";
-import { ShareFolderDialog } from "./ShareFolderDialog";
-import FolderPropertiesDialog from "./FolderPropertiesDialogs";
-import DeleteFolderDialog from "./DeleteFolderDialog";
+import { Separator } from "../../../ui/separator";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../../ui/tooltip";
+import RenameFolderDialog from "../../dialogs/RenameFolderDialog";
+import ChangeCoverFolderDialog from "../../dialogs/ChangeCoverFolderDialog";
+import { ShareFolderDialog } from "../../dialogs/ShareFolderDialog";
+import DeleteFolderDialog from "../../dialogs/DeleteFolderDialog";
 import { downloadClientFiles } from "@/lib/utils";
 import { FileType } from "@prisma/client";
 import { Link } from "@/i18n/navigation";
+import FolderPropertiesDialog from "../../dialogs/FolderPropertiesDialogs";
 
 export default function FolderPreviewGrid({
     folder,

@@ -8,6 +8,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
+    DialogTrigger,
 } from "@/components/ui/dialog";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -15,17 +16,18 @@ import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { deleteFiles } from "@/actions/files";
 import { toast } from "@/hooks/use-toast";
-import { FileWithFolder } from "@/lib/definitions";
 
 export const DeleteMultipleImagesDialog = ({
-    files,
+    fileIds,
+    children,
     open,
     setOpen,
     onDelete,
 }: {
-    files: FileWithFolder[];
-    open: boolean;
-    setOpen: (open: boolean) => void;
+    fileIds: string[];
+    children?: React.ReactNode;
+    open?: boolean;
+    setOpen?: (open: boolean) => void;
     onDelete: () => void;
 }) => {
     const t = useTranslations("dialogs.images.deleteMultiple");
@@ -33,10 +35,11 @@ export const DeleteMultipleImagesDialog = ({
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
+            {children ? <DialogTrigger asChild>{children}</DialogTrigger> : null}
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{t("title")}</DialogTitle>
-                    <DialogDescription>{t("description", { n: files.length })}</DialogDescription>
+                    <DialogDescription>{t("description", { n: fileIds.length })}</DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
                     <DialogClose asChild>
@@ -44,7 +47,7 @@ export const DeleteMultipleImagesDialog = ({
                     </DialogClose>
                     <Button
                         onClick={async () => {
-                            if (files.length === 0) {
+                            if (fileIds.length === 0) {
                                 toast({
                                     title: t("errors.noImages.title"),
                                     description: t("errors.noImages.description"),
@@ -54,7 +57,7 @@ export const DeleteMultipleImagesDialog = ({
                             }
 
                             setDeleting(true);
-                            const r = await deleteFiles(files.map(file => file.id));
+                            const r = await deleteFiles(fileIds);
                             setDeleting(false);
 
                             if (r.error) {
@@ -67,14 +70,14 @@ export const DeleteMultipleImagesDialog = ({
                             }
 
                             onDelete();
-                            setOpen(false);
+                            setOpen?.(false);
 
                             toast({
                                 title: t("success.title"),
-                                description: t("success.description", { n: files.length }),
+                                description: t("success.description", { n: fileIds.length }),
                             });
                         }}
-                        disabled={deleting || files.length === 0}
+                        disabled={deleting || fileIds.length === 0}
                         variant={"destructive"}
                     >
                         {deleting ? (

@@ -3,7 +3,7 @@ import { Braces, Ellipsis, Tags } from "lucide-react";
 import { Copy } from "lucide-react";
 
 import { Check } from "lucide-react";
-
+import { toast as sonnerToast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { ExternalLink, Loader2 } from "lucide-react";
@@ -13,7 +13,7 @@ import Link from "next/link";
 import { copyImageToClipboard, downloadClientImageHandler } from "@/lib/utils";
 import { FileWithFolder, FileWithTags, FolderWithTags } from "@/lib/definitions";
 import { toast } from "@/hooks/use-toast";
-import { FileType } from "@prisma/client";
+import { FileType, FolderTag } from "@prisma/client";
 import { useState } from "react";
 import ImageExif from "../ImageExif";
 import { CarouselApi } from "@/components/ui/carousel";
@@ -25,8 +25,10 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import ManageTagsDialog from "../ManageTagsDialog";
+import ManageTagsDialog from "../dialogs/ManageTagsDialog";
 import { useSession } from "@/providers/SessionProvider";
+import { ContextFile, useFilesContext } from "@/context/FilesContext";
+import { addTagsToFile, removeTagsFromFile } from "@/actions/tags";
 
 export default function FileOptions({
     file,
@@ -40,6 +42,7 @@ export default function FileOptions({
     carouselApi: CarouselApi;
 }) {
     const { user } = useSession();
+    const { setFiles } = useFilesContext();
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
@@ -49,11 +52,56 @@ export default function FileOptions({
     const [copied, setCopied] = useState(false);
     const [downloading, setDownloading] = useState(false);
 
+    const handleTagSelected = async (tag: FolderTag): Promise<boolean> => {
+        setFiles((prev: ContextFile[]) => {
+            return prev.map(f => (f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f));
+        });
+        const result = await addTagsToFile(file.id, [tag.id]);
+        if (!result.success) {
+            sonnerToast.error(t("addTag.errorAdd"));
+
+            setFiles((prev: ContextFile[]) => {
+                return prev.map(f => (f.id === file.id ? { ...f, tags: f.tags.filter(t => t.id !== tag.id) } : f));
+            });
+        }
+
+        return result.success;
+    };
+
+    const handleTagUnselected = async (tag: FolderTag) => {
+        setFiles(prev => prev.map(f => (f.id === file.id ? { ...f, tags: f.tags.filter(t => t.id !== tag.id) } : f)));
+        const result = await removeTagsFromFile(file.id, [tag.id]);
+        if (!result.success) {
+            sonnerToast.error(t("addTag.errorRemove"));
+            setFiles(prev => prev.map(f => (f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f)));
+        }
+
+        return result.success;
+    };
+
+    const handleTagAdded = async (tag: FolderTag) => {
+        setFiles((prev: ContextFile[]) => prev.map(f => (f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f)));
+
+        const r = await handleTagSelected(tag);
+
+        if (!r) {
+            setFiles(prev => prev.map(f => (f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f)));
+        }
+
+        return r;
+    };
+
     return (
         <>
             <div className="hidden sm:flex gap-2">
                 {user?.id === file.createdById && (
-                    <ManageTagsDialog file={file}>
+                    <ManageTagsDialog
+                        selectedTags={file.tags}
+                        availableTags={file.folder.tags}
+                        onTagSelected={handleTagSelected}
+                        onTagUnselected={handleTagUnselected}
+                        onTagAdded={handleTagAdded}
+                    >
                         <Button variant={"outline"} size={"icon"} type="button">
                             <Tags className="w-4 h-4" />
                         </Button>
@@ -147,7 +195,13 @@ export default function FileOptions({
                                 e.preventDefault();
                             }}
                         >
-                            <ManageTagsDialog file={file}>
+                            <ManageTagsDialog
+                                selectedTags={file.tags}
+                                availableTags={file.folder.tags}
+                                onTagSelected={handleTagSelected}
+                                onTagUnselected={handleTagUnselected}
+                                onTagAdded={handleTagAdded}
+                            >
                                 <div className="w-full flex items-center">
                                     <Tags size={16} className="opacity-60 mr-2" aria-hidden="true" />
                                     {t("manageTags")}

@@ -1,7 +1,7 @@
 "use client";
 
 import { FolderX } from "lucide-react";
-import FolderPreviewGrid from "@/components/folders/FolderPreviewGrid";
+import FolderPreviewGrid from "@/components/folders/views/grid/FolderPreviewGrid";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { LastUploadedImages } from "@/components/files/LastUploadedImages";
@@ -14,7 +14,7 @@ import {
     FolderWithTags,
 } from "@/lib/definitions";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
-import CreateFolderDialog from "../folders/CreateFolderDialog";
+import CreateFolderDialog from "../folders/dialogs/CreateFolderDialog";
 
 export default function DashboardContent({
     lastFolders,
