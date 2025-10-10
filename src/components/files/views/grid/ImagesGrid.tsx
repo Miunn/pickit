@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2, X, Pencil } from "lucide-react";
 import { DeleteMultipleImagesDialog } from "@/components/files/dialogs/DeleteMultipleImagesDialog";
 import { CarouselDialog } from "@/components/files/carousel/CarouselDialog";
-import { cn, formatBytes, getSortedImagesVideosContent } from "@/lib/utils";
+import { cn, getSortedImagesVideosContent } from "@/lib/utils";
 import { UploadImagesForm } from "@/components/files/upload/UploadImagesForm";
 import { useSession } from "@/providers/SessionProvider";
 import {
@@ -39,7 +39,6 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     const { files, setFiles } = useFilesContext();
 
     const t = useTranslations("images");
-    const deleteMultipleTranslations = useTranslations("dialogs.images.deleteMultiple");
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
     const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
     const [startIndex, setStartIndex] = useState(0);
