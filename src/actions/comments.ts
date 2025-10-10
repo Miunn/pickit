@@ -1,13 +1,19 @@
-'use server'
+"use server";
 
-import { CommentWithCreatedBy, CreateCommentFormSchema, FolderWithAccessToken, FolderWithFilesWithFolderAndCommentsAndCreatedBy } from "@/lib/definitions";
+import {
+    CommentWithCreatedBy,
+    CreateCommentFormSchema,
+    FolderWithAccessToken,
+    FolderWithFilesWithFolderAndCommentsAndCreatedBy,
+} from "@/lib/definitions";
 import { getCurrentSession } from "@/lib/session";
-import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import * as bcrypt from "bcryptjs";
 import { isAllowedToDeleteComment } from "@/lib/dal";
 import { EditCommentFormSchema } from "@/lib/definitions";
+import { FileService } from "@/data/file-service";
+import { CommentService } from "@/data/comment-service";
 
 export async function createComment(
     fileId: string,
@@ -22,18 +28,17 @@ export async function createComment(
         return null;
     }
 
-    let file;
-    file = await prisma.file.findUnique({
+    const file = await FileService.get({
         where: { id: fileId },
         include: {
             folder: {
                 include: {
                     files: { include: { folder: true, comments: { include: { createdBy: true } } } },
                     createdBy: true,
-                    accessTokens: { omit: { pinCode: false } }
-                }
-            }
-        }
+                    accessTokens: { omit: { pinCode: false } },
+                },
+            },
+        },
     });
 
     if (!file) {
@@ -50,26 +55,26 @@ export async function createComment(
         }
 
         const accessToken = folder.accessTokens.find(a => a.token === shareToken && a.expires >= new Date());
-            if (!accessToken) {
+        if (!accessToken) {
+            return null;
+        }
+
+        if (accessToken.locked) {
+            if (!h) {
                 return null;
             }
 
-            if (accessToken.locked) {
-                if (!h) {
-                    return null;
-                }
+            const match = bcrypt.compareSync(accessToken.pinCode as string, h);
 
-                const match = bcrypt.compareSync(accessToken.pinCode as string, h);
-
-                if (!match) {
-                    return null;
-                }
+            if (!match) {
+                return null;
             }
+        }
 
-            if (accessToken.email) {
-                commentName = accessToken.email.split("@")[0];
-                createdByEmail = accessToken.email;
-            }
+        if (accessToken.email) {
+            commentName = accessToken.email.split("@")[0];
+            createdByEmail = accessToken.email;
+        }
     } else {
         commentName = user.name;
         createdByEmail = user.email;
@@ -89,21 +94,18 @@ export async function createComment(
                 createdBy: { connect: { id: user?.id } },
                 createdByEmail,
                 name: commentName,
-                file: { connect: { id: fileId } }
-            }
+                file: { connect: { id: fileId } },
+            };
         } else {
             data = {
                 text: parsedData.data.content,
                 name: commentName,
                 createdByEmail,
-                file: { connect: { id: fileId } }
-            }
+                file: { connect: { id: fileId } },
+            };
         }
 
-        const comment = await prisma.comment.create({
-            data,
-            include: { file: { include: { folder: true } }, createdBy: true }
-        });
+        const comment = await CommentService.create(data, { file: { include: { folder: true } }, createdBy: true });
 
         if (!comment) {
             console.log("Comment creation failed");
@@ -126,13 +128,16 @@ export async function deleteComment(commentId: string, shareToken?: string | nul
     }
 
     try {
-        const comment = await prisma.comment.delete({ where: { id: commentId }, include: { file: { include: { folder: { select: { id: true } } } } } });
+        const comment = await CommentService.delete({
+            commentId,
+            include: { file: { select: { folderId: true } } },
+        });
 
         if (!comment) {
             return false;
         }
 
-        revalidatePath(`/app/folders/${comment.file.folder.id}`);
+        revalidatePath(`/app/folders/${comment.file.folderId}`);
         return true;
     } catch (e) {
         console.log("Error deleting comment", e);
@@ -158,11 +163,11 @@ export async function updateComment(
     }
 
     try {
-        const comment = await prisma.comment.update({
-            where: { id: commentId },
-            data: { text: result.data.content },
-            include: { file: { include: { folder: { select: { id: true } } } }, createdBy: true }
-        });
+        const comment = await CommentService.update(
+            commentId,
+            { text: result.data.content },
+            { file: { include: { folder: { select: { id: true } } } }, createdBy: true }
+        );
 
         if (!comment) {
             return null;

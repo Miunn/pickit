@@ -1,20 +1,30 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import * as bcrypt from "bcryptjs";
-import { createSession, deleteSessionTokenCookie, generateSessionToken, getCurrentSession, invalidateAllSessions, setSessionTokenCookie } from "@/lib/session";
+import {
+    createSession,
+    deleteSessionTokenCookie,
+    generateSessionToken,
+    getCurrentSession,
+    invalidateAllSessions,
+    setSessionTokenCookie,
+} from "@/lib/session";
 import { getLocale } from "next-intl/server";
+import { UserService } from "@/data/user-service";
 
-export async function SignIn(email: string, password: string): Promise<{
-    error: string
+export async function SignIn(
+    email: string,
+    password: string
+): Promise<{
+    error: string;
 } | null> {
     try {
         if (!email || !password) {
             return { error: "invalid-credentials" };
         }
 
-        const user = await prisma.user.findUnique({
+        const user = await UserService.get({
             select: {
                 id: true,
                 email: true,
@@ -23,8 +33,8 @@ export async function SignIn(email: string, password: string): Promise<{
                 role: true,
             },
             where: {
-                email: email as string
-            }
+                email: email as string,
+            },
         });
 
         if (!user) {
@@ -41,7 +51,7 @@ export async function SignIn(email: string, password: string): Promise<{
         const session = await createSession(token, user.id);
         await setSessionTokenCookie(token, session.expiresAt);
         return null;
-    } catch (e) {
+    } catch {
         return { error: "unknown-error" };
     }
 }

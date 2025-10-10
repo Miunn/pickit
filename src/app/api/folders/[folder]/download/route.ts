@@ -1,20 +1,23 @@
-import {NextRequest, NextResponse} from "next/server";
-import {prisma} from "@/lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
 import JSZip from "jszip";
 import { isAllowedToAccessFile } from "@/lib/dal";
 import { GoogleBucket } from "@/lib/bucket";
+import { FileService } from "@/data/file-service";
 
-export async function GET(req: NextRequest, props: { params: Promise<{folder: string}> }) {
+export async function GET(req: NextRequest, props: { params: Promise<{ folder: string }> }) {
     const params = await props.params;
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
 
     if (!isAllowedToAccessFile(params.folder, shareToken, accessKey)) {
-        return Response.json({ error: "You need to be authenticated or have a magic link to access this resource" }, { status: 400 })
+        return Response.json(
+            { error: "You need to be authenticated or have a magic link to access this resource" },
+            { status: 400 }
+        );
     }
 
-    const images = await prisma.file.findMany({
-        where: { folderId: params.folder }
+    const images = await FileService.getMultiple({
+        where: { folderId: params.folder },
     });
 
     if (images.length === 0) {
@@ -29,10 +32,10 @@ export async function GET(req: NextRequest, props: { params: Promise<{folder: st
         zip.file(`${image.name}-${image.createdAt.getTime()}.${image.extension}`, buffer);
     }
 
-    const zipData = await zip.generateAsync({type: "blob"});
+    const zipData = await zip.generateAsync({ type: "blob" });
 
     const res = new NextResponse(zipData.stream());
-    res.headers.set('Content-Type', 'application/zip');
-    res.headers.set('Content-Disposition', `attachment; filename=${params.folder}.zip`);
+    res.headers.set("Content-Type", "application/zip");
+    res.headers.set("Content-Disposition", `attachment; filename=${params.folder}.zip`);
     return res;
 }

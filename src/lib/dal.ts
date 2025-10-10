@@ -1,14 +1,17 @@
-import { AccessToken } from "@prisma/client";
+import { FolderTokenPermission } from "@prisma/client";
 import { prisma } from "./prisma";
 import { getCurrentSession } from "./session";
 import * as bcrypt from "bcryptjs";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function hasFolderOwnerAccess(folderId: string): Promise<boolean> {
     const { user } = await getCurrentSession();
 
     if (user) {
         const folder = await prisma.folder.findUnique({
-            where: { id: folderId, createdBy: { id: user.id } }
+            where: { id: folderId, createdBy: { id: user.id } },
         });
 
         if (folder) {
@@ -24,18 +27,23 @@ export async function hasFolderOwnerAccess(folderId: string): Promise<boolean> {
  * 2 if a code is needed
  * 3 if the code is wrong
  * 0 if unauthorized
- * @param folderId 
- * @param shareToken 
- * @param accessKey 
- * @param tokenType 
- * @returns 
+ * @param folderId
+ * @param shareToken
+ * @param accessKey
+ * @param tokenType
+ * @returns
  */
-export async function isAllowedToAccessFolder(folderId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: string | null): Promise<number> {
+export async function isAllowedToAccessFolder(
+    folderId: string,
+    shareToken?: string | null,
+    accessKey?: string | null
+    // tokenType?: string | null
+): Promise<number> {
     const { user } = await getCurrentSession();
 
     if (user) {
         const folder = await prisma.folder.findUnique({
-            where: { id: folderId, createdBy: { id: user.id } }
+            where: { id: folderId, createdBy: { id: user.id } },
         });
 
         if (folder) {
@@ -47,9 +55,9 @@ export async function isAllowedToAccessFolder(folderId: string, shareToken?: str
         const access = await prisma.accessToken.findUnique({
             where: { token: shareToken },
             include: {
-                folder: { select: { id: true } }
+                folder: { select: { id: true } },
             },
-            omit: { pinCode: false }
+            omit: { pinCode: false },
         });
 
         if (!access) {
@@ -74,15 +82,19 @@ export async function isAllowedToAccessFolder(folderId: string, shareToken?: str
     return 0;
 }
 
-export async function isAllowedToAccessFile(fileId: string, shareToken?: string | null, accessKey?: string | null): Promise<boolean> {
+export async function isAllowedToAccessFile(
+    fileId: string,
+    shareToken?: string | null,
+    accessKey?: string | null
+): Promise<boolean> {
     const { user } = await getCurrentSession();
 
     if (user) {
         const file = await prisma.file.findUnique({
             where: {
                 id: fileId,
-                createdBy: { id: user.id }
-            }
+                createdBy: { id: user.id },
+            },
         });
 
         if (file) {
@@ -93,18 +105,18 @@ export async function isAllowedToAccessFile(fileId: string, shareToken?: string 
     if (shareToken) {
         const access = await prisma.accessToken.findUnique({
             where: {
-                token: shareToken
+                token: shareToken,
             },
             include: {
                 folder: {
                     select: {
-                        id: true
-                    }
-                }
+                        id: true,
+                    },
+                },
             },
             omit: {
-                pinCode: false
-            }
+                pinCode: false,
+            },
         });
 
         if (!access) {
@@ -129,10 +141,14 @@ export async function isAllowedToAccessFile(fileId: string, shareToken?: string 
     return false;
 }
 
-export async function isAllowedToDeleteComment(commentId: string, shareToken?: string | null, accessKey?: string | null) {
+export async function isAllowedToDeleteComment(
+    commentId: string,
+    shareToken?: string | null,
+    accessKey?: string | null
+) {
     const comment = await prisma.comment.findUnique({
         where: { id: commentId },
-        include: { file: { select: { id: true } } }
+        include: { file: { select: { id: true } } },
     });
 
     if (!comment) {
@@ -154,7 +170,9 @@ export async function isAllowedToDeleteComment(commentId: string, shareToken?: s
             return false;
         }
 
-        const token = await prisma.accessToken.findUnique({ where: { token: shareToken } });
+        const token = await prisma.accessToken.findUnique({
+            where: { token: shareToken },
+        });
 
         if (!token || !token.email) {
             return false;
@@ -172,7 +190,9 @@ export async function canLikeFile(fileId: string, shareToken?: string | null, ac
         return false;
     }
 
-    const token = await prisma.accessToken.findUnique({ where: { token: shareToken } });
+    const token = await prisma.accessToken.findUnique({
+        where: { token: shareToken },
+    });
 
     if (!token?.email) {
         return false;
@@ -181,10 +201,10 @@ export async function canLikeFile(fileId: string, shareToken?: string | null, ac
     return await isAllowedToAccessFile(fileId, shareToken, accessKey);
 }
 
-export async function canLikeComment(commentId: string, shareToken?: string | null, accessKey?: string | null, tokenType?: "accessToken" | "personAccessToken" | null) {
+export async function canLikeComment(commentId: string, shareToken?: string | null, accessKey?: string | null) {
     const comment = await prisma.comment.findUnique({
         where: { id: commentId },
-        include: { file: { select: { id: true, folderId: true } } }
+        include: { file: { select: { id: true, folderId: true } } },
     });
 
     if (!comment) {
@@ -201,7 +221,9 @@ export async function canLikeComment(commentId: string, shareToken?: string | nu
         return false;
     }
 
-    const token = await prisma.accessToken.findUnique({ where: { token: shareToken } });
+    const token = await prisma.accessToken.findUnique({
+        where: { token: shareToken },
+    });
 
     if (!token || !token.email) {
         return false;
@@ -226,7 +248,9 @@ export async function canAccessMap(shareToken?: string | null, accessKey?: strin
         return false;
     }
 
-    const token = await prisma.accessToken.findUnique({ where: { token: shareToken } });
+    const token = await prisma.accessToken.findUnique({
+        where: { token: shareToken },
+    });
 
     if (token?.allowMap) {
         return true;
@@ -235,14 +259,25 @@ export async function canAccessMap(shareToken?: string | null, accessKey?: strin
     return false;
 }
 
-export async function isAccessWithTokenValid(shareToken?: string | null, key?: string | null) {
+export async function isAccessWithTokenValid(
+    shareToken?: string | null,
+    key?: string | null,
+    matchPermission?: FolderTokenPermission
+) {
     if (!shareToken) {
         return false;
     }
 
-    const token = await prisma.accessToken.findUnique({ where: { token: shareToken }, omit: { pinCode: false } });
+    const token = await prisma.accessToken.findUnique({
+        where: { token: shareToken },
+        omit: { pinCode: false },
+    });
 
     if (!token) {
+        return false;
+    }
+
+    if (matchPermission && token.permission !== matchPermission) {
         return false;
     }
 
@@ -254,5 +289,25 @@ export async function isAccessWithTokenValid(shareToken?: string | null, key?: s
         return bcrypt.compareSync(token.pinCode, key);
     }
 
+    if (token.expires) {
+        return token.expires > new Date();
+    }
+
     return true;
+}
+
+export async function hasActiveSubscription(): Promise<boolean> {
+    const { user } = await getCurrentSession();
+
+    if (!user) {
+        return false;
+    }
+
+    if (!user.stripeSubscriptionId) {
+        return false;
+    }
+
+    const subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
+
+    return subscription.status === "active" || subscription.status === "trialing";
 }

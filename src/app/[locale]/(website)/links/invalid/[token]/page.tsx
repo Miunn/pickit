@@ -1,14 +1,11 @@
 import { FolderSearch } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Toaster } from "@/components/ui/toaster";
-import Header from "@/components/layout/Header";
 
 export default async function InvalidTokenPage() {
-
     const t = await getTranslations("invalidToken");
 
     return (
@@ -25,5 +22,5 @@ export default async function InvalidTokenPage() {
             </div>
             <Toaster />
         </div>
-    )
+    );
 }
