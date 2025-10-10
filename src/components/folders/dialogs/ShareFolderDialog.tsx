@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { z } from "zod";
 import { CreatePersonAccessTokenFormSchema, FolderWithAccessToken } from "@/lib/definitions";
@@ -25,17 +25,17 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccessToken, FolderTokenPermission } from "@prisma/client";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { addMonths, format } from "date-fns";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "../../ui/form";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "@/lib/utils";
-import { Calendar } from "../ui/calendar";
+import { Calendar } from "../../ui/calendar";
 import { createMultipleAccessTokens } from "@/actions/accessTokens";
 import { unlockAccessToken } from "@/actions/accessTokens";
 import LockTokenDialog from "./LockTokenDialog";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "../ui/input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "../../ui/input-otp";
 import { motion, AnimatePresence } from "motion/react";
 
 export const ShareFolderDialog = ({
@@ -54,7 +54,10 @@ export const ShareFolderDialog = ({
         { email: string; permission: FolderTokenPermission; expiryDate: Date; pinCode?: string; allowMap?: boolean }[]
     >([]);
     const emailScroll = useRef<HTMLDivElement>(null);
-    const validTokens = folder.accessTokens.filter(token => token.expires > new Date() && token.isActive);
+    const validTokens = useMemo(
+        () => folder.accessTokens.filter(token => token.expires > new Date() && token.isActive && !token.email),
+        [folder.accessTokens]
+    );
 
     const [openLockToken, setOpenLockToken] = useState(false);
     const [lockToken, setLockToken] = useState<AccessToken | null>(null);

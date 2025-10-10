@@ -16,7 +16,7 @@ import { cn, formatBytes } from "@/lib/utils";
 import { CarouselDialog } from "../../carousel/CarouselDialog";
 import { Button } from "../../../ui/button";
 import { useTranslations } from "next-intl";
-import { DeleteMultipleImagesDialog } from "../../DeleteMultipleImagesDialog";
+import { DeleteMultipleImagesDialog } from "../../dialogs/DeleteMultipleImagesDialog";
 import { Select, SelectItem, SelectContent, SelectValue, SelectTrigger } from "../../../ui/select";
 import { useFolderContext } from "@/context/FolderContext";
 import { useFilesContext } from "@/context/FilesContext";
@@ -44,7 +44,7 @@ export default function ImagesList() {
         if (folder && files) {
             setIsLoading(false);
         }
-    }, [folder, files]);
+    }, [folder]);
 
     // Prepare data safely
     const tableData = React.useMemo(() => {
@@ -268,7 +268,7 @@ export default function ImagesList() {
                 startIndex={startIndex}
             />
             <DeleteMultipleImagesDialog
-                files={tableData.filter(file => Object.keys(rowSelection).includes(file.id))}
+                fileIds={Object.keys(rowSelection)}
                 open={openDeleteSelection}
                 setOpen={setOpenDeleteSelection}
                 onDelete={() => {

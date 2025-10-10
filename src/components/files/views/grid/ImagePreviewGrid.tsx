@@ -20,12 +20,15 @@ import LoadingImage from "@/components/files/LoadingImage";
 import { useSession } from "@/providers/SessionProvider";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { FileType } from "@prisma/client";
-import RenameImageDialog from "../../RenameImageDialog";
-import { DeleteImageDialog } from "../../DeleteImageDialog";
-import ImagePropertiesDialog from "../../ImagePropertiesDialog";
-import ManageTagsDialog from "../../ManageTagsDialog";
+import { FileType, FolderTag } from "@prisma/client";
+import RenameImageDialog from "../../dialogs/RenameImageDialog";
+import { DeleteImageDialog } from "../../dialogs/DeleteImageDialog";
+import ImagePropertiesDialog from "../../dialogs/ImagePropertiesDialog";
+import ManageTagsDialog from "../../dialogs/ManageTagsDialog";
 import TagChip from "@/components/tags/TagChip";
+import { ContextFile, useFilesContext } from "@/context/FilesContext";
+import { addTagsToFile, removeTagsFromFile } from "@/actions/tags";
+import { toast as sonnerToast } from "sonner";
 
 export interface ImagePreviewProps {
     file: { folder: FolderWithTags } & FileWithTags;
@@ -49,6 +52,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
     const [openDelete, setOpenDelete] = React.useState(false);
 
     const { user } = useSession();
+    const { setFiles } = useFilesContext();
 
     const { attributes, listeners, setNodeRef, transition, transform } = useSortable({ id: file.id });
 
@@ -68,6 +72,29 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays <= 3;
     }, [file.createdAt]);
+
+    const handleTagSelected = async (tag: FolderTag) => {
+        setFiles((prev: ContextFile[]) => {
+            return prev.map(f => (f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f));
+        });
+        const result = await addTagsToFile(file.id, [tag.id]);
+        if (!result.success) {
+            sonnerToast.error(t("addTag.errorAdd"));
+
+            setFiles((prev: ContextFile[]) => {
+                return prev.map(f =>
+                    f.id === file.id
+                        ? {
+                              ...f,
+                              tags: f.tags.filter(t => t.id !== tag.id),
+                          }
+                        : f
+                );
+            });
+        }
+
+        return result.success;
+    };
 
     return (
         <>
@@ -200,7 +227,48 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                     </ContextMenuItem>
                     {file.createdById === user?.id ? (
                         <ContextMenuItem onClick={e => e.preventDefault()}>
-                            <ManageTagsDialog file={file}>
+                            <ManageTagsDialog
+                                selectedTags={file.tags}
+                                availableTags={file.folder.tags}
+                                onTagAdded={async (tag: FolderTag) => {
+                                    setFiles((prev: ContextFile[]) =>
+                                        prev.map(f => (f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f))
+                                    );
+                                    const r = await handleTagSelected(tag);
+
+                                    if (!r) {
+                                        setFiles((prev: ContextFile[]) => {
+                                            return prev.map(f =>
+                                                f.id === file.id
+                                                    ? {
+                                                          ...f,
+                                                          tags: f.tags.filter(t => t.id !== tag.id),
+                                                      }
+                                                    : f
+                                            );
+                                        });
+                                    }
+
+                                    return r;
+                                }}
+                                onTagSelected={handleTagSelected}
+                                onTagUnselected={async (tag: FolderTag) => {
+                                    setFiles(prev =>
+                                        prev.map(f =>
+                                            f.id === file.id ? { ...f, tags: f.tags.filter(t => t.id !== tag.id) } : f
+                                        )
+                                    );
+                                    const result = await removeTagsFromFile(file.id, [tag.id]);
+                                    if (!result.success) {
+                                        sonnerToast.error(t("addTag.errorRemove"));
+                                        setFiles(prev =>
+                                            prev.map(f => (f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f))
+                                        );
+                                    }
+
+                                    return result.success;
+                                }}
+                            >
                                 <span>{t("actions.addTag")}</span>
                             </ManageTagsDialog>
                         </ContextMenuItem>

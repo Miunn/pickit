@@ -1,6 +1,12 @@
 "use client";
 
-import { FolderWithAccessToken, FolderWithCover, FolderWithCreatedBy, FolderWithFilesCount } from "@/lib/definitions";
+import {
+    FolderWithAccessToken,
+    FolderWithCover,
+    FolderWithCreatedBy,
+    FolderWithFilesCount,
+    FolderWithTags,
+} from "@/lib/definitions";
 import { createVault, loadVault } from "@/lib/e2ee/vault";
 import { AccessToken } from "@prisma/client";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -8,8 +14,12 @@ import { useE2EEncryptionContext } from "./E2EEncryptionContext";
 import { updateFolderKey } from "@/actions/folders";
 
 type FolderContextType = {
-    folder: FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover;
-    setFolder: (folder: FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover) => void;
+    folder: FolderWithTags & FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover;
+    setFolder: React.Dispatch<
+        React.SetStateAction<
+            FolderWithTags & FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover
+        >
+    >;
     token: AccessToken | null;
     setToken: (token: AccessToken | null) => void;
     tokenHash: string | null;
@@ -36,16 +46,16 @@ export function FolderProvider({
     isShared,
 }: {
     children: React.ReactNode;
-    folderData: FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover;
+    folderData: FolderWithTags & FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover;
     tokenData: AccessToken | null;
     tokenHash: string | null;
     isShared: boolean;
 }) {
     const [folder, setFolder] = useState<
-        FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover
+        FolderWithTags & FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover
     >(folderData);
     const [token, setToken] = useState<AccessToken | null>(tokenData);
-    //const [encryptionKey, setEncryptionKey] = useState<CryptoKey | null>(null);
+    // const [encryptionKey, setEncryptionKey] = useState<CryptoKey | null>(null);
 
     const { wrappingKey } = useE2EEncryptionContext();
 
@@ -57,7 +67,7 @@ export function FolderProvider({
 
         if (!folder.key) {
             createVault(folder.id, wrappingKey).then(({ key, encryptedKey, iv }) => {
-                //setEncryptionKey(key);
+                // setEncryptionKey(key);
                 setFolder({
                     ...folder,
                     key: Buffer.from(encryptedKey).toString("base64"),
@@ -82,7 +92,7 @@ export function FolderProvider({
                 new Uint8Array(Buffer.from(folder.iv, "base64")),
                 wrappingKey
             ).then(key => {
-                //setEncryptionKey(key);
+                // setEncryptionKey(key);
                 console.log("Loaded folder key from server", key);
             });
         }

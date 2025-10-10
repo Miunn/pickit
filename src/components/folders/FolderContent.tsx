@@ -26,7 +26,7 @@ export const FolderContent = () => {
 
     const t = useTranslations("folders");
 
-    const renderContent = () => {
+    const renderContent = () => {        
         switch (viewState) {
             case ViewState.List:
                 return <ImagesList />;

@@ -1,6 +1,6 @@
 import { Dialog, DialogTitle } from "@radix-ui/react-dialog";
-import { DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader } from "../ui/dialog";
-import { Button } from "../ui/button";
+import { DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader } from "../../ui/dialog";
+import { Button } from "../../ui/button";
 
 export default function UnlockFolderDialog() {
     return (

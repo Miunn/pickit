@@ -13,10 +13,10 @@ import {
 } from "@/lib/definitions";
 import { useTranslations } from "next-intl";
 import { FolderX } from "lucide-react";
-import FolderPreviewGrid from "./FolderPreviewGrid";
+import FolderPreviewGrid from "./views/grid/FolderPreviewGrid";
 import FoldersList from "./views/list/FoldersList";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
-import CreateFolderDialog from "./CreateFolderDialog";
+import CreateFolderDialog from "./dialogs/CreateFolderDialog";
 import { useState } from "react";
 
 export default function FoldersContent({

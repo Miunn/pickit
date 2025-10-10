@@ -26,7 +26,7 @@ type ClusteredMarkersProps = {
 const superclusterOptions: Supercluster.Options<GeoJsonProperties, ClusterProperties> = {
     extent: 512,
     radius: 160,
-    maxZoom: 16,
+    maxZoom: 10,
 };
 
 export default function ClusteredMarkers({

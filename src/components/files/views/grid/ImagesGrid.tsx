@@ -5,7 +5,7 @@ import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } fr
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Trash2, X, Pencil } from "lucide-react";
-import { DeleteMultipleImagesDialog } from "@/components/files/DeleteMultipleImagesDialog";
+import { DeleteMultipleImagesDialog } from "@/components/files/dialogs/DeleteMultipleImagesDialog";
 import { CarouselDialog } from "@/components/files/carousel/CarouselDialog";
 import { cn, formatBytes, getSortedImagesVideosContent } from "@/lib/utils";
 import { UploadImagesForm } from "@/components/files/upload/UploadImagesForm";
@@ -27,8 +27,8 @@ import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { updateFilePosition } from "@/actions/files";
 import { useFolderContext } from "@/context/FolderContext";
 import { ImagesSortMethod } from "@/components/folders/SortImages";
-import EditDescriptionDialog from "@/components/folders/EditDescriptionDialog";
-import DeleteDescriptionDialog from "@/components/folders/DeleteDescriptionDialog";
+import EditDescriptionDialog from "@/components/folders/dialogs/EditDescriptionDialog";
+import DeleteDescriptionDialog from "@/components/folders/dialogs/DeleteDescriptionDialog";
 import { useFilesContext } from "@/context/FilesContext";
 import { ContextFile } from "@/context/FilesContext";
 
@@ -468,7 +468,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                 startIndex={startIndex}
             />
             <DeleteMultipleImagesDialog
-                files={files.filter(file => selected.includes(file.id))}
+                fileIds={files.filter(file => selected.includes(file.id)).map(file => file.id)}
                 open={openDeleteMultiple}
                 setOpen={setOpenDeleteMultiple}
                 onDelete={() => {

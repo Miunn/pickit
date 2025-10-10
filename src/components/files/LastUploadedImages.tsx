@@ -3,7 +3,7 @@
 import { ImageOff, Trash2, X } from "lucide-react";
 import { ImagePreviewGrid } from "@/components/files/views/grid/ImagePreviewGrid";
 import { CarouselDialog } from "@/components/files/carousel/CarouselDialog";
-import { DeleteMultipleImagesDialog } from "@/components/files/DeleteMultipleImagesDialog";
+import { DeleteMultipleImagesDialog } from "@/components/files/dialogs/DeleteMultipleImagesDialog";
 import React, { Fragment, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -123,7 +123,7 @@ export const LastUploadedImages = () => {
                 startIndex={startIndex}
             />
             <DeleteMultipleImagesDialog
-                files={files.filter(file => selected.includes(file.id))}
+                fileIds={files.filter(file => selected.includes(file.id)).map(file => file.id)}
                 open={openDeleteMultiple}
                 setOpen={setOpenDeleteMultiple}
                 onDelete={() => {
