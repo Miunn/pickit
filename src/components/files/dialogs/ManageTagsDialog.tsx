@@ -93,6 +93,7 @@ export default function ManageTagsDialog({
     availableTags,
     onTagSelected,
     onTagUnselected,
+    onTagAdded,
     className,
     ...props
 }: {
@@ -109,9 +110,16 @@ export default function ManageTagsDialog({
     const [folderTags, setFolderTags] = useState<FolderTag[]>(availableTags);
     const { folder } = useFolderContext();
 
-    const handleTagAdded = (tag: FolderTag) => {
+    const handleTagAdded = async (tag: FolderTag) => {
         setFolderTags([...folderTags, tag]);
         setSelectedTags([...selectedTags, tag]);
+        if (onTagAdded) {
+            try {
+                await onTagAdded(tag);
+            } catch {
+                // noop: parent can handle failure visually if needed
+            }
+        }
     };
 
     const handleTagSelected = async (tag: FolderTag) => {

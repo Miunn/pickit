@@ -4,7 +4,7 @@ import { FileType, Plan } from "@prisma/client";
 import { FolderWithFilesWithFolderAndComments, FileWithFolder } from "./definitions";
 import { toast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
-import { ImagesSortMethod } from "@/components/folders/SortImages";
+import { ImagesSortMethod } from "@/types/imagesSort";
 import saveAs from "file-saver";
 import JSZip from "jszip";
 import { Progress } from "@/components/ui/progress";
