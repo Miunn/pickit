@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleBucket } from "@/lib/bucket";
+import { generateV4DownloadUrl } from "@/lib/bucket";
 import { FileService } from "@/data/file-service";
 import { isAllowedToAccessFile } from "@/lib/dal";
 
@@ -23,10 +23,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ video: st
         return NextResponse.json({ error: "Image not found" });
     }
 
-    const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.id}`);
-    const [buffer] = await file.download();
-    const res = new NextResponse(buffer);
-    res.headers.set("Content-Disposition", "inline");
-    res.headers.set("Content-Type", `video/${video.extension}`);
-    return res;
+    const url = await generateV4DownloadUrl(`${video.createdById}/${video.folderId}/${video.id}`);
+
+    return NextResponse.redirect(url);
 }
