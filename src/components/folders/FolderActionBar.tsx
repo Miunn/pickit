@@ -14,7 +14,7 @@ import { MoreHorizontal, LayoutGrid, List, ArrowUp, ArrowDown, Tag } from "lucid
 import { UploadImagesDialog } from "../files/upload/UploadImagesDialog";
 import EditDescriptionDialog from "./dialogs/EditDescriptionDialog";
 import { ShareFolderDialog } from "./dialogs/ShareFolderDialog";
-import SortImages, { ImagesSortMethod } from "./SortImages";
+import SortImages from "./SortImages";
 import ViewSelector, { ViewState } from "./ViewSelector";
 import { useFolderContext } from "@/context/FolderContext";
 import { useState } from "react";
@@ -23,6 +23,7 @@ import { useTranslations } from "next-intl";
 import { useSession } from "@/providers/SessionProvider";
 import { Link } from "@/i18n/navigation";
 import { FolderTokenPermission } from "@prisma/client";
+import { ImagesSortMethod } from "@/types/imagesSort";
 
 export default function FolderActionBar() {
     const { isGuest } = useSession();

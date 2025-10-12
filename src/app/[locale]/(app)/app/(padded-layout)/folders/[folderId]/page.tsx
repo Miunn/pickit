@@ -1,7 +1,7 @@
 import { FolderContent } from "@/components/folders/FolderContent";
 import UnlockTokenPrompt from "@/components/folders/UnlockTokenPrompt";
 import { getSortedFolderContent } from "@/lib/utils";
-import { ImagesSortMethod } from "@/components/folders/SortImages";
+import { ImagesSortMethod } from "@/types/imagesSort";
 import {
     FolderWithAccessToken,
     FolderWithCover,
@@ -23,6 +23,33 @@ import { TokenProvider } from "@/context/TokenContext";
 import { generateV4DownloadUrl } from "@/lib/bucket";
 import { AccessTokenService } from "@/data/access-token-service";
 import { FolderService } from "@/data/folder-service";
+
+function getSortOrderBy(sort: ImagesSortMethod) {
+    switch (sort) {
+        case ImagesSortMethod.NameAsc:
+            return { name: "asc" as const };
+        case ImagesSortMethod.NameDesc:
+            return { name: "desc" as const };
+        case ImagesSortMethod.SizeAsc:
+            return { size: "asc" as const };
+        case ImagesSortMethod.SizeDesc:
+            return { size: "desc" as const };
+        case ImagesSortMethod.DateAsc:
+            return { createdAt: "asc" as const };
+        case ImagesSortMethod.DateDesc:
+            return { createdAt: "desc" as const };
+        case ImagesSortMethod.TakenAsc:
+            return { takenAt: "asc" as const };
+        case ImagesSortMethod.TakenDesc:
+            return { takenAt: "desc" as const };
+        case ImagesSortMethod.PositionAsc:
+            return { position: "asc" as const };
+        case ImagesSortMethod.PositionDesc:
+            return { position: "desc" as const };
+        default:
+            return { createdAt: "desc" as const };
+    }
+}
 
 export async function generateMetadata(props: {
     params: Promise<{ folderId: string; locale: string }>;
@@ -133,6 +160,8 @@ export default async function FolderPage(props: {
                     likes: true,
                     tags: true,
                 },
+                take: 20, // Load only first 20 files
+                orderBy: getSortOrderBy(searchParams.sort || ImagesSortMethod.DateDesc),
             },
             createdBy: true,
             accessTokens: true,
