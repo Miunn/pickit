@@ -107,7 +107,7 @@ export default function ManageTagsDialog({
 } & React.ComponentProps<typeof DialogTrigger>) {
     const t = useTranslations("dialogs.files.addTag");
     const [selectedTagsState, setSelectedTags] = useState<FolderTag[]>(selectedTags);
-    const [folderTags, setFolderTags] = useState<FolderTag[]>(availableTags);
+    const [folderTags, setFolderTags] = useState<FolderTag[]>(availableTags || []);
     const { folder } = useFolderContext();
 
     const handleTagAdded = async (tag: FolderTag) => {
