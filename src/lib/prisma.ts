@@ -28,12 +28,19 @@ const prismaClientSingleton = () => {
             file: {
                 create: async ({ args, query }) => {
                     const result = await query(args);
+                    const folderId =
+                        result.folderId || args.data.folderId || result.folder?.id || args.data.folder?.connect?.id;
+                    const userId =
+                        result.createdById ||
+                        args.data.createdById ||
+                        result.createdBy?.id ||
+                        args.data.createdBy?.connect?.id;
                     await prisma.folder.update({
-                        where: { id: args.data.folderId },
+                        where: { id: folderId },
                         data: { size: { increment: args.data.size } },
                     });
                     await prisma.user.update({
-                        where: { id: args.data.createdById },
+                        where: { id: userId },
                         data: { usedStorage: { increment: args.data.size } },
                     });
                     return result;

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateV4DownloadUrl } from "@/lib/bucket";
+import { GoogleBucket } from "@/lib/bucket";
 import { isAllowedToAccessFile } from "@/lib/dal";
 import { FileService } from "@/data/file-service";
 
@@ -17,13 +17,24 @@ export async function GET(req: NextRequest, props: { params: Promise<{ image: st
 
     const image = await FileService.get({
         where: { id: params.image },
+        select: { createdById: true, folderId: true, id: true, extension: true },
     });
 
     if (!image) {
         return NextResponse.json({ error: "Image not found" });
     }
 
-    const url = await generateV4DownloadUrl(`${image.createdById}/${image.folderId}/${image.id}`);
+    // const url = await signCDNUrl(image.createdById, image.folderId, image.id);
+    // console.log("CDN Signed URL", url);
+    // Download file from google cloud storage
+    const file = GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`);
+    console.log("Got google file");
+    const [buffer] = await file.download();
+    const res = new NextResponse(buffer);
+    console.log("Got buffer");
+    res.headers.set("Content-Type", "image/" + image.extension);
+    res.headers.set("Content-Disposition", `inline`);
+    res.headers.set("Content-Length", buffer.length.toString());
 
-    return NextResponse.redirect(url);
+    return res;
 }

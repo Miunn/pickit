@@ -117,6 +117,7 @@ export async function initiateFileUpload(
                 },
             },
         });
+        console.log("Uploaded verification");
 
         // Generate signed URL for upload
         const [uploadUrl] = await GoogleBucket.file(
