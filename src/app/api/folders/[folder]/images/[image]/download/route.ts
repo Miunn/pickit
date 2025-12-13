@@ -26,9 +26,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
         return Response.json({ error: "No images found in this folder" }, { status: 404 });
     }
 
-    console.log("Starting fetching google");
     const file = GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`);
-    console.log("Got google file");
     const [buffer] = await file.download();
     const res = new NextResponse(buffer);
     console.log("Got buffer");

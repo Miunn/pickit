@@ -28,13 +28,26 @@ export async function GET(req: NextRequest, props: { params: Promise<{ image: st
     // console.log("CDN Signed URL", url);
     // Download file from google cloud storage
     const file = GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`);
-    console.log("Got google file");
-    const [buffer] = await file.download();
-    const res = new NextResponse(buffer);
-    console.log("Got buffer");
-    res.headers.set("Content-Type", "image/" + image.extension);
-    res.headers.set("Content-Disposition", `inline`);
-    res.headers.set("Content-Length", buffer.length.toString());
+
+    const stream = file.createReadStream();
+    // Convert Node.js Readable (from Google Cloud Storage) to a Web ReadableStream
+    // suitable for the Fetch API / NextResponse
+    const webStream = new globalThis.ReadableStream({
+        start(controller) {
+            stream.on("data", chunk => controller.enqueue(chunk));
+            stream.on("end", () => controller.close());
+            stream.on("error", err => controller.error(err));
+        },
+        cancel() {
+            stream.destroy();
+        },
+    });
+    const res = new NextResponse(webStream, {
+        headers: {
+            "Content-Type": "image/" + image.extension,
+            "Cache-Control": "public, max-age=31536000, immutable",
+        },
+    });
 
     return res;
 }

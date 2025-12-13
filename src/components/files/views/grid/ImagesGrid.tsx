@@ -32,12 +32,10 @@ import DeleteDescriptionDialog from "@/components/folders/dialogs/DeleteDescript
 import { useFilesContext } from "@/context/FilesContext";
 import { ContextFile } from "@/context/FilesContext";
 import SelectingBar from "./SelectingBar";
-import { useInfiniteFiles } from "@/hooks/useInfiniteFiles";
-import { InfiniteScrollTrigger } from "@/components/ui/InfiniteScrollTrigger";
 
 export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     const { user } = useSession();
-    const { folder, isShared, token, tokenHash } = useFolderContext();
+    const { folder, isShared /*token, tokenHash*/ } = useFolderContext();
     const { files, setFiles } = useFilesContext();
 
     const newFilesRef = useRef<HTMLDivElement>(null);
@@ -57,22 +55,6 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
 
     const [sortStrategy, setSortStrategy] = useState<ImagesSortMethod | "dragOrder">(sortState);
 
-    // Use infinite loading hook - start with empty and let it manage all files
-    const {
-        files: infiniteFiles,
-        loading: loadingMore,
-        hasNextPage,
-        loadMore,
-        setFiles: setInfiniteFiles,
-    } = useInfiniteFiles({
-        folderId: folder.id,
-        sortMethod: sortState,
-        initialFiles: files,
-        limit: 20,
-        shareToken: token?.token,
-        hashToken: tokenHash || undefined,
-    });
-
     const getSortedFiles = useCallback(
         (files: ContextFile[]): ContextFile[] => {
             if (sortStrategy !== "dragOrder") {
@@ -87,19 +69,19 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
         [sortState, sortStrategy]
     );
 
-    const defaultSortedFiles = useMemo(() => getSortedFiles(infiniteFiles), [getSortedFiles, infiniteFiles]);
+    const defaultSortedFiles = useMemo(() => getSortedFiles(files), [getSortedFiles, files]);
 
     const [sortedFiles, setSortedFiles] = useState<ContextFile[]>(defaultSortedFiles);
 
     useEffect(() => {
         setSortStrategy(sortState);
-        setSortedFiles(getSortedFiles(infiniteFiles));
-    }, [sortState, infiniteFiles, getSortedFiles]);
+        setSortedFiles(getSortedFiles(files));
+    }, [sortState, files, getSortedFiles]);
 
     // Update context files when infinite files change
     useEffect(() => {
-        setFiles(infiniteFiles);
-    }, [infiniteFiles, setFiles]);
+        setFiles(files);
+    }, [files, setFiles]);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -190,10 +172,9 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             }
 
             if (newPosition) {
-                const updatedFiles = infiniteFiles.map(file =>
+                const updatedFiles = files.map(file =>
                     file.id === activeId ? { ...file, position: newPosition } : file
                 );
-                setInfiniteFiles(updatedFiles);
                 setFiles(updatedFiles);
             }
         }, 0);
@@ -227,7 +208,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                     onDragMove={handleDragMove}
                 >
                     <SortableContext items={sortedFiles.map(item => item.id)}>
-                        {infiniteFiles.length === 0 ? (
+                        {files.length === 0 ? (
                             <div
                                 className={
                                     "col-start-1 col-end-3 xl:col-start-2 xl:col-end-4 2xl:col-start-3 2xl:col-end-5 mx-auto mt-6 flex flex-col justify-center items-center max-w-lg"
@@ -237,8 +218,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                                     folderId={folder.id}
                                     shouldDisplayNotify={isShared}
                                     onUpload={uploadedFiles => {
-                                        const newFiles = [...infiniteFiles, ...uploadedFiles];
-                                        setInfiniteFiles(newFiles);
+                                        const newFiles = [...files, ...uploadedFiles];
                                         setFiles(newFiles);
                                     }}
                                 />
@@ -254,17 +234,15 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                                             if (selecting) {
                                                 if (e?.shiftKey && selected.length > 0) {
                                                     const lastSelectedId = selected[selected.length - 1];
-                                                    const lastSelectedIndex = infiniteFiles.findIndex(
+                                                    const lastSelectedIndex = files.findIndex(
                                                         item => item.id === lastSelectedId
                                                     );
-                                                    const currentIndex = infiniteFiles.findIndex(
-                                                        item => item.id === file.id
-                                                    );
+                                                    const currentIndex = files.findIndex(item => item.id === file.id);
 
                                                     if (lastSelectedIndex !== -1 && currentIndex !== -1) {
                                                         const start = Math.min(lastSelectedIndex, currentIndex);
                                                         const end = Math.max(lastSelectedIndex, currentIndex);
-                                                        const range = infiniteFiles.slice(start, end + 1);
+                                                        const range = files.slice(start, end + 1);
 
                                                         const newSelectedIds = range.map(item => item.id);
                                                         const newSize = range.reduce((acc, item) => acc + item.size, 0);
@@ -280,7 +258,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                                                     setSizeSelected(sizeSelected + file.size);
                                                 }
                                             } else {
-                                                setStartIndex(infiniteFiles.indexOf(file));
+                                                setStartIndex(files.indexOf(file));
                                                 setCarouselOpen(true);
                                             }
                                         }}
@@ -323,13 +301,13 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                         if (selecting) {
                             if (e?.shiftKey && selected.length > 0) {
                                 const lastSelectedId = selected[selected.length - 1];
-                                const lastSelectedIndex = infiniteFiles.findIndex(item => item.id === lastSelectedId);
-                                const currentIndex = infiniteFiles.findIndex(item => item.id === file.id);
+                                const lastSelectedIndex = files.findIndex(item => item.id === lastSelectedId);
+                                const currentIndex = files.findIndex(item => item.id === file.id);
 
                                 if (lastSelectedIndex !== -1 && currentIndex !== -1) {
                                     const start = Math.min(lastSelectedIndex, currentIndex);
                                     const end = Math.max(lastSelectedIndex, currentIndex);
-                                    const range = infiniteFiles.slice(start, end + 1);
+                                    const range = files.slice(start, end + 1);
 
                                     const newSelectedIds = range.map(item => item.id);
                                     const newSize = range.reduce((acc, item) => acc + item.size, 0);
@@ -345,7 +323,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                                 setSizeSelected(sizeSelected + file.size);
                             }
                         } else {
-                            setStartIndex(infiniteFiles.indexOf(file));
+                            setStartIndex(files.indexOf(file));
                             setCarouselOpen(true);
                         }
                     }}
@@ -365,14 +343,14 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     };
 
     const newFiles = useMemo(() => {
-        return infiniteFiles.filter(file => {
+        return files.filter(file => {
             const now = new Date();
             const fileDate = new Date(file.createdAt);
             const diffTime = Math.abs(now.getTime() - fileDate.getTime());
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             return diffDays <= 3;
         });
-    }, [infiniteFiles]);
+    }, [files]);
 
     return (
         <div className="mt-10">
@@ -392,7 +370,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                                     file={file}
                                     selected={selected}
                                     onClick={() => {
-                                        setStartIndex(infiniteFiles.indexOf(file));
+                                        setStartIndex(files.indexOf(file));
                                         setCarouselOpen(true);
                                     }}
                                     onSelect={() => {}}
@@ -441,7 +419,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             ) : null}
             <div
                 className={cn(
-                    infiniteFiles.length === 0
+                    files.length === 0
                         ? "flex flex-col lg:flex-row justify-center"
                         : "grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] justify-items-start gap-3 sm:gap-3 mx-auto",
                     "relative"
@@ -475,17 +453,17 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             </div>
 
             {/* Infinite scroll trigger */}
-            <InfiniteScrollTrigger onLoadMoreAction={loadMore} hasMore={hasNextPage} loading={loadingMore} />
+            {/*<InfiniteScrollTrigger onLoadMoreAction={loadMore} hasMore={hasNextPage} loading={loadingMore} />*/}
 
             <CarouselDialog
-                files={infiniteFiles}
+                files={files}
                 title={folder.name}
                 carouselOpen={carouselOpen}
                 setCarouselOpen={setCarouselOpen}
                 startIndex={startIndex}
             />
             <DeleteMultipleImagesDialog
-                fileIds={infiniteFiles.filter(file => selected.includes(file.id)).map(file => file.id)}
+                fileIds={files.filter(file => selected.includes(file.id)).map(file => file.id)}
                 open={openDeleteMultiple}
                 setOpen={setOpenDeleteMultiple}
                 onDelete={() => {
