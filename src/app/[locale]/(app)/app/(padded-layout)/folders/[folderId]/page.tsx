@@ -160,7 +160,7 @@ export default async function FolderPage(props: {
                     likes: true,
                     tags: true,
                 },
-                take: 20, // Load only first 20 files
+                // take: 20, // Load only first 20 files
                 orderBy: getSortOrderBy(searchParams.sort || ImagesSortMethod.DateDesc),
             },
             createdBy: true,

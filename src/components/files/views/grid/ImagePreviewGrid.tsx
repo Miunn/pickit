@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/context-menu";
 import { cn, downloadClientImageHandler, formatBytes } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
-import { useSearchParams } from "next/navigation";
 import { changeFolderCover } from "@/actions/folders";
 import { CirclePlay } from "lucide-react";
 import LoadingImage from "@/components/files/LoadingImage";
@@ -29,9 +28,10 @@ import TagChip from "@/components/tags/TagChip";
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { addTagsToFile, removeTagsFromFile } from "@/actions/tags";
 import { toast as sonnerToast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 export interface ImagePreviewProps {
-    file: { folder: FolderWithTags } & FileWithTags;
+    file: { folder: FolderWithTags; signedUrl: string } & FileWithTags;
     selected: string[];
     onClick: (e?: React.MouseEvent) => void;
     onSelect: () => void;
@@ -118,6 +118,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                                 <div className={`relative h-32 sm:h-36 mb-4 flex justify-center items-center group`}>
                                     {file.type === FileType.VIDEO ? (
                                         <LoadingImage
+                                            // src={file.signedUrl}
                                             src={`/api/folders/${file.folderId}/videos/${file.id}/thumbnail?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`}
                                             alt={file.name}
                                             className={"relative border border-primary rounded-xl object-cover"}
@@ -127,6 +128,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                                         />
                                     ) : (
                                         <LoadingImage
+                                            // src={file.signedUrl}
                                             src={`/api/folders/${file.folderId}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`}
                                             alt={file.name}
                                             className={"relative border border-primary rounded-xl object-cover"}
