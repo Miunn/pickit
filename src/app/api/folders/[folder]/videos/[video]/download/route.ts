@@ -27,10 +27,27 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
     }
 
     const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.id}`);
-    const [buffer] = await file.download();
-    const res = new NextResponse(buffer);
-    res.headers.set("Content-Type", "video/" + video.extension);
-    res.headers.set("Content-Disposition", `attachment; filename=${video.name}.${video.extension}`);
-    res.headers.set("Content-Length", buffer.length.toString());
+
+    const stream = file.createReadStream();
+
+    // Convert Node.js Readable (from Google Cloud Storage) to a Web ReadableStream
+    // suitable for the Fetch API / NextResponse
+    const webStream = new globalThis.ReadableStream({
+        start(controller) {
+            stream.on("data", chunk => controller.enqueue(chunk));
+            stream.on("end", () => controller.close());
+            stream.on("error", err => controller.error(err));
+        },
+        cancel() {
+            stream.destroy();
+        },
+    });
+    const res = new NextResponse(webStream, {
+        headers: {
+            "Content-Type": "video/" + video.extension,
+            "Content-Disposition": `attachment; filename=${video.name}.${video.extension}`,
+        },
+    });
+
     return res;
 }
