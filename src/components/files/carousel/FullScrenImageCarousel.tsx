@@ -118,6 +118,7 @@ export default function FullScreenImageCarousel({
                             align: "center",
                             loop: true,
                             startIndex: defaultIndex ?? 0,
+                            inViewThreshold: 0.1,
                         }}
                         setApi={setCarouselApi}
                     >

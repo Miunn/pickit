@@ -24,12 +24,10 @@ export async function GET(req: NextRequest, props: { params: Promise<{ image: st
         return NextResponse.json({ error: "Image not found" });
     }
 
-    // const url = await signCDNUrl(image.createdById, image.folderId, image.id);
-    // console.log("CDN Signed URL", url);
-    // Download file from google cloud storage
     const file = GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`);
 
     const stream = file.createReadStream();
+
     // Convert Node.js Readable (from Google Cloud Storage) to a Web ReadableStream
     // suitable for the Fetch API / NextResponse
     const webStream = new globalThis.ReadableStream({
@@ -45,7 +43,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ image: st
     const res = new NextResponse(webStream, {
         headers: {
             "Content-Type": "image/" + image.extension,
-            "Cache-Control": "public, max-age=31536000, immutable",
+            "Cache-Control": "private, max-age=2592000, immutable",
         },
     });
 

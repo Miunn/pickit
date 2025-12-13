@@ -98,6 +98,7 @@ export default function ImagesCarousel({ files, startIndex }: { files: ContextFi
                     align: "center",
                     loop: true,
                     startIndex: startIndex,
+                    inViewThreshold: 0.5,
                 }}
                 setApi={setCarouselApi}
             >
@@ -119,7 +120,7 @@ export default function ImagesCarousel({ files, startIndex }: { files: ContextFi
                                     />
                                 ) : (
                                     <LoadingImage
-                                        src={file.signedUrl}
+                                        src={`/api/folders/${file.folder.id}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
                                         alt={file.name}
                                         className={
                                             "max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out"
