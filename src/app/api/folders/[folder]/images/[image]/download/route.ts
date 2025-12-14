@@ -23,7 +23,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
     });
 
     if (!image) {
-        return Response.json({ error: "No images found in this folder" }, { status: 404 });
+        return Response.json({ error: "Image not found" }, { status: 404 });
     }
 
     const file = GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`);
@@ -45,6 +45,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
     const res = new NextResponse(webStream, {
         headers: {
             "Content-Type": "image/" + image.extension,
+            "Content-Length": image.size.toString(),
             "Content-Disposition": `attachment; filename=${image.name}.${image.extension}`,
         },
     });

@@ -11,7 +11,7 @@ import {
     ContextMenuSeparator,
     ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { cn, downloadClientImageHandler, formatBytes } from "@/lib/utils";
+import { cn, formatBytes } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { changeFolderCover } from "@/actions/folders";
 import { CirclePlay } from "lucide-react";
@@ -224,8 +224,12 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                     {file.createdById === user?.id ? (
                         <ContextMenuItem onClick={onSelect}>{t("actions.select")}</ContextMenuItem>
                     ) : null}
-                    <ContextMenuItem onClick={() => downloadClientImageHandler(file)}>
-                        {t("actions.download")}
+                    <ContextMenuItem asChild>
+                        <a
+                            href={`/api/folders/${file.folderId}/${file.type === FileType.IMAGE ? "images" : "videos"}/${file.id}/download?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`}
+                        >
+                            {t("actions.download")}
+                        </a>
                     </ContextMenuItem>
                     {file.createdById === user?.id ? (
                         <ContextMenuItem onClick={e => e.preventDefault()}>

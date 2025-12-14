@@ -1,16 +1,15 @@
-import { Braces, Ellipsis, Tags } from "lucide-react";
+import { Braces, Download, Ellipsis, Tags } from "lucide-react";
 
 import { Copy } from "lucide-react";
 
 import { Check } from "lucide-react";
 import { toast as sonnerToast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
-import { ExternalLink, Loader2 } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import FullScreenImageCarousel from "./FullScrenImageCarousel";
 import { Expand } from "lucide-react";
 import Link from "next/link";
-import { copyImageToClipboard, downloadClientImageHandler } from "@/lib/utils";
+import { copyImageToClipboard } from "@/lib/utils";
 import { FileWithFolder, FileWithTags, FolderWithTags } from "@/lib/definitions";
 import { toast } from "@/hooks/use-toast";
 import { FileType, FolderTag } from "@prisma/client";
@@ -50,7 +49,6 @@ export default function FileOptions({
 
     const t = useTranslations("components.images.carousel.actions");
     const [copied, setCopied] = useState(false);
-    const [downloading, setDownloading] = useState(false);
 
     const handleTagSelected = async (tag: FolderTag): Promise<boolean> => {
         setFiles((prev: ContextFile[]) => {
@@ -124,18 +122,14 @@ export default function FileOptions({
                         <ExternalLink className="w-4 h-4" />
                     </Link>
                 </Button>
-                <Button
-                    variant={"outline"}
-                    size={"icon"}
-                    type="button"
-                    onClick={async () => {
-                        setDownloading(true);
-                        await downloadClientImageHandler(file);
-                        setDownloading(false);
-                    }}
-                    disabled={downloading}
-                >
-                    {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                <Button variant={"outline"} size={"icon"} type="button" asChild>
+                    <a
+                        href={`/api/folders/${file.folder.id}/${file.type === FileType.VIDEO ? "videos" : "images"}/${file.id}/download`}
+                        download
+                    >
+                        <Download className="w-4 h-4" />
+                        {/*{downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}*/}
+                    </a>
                 </Button>
                 <Button
                     className={file.type === FileType.VIDEO ? "hidden" : ""}
@@ -232,20 +226,18 @@ export default function FileOptions({
                             {t("openInNew")}
                         </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                        onClick={async () => {
-                            setDownloading(true);
-                            await downloadClientImageHandler(file);
-                            setDownloading(false);
-                        }}
-                        disabled={downloading}
-                    >
-                        {downloading ? (
-                            <Loader2 size={16} className="opacity-60 animate-spin mr-2" aria-hidden="true" />
-                        ) : (
-                            <Download size={16} className="opacity-60 mr-2" aria-hidden="true" />
-                        )}
-                        {t("download")}
+                    <DropdownMenuItem asChild>
+                        <a
+                            href={`/api/folders/${file.folder.id}/${file.type === FileType.VIDEO ? "videos" : "images"}/${file.id}/download`}
+                            download
+                        >
+                            {/*{downloading ? (
+                                <Loader2 size={16} className="opacity-60 animate-spin mr-2" aria-hidden="true" />
+                            ) : (
+                                <Download size={16} className="opacity-60 mr-2" aria-hidden="true" />
+                            )}*/}
+                            {t("download")}
+                        </a>
                     </DropdownMenuItem>
                     {file.type !== FileType.VIDEO ? (
                         <DropdownMenuItem

@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import JSZip from "jszip";
 import { isAllowedToAccessFile } from "@/lib/dal";
 import { GoogleBucket } from "@/lib/bucket";
-import { FileService } from "@/data/file-service";
+import archiver from "archiver";
+import { PassThrough } from "node:stream";
+import { FolderService } from "@/data/folder-service";
 
 export async function GET(req: NextRequest, props: { params: Promise<{ folder: string }> }) {
     const params = await props.params;
@@ -16,26 +17,50 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
         );
     }
 
-    const images = await FileService.getMultiple({
-        where: { folderId: params.folder },
+    const folder = await FolderService.get({
+        where: { id: params.folder },
+        include: { files: true },
     });
 
-    if (images.length === 0) {
-        return Response.json({ error: "No images found in this folder" }, { status: 404 });
+    if (!folder) {
+        return Response.json({ error: "Folder not found" }, { status: 404 });
     }
 
-    const zip = new JSZip();
-
-    for (const image of images) {
-        const file = GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`);
-        const [buffer] = await file.download();
-        zip.file(`${image.name}-${image.createdAt.getTime()}.${image.extension}`, buffer);
+    if (folder.files.length === 0) {
+        return Response.json({ error: "No files found in this folder" }, { status: 404 });
     }
 
-    const zipData = await zip.generateAsync({ type: "blob" });
+    const archive = archiver("zip", { zlib: { level: 9 } });
 
-    const res = new NextResponse(zipData.stream());
-    res.headers.set("Content-Type", "application/zip");
-    res.headers.set("Content-Disposition", `attachment; filename=${params.folder}.zip`);
-    return res;
+    archive.on("error", err => {
+        console.error(err);
+        throw err;
+    });
+
+    const stream = new PassThrough();
+    archive.pipe(stream);
+
+    for (const file of folder.files) {
+        const path = `${folder.createdById}/${folder.id}/${file.id}`;
+        const stream = GoogleBucket.file(path).createReadStream();
+
+        archive.append(stream, { name: `${file.name}.${file.extension}` });
+    }
+
+    archive.finalize();
+
+    const webStream = new ReadableStream({
+        start(controller) {
+            stream.on("data", chunk => controller.enqueue(chunk));
+            stream.on("end", () => controller.close());
+            stream.on("error", err => controller.error(err));
+        },
+    });
+
+    return new NextResponse(webStream, {
+        headers: {
+            "Content-Type": "application/zip",
+            "Content-Disposition": `attachment; filename=${folder.name}.zip`,
+        },
+    });
 }

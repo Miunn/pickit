@@ -23,7 +23,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
     });
 
     if (!video) {
-        return Response.json({ error: "No videos found in this folder" }, { status: 404 });
+        return Response.json({ error: "Video not found" }, { status: 404 });
     }
 
     const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.id}`);
@@ -45,6 +45,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
     const res = new NextResponse(webStream, {
         headers: {
             "Content-Type": "video/" + video.extension,
+            "Content-Length": video.size.toString(),
             "Content-Disposition": `attachment; filename=${video.name}.${video.extension}`,
         },
     });

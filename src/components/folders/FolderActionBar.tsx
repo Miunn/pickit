@@ -1,4 +1,3 @@
-import { downloadClientFiles } from "@/lib/utils";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -30,7 +29,6 @@ export default function FolderActionBar() {
     const { folder, token, tokenHash, isShared } = useFolderContext();
     const { viewState, sortState, setViewState, setSortState, files, setFiles } = useFilesContext();
     const t = useTranslations("folders");
-    const downloadT = useTranslations("components.download");
 
     const [openUpload, setOpenUpload] = useState(false);
     const [openShare, setOpenShare] = useState(false);
@@ -72,10 +70,10 @@ export default function FolderActionBar() {
                         {!!!isGuest ? (
                             <DropdownMenuItem onClick={() => setOpenShare(true)}>{t("share.label")}</DropdownMenuItem>
                         ) : null}
-                        <DropdownMenuItem
-                            onClick={() => downloadClientFiles(downloadT, files, folder.name, token?.token, tokenHash)}
-                        >
-                            {t("download.label")}
+                        <DropdownMenuItem asChild>
+                            <a href={`/api/folders/${folder.id}/download`} download>
+                                {t("download.label")}
+                            </a>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -175,10 +173,10 @@ export default function FolderActionBar() {
                     {!!!isGuest ? (
                         <DropdownMenuItem onClick={() => setOpenShare(true)}>{t("share.label")}</DropdownMenuItem>
                     ) : null}
-                    <DropdownMenuItem
-                        onClick={() => downloadClientFiles(downloadT, files, folder.name, token?.token, tokenHash)}
-                    >
-                        {t("download.label")}
+                    <DropdownMenuItem asChild>
+                        <a href={`/api/folders/${folder.id}/download`} download>
+                            {t("download.label")}
+                        </a>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

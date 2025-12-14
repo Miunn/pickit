@@ -25,7 +25,6 @@ import RenameFolderDialog from "../../dialogs/RenameFolderDialog";
 import ChangeCoverFolderDialog from "../../dialogs/ChangeCoverFolderDialog";
 import { ShareFolderDialog } from "../../dialogs/ShareFolderDialog";
 import DeleteFolderDialog from "../../dialogs/DeleteFolderDialog";
-import { downloadClientFiles } from "@/lib/utils";
 import { FileType } from "@prisma/client";
 import { Link } from "@/i18n/navigation";
 import FolderPropertiesDialog from "../../dialogs/FolderPropertiesDialogs";
@@ -39,7 +38,6 @@ export default function FolderPreviewGrid({
 }) {
     const t = useTranslations("folders");
     const dialogsTranslations = useTranslations("dialogs.folders");
-    const downloadT = useTranslations("components.download");
     const format = useFormatter();
 
     const [openRename, setOpenRename] = React.useState<boolean>(false);
@@ -121,11 +119,10 @@ export default function FolderPreviewGrid({
                     <ContextMenuItem onClick={() => setOpenShare(true)}>
                         {dialogsTranslations("share.trigger")}
                     </ContextMenuItem>
-                    <ContextMenuItem
-                        onClick={() => downloadClientFiles(downloadT, folder.files, folder.name)}
-                        disabled={folder.files.length === 0}
-                    >
-                        {t("actions.download")}
+                    <ContextMenuItem disabled={folder.files.length === 0} asChild>
+                        <a href={`/api/folders/${folder.id}/download`} download>
+                            {t("actions.download")}
+                        </a>
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenProperties(true)}>{t("actions.properties")}</ContextMenuItem>
                     <ContextMenuSeparator />

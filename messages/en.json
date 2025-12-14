@@ -706,6 +706,8 @@
             }
         },
         "download": {
+            "downloadStartedTitle": "Download started",
+            "downloadStartedDescription": "Your download for {name} has started",
             "ongoing": {
                 "title": "{name} - Downloading",
                 "description": {
