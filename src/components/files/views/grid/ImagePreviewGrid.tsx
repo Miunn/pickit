@@ -114,7 +114,16 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                     ) : null}
                     <ContextMenuItem asChild>
                         <a
-                            href={`/api/folders/${file.folderId}/${file.type === FileType.IMAGE ? "images" : "videos"}/${file.id}/download?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`}
+                            href={(() => {
+                                const url = new URL(
+                                    `/api/folders/${file.folderId}/${file.type === FileType.IMAGE ? "images" : "videos"}/${file.id}/download`,
+                                    window.location.origin
+                                );
+                                if (shareToken) url.searchParams.set("share", shareToken);
+                                if (shareHashPin) url.searchParams.set("h", shareHashPin);
+                                if (tokenType) url.searchParams.set("t", tokenType);
+                                return url.pathname + url.search;
+                            })()}
                         >
                             {t("actions.download")}
                         </a>

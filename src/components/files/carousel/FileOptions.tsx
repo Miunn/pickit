@@ -148,11 +148,10 @@ export default function FileOptions({
                     asChild
                 >
                     <a
-                        href={`/api/folders/${file.folder.id}/${file.type === FileType.VIDEO ? "videos" : "images"}/${file.id}/download`}
+                        href={`/api/folders/${file.folder.id}/${file.type === FileType.VIDEO ? "videos" : "images"}/${file.id}/download?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
                         download
                     >
                         <Download className="w-4 h-4" />
-                        {/*{downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}*/}
                     </a>
                 </Button>
                 <Button

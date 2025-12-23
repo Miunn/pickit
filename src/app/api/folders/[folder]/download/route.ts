@@ -38,13 +38,13 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
     }
 
     const archive = archiver("zip", { zlib: { level: 9 } });
+    const stream = new PassThrough();
 
     archive.on("error", err => {
         console.error(err);
         stream.destroy(err);
     });
 
-    const stream = new PassThrough();
     archive.pipe(stream);
 
     for (const file of folder.files) {

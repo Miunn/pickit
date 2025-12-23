@@ -1,7 +1,7 @@
 import { MoreHorizontal } from "lucide-react";
 import { useFormatter } from "next-intl";
 import { Checkbox } from "../ui/checkbox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FolderWithFilesCount } from "@/lib/definitions";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
@@ -38,6 +38,24 @@ export default function FoldersList({
             return newSet;
         });
     };
+
+    useEffect(() => {
+        const folderIds = new Set(folders.map(folder => folder.id));
+        setSelectedFolders(prev => {
+            const newSet = new Set([...prev].filter(id => folderIds.has(id)));
+            // Add any new folders that weren't in the previous selection
+            folders.forEach(folder => {
+                if (!prev.has(folder.id)) {
+                    newSet.add(folder.id);
+                }
+            });
+            if (newSet.size !== prev.size || [...newSet].some(id => !prev.has(id))) {
+                onSelectionChange(newSet);
+                return newSet;
+            }
+            return prev;
+        });
+    }, [folders, onSelectionChange]);
 
     return (
         <>

@@ -4,7 +4,7 @@ import { Fragment, useMemo, useState } from "react";
 import { ImagePreviewGrid } from "./ImagePreviewGrid";
 import { X } from "lucide-react";
 
-/ **
+/**
  * Renders a "Recently Added" section showing files created within the last three days.
  *
  * The section includes a header with a close control that removes the section from the DOM,

@@ -48,7 +48,7 @@ const getDefaultMarkers = (files: MapFileWithFolder[], selectedFolders: Set<stri
  * @returns The component's React element tree representing the map and its UI overlays (markers, info windows, carousel, and folder list).
  */
 export default function FilesMap() {
-    const { resolvedTheme } = useTheme();
+    const { resolvedTheme = "light" } = useTheme();
     const { files } = useFilesContext();
 
     const uniqueFolders = useMemo(() => {

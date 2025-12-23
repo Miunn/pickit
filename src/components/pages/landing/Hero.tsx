@@ -22,7 +22,7 @@ export default function Hero({ seeMoreRef }: { seeMoreRef: React.RefObject<HTMLD
                 <div className="relative col-span-2 lg:col-span-1">
                     <div
                         className={cn(
-                            "backdrop-filter-[12px] w-fit inline-flex py-2 items-center justify-between rounded-full border border-white/5 bg-white/10 px-3 text-xs sm:text-sm text-white dark:text-black transition-all ease-in hover:cursor-pointer hover:bg-white/20 group gap-1",
+                            "backdrop-filter-[12px] w-fit inline-flex py-2 items-center justify-between rounded-full border border-white/5 bg-white/10 px-3 text-xs sm:text-sm text-white dark:text-black transition-all ease-in hover:bg-white/20 group gap-1",
                             "mb-2"
                         )}
                     >
