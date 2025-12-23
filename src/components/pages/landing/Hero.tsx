@@ -6,6 +6,12 @@ import { ArrowRight, ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 
+/**
+ * Render the landing page hero section with localized content and call-to-action controls.
+ *
+ * @param seeMoreRef - Ref to the target `div` that the "See more" button will smoothly scroll into view
+ * @returns The hero section element containing an introduction badge, a locale-aware headline, description text, primary and secondary action buttons, and decorative imagery/accents
+ */
 export default function Hero({ seeMoreRef }: { seeMoreRef: React.RefObject<HTMLDivElement | null> }) {
     const t = useTranslations("pages.landing");
     const locale = useLocale();

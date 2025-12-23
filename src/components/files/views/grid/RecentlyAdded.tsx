@@ -4,6 +4,16 @@ import { Fragment, useMemo, useRef } from "react";
 import { ImagePreviewGrid } from "./ImagePreviewGrid";
 import { X } from "lucide-react";
 
+/ **
+ * Renders a "Recently Added" section showing files created within the last three days.
+ *
+ * The section includes a header with a close control that removes the section from the DOM,
+ * a responsive grid of image previews, and a secondary header for album content. Each preview
+ * delegates click events to the provided handler.
+ *
+ * @param onClickImage - Handler invoked with a file when its preview is clicked
+ * @returns The component's element when recent files exist, otherwise renders nothing
+ */
 export default function RecentlyAdded({ onClickImage }: { onClickImage: (file: ContextFile) => void }) {
     const { files } = useFilesContext();
     const t = useTranslations("images");

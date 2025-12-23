@@ -25,6 +25,17 @@ import {
 import LoadingImage from "../../files/LoadingImage";
 import { formatBytes } from "@/lib/utils";
 
+/**
+ * Dialog component that lets the user choose an image to set as a folder's cover.
+ *
+ * Submits the selected image to update the folder cover and shows success or error toasts.
+ *
+ * @param images - Candidate cover images; each item includes file data along with its containing folder, tags, and comments.
+ * @param folderId - ID of the folder whose cover will be updated.
+ * @param open - Whether the dialog is currently open.
+ * @param setOpen - State setter to control the dialog's open state.
+ * @returns A React element rendering the change-cover dialog UI.
+ */
 export default function ChangeCoverFolderDialog({
     images,
     folderId,

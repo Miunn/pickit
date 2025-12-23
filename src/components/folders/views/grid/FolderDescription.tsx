@@ -6,6 +6,13 @@ import { useSession } from "@/providers/SessionProvider";
 import { Pencil, Trash2 } from "lucide-react";
 import DeleteDescriptionDialog from "../../dialogs/DeleteDescriptionDialog";
 
+/**
+ * Renders a folder's description and, if the current user is the folder creator, action buttons to edit or delete the description.
+ *
+ * The component displays the folder description text and conditionally shows an edit and delete control group positioned at the top-right when the logged-in user's id matches the folder's creator id.
+ *
+ * @returns A React element showing the folder description and, when permitted, edit and delete action buttons.
+ */
 export default function FolderDescription({ className }: { className?: string }) {
     const { user } = useSession();
     const { folder } = useFolderContext();

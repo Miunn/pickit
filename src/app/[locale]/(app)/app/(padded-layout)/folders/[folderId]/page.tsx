@@ -112,6 +112,27 @@ export async function generateMetadata(props: {
     };
 }
 
+/**
+ * Render the folder page for the given route and query parameters, handling access checks, shared-token flows, and signed file URLs.
+ *
+ * This server component:
+ * - Verifies access to the folder and redirects for denied or invalid shared links.
+ * - Loads folder data (including files, relations, tags, cover, and counts).
+ * - Resolves an access token when a share token is provided and enforces PIN/unlock flows.
+ * - Increments token usage for shared views and generates V4 signed download URLs for each file.
+ * - Provides folder, token, and files context providers and renders the folder content UI.
+ *
+ * @param props.params - Route parameters containing `folderId` and `locale`.
+ * @param props.searchParams - Query parameters that may include:
+ *   - `sort` — images sort method
+ *   - `view` — preferred view state
+ *   - `share` — share token string
+ *   - `t` — (unused here) timestamp or token-related query
+ *   - `h` — token hash used for validation
+ *   - `codeNeeded` — whether a code is required (from client)
+ *   - `wrongPin` — whether a previously provided PIN was incorrect
+ * @returns The React element for the folder page, or a redirect response when access is denied, a share link is invalid, or the folder is not found.
+ */
 export default async function FolderPage(props: {
     params: Promise<{ folderId: string; locale: string }>;
     searchParams: Promise<{

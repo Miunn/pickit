@@ -5,6 +5,13 @@ import archiver from "archiver";
 import { PassThrough } from "node:stream";
 import { FolderService } from "@/data/folder-service";
 
+/**
+ * Streams a ZIP archive containing all files in the specified folder.
+ *
+ * @param req - Incoming Next.js request; query parameters `share` (share token) and `h` (access key) are used for access control.
+ * @param props - Object with a `params` promise that resolves to `{ folder: string }` where `folder` is the folder id to download.
+ * @returns A NextResponse whose body is a streaming ZIP of the folder's files; returns a JSON error response with status 400 if access is denied, or 404 if the folder is not found or contains no files.
+ */
 export async function GET(req: NextRequest, props: { params: Promise<{ folder: string }> }) {
     const params = await props.params;
     const shareToken = req.nextUrl.searchParams.get("share");

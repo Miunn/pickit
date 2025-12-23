@@ -3,6 +3,13 @@ import { isAllowedToAccessFile } from "@/lib/dal";
 import { GoogleBucket } from "@/lib/bucket";
 import { FileService } from "@/data/file-service";
 
+/**
+ * Streams a video file from Google Cloud Storage and returns it as an HTTP response.
+ *
+ * @param req - The incoming Next.js request; query may include `share` (magic link token) and `h` (access key).
+ * @param props - An object whose `params` promise resolves to route parameters `{ folder, video }` identifying the requested file.
+ * @returns A NextResponse whose body is the video's readable stream and which includes `Content-Type`, `Content-Length`, and `Content-Disposition` headers. If access is denied, returns a JSON error with status 400. If the video is not found, returns a JSON error with status 404.
+ */
 export async function GET(req: NextRequest, props: { params: Promise<{ folder: string; video: string }> }) {
     const params = await props.params;
     const shareToken = req.nextUrl.searchParams.get("share");

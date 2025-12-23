@@ -11,6 +11,15 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { TooltipProvider } from "../ui/tooltip";
 import { useTranslations } from "next-intl";
 
+/**
+ * Renders a file's like count and a heart button that allows the current user to toggle their like for the file.
+ *
+ * When the current user is not allowed to like the file, shows a non-interactive heart with a tooltip explaining why.
+ * When the user can like, clicking the heart invokes the like action, updates the files state in context to add or remove the corresponding like, and shows an error toast if the action fails.
+ *
+ * @param file - The file object including its current likes (FileWithLikes).
+ * @returns The JSX element containing the like count and heart button.
+ */
 export default function FileLikeButton({ file }: { file: FileWithLikes }) {
     const t = useTranslations("components.files.likeButton");
     const { files, setFiles, hasUserLikedFile, canUserLikeFile } = useFilesContext();

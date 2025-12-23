@@ -40,6 +40,13 @@ const getDefaultMarkers = (files: MapFileWithFolderAndUrl[], selectedFolders: Se
     };
 };
 
+/**
+ * Renders an interactive Google Map displaying files as markers with folder-based filtering, cluster and POI info windows, and an in-map file carousel.
+ *
+ * The component reads files from context and derives unique folders for a folder-selection control. Files that include latitude/longitude are shown as markers; clicking a marker opens a file carousel at the corresponding file, interacting with clusters opens a cluster info window that lists folders and their cover images, and selecting a file from the carousel centers an individual POI info window. The map adapts its color scheme to the current theme.
+ *
+ * @returns The component's React element tree representing the map and its UI overlays (markers, info windows, carousel, and folder list).
+ */
 export default function FilesMap() {
     const theme = useTheme();
     const { files } = useFilesContext();

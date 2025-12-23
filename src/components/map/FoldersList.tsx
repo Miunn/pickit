@@ -7,6 +7,15 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from "../ui/button";
 import { FolderCard } from "./FolderCard";
 
+/**
+ * Renders a responsive folder list that allows selecting and deselecting folders and notifies the caller of selection changes.
+ *
+ * The component shows a grid of FolderCard items on large screens and a compact dropdown with checkboxes on small screens.
+ *
+ * @param folders - Array of folders with file counts to display and control selection for.
+ * @param onSelectionChange - Callback invoked with the updated set of selected folder IDs whenever the selection changes.
+ * @returns The JSX element for the folder selection UI.
+ */
 export default function FoldersList({
     folders,
     onSelectionChange,

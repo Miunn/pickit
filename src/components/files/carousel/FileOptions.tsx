@@ -30,6 +30,15 @@ import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { addTagsToFile, removeTagsFromFile } from "@/actions/tags";
 import { useTopLoader } from "nextjs-toploader";
 
+/**
+ * Render action controls for a file including tag management, fullscreen carousel, open-in-new-tab, download, copy-to-clipboard, and metadata actions.
+ *
+ * @param file - The file (with its folder and tags) for which actions are rendered.
+ * @param fullScreenCarouselFiles - Array of files (with folder and tags) used as the source for the fullscreen carousel.
+ * @param currentIndexState - Initial index to open the fullscreen carousel at.
+ * @param carouselApi - Carousel API instance used to control the parent carousel.
+ * @returns The JSX element containing the file action controls.
+ */
 export default function FileOptions({
     file,
     fullScreenCarouselFiles,
