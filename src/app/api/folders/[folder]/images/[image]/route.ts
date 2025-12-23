@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateV4DownloadUrl } from "@/lib/bucket";
+import { GoogleBucket } from "@/lib/bucket";
 import { isAllowedToAccessFile } from "@/lib/dal";
 import { FileService } from "@/data/file-service";
 
@@ -17,13 +17,35 @@ export async function GET(req: NextRequest, props: { params: Promise<{ image: st
 
     const image = await FileService.get({
         where: { id: params.image },
+        select: { createdById: true, folderId: true, id: true, extension: true },
     });
 
     if (!image) {
         return NextResponse.json({ error: "Image not found" });
     }
 
-    const url = await generateV4DownloadUrl(`${image.createdById}/${image.folderId}/${image.id}`);
+    const file = GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`);
 
-    return NextResponse.redirect(url);
+    const stream = file.createReadStream();
+
+    // Convert Node.js Readable (from Google Cloud Storage) to a Web ReadableStream
+    // suitable for the Fetch API / NextResponse
+    const webStream = new globalThis.ReadableStream({
+        start(controller) {
+            stream.on("data", chunk => controller.enqueue(chunk));
+            stream.on("end", () => controller.close());
+            stream.on("error", err => controller.error(err));
+        },
+        cancel() {
+            stream.destroy();
+        },
+    });
+    const res = new NextResponse(webStream, {
+        headers: {
+            "Content-Type": "image/" + image.extension,
+            "Cache-Control": "private, max-age=2592000, immutable",
+        },
+    });
+
+    return res;
 }
