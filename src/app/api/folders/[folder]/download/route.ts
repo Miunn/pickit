@@ -34,7 +34,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
 
     archive.on("error", err => {
         console.error(err);
-        throw err;
+        stream.destroy(err);
     });
 
     const stream = new PassThrough();
@@ -42,9 +42,9 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
 
     for (const file of folder.files) {
         const path = `${folder.createdById}/${folder.id}/${file.id}`;
-        const stream = GoogleBucket.file(path).createReadStream();
+        const fileStream = GoogleBucket.file(path).createReadStream();
 
-        archive.append(stream, { name: `${file.name}.${file.extension}` });
+        archive.append(fileStream, { name: `${file.name}.${file.extension}` });
     }
 
     archive.finalize();
@@ -60,7 +60,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
     return new NextResponse(webStream, {
         headers: {
             "Content-Type": "application/zip",
-            "Content-Disposition": `attachment; filename=${folder.name}.zip`,
+            "Content-Disposition": `attachment; filename=${encodeURIComponent(folder.name)}.zip; filename*=UTF-8''${encodeURIComponent(folder.name)}.zip`,
         },
     });
 }

@@ -45,8 +45,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
     const res = new NextResponse(webStream, {
         headers: {
             "Content-Type": "video/" + video.extension,
-            "Content-Length": video.size.toString(),
-            "Content-Disposition": `attachment; filename=${video.name}.${video.extension}`,
+            "Content-Disposition": `attachment; filename=${encodeURIComponent(video.name)}.${encodeURIComponent(video.extension)}`,
         },
     });
 

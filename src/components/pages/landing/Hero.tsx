@@ -122,21 +122,21 @@ export default function Hero({ seeMoreRef }: { seeMoreRef: React.RefObject<HTMLD
                     <Image
                         className="rounded-xl absolute left-1/3 top-1/3 -translate-x-1/2 -translate-y-1/2 object-cover"
                         src={"/beach.jpg"}
-                        alt="beach"
+                        alt="Beach"
                         width={320}
                         height={213}
                     />
                     <Image
                         className="rounded-xl absolute right-1/2 bottom-1/3 translate-x-1/2 translate-y-1/2 object-cover"
                         src={"/bridge.jpg"}
-                        alt="beach"
+                        alt="Bridge"
                         width={300}
                         height={200}
                     />
                     <Image
                         className="rounded-xl absolute left-2/3 top-1/3 -translate-y-1/2 object-cover"
                         src={"/parrot.jpg"}
-                        alt="beach"
+                        alt="Parrot"
                         width={170}
                         height={256}
                     />

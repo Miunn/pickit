@@ -112,12 +112,8 @@ export default function ManageTagsDialog({
 
     const handleTagAdded = (tag: FolderTag) => {
         setFolder({ ...folder, tags: [...folder.tags, tag] });
-        setSelectedTags([...selectedTags, tag]);
-        try {
-            onTagAdded?.(tag);
-        } catch {
-            // noop: parent can handle failure visually if needed
-        }
+        setSelectedTags([...selectedTagsState, tag]);
+        onTagAdded?.(tag);
     };
 
     const handleTagSelected = async (tag: FolderTag) => {

@@ -11,7 +11,7 @@ export default function FolderDescription({ className }: { className?: string })
     const { folder } = useFolderContext();
 
     return (
-        <div className={cn("border border-primary rounded-lg p-4", className)}>
+        <div className={cn("relative group overflow-auto", "border border-primary rounded-lg p-4", className)}>
             <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>{folder.description}</p>
             {folder.createdById === user?.id ? (
                 <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">

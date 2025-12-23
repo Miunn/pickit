@@ -44,7 +44,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
     });
     const res = new NextResponse(webStream, {
         headers: {
-            "Content-Type": "video/" + video.extension,
+            "Content-Type": "image/jpeg",
             "Cache-Control": "private, max-age=2592000, immutable",
         },
     });

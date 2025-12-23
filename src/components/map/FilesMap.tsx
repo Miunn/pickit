@@ -41,7 +41,7 @@ const getDefaultMarkers = (files: MapFileWithFolderAndUrl[], selectedFolders: Se
 };
 
 export default function FilesMap() {
-    const theme = useTheme();
+    const { resolvedTheme } = useTheme();
     const { files } = useFilesContext();
 
     const uniqueFolders = useMemo(() => {
@@ -137,7 +137,7 @@ export default function FilesMap() {
             <Map
                 mapId={process.env.NEXT_PUBLIC_USER_MAP_ID || ""}
                 mapTypeControl={true}
-                colorScheme={theme.resolvedTheme === "dark" ? "DARK" : "LIGHT"}
+                colorScheme={resolvedTheme === "dark" ? "DARK" : "LIGHT"}
                 defaultCenter={{ lat: 22.54992, lng: 0 }}
                 defaultZoom={3}
                 gestureHandling={"greedy"}

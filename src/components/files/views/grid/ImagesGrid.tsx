@@ -354,7 +354,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                     }}
                 />
             ) : null}
-            <FolderDescription className="block sm:hidden w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto mb-3" />
+            <FolderDescription className="block sm:hidden w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] mb-3" />
             <div
                 className={cn(
                     files.length === 0
@@ -363,7 +363,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                     "relative"
                 )}
             >
-                <FolderDescription className="hidden sm:block w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto" />
+                <FolderDescription className="hidden sm:block w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px]" />
                 {renderGrid()}
             </div>
 

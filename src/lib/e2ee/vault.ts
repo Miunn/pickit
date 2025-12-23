@@ -54,7 +54,6 @@ export const loadVault = async (
     iv: Uint8Array<ArrayBuffer>,
     wrappingKey: CryptoKey
 ): Promise<CryptoKey> => {
-    console.log("Loading vault", wrappedKey, iv, wrappingKey);
     return crypto.subtle.unwrapKey(
         "jwk",
         wrappedKey,

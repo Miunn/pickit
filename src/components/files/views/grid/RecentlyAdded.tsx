@@ -1,13 +1,13 @@
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { useTranslations } from "next-intl";
-import { Fragment, useMemo, useRef } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { ImagePreviewGrid } from "./ImagePreviewGrid";
 import { X } from "lucide-react";
 
 export default function RecentlyAdded({ onClickImage }: { onClickImage: (file: ContextFile) => void }) {
     const { files } = useFilesContext();
     const t = useTranslations("images");
-    const ref = useRef<HTMLDivElement>(null);
+    const [isVisible, setIsVisible] = useState(true);
 
     const newFiles = useMemo(() => {
         return files.filter(file => {
@@ -21,11 +21,11 @@ export default function RecentlyAdded({ onClickImage }: { onClickImage: (file: C
 
     return (
         <>
-            {newFiles.length > 0 && (
-                <div ref={ref}>
+            {isVisible && newFiles.length > 0 && (
+                <div>
                     <div className="flex justify-between items-center">
                         <h2 className="text-lg font-medium">{t("newFiles")}</h2>
-                        <button onClick={() => ref.current?.remove()} className="mr-2">
+                        <button onClick={() => setIsVisible(false)} className="mr-2">
                             <X className="w-4 h-4" />
                         </button>
                     </div>

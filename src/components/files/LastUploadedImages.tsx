@@ -4,7 +4,7 @@ import { ImageOff } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useFilesContext } from "@/context/FilesContext";
 import FileThumbnail from "./views/grid/FileThumbnail";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 export const LastUploadedImages = () => {
     const { files } = useFilesContext();
