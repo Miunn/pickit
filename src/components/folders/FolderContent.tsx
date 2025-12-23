@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useTranslations } from "next-intl";
 import { ViewState } from "./ViewSelector";
@@ -10,14 +10,9 @@ import FolderActionBar from "./FolderActionBar";
 import { useSession } from "@/providers/SessionProvider";
 import TagGroupedGrid from "../files/views/grid/TagGroupedGrid";
 
-const ImagesGrid = dynamic(() => import('@/components/files/views/grid/ImagesGrid').then(mod => mod.ImagesGrid), {
+const ImagesGrid = dynamic(() => import("@/components/files/views/grid/ImagesGrid").then(mod => mod.ImagesGrid), {
     ssr: false,
 });
-
-export interface FolderContentProps {
-    defaultView?: ViewState;
-    isGuest?: boolean;
-}
 
 export const FolderContent = () => {
     const { isGuest } = useSession();
@@ -26,7 +21,7 @@ export const FolderContent = () => {
 
     const t = useTranslations("folders");
 
-    const renderContent = () => {        
+    const renderContent = () => {
         switch (viewState) {
             case ViewState.List:
                 return <ImagesList />;
@@ -35,23 +30,22 @@ export const FolderContent = () => {
             default:
                 return <ImagesGrid sortState={sortState} />;
         }
-    }
+    };
 
     return (
         <div>
             <h3 className={"mb-2 flex justify-between items-center"}>
-                <p className="font-semibold">{folder.name} {
-                    isGuest
-                        ? <span className="font-normal text-sm">- {t('sharedBy', { name: folder.createdBy.name })}</span>
-                        : null
-                }</p>
+                <p className="font-semibold">
+                    {folder.name}{" "}
+                    {isGuest ? (
+                        <span className="font-normal text-sm">- {t("sharedBy", { name: folder.createdBy.name })}</span>
+                    ) : null}
+                </p>
 
                 <FolderActionBar />
             </h3>
 
-            <div className="flex-1 overflow-visible">
-                {renderContent()}
-            </div>
+            <div className="flex-1 overflow-visible">{renderContent()}</div>
         </div>
-    )
-}
+    );
+};

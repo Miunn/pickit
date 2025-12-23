@@ -8,13 +8,12 @@ import ClusteredMarkers from "./ClusteredMarkers";
 import { Point, FeatureCollection } from "geojson";
 import ClusterWindowContent from "./ClusterWindowContent";
 import { PoiWindowContent } from "./PoiWindowContent";
-import FolderList from "./FolderList";
 import { File } from "@prisma/client";
 import MapFileCarousel from "./MapFileCarousel";
 import { PointFeature } from "supercluster";
 import { useFilesContext } from "@/context/FilesContext";
-
-export type Poi = { key: string; location: google.maps.LatLngLiteral };
+import FoldersList from "./FoldersList";
+import { useTheme } from "next-themes";
 
 export type MapFileWithFolderAndUrl = File & {
     folder: FolderWithFilesCount;
@@ -42,6 +41,7 @@ const getDefaultMarkers = (files: MapFileWithFolderAndUrl[], selectedFolders: Se
 };
 
 export default function FilesMap() {
+    const theme = useTheme();
     const { files } = useFilesContext();
 
     const uniqueFolders = useMemo(() => {
@@ -137,7 +137,7 @@ export default function FilesMap() {
             <Map
                 mapId={process.env.NEXT_PUBLIC_USER_MAP_ID || ""}
                 mapTypeControl={true}
-                style={{ position: "relative", width: "100%", height: "100%" }}
+                colorScheme={theme.resolvedTheme === "dark" ? "DARK" : "LIGHT"}
                 defaultCenter={{ lat: 22.54992, lng: 0 }}
                 defaultZoom={3}
                 gestureHandling={"greedy"}
@@ -191,13 +191,12 @@ export default function FilesMap() {
                         onFileChange={handleFileChange}
                     />
                 )}
-
-                {uniqueFolders.length > 0 && (
-                    <div className="absolute top-3 right-3">
-                        <FolderList folders={uniqueFolders} onSelectionChange={setSelectedFolders} />
-                    </div>
-                )}
             </Map>
+            {uniqueFolders.length > 0 && (
+                <div className="absolute top-20 right-3">
+                    <FoldersList folders={uniqueFolders} onSelectionChange={setSelectedFolders} />
+                </div>
+            )}
         </APIProvider>
     );
 }

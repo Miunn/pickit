@@ -1,10 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { FileType, Plan } from "@prisma/client";
+import { Plan } from "@prisma/client";
 import { FolderWithFilesWithFolderAndComments, FileWithFolder } from "./definitions";
-import { toast } from "@/hooks/use-toast";
 import { ImagesSortMethod } from "@/types/imagesSort";
-import saveAs from "file-saver";
 
 export const plansBenefits: Record<Plan, { storage: number; albums: number; sharingLinks: number }> = {
     [Plan.FREE]: {
@@ -232,6 +230,13 @@ export const getLimitsFromPlan = (plan: Plan): { storage: number; albums: number
             };
     }
 };
+
+export function isNewFile(date: Date) {
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - date.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays <= 3;
+}
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));

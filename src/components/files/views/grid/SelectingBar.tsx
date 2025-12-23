@@ -5,7 +5,6 @@ import { Tag, Trash2, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import ManageTagsDialog from "../../dialogs/ManageTagsDialog";
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
-import { useFolderContext } from "@/context/FolderContext";
 import { addTagsToFiles, removeTagsFromFiles } from "@/actions/tags";
 import { toast } from "sonner";
 import { DeleteMultipleImagesDialog } from "../../dialogs/DeleteMultipleImagesDialog";
@@ -22,7 +21,6 @@ export default function SelectingBar({
 }) {
     const t = useTranslations("files.grid.selectingBar");
 
-    const { folder } = useFolderContext();
     const { setFiles } = useFilesContext();
     const stickyRef = useRef<HTMLDivElement>(null);
     const [isSticky, setIsSticky] = useState(false);
@@ -63,7 +61,6 @@ export default function SelectingBar({
             <div className="space-x-2">
                 <ManageTagsDialog
                     selectedTags={[]}
-                    availableTags={folder.tags}
                     onTagAdded={async (tag: FolderTag) => {
                         setFiles((prev: ContextFile[]) =>
                             prev.map(f => (selected.includes(f.id) ? { ...f, tags: [...f.tags, tag] } : f))

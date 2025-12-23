@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../../ui/dialog";
 import { Label } from "../../ui/label";
 import { BrushCleaning, Loader2 } from "lucide-react";
-import { PopoverNonPortal, PopoverContent, PopoverTrigger } from "../../ui/popover-non-portal";
+import { PopoverContent, PopoverNonPortal, PopoverTrigger } from "../../ui/popover-non-portal";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { useState } from "react";
@@ -42,7 +42,10 @@ const AddTagPopover = ({ onTagAdded, folderId }: AddTagPopoverProps) => {
             toast.success(t("addTag.success"));
             onTagAdded(result.tag);
             setOpen(false);
+            return;
         }
+
+        toast.error(t("addTag.errorAdd"));
     };
 
     return (
@@ -66,7 +69,7 @@ const AddTagPopover = ({ onTagAdded, folderId }: AddTagPopoverProps) => {
                     <Label>{t("addTag.color")}</Label>
                     <div className="mt-1 grid grid-cols-3 gap-2">
                         {colors.map(color => (
-                            <div
+                            <button
                                 key={color}
                                 className={cn(
                                     "h-9 rounded-md cursor-pointer transition-all duration-75 ease-in-out outline outline-0 outline-offset-0 outline-transparent",
@@ -90,7 +93,6 @@ const AddTagPopover = ({ onTagAdded, folderId }: AddTagPopoverProps) => {
 export default function ManageTagsDialog({
     children,
     selectedTags,
-    availableTags,
     onTagSelected,
     onTagUnselected,
     onTagAdded,
@@ -99,7 +101,6 @@ export default function ManageTagsDialog({
 }: {
     children: React.ReactNode;
     selectedTags: FolderTag[];
-    availableTags: FolderTag[];
     onTagSelected: (tag: FolderTag) => Promise<boolean>;
     onTagUnselected: (tag: FolderTag) => Promise<boolean>;
     onTagAdded: (tag: FolderTag) => Promise<boolean>;
@@ -107,27 +108,22 @@ export default function ManageTagsDialog({
 } & React.ComponentProps<typeof DialogTrigger>) {
     const t = useTranslations("dialogs.files.addTag");
     const [selectedTagsState, setSelectedTags] = useState<FolderTag[]>(selectedTags);
-    const [folderTags, setFolderTags] = useState<FolderTag[]>(availableTags || []);
-    const { folder } = useFolderContext();
+    const { folder, setFolder } = useFolderContext();
 
-    const handleTagAdded = async (tag: FolderTag) => {
-        setFolderTags([...folderTags, tag]);
+    const handleTagAdded = (tag: FolderTag) => {
+        setFolder({ ...folder, tags: [...folder.tags, tag] });
         setSelectedTags([...selectedTags, tag]);
-        if (onTagAdded) {
-            try {
-                await onTagAdded(tag);
-            } catch {
-                // noop: parent can handle failure visually if needed
-            }
+        try {
+            onTagAdded?.(tag);
+        } catch {
+            // noop: parent can handle failure visually if needed
         }
     };
 
     const handleTagSelected = async (tag: FolderTag) => {
         setSelectedTags([...selectedTags, tag]);
-        console.log("Added tag");
 
         const result = await onTagSelected(tag);
-        console.log("Result", result);
         if (!result) {
             setSelectedTags(selectedTags.filter(t => t.id !== tag.id));
         }
@@ -188,9 +184,9 @@ export default function ManageTagsDialog({
                             <AddTagPopover onTagAdded={handleTagAdded} folderId={folder.id} />
                         </span>
                     </Label>
-                    {folderTags.length > 0 ? (
+                    {folder.tags.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
-                            {folderTags.map(tag => (
+                            {folder.tags.map(tag => (
                                 <TagChip
                                     key={tag.id}
                                     tag={tag}

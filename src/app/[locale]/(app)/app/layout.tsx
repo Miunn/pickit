@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "../../../globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { getTranslations } from "next-intl/server";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/ui/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Folder, Image, Link, Map } from "lucide-react";

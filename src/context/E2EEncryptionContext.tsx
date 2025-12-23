@@ -8,7 +8,7 @@ type E2EEncryptionContextType = {
     publicKey: CryptoKey | null;
     wrappingKey: CryptoKey | null;
     loadKeys: (password: string) => Promise<boolean>;
-    setupKeys: (password: string, iv: Uint8Array, salt: Uint8Array) => Promise<boolean>;
+    setupKeys: (password: string, iv: Uint8Array<ArrayBuffer>, salt: Uint8Array<ArrayBuffer>) => Promise<boolean>;
     loadWrappingKeyFromSessionStorage: () => void;
 };
 
@@ -61,7 +61,11 @@ export function E2EEncryptionProvider({ children }: { children: React.ReactNode 
         return r;
     };
 
-    const setupKeys = async (password: string, iv: Uint8Array, salt: Uint8Array): Promise<boolean> => {
+    const setupKeys = async (
+        password: string,
+        iv: Uint8Array<ArrayBuffer>,
+        salt: Uint8Array<ArrayBuffer>
+    ): Promise<boolean> => {
         const { publicKey, privateKey } = await generateKeys();
         const { wrappingKey } = await storeKeys(publicKey, privateKey, iv, salt, password);
         setPublicKey(publicKey);

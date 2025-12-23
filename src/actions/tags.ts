@@ -35,18 +35,25 @@ export async function createTag(
         };
     }
 
-    const tag = await FolderTagService.create({
-        name,
-        color,
-        folder: { connect: { id: folderId } },
-        files: fileId ? { connect: { id: fileId } } : undefined,
-        user: { connect: { id: session.user.id } },
-    });
-
-    return {
-        success: true,
-        tag,
-    };
+    try {
+        const tag = await FolderTagService.create({
+            name,
+            color,
+            folder: { connect: { id: folderId } },
+            files: fileId ? { connect: { id: fileId } } : undefined,
+            user: { connect: { id: session.user.id } },
+        });
+        return {
+            success: true,
+            tag,
+        };
+    } catch (error) {
+        console.error("Error creating tag:", error);
+        return {
+            success: false,
+            error: "failed to create tag",
+        };
+    }
 }
 
 export async function addTagsToFile(

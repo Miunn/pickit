@@ -23,9 +23,12 @@ import { useSession } from "@/providers/SessionProvider";
 import { Link } from "@/i18n/navigation";
 import { FolderTokenPermission } from "@prisma/client";
 import { ImagesSortMethod } from "@/types/imagesSort";
+import { useTopLoader } from "nextjs-toploader";
+import { toast } from "@/hooks/use-toast";
 
 export default function FolderActionBar() {
     const { isGuest } = useSession();
+    const { done } = useTopLoader();
     const { folder, token, tokenHash, isShared } = useFolderContext();
     const { viewState, sortState, setViewState, setSortState, files, setFiles } = useFilesContext();
     const t = useTranslations("folders");
@@ -70,7 +73,18 @@ export default function FolderActionBar() {
                         {!!!isGuest ? (
                             <DropdownMenuItem onClick={() => setOpenShare(true)}>{t("share.label")}</DropdownMenuItem>
                         ) : null}
-                        <DropdownMenuItem asChild>
+                        <DropdownMenuItem
+                            onClick={() => {
+                                toast({
+                                    title: t("downloadStarted"),
+                                    description: t("downloadStartedDescription", { name: folder.name }),
+                                });
+                                setTimeout(() => {
+                                    done();
+                                }, 1000);
+                            }}
+                            asChild
+                        >
                             <a href={`/api/folders/${folder.id}/download`} download>
                                 {t("download.label")}
                             </a>

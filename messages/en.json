@@ -481,7 +481,11 @@
                 "actions": {
                     "expand": "Expand",
                     "openInNew": "Open in new",
-                    "download": "Download",
+                    "download": {
+                        "label": "Download",
+                        "started": "Download started",
+                        "description": "{name} is being downloaded"
+                    },
                     "copy": {
                         "title": "Copy",
                         "success": {
@@ -1419,7 +1423,7 @@
                     "color": "Choose color",
                     "error": "Error while adding tag",
                     "errorRemove": "Error happened while removing tag",
-                    "errorAdd": "Error happened while adding tag",
+                    "errorAdd": "Error happened while adding tag. A same tag may already exist.",
                     "errorEmpty": "Name must not be empty"
                 },
                 "noUserTags": "No tags created yet"
@@ -1734,6 +1738,8 @@
         "sharedBy": "Shared by {name}",
         "filesCount": "{count, plural, one {# file} other {# files}}",
         "addDescription": "Add a description",
+        "downloadStarted": "Download started",
+        "downloadStartedDescription": "{name} is being downloaded",
         "page": {
             "title": "Folders",
             "subtitle": "Your created folders"

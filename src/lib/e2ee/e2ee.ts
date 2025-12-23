@@ -40,7 +40,7 @@ export async function generateKeys() {
     return { publicKey, privateKey };
 }
 
-export async function passwordToKey(password: string, salt: Uint8Array) {
+export async function passwordToKey(password: string, salt: Uint8Array<ArrayBuffer>) {
     // First derive a key using PBKDF2
     const keyMaterial = await crypto.subtle.importKey(
         "raw",
@@ -53,7 +53,7 @@ export async function passwordToKey(password: string, salt: Uint8Array) {
     const derivedBits = await crypto.subtle.deriveBits(
         {
             name: "PBKDF2",
-            salt,
+            salt: salt,
             iterations: 100000,
             hash: "SHA-256",
         },
@@ -74,8 +74,8 @@ export async function passwordToKey(password: string, salt: Uint8Array) {
 export async function storeKeys(
     publicKey: CryptoKey,
     privateKey: CryptoKey,
-    iv: Uint8Array,
-    salt: Uint8Array,
+    iv: Uint8Array<ArrayBuffer>,
+    salt: Uint8Array<ArrayBuffer>,
     password: string
 ): Promise<{ publicKey: CryptoKey; privateKey: CryptoKey; wrappingKey: CryptoKey; wrappedPrivateKey: ArrayBuffer }> {
     const { key: wrappingKey } = await passwordToKey(password, salt);
@@ -152,7 +152,7 @@ export async function exportKeyPair(
     publicKey: CryptoKey,
     privateKey: CryptoKey,
     wrappingKey: CryptoKey,
-    iv: Uint8Array
+    iv: Uint8Array<ArrayBuffer>
 ) {
     const exportedPublicKey = await crypto.subtle.exportKey("spki", publicKey);
     const exportedPrivateKey = await crypto.subtle.wrapKey("jwk", privateKey, wrappingKey, { name: "AES-GCM", iv });
@@ -166,7 +166,12 @@ export async function exportKeyPair(
  * @param iv - Initialization AES vector
  * @returns The private CryptoKey
  */
-export async function importKeyPair(pbKey: ArrayBuffer, prKey: ArrayBuffer, wrappingKey: CryptoKey, iv: Uint8Array) {
+export async function importKeyPair(
+    pbKey: ArrayBuffer,
+    prKey: ArrayBuffer,
+    wrappingKey: CryptoKey,
+    iv: Uint8Array<ArrayBuffer>
+) {
     const publicKey = await crypto.subtle.importKey("spki", pbKey, { name: "ECDH", namedCurve: "P-256" }, true, []);
 
     const privateKey = await crypto.subtle.unwrapKey(
@@ -175,7 +180,7 @@ export async function importKeyPair(pbKey: ArrayBuffer, prKey: ArrayBuffer, wrap
         wrappingKey,
         {
             name: "AES-GCM",
-            iv: iv,
+            iv,
         },
         {
             name: "ECDH",

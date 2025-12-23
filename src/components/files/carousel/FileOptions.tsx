@@ -28,6 +28,7 @@ import ManageTagsDialog from "../dialogs/ManageTagsDialog";
 import { useSession } from "@/providers/SessionProvider";
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { addTagsToFile, removeTagsFromFile } from "@/actions/tags";
+import { useTopLoader } from "nextjs-toploader";
 
 export default function FileOptions({
     file,
@@ -42,6 +43,7 @@ export default function FileOptions({
 }) {
     const { user } = useSession();
     const { setFiles } = useFilesContext();
+    const { done } = useTopLoader();
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
@@ -95,7 +97,6 @@ export default function FileOptions({
                 {user?.id === file.createdById && (
                     <ManageTagsDialog
                         selectedTags={file.tags}
-                        availableTags={file.folder.tags}
                         onTagSelected={handleTagSelected}
                         onTagUnselected={handleTagUnselected}
                         onTagAdded={handleTagAdded}
@@ -122,7 +123,21 @@ export default function FileOptions({
                         <ExternalLink className="w-4 h-4" />
                     </Link>
                 </Button>
-                <Button variant={"outline"} size={"icon"} type="button" asChild>
+                <Button
+                    variant={"outline"}
+                    size={"icon"}
+                    type="button"
+                    onClick={() => {
+                        toast({
+                            title: t("download.started"),
+                            description: t("download.description", { name: file.name }),
+                        });
+                        setTimeout(() => {
+                            done();
+                        }, 1000);
+                    }}
+                    asChild
+                >
                     <a
                         href={`/api/folders/${file.folder.id}/${file.type === FileType.VIDEO ? "videos" : "images"}/${file.id}/download`}
                         download
@@ -191,7 +206,6 @@ export default function FileOptions({
                         >
                             <ManageTagsDialog
                                 selectedTags={file.tags}
-                                availableTags={file.folder.tags}
                                 onTagSelected={handleTagSelected}
                                 onTagUnselected={handleTagUnselected}
                                 onTagAdded={handleTagAdded}
@@ -226,7 +240,18 @@ export default function FileOptions({
                             {t("openInNew")}
                         </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
+                    <DropdownMenuItem
+                        onClick={() => {
+                            toast({
+                                title: t("download.started"),
+                                description: t("download.description", { name: file.name }),
+                            });
+                            setTimeout(() => {
+                                done();
+                            }, 1000);
+                        }}
+                        asChild
+                    >
                         <a
                             href={`/api/folders/${file.folder.id}/${file.type === FileType.VIDEO ? "videos" : "images"}/${file.id}/download`}
                             download
@@ -236,7 +261,7 @@ export default function FileOptions({
                             ) : (
                                 <Download size={16} className="opacity-60 mr-2" aria-hidden="true" />
                             )}*/}
-                            {t("download")}
+                            {t("download.label")}
                         </a>
                     </DropdownMenuItem>
                     {file.type !== FileType.VIDEO ? (

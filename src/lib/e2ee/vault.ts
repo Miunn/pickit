@@ -6,7 +6,7 @@ export async function withIndexedDB(callback: (db: IDBDatabase) => void) {
     request.onsuccess = () => {
         callback(request.result);
     };
-    request.onupgradeneeded = (event) => {
+    request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result;
         createStore(db);
     };
@@ -29,12 +29,15 @@ export function createStore(db: IDBDatabase) {
     }
 }
 
-export const createVault = async (folderId: string, wrappingKey: CryptoKey): Promise<{ key: CryptoKey, encryptedKey: ArrayBuffer, iv: Uint8Array }> => {
+export const createVault = async (
+    folderId: string,
+    wrappingKey: CryptoKey
+): Promise<{ key: CryptoKey; encryptedKey: ArrayBuffer; iv: Uint8Array }> => {
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
     const wrappedKey = await crypto.subtle.wrapKey("jwk", key, wrappingKey, { name: "AES-GCM", iv });
 
-    withIndexedDB(async (db) => {
+    withIndexedDB(async db => {
         const transaction = db.transaction("vaults", "readwrite");
         const store = transaction.objectStore("vaults");
         const request = store.add({ folderId, wrappedKey, iv });
@@ -44,17 +47,21 @@ export const createVault = async (folderId: string, wrappingKey: CryptoKey): Pro
     });
 
     return { key, encryptedKey: wrappedKey, iv };
-}
+};
 
-export const loadVault = async (wrappedKey: ArrayBuffer, iv: Uint8Array, wrappingKey: CryptoKey): Promise<CryptoKey> => {
+export const loadVault = async (
+    wrappedKey: ArrayBuffer,
+    iv: Uint8Array<ArrayBuffer>,
+    wrappingKey: CryptoKey
+): Promise<CryptoKey> => {
     console.log("Loading vault", wrappedKey, iv, wrappingKey);
     return crypto.subtle.unwrapKey(
         "jwk",
         wrappedKey,
         wrappingKey,
-        { name: "AES-GCM", iv: iv },  // Describing wrapping key
-        { name: "AES-GCM", length: 256 },   // Describing wrapped key
+        { name: "AES-GCM", iv: iv }, // Describing wrapping key
+        { name: "AES-GCM", length: 256 }, // Describing wrapped key
         true,
         ["encrypt", "decrypt"]
     );
-}
+};

@@ -44,7 +44,7 @@ export default function ImagesList() {
         if (folder && files) {
             setIsLoading(false);
         }
-    }, [folder]);
+    }, [folder, files]);
 
     // Prepare data safely
     const tableData = React.useMemo(() => {

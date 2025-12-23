@@ -1,15 +1,6 @@
 import { FolderContent } from "@/components/folders/FolderContent";
 import UnlockTokenPrompt from "@/components/folders/UnlockTokenPrompt";
-import { getSortedFolderContent } from "@/lib/utils";
 import { ImagesSortMethod } from "@/types/imagesSort";
-import {
-    FolderWithAccessToken,
-    FolderWithCover,
-    FolderWithCreatedBy,
-    FolderWithFilesCount,
-    FolderWithFilesWithFolderAndComments,
-    FolderWithTags,
-} from "@/lib/definitions";
 import { redirect } from "@/i18n/navigation";
 import { ViewState } from "@/components/folders/ViewSelector";
 import { getTranslations } from "next-intl/server";
@@ -160,11 +151,13 @@ export default async function FolderPage(props: {
                     likes: true,
                     tags: true,
                 },
-                // take: 20, // Load only first 20 files
                 orderBy: getSortOrderBy(searchParams.sort || ImagesSortMethod.DateDesc),
             },
             createdBy: true,
             accessTokens: true,
+            tags: true,
+            _count: { select: { files: true } },
+            cover: true,
         },
     });
 
@@ -216,17 +209,7 @@ export default async function FolderPage(props: {
                 <HeaderBreadcumb folderName={folder.name} />
             </BreadcrumbPortal>
             <FolderProvider
-                folderData={
-                    getSortedFolderContent(
-                        folder,
-                        searchParams.sort || ImagesSortMethod.DateDesc
-                    ) as FolderWithCreatedBy &
-                        FolderWithTags &
-                        FolderWithAccessToken &
-                        FolderWithFilesCount &
-                        FolderWithCover &
-                        FolderWithFilesWithFolderAndComments
-                }
+                folderData={folder}
                 tokenData={accessToken}
                 tokenHash={searchParams.h ?? null}
                 isShared={folder.accessTokens.filter(token => token.email).length > 0}
