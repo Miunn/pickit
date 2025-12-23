@@ -1,5 +1,4 @@
-import { File } from "@prisma/client";
-import { FolderWithFilesCount } from "@/lib/definitions";
+import { FileWithFolder } from "@/lib/definitions";
 import { useEffect, useState } from "react";
 import {
     Carousel,
@@ -14,10 +13,6 @@ import LoadingImage from "../files/LoadingImage";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useSearchParams } from "next/navigation";
-
-type FileWithFolder = File & {
-    folder: FolderWithFilesCount;
-};
 
 interface FileCarouselProps {
     files: FileWithFolder[];

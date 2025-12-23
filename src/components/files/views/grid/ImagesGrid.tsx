@@ -219,7 +219,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                             </div>
                         ) : (
                             sortedFiles.map(file => (
-                                <div key={file.id} id={file.id} data-id={file.id}>
+                                <div key={file.id} id={file.id} data-id={file.id} className="w-full">
                                     <ImagePreviewGrid
                                         className={`${activeId === file.id ? "opacity-50" : ""}`}
                                         file={file}
