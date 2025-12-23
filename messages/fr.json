@@ -481,7 +481,11 @@
                 "actions": {
                     "expand": "Etendre",
                     "openInNew": "Ouvrir dans un nouvel onglet",
-                    "download": "Télécharger",
+                    "download": {
+                        "label": "Télécharger",
+                        "started": "Téléchargement en cours",
+                        "description": "{name} est en train d'être téléchargé"
+                    },
                     "copy": {
                         "title": "Copier",
                         "success": {
@@ -1413,7 +1417,7 @@
                     "color": "Sélectionnez la couleur",
                     "error": "Une erreur est survenue lors de l'ajout de l'étiquette",
                     "errorRemove": "Une erreur est survenue lors de la suppression de l'étiquette",
-                    "errorAdd": "Une erreur est survenue lors de l'ajout de l'étiquette",
+                    "errorAdd": "Une erreur est survenue lors de l'ajout de l'étiquette. Une étiquette avec ce nom existe peut-être déjà",
                     "errorEmpty": "Le nom ne doit pas être vide"
                 },
                 "noUserTags": "Aucune étiquette créé pour le moment"

@@ -6,18 +6,27 @@ import { Link } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 
 type ClusterWindowContentProps = {
-    file: FileWithFolder & { signedUrl: string };
+    file: FileWithFolder;
     onClose: () => void;
 };
 
 export const PoiWindowContent = ({ file, onClose }: ClusterWindowContentProps) => {
     const searchParams = useSearchParams();
+    const share = searchParams.get("share") || "";
+    const h = searchParams.get("h") || "";
+    const t = searchParams.get("t") || "";
 
     return (
         <div className="relative">
             <div className="bg-white border border-primary rounded-lg overflow-hidden shadow-lg mb-[23px] max-w-64">
                 <div className="relative h-48 w-full">
-                    <LoadingImage src={file.signedUrl} alt={file.name} sizes="33vw" fill className="object-cover" />
+                    <LoadingImage
+                        src={`/api/folders/${file.folderId}/images/${file.id}?share=${share}&h=${h}&t=${t}`}
+                        alt={file.name}
+                        sizes="33vw"
+                        fill
+                        className="object-cover"
+                    />
 
                     <button
                         className="absolute top-2 right-2 text-white bg-black/50 rounded-full p-1"

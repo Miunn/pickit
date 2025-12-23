@@ -2,9 +2,6 @@
 
 import { ImagePreviewGrid } from "@/components/files/views/grid/ImagePreviewGrid";
 import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
-import { Trash2, Pencil, X } from "lucide-react";
 import { DeleteMultipleImagesDialog } from "@/components/files/dialogs/DeleteMultipleImagesDialog";
 import { CarouselDialog } from "@/components/files/carousel/CarouselDialog";
 import { cn, getSortedImagesVideosContent } from "@/lib/utils";
@@ -27,20 +24,17 @@ import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { updateFilePosition } from "@/actions/files";
 import { useFolderContext } from "@/context/FolderContext";
 import { ImagesSortMethod } from "@/types/imagesSort";
-import EditDescriptionDialog from "@/components/folders/dialogs/EditDescriptionDialog";
-import DeleteDescriptionDialog from "@/components/folders/dialogs/DeleteDescriptionDialog";
 import { useFilesContext } from "@/context/FilesContext";
 import { ContextFile } from "@/context/FilesContext";
 import SelectingBar from "./SelectingBar";
+import FolderDescription from "@/components/folders/views/grid/FolderDescription";
+import RecentlyAdded from "./RecentlyAdded";
 
 export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     const { user } = useSession();
     const { folder, isShared /*token, tokenHash*/ } = useFolderContext();
     const { files, setFiles } = useFilesContext();
 
-    const newFilesRef = useRef<HTMLDivElement>(null);
-
-    const t = useTranslations("images");
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
     const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
     const [startIndex, setStartIndex] = useState(0);
@@ -225,7 +219,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                             </div>
                         ) : (
                             sortedFiles.map(file => (
-                                <Fragment key={file.id}>
+                                <div key={file.id} id={file.id} data-id={file.id}>
                                     <ImagePreviewGrid
                                         className={`${activeId === file.id ? "opacity-50" : ""}`}
                                         file={file}
@@ -273,7 +267,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                                             }
                                         }}
                                     />
-                                </Fragment>
+                                </div>
                             ))
                         )}
                     </SortableContext>
@@ -342,47 +336,14 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
         ));
     };
 
-    const newFiles = useMemo(() => {
-        return files.filter(file => {
-            const now = new Date();
-            const fileDate = new Date(file.createdAt);
-            const diffTime = Math.abs(now.getTime() - fileDate.getTime());
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            return diffDays <= 3;
-        });
-    }, [files]);
-
     return (
         <div className="mt-10">
-            {newFiles.length > 0 && (
-                <div ref={newFilesRef}>
-                    <div className="w-full flex justify-between items-center">
-                        <h2 className="text-lg font-medium">{t("newFiles")}</h2>
-                        <Button variant="ghost" size={"icon"} onClick={() => newFilesRef.current?.remove()}>
-                            <X className="size-4" />
-                        </Button>
-                    </div>
-                    <hr className="mt-1 mb-5" />
-                    <div className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:grid-cols-[repeat(auto-fill,16rem)] justify-items-start gap-3 sm:gap-3 mx-auto mb-3">
-                        {newFiles.map(file => (
-                            <Fragment key={file.id}>
-                                <ImagePreviewGrid
-                                    file={file}
-                                    selected={selected}
-                                    onClick={() => {
-                                        setStartIndex(files.indexOf(file));
-                                        setCarouselOpen(true);
-                                    }}
-                                    onSelect={() => {}}
-                                />
-                            </Fragment>
-                        ))}
-                    </div>
-
-                    <h2 className="text-lg font-medium mt-8">{t("albumContent")}</h2>
-                    <hr className="mt-1 mb-5" />
-                </div>
-            )}
+            <RecentlyAdded
+                onClickImage={file => {
+                    setStartIndex(files.indexOf(file));
+                    setCarouselOpen(true);
+                }}
+            />
             {selecting ? (
                 <SelectingBar
                     selected={selected}
@@ -393,30 +354,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                     }}
                 />
             ) : null}
-            {folder.description ? (
-                <div
-                    className={cn(
-                        "block sm:hidden w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto mb-3",
-                        "border border-primary rounded-lg p-4"
-                    )}
-                >
-                    <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>{folder.description}</p>
-                    {folder.createdById === user?.id ? (
-                        <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
-                            <EditDescriptionDialog folder={folder}>
-                                <Button variant="ghost" size="icon">
-                                    <Pencil className={"w-4 h-4"} />
-                                </Button>
-                            </EditDescriptionDialog>
-                            <DeleteDescriptionDialog folder={folder}>
-                                <Button variant="ghost" size="icon">
-                                    <Trash2 className={"w-4 h-4"} />
-                                </Button>
-                            </DeleteDescriptionDialog>
-                        </div>
-                    ) : null}
-                </div>
-            ) : null}
+            <FolderDescription className="block sm:hidden w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] mb-3" />
             <div
                 className={cn(
                     files.length === 0
@@ -425,35 +363,9 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                     "relative"
                 )}
             >
-                {folder.description ? (
-                    <div
-                        className={cn(
-                            "hidden sm:block w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px] relative group overflow-auto",
-                            "border border-primary rounded-lg p-4"
-                        )}
-                    >
-                        <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>{folder.description}</p>
-                        {folder.createdById === user?.id ? (
-                            <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
-                                <EditDescriptionDialog folder={folder}>
-                                    <Button variant="ghost" size="icon">
-                                        <Pencil className={"w-4 h-4"} />
-                                    </Button>
-                                </EditDescriptionDialog>
-                                <DeleteDescriptionDialog folder={folder}>
-                                    <Button variant="ghost" size="icon">
-                                        <Trash2 className={"w-4 h-4"} />
-                                    </Button>
-                                </DeleteDescriptionDialog>
-                            </div>
-                        ) : null}
-                    </div>
-                ) : null}
+                <FolderDescription className="hidden sm:block w-full col-span-1 sm:col-span-1 lg:max-w-64 max-h-[200px]" />
                 {renderGrid()}
             </div>
-
-            {/* Infinite scroll trigger */}
-            {/*<InfiniteScrollTrigger onLoadMoreAction={loadMore} hasMore={hasNextPage} loading={loadingMore} />*/}
 
             <CarouselDialog
                 files={files}

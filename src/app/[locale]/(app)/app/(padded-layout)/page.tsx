@@ -1,11 +1,11 @@
-import DashboardContent from "@/components/layout/DashboardContent";
+import DashboardContent from "@/components/pages/dashboard/DashboardContent";
 import { getCurrentSession } from "@/lib/session";
 import { redirect } from "@/i18n/navigation";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { ContextFile, FilesProvider } from "@/context/FilesContext";
+import { FilesProvider } from "@/context/FilesContext";
 import { TokenProvider } from "@/context/TokenContext";
-import { generateV4DownloadUrl } from "@/lib/bucket";
+
 import { ViewState } from "@/components/folders/ViewSelector";
 import { FolderService } from "@/data/folder-service";
 import { FileService } from "@/data/file-service";
@@ -70,16 +70,9 @@ export default async function Home(props: { params: Promise<{ locale: string }> 
         })
         .slice(0, 6);
 
-    const lastFilesWithSignedUrls: ContextFile[] = await Promise.all(
-        lastFiles.map(async file => ({
-            ...file,
-            signedUrl: await generateV4DownloadUrl(`${file.createdById}/${file.folderId}/${file.id}`),
-        }))
-    );
-
     return (
         <TokenProvider token={null}>
-            <FilesProvider filesData={lastFilesWithSignedUrls} defaultView={ViewState.Grid}>
+            <FilesProvider filesData={lastFiles} defaultView={ViewState.Grid}>
                 <DashboardContent lastFolders={lastFolders} />
             </FilesProvider>
         </TokenProvider>

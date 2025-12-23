@@ -13,7 +13,7 @@ import {
     FileWithComments,
     FolderWithFilesWithFolderAndComments,
 } from "@/lib/definitions";
-import { downloadClientFiles, formatBytes } from "@/lib/utils";
+import { formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Images, MoreHorizontal } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
@@ -27,7 +27,6 @@ import Link from "next/link";
 import { ShareFolderDialog } from "@/components/folders/dialogs/ShareFolderDialog";
 import ChangeCoverFolderDialog from "@/components/folders/dialogs/ChangeCoverFolderDialog";
 import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/files";
-import { useSearchParams } from "next/navigation";
 import { FolderWithTags, FileWithTags } from "@/lib/definitions";
 
 export const foldersListViewColumns: ColumnDef<
@@ -138,8 +137,6 @@ export const foldersListViewColumns: ColumnDef<
         id: "actions",
         cell: ({ row }) => {
             const t = useTranslations("folders.views.list.columns.actions");
-            const downloadT = useTranslations("components.download");
-            const searchParams = useSearchParams();
             const [folderImages, setFolderImages] = useState<
                 ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[]
             >([]);
@@ -181,18 +178,10 @@ export const foldersListViewColumns: ColumnDef<
                             <DropdownMenuItem onClick={() => row.toggleSelected(!row.getIsSelected())}>
                                 {row.getIsSelected() ? t("deselect") : t("select")}
                             </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() =>
-                                    downloadClientFiles(
-                                        downloadT,
-                                        row.original.files,
-                                        row.original.name,
-                                        searchParams.get("share"),
-                                        searchParams.get("h")
-                                    )
-                                }
-                            >
-                                {t("download")}
+                            <DropdownMenuItem asChild>
+                                <a href={`/api/folders/${row.original.id}/download`} download>
+                                    {t("download")}
+                                </a>
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setOpenShare(true)}>{t("share")}</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setOpenChangeCover(true)}>

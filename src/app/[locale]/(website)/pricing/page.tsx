@@ -1,6 +1,6 @@
 "use client";
 
-import { NumberTicker } from "@/components/magicui/number-ticker";
+import { NumberTicker } from "@/components/ui/number-ticker";
 import { Button, ButtonProps } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";

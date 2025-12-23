@@ -14,7 +14,7 @@ export type ContextFile = PrismaFile &
     FileWithTags & {
         folder: FolderWithFilesCount & FolderWithTags;
     } & FileWithComments &
-    FileWithLikes & { signedUrl: string };
+    FileWithLikes;
 
 type FilesContextType = {
     files: ContextFile[];

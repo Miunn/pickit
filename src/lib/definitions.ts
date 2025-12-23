@@ -3,12 +3,6 @@
 import { FolderTokenPermission, Prisma, FileType } from "@prisma/client";
 import { z } from "zod";
 
-export type SessionPayload = {
-    id: string;
-    roles: string[];
-    expiresAt: Date;
-};
-
 export type ActionResult = {
     status: string;
     message?: string;
@@ -248,16 +242,6 @@ export const ResetPasswordFormSchema = z
             });
         }
     });
-
-export type SignInFormState =
-    | {
-          errors?: {
-              email?: string[];
-              password?: string[];
-          };
-          message?: string;
-      }
-    | undefined;
 
 const userAdministration = Prisma.validator<Prisma.UserDefaultArgs>()({
     select: {

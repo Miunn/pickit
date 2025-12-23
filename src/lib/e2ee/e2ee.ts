@@ -27,6 +27,11 @@ export function createStore(db: IDBDatabase) {
     }
 }
 
+/**
+ * Generates an ECDH key pair on the P-256 curve.
+ *
+ * @returns An object containing `publicKey` and `privateKey` CryptoKey objects for ECDH (P-256). Both keys are extractable and have usages `["deriveKey", "deriveBits"]`.
+ */
 export async function generateKeys() {
     const { publicKey, privateKey } = await crypto.subtle.generateKey(
         {
@@ -40,7 +45,16 @@ export async function generateKeys() {
     return { publicKey, privateKey };
 }
 
-export async function passwordToKey(password: string, salt: Uint8Array) {
+/**
+ * Derives an AES-GCM wrapping key from a password and salt using PBKDF2.
+ *
+ * Derives 256 bits with PBKDF2 (100000 iterations, SHA-256) and imports them as an AES-GCM key suitable for `wrapKey`/`unwrapKey`. The derived key is exported to JWK and saved in sessionStorage under the key "wrappingKey".
+ *
+ * @param password - The plaintext password to derive the key from.
+ * @param salt - The salt used for PBKDF2 (provided as a Uint8Array of ArrayBuffer).
+ * @returns An object containing `key`, the derived AES-GCM CryptoKey for wrapping/unwrapping. 
+ */
+export async function passwordToKey(password: string, salt: Uint8Array<ArrayBuffer>) {
     // First derive a key using PBKDF2
     const keyMaterial = await crypto.subtle.importKey(
         "raw",
@@ -53,7 +67,7 @@ export async function passwordToKey(password: string, salt: Uint8Array) {
     const derivedBits = await crypto.subtle.deriveBits(
         {
             name: "PBKDF2",
-            salt,
+            salt: salt,
             iterations: 100000,
             hash: "SHA-256",
         },
@@ -71,11 +85,21 @@ export async function passwordToKey(password: string, salt: Uint8Array) {
     return { key };
 }
 
+/**
+ * Stores an exported public key and an AES-GCM–wrapped private key in IndexedDB using a key derived from the provided password.
+ *
+ * @param publicKey - The ECDH public key to export and persist.
+ * @param privateKey - The ECDH private key to wrap and persist.
+ * @param iv - Initialization vector used for AES-GCM wrapping of the private key.
+ * @param salt - Salt used to derive the wrapping key from the password (PBKDF2).
+ * @param password - Password used to derive the AES-GCM wrapping key.
+ * @returns An object containing the original `publicKey` and `privateKey`, the derived `wrappingKey`, and the `wrappedPrivateKey` (the private key wrapped as an ArrayBuffer).
+ */
 export async function storeKeys(
     publicKey: CryptoKey,
     privateKey: CryptoKey,
-    iv: Uint8Array,
-    salt: Uint8Array,
+    iv: Uint8Array<ArrayBuffer>,
+    salt: Uint8Array<ArrayBuffer>,
     password: string
 ): Promise<{ publicKey: CryptoKey; privateKey: CryptoKey; wrappingKey: CryptoKey; wrappedPrivateKey: ArrayBuffer }> {
     const { key: wrappingKey } = await passwordToKey(password, salt);
@@ -148,11 +172,20 @@ export async function loadKeys(
     });
 }
 
+/**
+ * Exports an ECDH key pair and wraps the private key for storage or transfer.
+ *
+ * @param publicKey - The public `CryptoKey` to export in SPKI format.
+ * @param privateKey - The private `CryptoKey` to wrap as a JWK.
+ * @param wrappingKey - The AES-GCM `CryptoKey` used to wrap the private key.
+ * @param iv - Initialization vector for AES-GCM; provided as a `Uint8Array<ArrayBuffer>`.
+ * @returns An object with `exportedPublicKey` (SPKI `ArrayBuffer`) and `exportedPrivateKey` (wrapped private key `ArrayBuffer`).
+ */
 export async function exportKeyPair(
     publicKey: CryptoKey,
     privateKey: CryptoKey,
     wrappingKey: CryptoKey,
-    iv: Uint8Array
+    iv: Uint8Array<ArrayBuffer>
 ) {
     const exportedPublicKey = await crypto.subtle.exportKey("spki", publicKey);
     const exportedPrivateKey = await crypto.subtle.wrapKey("jwk", privateKey, wrappingKey, { name: "AES-GCM", iv });
@@ -160,13 +193,20 @@ export async function exportKeyPair(
 }
 
 /**
- * Import a private key from a wrapped key
- * @param prKey - ArrayBuffer of the wrapped private key
- * @param wrappingKey - Wrapping CryptoKey
- * @param iv - Initialization AES vector
- * @returns The private CryptoKey
+ * Imports an ECDH public key and unwraps a wrapped private key using AES-GCM.
+ *
+ * @param pbKey - SPKI-encoded public key bytes to import as an ECDH public key.
+ * @param prKey - Wrapped private key bytes (wrapped JWK) to unwrap.
+ * @param wrappingKey - AES-GCM CryptoKey used to unwrap `prKey`.
+ * @param iv - Initialization vector for AES-GCM (as a nested Uint8Array/ArrayBuffer).
+ * @returns An object with `publicKey` (imported ECDH public CryptoKey) and `privateKey` (unwrapped ECDH private CryptoKey usable for deriving shared secrets).
  */
-export async function importKeyPair(pbKey: ArrayBuffer, prKey: ArrayBuffer, wrappingKey: CryptoKey, iv: Uint8Array) {
+export async function importKeyPair(
+    pbKey: ArrayBuffer,
+    prKey: ArrayBuffer,
+    wrappingKey: CryptoKey,
+    iv: Uint8Array<ArrayBuffer>
+) {
     const publicKey = await crypto.subtle.importKey("spki", pbKey, { name: "ECDH", namedCurve: "P-256" }, true, []);
 
     const privateKey = await crypto.subtle.unwrapKey(
@@ -175,7 +215,7 @@ export async function importKeyPair(pbKey: ArrayBuffer, prKey: ArrayBuffer, wrap
         wrappingKey,
         {
             name: "AES-GCM",
-            iv: iv,
+            iv,
         },
         {
             name: "ECDH",

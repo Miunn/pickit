@@ -8,23 +8,22 @@ import ClusteredMarkers from "./ClusteredMarkers";
 import { Point, FeatureCollection } from "geojson";
 import ClusterWindowContent from "./ClusterWindowContent";
 import { PoiWindowContent } from "./PoiWindowContent";
-import FolderList from "./FolderList";
 import { File } from "@prisma/client";
 import MapFileCarousel from "./MapFileCarousel";
 import { PointFeature } from "supercluster";
 import { useFilesContext } from "@/context/FilesContext";
+import FoldersList from "./FoldersList";
+import { useTheme } from "next-themes";
 
-export type Poi = { key: string; location: google.maps.LatLngLiteral };
-
-export type MapFileWithFolderAndUrl = File & {
+export type MapFileWithFolder = File & {
     folder: FolderWithFilesCount;
-} & { signedUrl: string };
+};
 
-const filterFilesWithLocation = (files: MapFileWithFolderAndUrl[], selectedFolders: Set<string>) => {
+const filterFilesWithLocation = (files: MapFileWithFolder[], selectedFolders: Set<string>) => {
     return files.filter(file => file.latitude && file.longitude && selectedFolders.has(file.folder.id));
 };
 
-const getDefaultMarkers = (files: MapFileWithFolderAndUrl[], selectedFolders: Set<string>) => {
+const getDefaultMarkers = (files: MapFileWithFolder[], selectedFolders: Set<string>) => {
     const filteredFiles = filterFilesWithLocation(files, selectedFolders);
 
     return {
@@ -41,7 +40,15 @@ const getDefaultMarkers = (files: MapFileWithFolderAndUrl[], selectedFolders: Se
     };
 };
 
+/**
+ * Renders an interactive Google Map displaying files as markers with folder-based filtering, cluster and POI info windows, and an in-map file carousel.
+ *
+ * The component reads files from context and derives unique folders for a folder-selection control. Files that include latitude/longitude are shown as markers; clicking a marker opens a file carousel at the corresponding file, interacting with clusters opens a cluster info window that lists folders and their cover images, and selecting a file from the carousel centers an individual POI info window. The map adapts its color scheme to the current theme.
+ *
+ * @returns The component's React element tree representing the map and its UI overlays (markers, info windows, carousel, and folder list).
+ */
 export default function FilesMap() {
+    const { resolvedTheme = "light" } = useTheme();
     const { files } = useFilesContext();
 
     const uniqueFolders = useMemo(() => {
@@ -53,11 +60,11 @@ export default function FilesMap() {
     const [selectedFolders, setSelectedFolders] = useState<Set<string>>(
         new Set(uniqueFolders.map(folder => folder.id))
     );
-    const locatedFiles = useMemo<MapFileWithFolderAndUrl[]>(
+    const locatedFiles = useMemo<MapFileWithFolder[]>(
         () => filterFilesWithLocation(files, selectedFolders),
         [files, selectedFolders]
     );
-    const [markers, setMarkers] = useState<FeatureCollection<Point, MapFileWithFolderAndUrl>>(() =>
+    const [markers, setMarkers] = useState<FeatureCollection<Point, MapFileWithFolder>>(() =>
         getDefaultMarkers(locatedFiles, selectedFolders)
     );
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
@@ -65,12 +72,12 @@ export default function FilesMap() {
 
     const [clusterInfoData, setClusterInfoData] = useState<{
         anchor: google.maps.marker.AdvancedMarkerElement;
-        features: PointFeature<MapFileWithFolderAndUrl>[];
+        features: PointFeature<MapFileWithFolder>[];
     } | null>(null);
 
     const [poiInfoData, setPoiInfoData] = useState<{
         anchor: google.maps.marker.AdvancedMarkerElement;
-        feature: PointFeature<MapFileWithFolderAndUrl>;
+        feature: PointFeature<MapFileWithFolder>;
     } | null>(null);
 
     const handleClusterInfoWindowClose = useCallback(() => setClusterInfoData(null), [setClusterInfoData]);
@@ -78,7 +85,7 @@ export default function FilesMap() {
     const handlePoiInfoWindowClose = useCallback(() => setPoiInfoData(null), [setPoiInfoData]);
 
     const handlePoiClick = useCallback(
-        (feature: PointFeature<MapFileWithFolderAndUrl>) => {
+        (feature: PointFeature<MapFileWithFolder>) => {
             const clickedFile = feature.properties;
 
             const startIndex = locatedFiles.findIndex(file => file.id === clickedFile.id);
@@ -93,7 +100,7 @@ export default function FilesMap() {
     }, []);
 
     const handleFileChange = useCallback(
-        (file: MapFileWithFolderAndUrl) => {
+        (file: MapFileWithFolder) => {
             // Find the marker for this file
             const feature = markers?.features.find(f => f.properties.id === file.id);
             if (feature) {
@@ -137,7 +144,7 @@ export default function FilesMap() {
             <Map
                 mapId={process.env.NEXT_PUBLIC_USER_MAP_ID || ""}
                 mapTypeControl={true}
-                style={{ position: "relative", width: "100%", height: "100%" }}
+                colorScheme={resolvedTheme === "dark" ? "DARK" : "LIGHT"}
                 defaultCenter={{ lat: 22.54992, lng: 0 }}
                 defaultZoom={3}
                 gestureHandling={"greedy"}
@@ -161,13 +168,7 @@ export default function FilesMap() {
                         }}
                     >
                         <ClusterWindowContent
-                            folders={clusterInfoData.features.map(feature => {
-                                return {
-                                    ...feature.properties?.folder,
-                                    coverSignedUrl:
-                                        files.find(f => f.id === feature.properties?.folder.coverId)?.signedUrl || "",
-                                };
-                            })}
+                            folders={clusterInfoData.features.map(feature => feature.properties.folder)}
                             onClose={handleClusterInfoWindowClose}
                         />
                     </AdvancedMarker>
@@ -191,10 +192,9 @@ export default function FilesMap() {
                         onFileChange={handleFileChange}
                     />
                 )}
-
                 {uniqueFolders.length > 0 && (
                     <div className="absolute top-3 right-3">
-                        <FolderList folders={uniqueFolders} onSelectionChange={setSelectedFolders} />
+                        <FoldersList folders={uniqueFolders} onSelectionChange={setSelectedFolders} />
                     </div>
                 )}
             </Map>

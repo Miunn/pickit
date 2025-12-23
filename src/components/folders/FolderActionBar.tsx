@@ -1,4 +1,3 @@
-import { downloadClientFiles } from "@/lib/utils";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -24,13 +23,22 @@ import { useSession } from "@/providers/SessionProvider";
 import { Link } from "@/i18n/navigation";
 import { FolderTokenPermission } from "@prisma/client";
 import { ImagesSortMethod } from "@/types/imagesSort";
+import { useTopLoader } from "nextjs-toploader";
+import { toast } from "@/hooks/use-toast";
 
+/**
+ * Renders action controls for a folder including view and sort selectors, upload/share/download actions, map navigation, and description editing.
+ *
+ * Access to upload and share actions is gated by session and folder token permissions. Uploads append new files to the current files list. The download action starts a toast notification and triggers the top loader completion after a short delay. Map links preserve sharing token parameters when present.
+ *
+ * @returns The FolderActionBar component's JSX element containing menu triggers, dialogs (upload, share, edit description), and view/sort controls.
+ */
 export default function FolderActionBar() {
     const { isGuest } = useSession();
+    const { done } = useTopLoader();
     const { folder, token, tokenHash, isShared } = useFolderContext();
     const { viewState, sortState, setViewState, setSortState, files, setFiles } = useFilesContext();
     const t = useTranslations("folders");
-    const downloadT = useTranslations("components.download");
 
     const [openUpload, setOpenUpload] = useState(false);
     const [openShare, setOpenShare] = useState(false);
@@ -73,9 +81,20 @@ export default function FolderActionBar() {
                             <DropdownMenuItem onClick={() => setOpenShare(true)}>{t("share.label")}</DropdownMenuItem>
                         ) : null}
                         <DropdownMenuItem
-                            onClick={() => downloadClientFiles(downloadT, files, folder.name, token?.token, tokenHash)}
+                            onClick={() => {
+                                toast({
+                                    title: t("downloadStarted"),
+                                    description: t("downloadStartedDescription", { name: folder.name }),
+                                });
+                                setTimeout(() => {
+                                    done();
+                                }, 1000);
+                            }}
+                            asChild
                         >
-                            {t("download.label")}
+                            <a href={`/api/folders/${folder.id}/download`} download>
+                                {t("download.label")}
+                            </a>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -175,10 +194,10 @@ export default function FolderActionBar() {
                     {!!!isGuest ? (
                         <DropdownMenuItem onClick={() => setOpenShare(true)}>{t("share.label")}</DropdownMenuItem>
                     ) : null}
-                    <DropdownMenuItem
-                        onClick={() => downloadClientFiles(downloadT, files, folder.name, token?.token, tokenHash)}
-                    >
-                        {t("download.label")}
+                    <DropdownMenuItem asChild>
+                        <a href={`/api/folders/${folder.id}/download`} download>
+                            {t("download.label")}
+                        </a>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

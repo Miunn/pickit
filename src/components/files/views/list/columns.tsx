@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
 import { FileWithComments, FileWithFolder } from "@/lib/definitions";
-import { downloadClientImageHandler, formatBytes } from "@/lib/utils";
+import { formatBytes } from "@/lib/utils";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
@@ -61,6 +61,8 @@ const ImageActionsDropdown = React.memo(
             });
         }, [row?.original?.folderId, row?.original?.id, t]);
 
+        const fileType = row?.original?.type === FileType.IMAGE ? "images" : "videos";
+
         return (
             <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
@@ -85,8 +87,13 @@ const ImageActionsDropdown = React.memo(
                     <DropdownMenuItem onClick={() => row?.toggleSelected && row.toggleSelected(!row.getIsSelected())}>
                         {row?.getIsSelected() ? t("deselect") : t("select")}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => row?.original && downloadClientImageHandler(row.original)}>
-                        {t("download")}
+                    <DropdownMenuItem asChild>
+                        <a
+                            href={`/api/folders/${row.original.folderId}/${fileType}/${row.original.id}/download`}
+                            download
+                        >
+                            {t("download")}
+                        </a>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setOpenRename(true)}>{t("rename")}</DropdownMenuItem>
                     <DropdownMenuItem onClick={handleSetAsCover}>{t("setAsCover.label")}</DropdownMenuItem>

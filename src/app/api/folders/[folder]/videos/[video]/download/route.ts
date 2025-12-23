@@ -3,6 +3,13 @@ import { isAllowedToAccessFile } from "@/lib/dal";
 import { GoogleBucket } from "@/lib/bucket";
 import { FileService } from "@/data/file-service";
 
+/**
+ * Streams a video file from Google Cloud Storage and returns it as an HTTP response.
+ *
+ * @param req - The incoming Next.js request; query may include `share` (magic link token) and `h` (access key).
+ * @param props - An object whose `params` promise resolves to route parameters `{ folder, video }` identifying the requested file.
+ * @returns A NextResponse whose body is the video's readable stream and which includes `Content-Type`, `Content-Length`, and `Content-Disposition` headers. If access is denied, returns a JSON error with status 400. If the video is not found, returns a JSON error with status 404.
+ */
 export async function GET(req: NextRequest, props: { params: Promise<{ folder: string; video: string }> }) {
     const params = await props.params;
     const shareToken = req.nextUrl.searchParams.get("share");
@@ -23,7 +30,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
     });
 
     if (!video) {
-        return Response.json({ error: "No videos found in this folder" }, { status: 404 });
+        return Response.json({ error: "Video not found" }, { status: 404 });
     }
 
     const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.id}`);
@@ -45,7 +52,8 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
     const res = new NextResponse(webStream, {
         headers: {
             "Content-Type": "video/" + video.extension,
-            "Content-Disposition": `attachment; filename=${video.name}.${video.extension}`,
+            "Content-Length": video.size.toString(),
+            "Content-Disposition": `attachment; filename=${encodeURIComponent(video.name)}.${encodeURIComponent(video.extension)}`,
         },
     });
 

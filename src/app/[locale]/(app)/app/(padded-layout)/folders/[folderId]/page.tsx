@@ -1,15 +1,6 @@
 import { FolderContent } from "@/components/folders/FolderContent";
 import UnlockTokenPrompt from "@/components/folders/UnlockTokenPrompt";
-import { getSortedFolderContent } from "@/lib/utils";
 import { ImagesSortMethod } from "@/types/imagesSort";
-import {
-    FolderWithAccessToken,
-    FolderWithCover,
-    FolderWithCreatedBy,
-    FolderWithFilesCount,
-    FolderWithFilesWithFolderAndComments,
-    FolderWithTags,
-} from "@/lib/definitions";
 import { redirect } from "@/i18n/navigation";
 import { ViewState } from "@/components/folders/ViewSelector";
 import { getTranslations } from "next-intl/server";
@@ -121,6 +112,27 @@ export async function generateMetadata(props: {
     };
 }
 
+/**
+ * Render the folder page for the given route and query parameters, handling access checks, shared-token flows, and signed file URLs.
+ *
+ * This server component:
+ * - Verifies access to the folder and redirects for denied or invalid shared links.
+ * - Loads folder data (including files, relations, tags, cover, and counts).
+ * - Resolves an access token when a share token is provided and enforces PIN/unlock flows.
+ * - Increments token usage for shared views and generates V4 signed download URLs for each file.
+ * - Provides folder, token, and files context providers and renders the folder content UI.
+ *
+ * @param props.params - Route parameters containing `folderId` and `locale`.
+ * @param props.searchParams - Query parameters that may include:
+ *   - `sort` — images sort method
+ *   - `view` — preferred view state
+ *   - `share` — share token string
+ *   - `t` — (unused here) timestamp or token-related query
+ *   - `h` — token hash used for validation
+ *   - `codeNeeded` — whether a code is required (from client)
+ *   - `wrongPin` — whether a previously provided PIN was incorrect
+ * @returns The React element for the folder page, or a redirect response when access is denied, a share link is invalid, or the folder is not found.
+ */
 export default async function FolderPage(props: {
     params: Promise<{ folderId: string; locale: string }>;
     searchParams: Promise<{
@@ -160,11 +172,13 @@ export default async function FolderPage(props: {
                     likes: true,
                     tags: true,
                 },
-                // take: 20, // Load only first 20 files
                 orderBy: getSortOrderBy(searchParams.sort || ImagesSortMethod.DateDesc),
             },
             createdBy: true,
             accessTokens: true,
+            tags: true,
+            _count: { select: { files: true } },
+            cover: true,
         },
     });
 
@@ -216,17 +230,7 @@ export default async function FolderPage(props: {
                 <HeaderBreadcumb folderName={folder.name} />
             </BreadcrumbPortal>
             <FolderProvider
-                folderData={
-                    getSortedFolderContent(
-                        folder,
-                        searchParams.sort || ImagesSortMethod.DateDesc
-                    ) as FolderWithCreatedBy &
-                        FolderWithTags &
-                        FolderWithAccessToken &
-                        FolderWithFilesCount &
-                        FolderWithCover &
-                        FolderWithFilesWithFolderAndComments
-                }
+                folderData={folder}
                 tokenData={accessToken}
                 tokenHash={searchParams.h ?? null}
                 isShared={folder.accessTokens.filter(token => token.email).length > 0}

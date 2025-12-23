@@ -8,7 +8,7 @@ type E2EEncryptionContextType = {
     publicKey: CryptoKey | null;
     wrappingKey: CryptoKey | null;
     loadKeys: (password: string) => Promise<boolean>;
-    setupKeys: (password: string, iv: Uint8Array, salt: Uint8Array) => Promise<boolean>;
+    setupKeys: (password: string, iv: Uint8Array<ArrayBuffer>, salt: Uint8Array<ArrayBuffer>) => Promise<boolean>;
     loadWrappingKeyFromSessionStorage: () => void;
 };
 
@@ -22,6 +22,16 @@ export const useE2EEncryptionContext = () => {
     return context;
 };
 
+/**
+ * Provides the E2E encryption context and manages encryption key lifecycle for descendant components.
+ *
+ * The provider maintains the public and wrapping keys in state, attempts to load a wrapping key from
+ * session storage on mount, and exposes utilities to load keys from storage, initialize new keys,
+ * and reload the wrapping key into memory.
+ *
+ * @param children - Child elements that will receive the E2E encryption context
+ * @returns A React context provider that supplies `publicKey`, `wrappingKey`, `loadKeys`, `setupKeys`, and `loadWrappingKeyFromSessionStorage` to its descendants
+ */
 export function E2EEncryptionProvider({ children }: { children: React.ReactNode }) {
     const [publicKey, setPublicKey] = useState<CryptoKey | null>(null);
     //const [privateKey, setPrivateKey] = useState<CryptoKey | null>(null);
@@ -61,7 +71,11 @@ export function E2EEncryptionProvider({ children }: { children: React.ReactNode 
         return r;
     };
 
-    const setupKeys = async (password: string, iv: Uint8Array, salt: Uint8Array): Promise<boolean> => {
+    const setupKeys = async (
+        password: string,
+        iv: Uint8Array<ArrayBuffer>,
+        salt: Uint8Array<ArrayBuffer>
+    ): Promise<boolean> => {
         const { publicKey, privateKey } = await generateKeys();
         const { wrappingKey } = await storeKeys(publicKey, privateKey, iv, salt, password);
         setPublicKey(publicKey);
