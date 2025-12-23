@@ -231,6 +231,12 @@ export const getLimitsFromPlan = (plan: Plan): { storage: number; albums: number
     }
 };
 
+/**
+ * Determines whether a given date falls within the last three days.
+ *
+ * @param date - The date to check
+ * @returns `true` if `date` is within the last three days (inclusive), `false` otherwise.
+ */
 export function isNewFile(date: Date) {
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - date.getTime());
@@ -238,6 +244,12 @@ export function isNewFile(date: Date) {
     return diffDays <= 3;
 }
 
+/**
+ * Combine and normalize CSS class names into a single string, resolving Tailwind-specific conflicts.
+ *
+ * @param inputs - Class name values (strings, arrays, objects, etc.) to merge
+ * @returns A single space-separated class string with duplicates removed and Tailwind utility conflicts resolved
+ */
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }

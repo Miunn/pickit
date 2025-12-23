@@ -10,6 +10,14 @@ import { toast } from "sonner";
 import { DeleteMultipleImagesDialog } from "../../dialogs/DeleteMultipleImagesDialog";
 import { useEffect, useRef, useState } from "react";
 
+/**
+ * UI bar that appears when files are selected, showing selection count, total size, and actions for tag management and deletion.
+ *
+ * @param selected - Array of selected file IDs.
+ * @param sizeSelected - Total size in bytes of the selected files.
+ * @param onClose - Callback invoked to close the selecting bar.
+ * @returns A React element rendering the sticky selecting bar with controls to manage tags and delete selected files.
+ */
 export default function SelectingBar({
     selected,
     sizeSelected,

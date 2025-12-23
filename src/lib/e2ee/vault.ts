@@ -1,3 +1,10 @@
+/**
+ * Open or initialize the "echomori-e2ee" IndexedDB database and invoke a callback with the database instance.
+ *
+ * Creates required object stores during database upgrade and logs an error if the database fails to open.
+ *
+ * @param callback - Called with the opened `IDBDatabase` when the database is available
+ */
 export async function withIndexedDB(callback: (db: IDBDatabase) => void) {
     const request = indexedDB.open("echomori-e2ee", 1);
     request.onerror = () => {
@@ -12,6 +19,13 @@ export async function withIndexedDB(callback: (db: IDBDatabase) => void) {
     };
 }
 
+/**
+ * Ensure the required object stores and indices exist on the provided IndexedDB database.
+ *
+ * Creates a "keys" store with indices for "publicKey", "privateKey", "iv", and "salt" (all unique) if it does not exist, and creates a "vaults" store with indices for "folderId", "wrappedKey", and "iv" (all unique) if it does not exist.
+ *
+ * @param db - The open `IDBDatabase` instance to modify during its upgrade transaction.
+ */
 export function createStore(db: IDBDatabase) {
     if (!db.objectStoreNames.contains("keys")) {
         const store = db.createObjectStore("keys", { keyPath: "id", autoIncrement: true });

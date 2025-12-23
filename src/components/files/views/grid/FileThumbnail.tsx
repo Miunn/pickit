@@ -8,6 +8,16 @@ import { useSearchParams } from "next/navigation";
 import { FileWithTags } from "@/lib/definitions";
 import { useFormatter, useTranslations } from "next-intl";
 
+/**
+ * Renders a thumbnail card for a file including its preview, tags, metadata, and contextual badges.
+ *
+ * Shows an image or video thumbnail (with a play icon for videos), a "New" badge when recently created,
+ * a primary tag chip and a "+N" chip that reveals remaining tags in a tooltip, the file name, a short
+ * formatted creation date (with a full date/time tooltip), and the human-readable file size.
+ *
+ * @param file - The file and its tags to render (FileWithTags)
+ * @returns A JSX element representing the file thumbnail card
+ */
 export default function FileThumbnail({ file }: { file: FileWithTags }) {
     const t = useTranslations("images");
     const formatter = useFormatter();

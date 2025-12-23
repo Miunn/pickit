@@ -91,6 +91,19 @@ const AddTagPopover = ({ onTagAdded, folderId }: AddTagPopoverProps) => {
     );
 };
 
+/**
+ * Renders a dialog that lets users view, add, and toggle tags for a folder.
+ *
+ * The dialog shows currently selected tags and all tags available on the folder, allows adding new tags (which updates folder context and local state), and invokes provided callbacks when a tag is selected, unselected, or newly added.
+ *
+ * @param children - Trigger element to open the dialog.
+ * @param selectedTags - The initial list of tags considered selected when the dialog opens.
+ * @param onTagSelected - Called when a tag is selected; should return `true` on success, `false` to revert the selection in the UI.
+ * @param onTagUnselected - Called when a tag is unselected; should return `true` on success, `false` to revert the unselection in the UI.
+ * @param onTagAdded - Called after a new tag is created; invoked with the created tag. The component updates folder context and local state regardless of the callback's result.
+ * @param className - Optional CSS class applied to the dialog trigger.
+ * @returns The ManageTagsDialog React element.
+ */
 export default function ManageTagsDialog({
     children,
     selectedTags,

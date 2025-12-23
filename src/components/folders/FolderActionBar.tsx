@@ -26,6 +26,13 @@ import { ImagesSortMethod } from "@/types/imagesSort";
 import { useTopLoader } from "nextjs-toploader";
 import { toast } from "@/hooks/use-toast";
 
+/**
+ * Renders action controls for a folder including view and sort selectors, upload/share/download actions, map navigation, and description editing.
+ *
+ * Access to upload and share actions is gated by session and folder token permissions. Uploads append new files to the current files list. The download action starts a toast notification and triggers the top loader completion after a short delay. Map links preserve sharing token parameters when present.
+ *
+ * @returns The FolderActionBar component's JSX element containing menu triggers, dialogs (upload, share, edit description), and view/sort controls.
+ */
 export default function FolderActionBar() {
     const { isGuest } = useSession();
     const { done } = useTopLoader();

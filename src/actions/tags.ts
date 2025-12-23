@@ -7,6 +7,19 @@ import { FileWithTags } from "@/lib/definitions";
 import { FolderTagService } from "@/data/folder-tag-service";
 import { FileService } from "@/data/file-service";
 
+/**
+ * Create a folder tag and optionally attach it to a file.
+ *
+ * Validates input and folder ownership, associates the new tag with the specified folder
+ * (and with the file when `fileId` is provided), and returns the created tag on success
+ * or an error message on failure.
+ *
+ * @param name - Tag display name; must be non-empty
+ * @param color - Tag color value (for example, a hex code or color name)
+ * @param folderId - ID of the folder to associate the tag with
+ * @param fileId - Optional file ID to attach the created tag to
+ * @returns `{ success: true; tag: FolderTag }` with the created tag on success, `{ success: false; error: string }` with an error message otherwise
+ */
 export async function createTag(
     name: string,
     color: string,
@@ -56,6 +69,15 @@ export async function createTag(
     }
 }
 
+/**
+ * Attach multiple existing folder tags to a single file.
+ *
+ * Verifies the current user and folder ownership, ensures all specified tags exist and belong to the file's folder and user, and adds any tags that are not already attached.
+ *
+ * @param fileId - The ID of the file to update
+ * @param tagIds - Array of folder tag IDs to attach to the file
+ * @returns On success, an object with `success: true`, `tags` containing the file's tags after the operation, and `file` as the updated file; on failure, an object with `success: false` and an `error` message describing the reason
+ */
 export async function addTagsToFile(
     fileId: string,
     tagIds: string[]

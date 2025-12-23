@@ -29,6 +29,12 @@ import { FileType } from "@prisma/client";
 import { Link } from "@/i18n/navigation";
 import FolderPropertiesDialog from "../../dialogs/FolderPropertiesDialogs";
 
+/**
+ * Render a clickable folder card showing cover (or placeholder), name, file count, and creation date, with a context menu for folder actions and dialogs for rename, change cover, share, properties, and delete.
+ *
+ * @param folder - The folder to display; must include cover and coverId (when present), a files array (each file includes tags and comments), a file count property (`_count.files`), and access token/metadata required for folder actions.
+ * @returns A React element containing the folder preview, its context menu actions, and the associated dialogs
+ */
 export default function FolderPreviewGrid({
     folder,
 }: {
