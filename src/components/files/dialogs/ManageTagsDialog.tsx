@@ -110,10 +110,18 @@ export default function ManageTagsDialog({
     const [selectedTagsState, setSelectedTags] = useState<FolderTag[]>(selectedTags);
     const { folder, setFolder } = useFolderContext();
 
-    const handleTagAdded = (tag: FolderTag) => {
+    const handleTagAdded = async (tag: FolderTag) => {
         setFolder({ ...folder, tags: [...folder.tags, tag] });
         setSelectedTags([...selectedTagsState, tag]);
-        onTagAdded?.(tag);
+
+        if (!onTagAdded) return;
+
+        const r = await onTagAdded(tag);
+
+        if (!r) {
+            setFolder({ ...folder, tags: folder.tags.filter(t => t.id !== tag.id) });
+            setSelectedTags(selectedTagsState.filter(t => t.id !== tag.id));
+        }
     };
 
     const handleTagSelected = async (tag: FolderTag) => {
