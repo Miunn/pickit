@@ -3,7 +3,7 @@
 import { ImageOff } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useFilesContext } from "@/context/FilesContext";
-import FileThumbnail from "./views/grid/FileThumbnail";
+import FileThumbnail from "@/components/files/views/grid/FileThumbnail";
 import { Link } from "@/i18n/navigation";
 
 export const LastUploadedImages = () => {
