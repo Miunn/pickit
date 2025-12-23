@@ -75,6 +75,7 @@ const AddTagPopover = ({ onTagAdded, folderId }: AddTagPopoverProps) => {
                                     "h-9 rounded-md cursor-pointer transition-all duration-75 ease-in-out outline outline-0 outline-offset-0 outline-transparent",
                                     selectedColor === color && "outline outline-2 outline-offset-2 outline-primary"
                                 )}
+                                type="button"
                                 style={{ backgroundColor: color }}
                                 onClick={() => setSelectedColor(color)}
                             />
