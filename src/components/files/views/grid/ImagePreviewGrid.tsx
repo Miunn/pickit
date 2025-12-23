@@ -28,7 +28,7 @@ import { useSearchParams } from "next/navigation";
 import FileThumbnail from "./FileThumbnail";
 
 export interface ImagePreviewProps {
-    file: { folder: FolderWithTags; signedUrl: string } & FileWithTags;
+    file: { folder: FolderWithTags } & FileWithTags;
     selected: string[];
     onClick: (e?: React.MouseEvent) => void;
     onSelect: () => void;
