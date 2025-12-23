@@ -53,6 +53,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
     const res = new NextResponse(webStream, {
         headers: {
             "Content-Type": "image/" + image.extension,
+            "Content-Length": image.size.toString(),
             "Content-Disposition": `attachment; filename=${encodeURIComponent(image.name)}.${encodeURIComponent(image.extension)}`,
         },
     });

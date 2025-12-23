@@ -15,7 +15,7 @@ import { FileService } from "@/data/file-service";
  * @param req - The incoming NextRequest (used for query parameters `share` and `h`)
  * @param props - Object containing `params`, a Promise that resolves to `{ folder, video }`
  * @returns A NextResponse whose body is the streamed thumbnail data with headers:
- *          `Content-Type: video/{extension}` and `Cache-Control: private, max-age=2592000, immutable`,
+ *          `Content-Type: image/jpeg` and `Cache-Control: private, max-age=2592000, immutable`,
  *          or a JSON error response with status 400 (authentication required) or 404 (not found).
  */
 export async function GET(req: NextRequest, props: { params: Promise<{ folder: string; video: string }> }) {

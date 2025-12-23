@@ -4,23 +4,23 @@ import { Feature, FeatureCollection, GeoJsonProperties, Point } from "geojson";
 import { useCallback } from "react";
 import { ClusterMarker } from "./ClusterMarker";
 import { PoiMarker } from "./PoiMarker";
-import { MapFileWithFolderAndUrl } from "./FilesMap";
+import { MapFileWithFolder } from "./FilesMap";
 
 type ClusteredMarkersProps = {
-    markers: FeatureCollection<Point, MapFileWithFolderAndUrl>;
+    markers: FeatureCollection<Point, MapFileWithFolder>;
     setClusterInfoData: (
         data: {
             anchor: google.maps.marker.AdvancedMarkerElement;
-            features: PointFeature<MapFileWithFolderAndUrl>[];
+            features: PointFeature<MapFileWithFolder>[];
         } | null
     ) => void;
     setPoiInfoData: (
         data: {
             anchor: google.maps.marker.AdvancedMarkerElement;
-            feature: PointFeature<MapFileWithFolderAndUrl>;
+            feature: PointFeature<MapFileWithFolder>;
         } | null
     ) => void;
-    onPoiClick: (feature: PointFeature<MapFileWithFolderAndUrl>) => void;
+    onPoiClick: (feature: PointFeature<MapFileWithFolder>) => void;
 };
 
 const superclusterOptions: Supercluster.Options<GeoJsonProperties, ClusterProperties> = {
@@ -35,7 +35,7 @@ export default function ClusteredMarkers({
     setPoiInfoData,
     onPoiClick,
 }: ClusteredMarkersProps) {
-    const { clusters, getLeaves } = useSupercluster<MapFileWithFolderAndUrl>(markers, superclusterOptions);
+    const { clusters, getLeaves } = useSupercluster<MapFileWithFolder>(markers, superclusterOptions);
 
     const handleClusterClick = useCallback(
         (marker: google.maps.marker.AdvancedMarkerElement, clusterId: number) => {

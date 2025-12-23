@@ -15,15 +15,15 @@ import { useFilesContext } from "@/context/FilesContext";
 import FoldersList from "./FoldersList";
 import { useTheme } from "next-themes";
 
-export type MapFileWithFolderAndUrl = File & {
+export type MapFileWithFolder = File & {
     folder: FolderWithFilesCount;
-} & { signedUrl: string };
+};
 
-const filterFilesWithLocation = (files: MapFileWithFolderAndUrl[], selectedFolders: Set<string>) => {
+const filterFilesWithLocation = (files: MapFileWithFolder[], selectedFolders: Set<string>) => {
     return files.filter(file => file.latitude && file.longitude && selectedFolders.has(file.folder.id));
 };
 
-const getDefaultMarkers = (files: MapFileWithFolderAndUrl[], selectedFolders: Set<string>) => {
+const getDefaultMarkers = (files: MapFileWithFolder[], selectedFolders: Set<string>) => {
     const filteredFiles = filterFilesWithLocation(files, selectedFolders);
 
     return {
@@ -60,11 +60,11 @@ export default function FilesMap() {
     const [selectedFolders, setSelectedFolders] = useState<Set<string>>(
         new Set(uniqueFolders.map(folder => folder.id))
     );
-    const locatedFiles = useMemo<MapFileWithFolderAndUrl[]>(
+    const locatedFiles = useMemo<MapFileWithFolder[]>(
         () => filterFilesWithLocation(files, selectedFolders),
         [files, selectedFolders]
     );
-    const [markers, setMarkers] = useState<FeatureCollection<Point, MapFileWithFolderAndUrl>>(() =>
+    const [markers, setMarkers] = useState<FeatureCollection<Point, MapFileWithFolder>>(() =>
         getDefaultMarkers(locatedFiles, selectedFolders)
     );
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
@@ -72,12 +72,12 @@ export default function FilesMap() {
 
     const [clusterInfoData, setClusterInfoData] = useState<{
         anchor: google.maps.marker.AdvancedMarkerElement;
-        features: PointFeature<MapFileWithFolderAndUrl>[];
+        features: PointFeature<MapFileWithFolder>[];
     } | null>(null);
 
     const [poiInfoData, setPoiInfoData] = useState<{
         anchor: google.maps.marker.AdvancedMarkerElement;
-        feature: PointFeature<MapFileWithFolderAndUrl>;
+        feature: PointFeature<MapFileWithFolder>;
     } | null>(null);
 
     const handleClusterInfoWindowClose = useCallback(() => setClusterInfoData(null), [setClusterInfoData]);
@@ -85,7 +85,7 @@ export default function FilesMap() {
     const handlePoiInfoWindowClose = useCallback(() => setPoiInfoData(null), [setPoiInfoData]);
 
     const handlePoiClick = useCallback(
-        (feature: PointFeature<MapFileWithFolderAndUrl>) => {
+        (feature: PointFeature<MapFileWithFolder>) => {
             const clickedFile = feature.properties;
 
             const startIndex = locatedFiles.findIndex(file => file.id === clickedFile.id);
@@ -100,7 +100,7 @@ export default function FilesMap() {
     }, []);
 
     const handleFileChange = useCallback(
-        (file: MapFileWithFolderAndUrl) => {
+        (file: MapFileWithFolder) => {
             // Find the marker for this file
             const feature = markers?.features.find(f => f.properties.id === file.id);
             if (feature) {
@@ -168,13 +168,7 @@ export default function FilesMap() {
                         }}
                     >
                         <ClusterWindowContent
-                            folders={clusterInfoData.features.map(feature => {
-                                return {
-                                    ...feature.properties?.folder,
-                                    coverSignedUrl:
-                                        files.find(f => f.id === feature.properties?.folder.coverId)?.signedUrl || "",
-                                };
-                            })}
+                            folders={clusterInfoData.features.map(feature => feature.properties.folder)}
                             onClose={handleClusterInfoWindowClose}
                         />
                     </AdvancedMarker>
@@ -198,12 +192,12 @@ export default function FilesMap() {
                         onFileChange={handleFileChange}
                     />
                 )}
+                {uniqueFolders.length > 0 && (
+                    <div className="absolute top-3 right-3">
+                        <FoldersList folders={uniqueFolders} onSelectionChange={setSelectedFolders} />
+                    </div>
+                )}
             </Map>
-            {uniqueFolders.length > 0 && (
-                <div className="absolute top-20 right-3">
-                    <FoldersList folders={uniqueFolders} onSelectionChange={setSelectedFolders} />
-                </div>
-            )}
         </APIProvider>
     );
 }
