@@ -112,11 +112,13 @@ export default async function LocaleLayout(
                                     icon: Folder,
                                     url: `/${locale}/app/folders`,
                                     isActive: true,
-                                    items: folders.map(folder => ({
-                                        key: folder.id,
-                                        title: folder.name,
-                                        url: `/${locale}/app/folders/${folder.id}`,
-                                    })),
+                                    items: folders
+                                        .map(folder => ({
+                                            key: folder.id,
+                                            title: folder.name,
+                                            url: `/${locale}/app/folders/${folder.id}`,
+                                        }))
+                                        .sort((a, b) => a.title.localeCompare(b.title)),
                                 },
                                 {
                                     key: "files",
