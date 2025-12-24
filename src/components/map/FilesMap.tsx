@@ -197,7 +197,7 @@ export default function FilesMap() {
                     />
                 )}
                 {uniqueFolders.length > 0 && (
-                    <div className="absolute top-3 right-3">
+                    <div className="absolute top-3 right-3 bottom-3 overflow-y-scroll">
                         <FoldersList
                             folders={uniqueFolders}
                             displayedFilesByFolder={displayedFilesByFolder}

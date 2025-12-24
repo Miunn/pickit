@@ -64,7 +64,7 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
                 <Checkbox checked={isSelected} onCheckedChange={onToggle} className="bg-white/90 size-5 rounded-lg" />
             </div>
             {folder.coverId ? (
-                <div className={`relative w-20 h-full mb-1 flex justify-center items-center rounded-t-xl`}>
+                <div className={`relative w-20 shrink-0 h-full mb-1 flex justify-center items-center rounded-t-xl`}>
                     <Image
                         src={`/api/folders/${folder.id}/images/${folder.coverId}${share ? `?share=${share}&t=${shareType}&h=${shareHash}` : ""}`}
                         alt={folder.name}
@@ -76,16 +76,18 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
             ) : (
                 <div
                     className={
-                        "rounded-t-xl bg-gray-100 dark:bg-gray-800 w-20 h-full mb-1 flex justify-center items-center"
+                        "rounded-t-xl bg-gray-100 dark:bg-gray-800 w-20 h-full mb-1 flex justify-center items-center shrink-0"
                     }
                 >
                     <Images className={"opacity-50 dark:text-gray-400"} />
                 </div>
             )}
-            <div className="px-2">
+            <div className="px-2 flex-1 overflow-hidden">
                 <p className="truncate">{folder.name}</p>
                 <div className={"text-sm flex h-4 items-center flex-nowrap"}>
-                    <p className={"opacity-60 text-nowrap"}>{t("folderCount", { count: folder._count.files })}</p>
+                    <p className={"opacity-60 text-nowrap truncate"}>
+                        {t("folderCount", { count: folder._count.files })}
+                    </p>
                     <Separator className="mx-2" orientation="vertical" />
                     <TooltipProvider>
                         <Tooltip>
