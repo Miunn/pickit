@@ -25,7 +25,6 @@ export default function FoldersList({
     displayedFilesByFolder: Record<string, number>;
     onSelectionChange: (selectedFolders: Set<string>) => void;
 }) {
-    console.log("Displayed files by folder", displayedFilesByFolder);
     const formatter = useFormatter();
     const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set(folders.map(folder => folder.id)));
 
