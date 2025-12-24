@@ -5,18 +5,20 @@ import { useRef, useState } from "react";
 import { Ripple } from "../ui/ripple";
 import { Checkbox } from "../ui/checkbox";
 import Image from "next/image";
-import { Images } from "lucide-react";
+import { FileWarning, Images } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { cn } from "@/lib/utils";
 
 interface FolderCardProps {
     folder: FolderWithFilesCount;
+    ignoredFiles: number;
     isSelected: boolean;
     onToggle: () => void;
     formatter: ReturnType<typeof useFormatter>;
 }
 
-export const FolderCard = ({ folder, isSelected, onToggle, formatter }: FolderCardProps) => {
+export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatter }: FolderCardProps) => {
     const t = useTranslations("components.map.folderList.folderCard");
     const searchParams = useSearchParams();
     const share = searchParams.get("share");
@@ -42,7 +44,12 @@ export const FolderCard = ({ folder, isSelected, onToggle, formatter }: FolderCa
 
     return (
         <div
-            className={`inline-block w-64 bg-background border border-primary rounded-xl relative cursor-pointer hover:border-primary/80 transition-colors overflow-hidden`}
+            className={cn(
+                "relative inline-block w-64 h-20 bg-background",
+                "border border-primary rounded-xl",
+                "cursor-pointer overflow-hidden",
+                "flex"
+            )}
             onClick={e => {
                 addRipple(e);
                 onToggle();
@@ -53,11 +60,11 @@ export const FolderCard = ({ folder, isSelected, onToggle, formatter }: FolderCa
                     <Ripple key={ripple.id} x={ripple.x} y={ripple.y} />
                 ))}
             </div>
-            <div className="absolute top-2 left-2 z-10" onClick={e => e.stopPropagation()}>
-                <Checkbox checked={isSelected} onCheckedChange={onToggle} className="bg-white/90 size-6" />
+            <div className="absolute top-1 left-1 z-10" onClick={e => e.stopPropagation()}>
+                <Checkbox checked={isSelected} onCheckedChange={onToggle} className="bg-white/90 size-5 rounded-lg" />
             </div>
             {folder.coverId ? (
-                <div className={`relative h-36 mb-1 flex justify-center items-center rounded-t-xl`}>
+                <div className={`relative w-20 h-full mb-1 flex justify-center items-center rounded-t-xl`}>
                     <Image
                         src={`/api/folders/${folder.id}/images/${folder.coverId}${share ? `?share=${share}&t=${shareType}&h=${shareHash}` : ""}`}
                         alt={folder.name}
@@ -67,39 +74,58 @@ export const FolderCard = ({ folder, isSelected, onToggle, formatter }: FolderCa
                     />
                 </div>
             ) : (
-                <div className={"rounded-t-xl bg-gray-100 dark:bg-gray-800 h-36 mb-1 flex justify-center items-center"}>
+                <div
+                    className={
+                        "rounded-t-xl bg-gray-100 dark:bg-gray-800 w-20 h-full mb-1 flex justify-center items-center"
+                    }
+                >
                     <Images className={"opacity-50 dark:text-gray-400"} />
                 </div>
             )}
-            <p className="truncate px-2">{folder.name}</p>
-            <div className={"text-sm flex h-4 items-center flex-nowrap px-2 mb-2"}>
-                <p className={"opacity-60 text-nowrap"}>{t("folderCount", { count: folder._count.files })}</p>
-                <Separator className="mx-2" orientation="vertical" />
-                <TooltipProvider>
+            <div className="px-2">
+                <p className="truncate">{folder.name}</p>
+                <div className={"text-sm flex h-4 items-center flex-nowrap"}>
+                    <p className={"opacity-60 text-nowrap"}>{t("folderCount", { count: folder._count.files })}</p>
+                    <Separator className="mx-2" orientation="vertical" />
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <p className={"opacity-60 capitalize truncate"}>
+                                    {formatter.dateTime(folder.createdAt, {
+                                        day: "numeric",
+                                        month: "short",
+                                        year: "numeric",
+                                    })}
+                                </p>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p className={"capitalize"}>
+                                    {formatter.dateTime(folder.createdAt, {
+                                        weekday: "long",
+                                        day: "numeric",
+                                        month: "short",
+                                        year: "numeric",
+                                        hour: "numeric",
+                                        minute: "numeric",
+                                    })}
+                                </p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </div>
+                {ignoredFiles > 0 && (
                     <Tooltip>
-                        <TooltipTrigger asChild>
-                            <p className={"opacity-60 capitalize truncate"}>
-                                {formatter.dateTime(folder.createdAt, {
-                                    day: "numeric",
-                                    month: "short",
-                                    year: "numeric",
-                                })}
+                        <TooltipTrigger>
+                            <p className="text-sm font-medium text-yellow-600">
+                                <FileWarning className="inline size-4 mr-1 mb-1" />
+                                {t("ignoredFiles.label", { count: ignoredFiles })}
                             </p>
                         </TooltipTrigger>
-                        <TooltipContent>
-                            <p className={"capitalize"}>
-                                {formatter.dateTime(folder.createdAt, {
-                                    weekday: "long",
-                                    day: "numeric",
-                                    month: "short",
-                                    year: "numeric",
-                                    hour: "numeric",
-                                    minute: "numeric",
-                                })}
-                            </p>
+                        <TooltipContent className="w-fit max-w-52 text-center">
+                            <span>{t("ignoredFiles.description")}</span>
                         </TooltipContent>
                     </Tooltip>
-                </TooltipProvider>
+                )}
             </div>
         </div>
     );

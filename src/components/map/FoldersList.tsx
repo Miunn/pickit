@@ -18,11 +18,14 @@ import { FolderCard } from "./FolderCard";
  */
 export default function FoldersList({
     folders,
+    displayedFilesByFolder,
     onSelectionChange,
 }: {
     folders: FolderWithFilesCount[];
+    displayedFilesByFolder: Record<string, number>;
     onSelectionChange: (selectedFolders: Set<string>) => void;
 }) {
+    console.log("Displayed files by folder", displayedFilesByFolder);
     const formatter = useFormatter();
     const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set(folders.map(folder => folder.id)));
 
@@ -64,6 +67,7 @@ export default function FoldersList({
                     <FolderCard
                         key={folder.id}
                         folder={folder}
+                        ignoredFiles={folder._count.files - (displayedFilesByFolder[folder.id] || 0)}
                         isSelected={selectedFolders.has(folder.id)}
                         onToggle={() => toggleFolderSelection(folder.id)}
                         formatter={formatter}

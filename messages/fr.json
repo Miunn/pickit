@@ -738,7 +738,11 @@
             },
             "folderList": {
                 "folderCard": {
-                    "folderCount": "{count, plural, =0 {0 fichier} =1 {1 fichier} other {# fichiers}}"
+                    "folderCount": "{count, plural, =0 {0 fichier} =1 {1 fichier} other {# fichiers}}",
+                    "ignoredFiles": {
+                        "label": "{count, plural, =0 {Aucun fichier ignoré} =1 {1 fichier ignoré} other {# fichiers ignorés}}",
+                        "description": "Ces fichiers n'ont pas de données de localisation et n'apparaîtront pas sur la carte"
+                    }
                 }
             }
         }

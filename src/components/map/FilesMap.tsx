@@ -59,6 +59,15 @@ export default function FilesMap() {
         () => filterFilesWithLocation(files, selectedFolders),
         [files, selectedFolders]
     );
+
+    const displayedFilesByFolder = useMemo<Record<string, number>>(() => {
+        const counts: Record<string, number> = {};
+        locatedFiles.forEach(file => {
+            counts[file.folder.id] = (counts[file.folder.id] || 0) + 1;
+        });
+        return counts;
+    }, [locatedFiles]);
+
     const [markers, setMarkers] = useState<FeatureCollection<Point, FileWithFolder>>(() =>
         getDefaultMarkers(locatedFiles, selectedFolders)
     );
@@ -189,7 +198,11 @@ export default function FilesMap() {
                 )}
                 {uniqueFolders.length > 0 && (
                     <div className="absolute top-3 right-3">
-                        <FoldersList folders={uniqueFolders} onSelectionChange={setSelectedFolders} />
+                        <FoldersList
+                            folders={uniqueFolders}
+                            displayedFilesByFolder={displayedFilesByFolder}
+                            onSelectionChange={setSelectedFolders}
+                        />
                     </div>
                 )}
             </Map>
