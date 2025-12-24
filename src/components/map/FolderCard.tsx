@@ -116,17 +116,19 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
                     </TooltipProvider>
                 </div>
                 {ignoredFiles > 0 && (
-                    <Tooltip>
-                        <TooltipTrigger>
-                            <p className="text-sm font-medium text-yellow-600">
-                                <FileWarning className="inline size-4 mr-1 mb-1" />
-                                {t("ignoredFiles.label", { count: ignoredFiles })}
-                            </p>
-                        </TooltipTrigger>
-                        <TooltipContent className="w-fit max-w-52 text-center">
-                            <span>{t("ignoredFiles.description")}</span>
-                        </TooltipContent>
-                    </Tooltip>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <p className="text-sm font-medium text-yellow-600">
+                                    <FileWarning className="inline size-4 mr-1 mb-1" />
+                                    {t("ignoredFiles.label", { count: ignoredFiles })}
+                                </p>
+                            </TooltipTrigger>
+                            <TooltipContent className="w-fit max-w-52 text-center">
+                                <span>{t("ignoredFiles.description")}</span>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 )}
             </div>
         </div>
