@@ -1,15 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { FileType, Plan } from "@prisma/client";
+import { Plan } from "@prisma/client";
 import { FolderWithFilesWithFolderAndComments, FileWithFolder } from "./definitions";
-import { toast } from "@/hooks/use-toast";
-import { toast as sonnerToast } from "sonner";
 import { ImagesSortMethod } from "@/types/imagesSort";
-import saveAs from "file-saver";
-import JSZip from "jszip";
-import { Progress } from "@/components/ui/progress";
-import axios, { AxiosRequestConfig } from "axios";
-import { Loader2 } from "lucide-react";
 
 export const plansBenefits: Record<Plan, { storage: number; albums: number; sharingLinks: number }> = {
     [Plan.FREE]: {
@@ -102,147 +95,6 @@ export const copyImageToClipboard = async (
     ]);
 
     return true;
-};
-
-export const downloadClientImageHandler = async (file: FileWithFolder) => {
-    const r = await fetch(
-        `/api/folders/${file.folder.id}/${file.type === FileType.VIDEO ? "videos" : "images"}/${file.id}/download`
-    );
-
-    if (r.status === 404) {
-        toast({
-            title: "No images found",
-            description: "There are no images in this folder to download",
-        });
-        return;
-    }
-
-    if (r.status !== 200) {
-        toast({
-            title: "Error",
-            description: "An error occurred while trying to download this folder",
-            variant: "destructive",
-        });
-        return;
-    }
-
-    saveAs(await r.blob(), `${file.name}.${file.extension}`);
-};
-
-export const downloadClientFiles = async (
-    translations: (key: string, params?: Record<string, string | number>) => string,
-    files: FileWithFolder[],
-    title: string,
-    shareToken?: string | null,
-    hashPinCode?: string | null
-) => {
-    const zip = new JSZip();
-    const totalFiles = files.length;
-    const totalSizes = files.reduce((acc, file) => acc + file.size, 0);
-    console.log("Total sizes", totalSizes);
-    let downloadedSize = 0;
-
-    sonnerToast(<div className="w-full">{translations("ongoing.title", { name: title })}</div>, {
-        id: "download-progress-toast",
-        duration: Infinity,
-        classNames: {
-            content: "w-full",
-            title: "w-full",
-        },
-        description: (
-            <div className="w-full">
-                <p className="flex justify-between items-center gap-2 relative">
-                    <span className="flex-1 truncate">
-                        {translations("ongoing.description.name", {
-                            name: `${files[0].name}.${files[0].extension}`,
-                        })}
-                    </span>
-                    <span className="flex items-center gap-2">
-                        <Loader2 className="w-4 h-4 animate-spin" />{" "}
-                        {translations("ongoing.description.progress", {
-                            currentPercentage: 0,
-                            count: 1,
-                            total: totalFiles,
-                        })}
-                    </span>
-                </p>
-                <Progress value={0} className="w-full mt-2" />
-            </div>
-        ),
-        dismissible: false,
-    });
-
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-
-        const axiosConfig: AxiosRequestConfig = {
-            responseType: "blob",
-            onDownloadProgress: progressEvent => {
-                if (progressEvent.total) {
-                    sonnerToast(<div className="w-full">{translations("ongoing.title", { name: title })}</div>, {
-                        id: "download-progress-toast",
-                        description: (
-                            <div className="w-full">
-                                <p className="flex justify-between items-center gap-2 relative">
-                                    <span className="flex-1 truncate">
-                                        {translations("ongoing.description.name", {
-                                            name: `${file.name}.${file.extension}`,
-                                        })}
-                                    </span>
-                                    <span className="flex items-center gap-2">
-                                        <Loader2 className="w-4 h-4 animate-spin" />{" "}
-                                        {translations("ongoing.description.progress", {
-                                            currentPercentage: (
-                                                (progressEvent.loaded / progressEvent.total) *
-                                                100
-                                            ).toFixed(2),
-                                            count: i + 1,
-                                            total: totalFiles,
-                                        })}
-                                    </span>
-                                </p>
-                                <Progress
-                                    value={((downloadedSize + progressEvent.loaded) / totalSizes) * 100}
-                                    className="w-full mt-2"
-                                />
-                            </div>
-                        ),
-                    });
-                }
-            },
-        };
-
-        const signedUrl = await fetch(
-            `/api/folders/${file.folderId}/${file.type === FileType.VIDEO ? "videos" : "images"}/${file.id}/download-url?share=${shareToken}&h=${hashPinCode}`
-        );
-        const signedUrlData = await signedUrl.json();
-        const r = await axios.get(signedUrlData.url, axiosConfig);
-
-        const buffer = await r.data.arrayBuffer();
-
-        zip.file(`${file.name}-${file.createdAt.getTime()}.${file.extension}`, buffer);
-        downloadedSize += buffer.byteLength;
-    }
-
-    const zipData = await zip.generateAsync({ type: "blob" });
-
-    sonnerToast(<div className="w-full">{translations("success.title", { name: title })}</div>, {
-        id: "download-progress-toast",
-        duration: 5000,
-        classNames: {
-            content: "w-full",
-            title: "w-full",
-        },
-        description: (
-            <div className="w-full">
-                {translations("success.description", { name: title })}
-                <Progress value={100} className="w-full mt-2" />
-            </div>
-        ),
-        dismissible: true,
-    });
-
-    saveAs(zipData, `${title}.zip`);
 };
 
 export const getSortedFolderContent = (
@@ -379,6 +231,25 @@ export const getLimitsFromPlan = (plan: Plan): { storage: number; albums: number
     }
 };
 
+/**
+ * Determines whether a given date falls within the last three days.
+ *
+ * @param date - The date to check
+ * @returns `true` if `date` is within the last three days (inclusive), `false` otherwise.
+ */
+export function isNewFile(date: Date) {
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - date.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays <= 3;
+}
+
+/**
+ * Combine and normalize CSS class names into a single string, resolving Tailwind-specific conflicts.
+ *
+ * @param inputs - Class name values (strings, arrays, objects, etc.) to merge
+ * @returns A single space-separated class string with duplicates removed and Tailwind utility conflicts resolved
+ */
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }

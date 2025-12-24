@@ -25,11 +25,16 @@ import RenameFolderDialog from "../../dialogs/RenameFolderDialog";
 import ChangeCoverFolderDialog from "../../dialogs/ChangeCoverFolderDialog";
 import { ShareFolderDialog } from "../../dialogs/ShareFolderDialog";
 import DeleteFolderDialog from "../../dialogs/DeleteFolderDialog";
-import { downloadClientFiles } from "@/lib/utils";
 import { FileType } from "@prisma/client";
 import { Link } from "@/i18n/navigation";
 import FolderPropertiesDialog from "../../dialogs/FolderPropertiesDialogs";
 
+/**
+ * Render a clickable folder card showing cover (or placeholder), name, file count, and creation date, with a context menu for folder actions and dialogs for rename, change cover, share, properties, and delete.
+ *
+ * @param folder - The folder to display; must include cover and coverId (when present), a files array (each file includes tags and comments), a file count property (`_count.files`), and access token/metadata required for folder actions.
+ * @returns A React element containing the folder preview, its context menu actions, and the associated dialogs
+ */
 export default function FolderPreviewGrid({
     folder,
 }: {
@@ -39,7 +44,6 @@ export default function FolderPreviewGrid({
 }) {
     const t = useTranslations("folders");
     const dialogsTranslations = useTranslations("dialogs.folders");
-    const downloadT = useTranslations("components.download");
     const format = useFormatter();
 
     const [openRename, setOpenRename] = React.useState<boolean>(false);
@@ -121,11 +125,10 @@ export default function FolderPreviewGrid({
                     <ContextMenuItem onClick={() => setOpenShare(true)}>
                         {dialogsTranslations("share.trigger")}
                     </ContextMenuItem>
-                    <ContextMenuItem
-                        onClick={() => downloadClientFiles(downloadT, folder.files, folder.name)}
-                        disabled={folder.files.length === 0}
-                    >
-                        {t("actions.download")}
+                    <ContextMenuItem disabled={folder.files.length === 0} asChild>
+                        <a href={`/api/folders/${folder.id}/download`} download>
+                            {t("actions.download")}
+                        </a>
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => setOpenProperties(true)}>{t("actions.properties")}</ContextMenuItem>
                     <ContextMenuSeparator />

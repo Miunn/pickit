@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "../../../globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { getTranslations } from "next-intl/server";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/ui/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Folder, Image, Link, Map } from "lucide-react";
@@ -112,11 +112,13 @@ export default async function LocaleLayout(
                                     icon: Folder,
                                     url: `/${locale}/app/folders`,
                                     isActive: true,
-                                    items: folders.map(folder => ({
-                                        key: folder.id,
-                                        title: folder.name,
-                                        url: `/${locale}/app/folders/${folder.id}`,
-                                    })),
+                                    items: folders
+                                        .map(folder => ({
+                                            key: folder.id,
+                                            title: folder.name,
+                                            url: `/${locale}/app/folders/${folder.id}`,
+                                        }))
+                                        .sort((a, b) => a.title.localeCompare(b.title)),
                                 },
                                 {
                                     key: "files",

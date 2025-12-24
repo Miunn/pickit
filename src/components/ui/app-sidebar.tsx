@@ -12,13 +12,13 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Button } from "./ui/button";
+import { Button } from "./button";
 import CreateFolderDialog from "@/components/folders/dialogs/CreateFolderDialog";
-import { DialogTrigger } from "./ui/dialog";
+import { DialogTrigger } from "./dialog";
 import { UserLight } from "@/lib/definitions";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import LogoImage from "./generic/LogoImage";
+import LogoImage from "../generic/LogoImage";
 import { Notification as NotificationData } from "@prisma/client";
 
 export interface AppSidebarProps {

@@ -481,7 +481,11 @@
                 "actions": {
                     "expand": "Etendre",
                     "openInNew": "Ouvrir dans un nouvel onglet",
-                    "download": "Télécharger",
+                    "download": {
+                        "label": "Télécharger",
+                        "started": "Téléchargement en cours",
+                        "description": "{name} est en train d'être téléchargé"
+                    },
                     "copy": {
                         "title": "Copier",
                         "success": {
@@ -734,7 +738,11 @@
             },
             "folderList": {
                 "folderCard": {
-                    "folderCount": "{count, plural, =0 {0 fichier} =1 {1 fichier} other {# fichiers}}"
+                    "folderCount": "{count, plural, =0 {0 fichier} =1 {1 fichier} other {# fichiers}}",
+                    "ignoredFiles": {
+                        "label": "{count, plural, =0 {Aucun fichier ignoré} =1 {1 fichier ignoré} other {# fichiers ignorés}}",
+                        "description": "Ces fichiers n'ont pas de données de localisation et n'apparaîtront pas sur la carte"
+                    }
                 }
             }
         }
@@ -1413,7 +1421,7 @@
                     "color": "Sélectionnez la couleur",
                     "error": "Une erreur est survenue lors de l'ajout de l'étiquette",
                     "errorRemove": "Une erreur est survenue lors de la suppression de l'étiquette",
-                    "errorAdd": "Une erreur est survenue lors de l'ajout de l'étiquette",
+                    "errorAdd": "Une erreur est survenue lors de l'ajout de l'étiquette. Une étiquette avec ce nom existe peut-être déjà",
                     "errorEmpty": "Le nom ne doit pas être vide"
                 },
                 "noUserTags": "Aucune étiquette créé pour le moment"

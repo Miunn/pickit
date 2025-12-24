@@ -2,20 +2,26 @@ import React, { memo } from "react";
 import { Folder } from "@prisma/client";
 import { Images, X } from "lucide-react";
 import LoadingImage from "../files/LoadingImage";
+import { useSearchParams } from "next/navigation";
 
 type ClusterWindowContentProps = {
-    folders: (Folder & { coverSignedUrl: string })[];
+    folders: Folder[];
     onClose: () => void;
 };
 
 const ClusterWindowContent = memo(({ folders, onClose }: ClusterWindowContentProps) => {
+    const searchParams = useSearchParams();
+    const shareToken = searchParams.get("share") || "";
+    const shareHashPin = searchParams.get("h") || "";
+    const tokenType = searchParams.get("t") || "";
+
     return (
         <div className="relative">
             <div className="bg-white border border-primary rounded-lg overflow-hidden shadow-lg mb-[23px] w-64">
                 <div className="relative h-32 w-full">
-                    {folders[0].coverSignedUrl ? (
+                    {folders[0].coverId ? (
                         <LoadingImage
-                            src={folders[0].coverSignedUrl}
+                            src={`/api/folders/${folders[0].id}/images/${folders[0].coverId}?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`}
                             alt={folders[0].name}
                             sizes="33vw"
                             fill

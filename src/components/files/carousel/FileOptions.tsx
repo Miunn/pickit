@@ -1,16 +1,15 @@
-import { Braces, Ellipsis, Tags } from "lucide-react";
+import { Braces, Download, Ellipsis, Tags } from "lucide-react";
 
 import { Copy } from "lucide-react";
 
 import { Check } from "lucide-react";
 import { toast as sonnerToast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
-import { ExternalLink, Loader2 } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import FullScreenImageCarousel from "./FullScrenImageCarousel";
 import { Expand } from "lucide-react";
 import Link from "next/link";
-import { copyImageToClipboard, downloadClientImageHandler } from "@/lib/utils";
+import { copyImageToClipboard } from "@/lib/utils";
 import { FileWithFolder, FileWithTags, FolderWithTags } from "@/lib/definitions";
 import { toast } from "@/hooks/use-toast";
 import { FileType, FolderTag } from "@prisma/client";
@@ -29,7 +28,17 @@ import ManageTagsDialog from "../dialogs/ManageTagsDialog";
 import { useSession } from "@/providers/SessionProvider";
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { addTagsToFile, removeTagsFromFile } from "@/actions/tags";
+import { useTopLoader } from "nextjs-toploader";
 
+/**
+ * Render action controls for a file including tag management, fullscreen carousel, open-in-new-tab, download, copy-to-clipboard, and metadata actions.
+ *
+ * @param file - The file (with its folder and tags) for which actions are rendered.
+ * @param fullScreenCarouselFiles - Array of files (with folder and tags) used as the source for the fullscreen carousel.
+ * @param currentIndexState - Initial index to open the fullscreen carousel at.
+ * @param carouselApi - Carousel API instance used to control the parent carousel.
+ * @returns The JSX element containing the file action controls.
+ */
 export default function FileOptions({
     file,
     fullScreenCarouselFiles,
@@ -43,6 +52,7 @@ export default function FileOptions({
 }) {
     const { user } = useSession();
     const { setFiles } = useFilesContext();
+    const { done } = useTopLoader();
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
@@ -50,7 +60,6 @@ export default function FileOptions({
 
     const t = useTranslations("components.images.carousel.actions");
     const [copied, setCopied] = useState(false);
-    const [downloading, setDownloading] = useState(false);
 
     const handleTagSelected = async (tag: FolderTag): Promise<boolean> => {
         setFiles((prev: ContextFile[]) => {
@@ -97,7 +106,6 @@ export default function FileOptions({
                 {user?.id === file.createdById && (
                     <ManageTagsDialog
                         selectedTags={file.tags}
-                        availableTags={file.folder.tags}
                         onTagSelected={handleTagSelected}
                         onTagUnselected={handleTagUnselected}
                         onTagAdded={handleTagAdded}
@@ -128,14 +136,23 @@ export default function FileOptions({
                     variant={"outline"}
                     size={"icon"}
                     type="button"
-                    onClick={async () => {
-                        setDownloading(true);
-                        await downloadClientImageHandler(file);
-                        setDownloading(false);
+                    onClick={() => {
+                        toast({
+                            title: t("download.started"),
+                            description: t("download.description", { name: file.name }),
+                        });
+                        setTimeout(() => {
+                            done();
+                        }, 1000);
                     }}
-                    disabled={downloading}
+                    asChild
                 >
-                    {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                    <a
+                        href={`/api/folders/${file.folder.id}/${file.type === FileType.VIDEO ? "videos" : "images"}/${file.id}/download?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
+                        download
+                    >
+                        <Download className="w-4 h-4" />
+                    </a>
                 </Button>
                 <Button
                     className={file.type === FileType.VIDEO ? "hidden" : ""}
@@ -197,7 +214,6 @@ export default function FileOptions({
                         >
                             <ManageTagsDialog
                                 selectedTags={file.tags}
-                                availableTags={file.folder.tags}
                                 onTagSelected={handleTagSelected}
                                 onTagUnselected={handleTagUnselected}
                                 onTagAdded={handleTagAdded}
@@ -233,19 +249,28 @@ export default function FileOptions({
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                        onClick={async () => {
-                            setDownloading(true);
-                            await downloadClientImageHandler(file);
-                            setDownloading(false);
+                        onClick={() => {
+                            toast({
+                                title: t("download.started"),
+                                description: t("download.description", { name: file.name }),
+                            });
+                            setTimeout(() => {
+                                done();
+                            }, 1000);
                         }}
-                        disabled={downloading}
+                        asChild
                     >
-                        {downloading ? (
-                            <Loader2 size={16} className="opacity-60 animate-spin mr-2" aria-hidden="true" />
-                        ) : (
-                            <Download size={16} className="opacity-60 mr-2" aria-hidden="true" />
-                        )}
-                        {t("download")}
+                        <a
+                            href={`/api/folders/${file.folder.id}/${file.type === FileType.VIDEO ? "videos" : "images"}/${file.id}/download`}
+                            download
+                        >
+                            {/*{downloading ? (
+                                <Loader2 size={16} className="opacity-60 animate-spin mr-2" aria-hidden="true" />
+                            ) : (
+                                <Download size={16} className="opacity-60 mr-2" aria-hidden="true" />
+                            )}*/}
+                            {t("download.label")}
+                        </a>
                     </DropdownMenuItem>
                     {file.type !== FileType.VIDEO ? (
                         <DropdownMenuItem

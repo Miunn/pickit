@@ -21,6 +21,15 @@ import { Select, SelectItem, SelectContent, SelectValue, SelectTrigger } from ".
 import { useFolderContext } from "@/context/FolderContext";
 import { useFilesContext } from "@/context/FilesContext";
 
+/**
+ * Renders a sortable, paginated table of images with selection, carousel viewing, and bulk delete controls.
+ *
+ * Displays a centered loader until folder and files data are available from context. Once loaded, shows the folder description,
+ * page navigation and page-size controls, selectable rows with a selection summary (including total selected size), per-row actions
+ * (including opening the image carousel), and dialogs for viewing images in a carousel and deleting multiple selected images.
+ *
+ * @returns The React element representing the images list UI.
+ */
 export default function ImagesList() {
     const t = useTranslations("images.views.list.table");
     const { folder } = useFolderContext();
@@ -44,7 +53,7 @@ export default function ImagesList() {
         if (folder && files) {
             setIsLoading(false);
         }
-    }, [folder]);
+    }, [folder, files]);
 
     // Prepare data safely
     const tableData = React.useMemo(() => {

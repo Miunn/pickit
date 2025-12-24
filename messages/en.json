@@ -481,7 +481,11 @@
                 "actions": {
                     "expand": "Expand",
                     "openInNew": "Open in new",
-                    "download": "Download",
+                    "download": {
+                        "label": "Download",
+                        "started": "Download started",
+                        "description": "{name} is being downloaded"
+                    },
                     "copy": {
                         "title": "Copy",
                         "success": {
@@ -706,6 +710,8 @@
             }
         },
         "download": {
+            "downloadStartedTitle": "Download started",
+            "downloadStartedDescription": "Your download for {name} has started",
             "ongoing": {
                 "title": "{name} - Downloading",
                 "description": {
@@ -736,7 +742,11 @@
             },
             "folderList": {
                 "folderCard": {
-                    "folderCount": "{count, plural, =0 {0 files} =1 {1 file} other {# files}}"
+                    "folderCount": "{count, plural, =0 {0 files} =1 {1 file} other {# files}}",
+                    "ignoredFiles": {
+                        "label": "{count, plural, =0 {No ignored files} =1 {1 ignored file} other {# ignored files}}",
+                        "description": "These files are ignored because they don't have GPS data"
+                    }
                 }
             }
         }
@@ -1417,7 +1427,7 @@
                     "color": "Choose color",
                     "error": "Error while adding tag",
                     "errorRemove": "Error happened while removing tag",
-                    "errorAdd": "Error happened while adding tag",
+                    "errorAdd": "Error happened while adding tag. A same tag may already exist.",
                     "errorEmpty": "Name must not be empty"
                 },
                 "noUserTags": "No tags created yet"
@@ -1732,6 +1742,8 @@
         "sharedBy": "Shared by {name}",
         "filesCount": "{count, plural, one {# file} other {# files}}",
         "addDescription": "Add a description",
+        "downloadStarted": "Download started",
+        "downloadStartedDescription": "{name} is being downloaded",
         "page": {
             "title": "Folders",
             "subtitle": "Your created folders"

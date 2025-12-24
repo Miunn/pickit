@@ -23,9 +23,19 @@ import {
     CarouselContent,
 } from "../../ui/carousel";
 import LoadingImage from "../../files/LoadingImage";
-import FileOptions from "../../files/carousel/FileOptions";
 import { formatBytes } from "@/lib/utils";
 
+/**
+ * Dialog component that lets the user choose an image to set as a folder's cover.
+ *
+ * Submits the selected image to update the folder cover and shows success or error toasts.
+ *
+ * @param images - Candidate cover images; each item includes file data along with its containing folder, tags, and comments.
+ * @param folderId - ID of the folder whose cover will be updated.
+ * @param open - Whether the dialog is currently open.
+ * @param setOpen - State setter to control the dialog's open state.
+ * @returns A React element rendering the change-cover dialog UI.
+ */
 export default function ChangeCoverFolderDialog({
     images,
     folderId,
@@ -92,15 +102,7 @@ export default function ChangeCoverFolderDialog({
                 </DialogHeader>
 
                 <div>
-                    <div className="max-w-full flex justify-between items-center gap-2 px-2">
-                        <p className="font-semibold truncate">{images[currentIndex]?.name}</p>
-                        <FileOptions
-                            file={images[currentIndex]}
-                            fullScreenCarouselFiles={images}
-                            currentIndexState={currentIndex}
-                            carouselApi={carouselApi}
-                        />
-                    </div>
+                    <p className="font-semibold truncate">{images[currentIndex]?.name}</p>
                     <Carousel
                         className="w-full h-fit mx-auto max-w-xl"
                         opts={{

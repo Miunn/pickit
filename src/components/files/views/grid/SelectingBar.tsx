@@ -5,12 +5,19 @@ import { Tag, Trash2, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import ManageTagsDialog from "../../dialogs/ManageTagsDialog";
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
-import { useFolderContext } from "@/context/FolderContext";
 import { addTagsToFiles, removeTagsFromFiles } from "@/actions/tags";
 import { toast } from "sonner";
 import { DeleteMultipleImagesDialog } from "../../dialogs/DeleteMultipleImagesDialog";
 import { useEffect, useRef, useState } from "react";
 
+/**
+ * UI bar that appears when files are selected, showing selection count, total size, and actions for tag management and deletion.
+ *
+ * @param selected - Array of selected file IDs.
+ * @param sizeSelected - Total size in bytes of the selected files.
+ * @param onClose - Callback invoked to close the selecting bar.
+ * @returns A React element rendering the sticky selecting bar with controls to manage tags and delete selected files.
+ */
 export default function SelectingBar({
     selected,
     sizeSelected,
@@ -22,7 +29,6 @@ export default function SelectingBar({
 }) {
     const t = useTranslations("files.grid.selectingBar");
 
-    const { folder } = useFolderContext();
     const { setFiles } = useFilesContext();
     const stickyRef = useRef<HTMLDivElement>(null);
     const [isSticky, setIsSticky] = useState(false);
@@ -63,7 +69,6 @@ export default function SelectingBar({
             <div className="space-x-2">
                 <ManageTagsDialog
                     selectedTags={[]}
-                    availableTags={folder.tags}
                     onTagAdded={async (tag: FolderTag) => {
                         setFiles((prev: ContextFile[]) =>
                             prev.map(f => (selected.includes(f.id) ? { ...f, tags: [...f.tags, tag] } : f))

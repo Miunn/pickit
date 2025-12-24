@@ -1,5 +1,4 @@
-import { File } from "@prisma/client";
-import { FolderWithFilesCount } from "@/lib/definitions";
+import { FileWithFolder } from "@/lib/definitions";
 import { useEffect, useState } from "react";
 import {
     Carousel,
@@ -13,20 +12,21 @@ import { useMap } from "@vis.gl/react-google-maps";
 import LoadingImage from "../files/LoadingImage";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-
-type FileWithFolderAndUrl = File & {
-    folder: FolderWithFilesCount;
-    signedUrl: string;
-};
+import { useSearchParams } from "next/navigation";
 
 interface FileCarouselProps {
-    files: FileWithFolderAndUrl[];
+    files: FileWithFolder[];
     startIndex: number;
     onClose: () => void;
-    onFileChange?: (file: FileWithFolderAndUrl) => void;
+    onFileChange?: (file: FileWithFolder) => void;
 }
 
 export default function MapFileCarousel({ files, startIndex, onClose, onFileChange }: FileCarouselProps) {
+    const searchParams = useSearchParams();
+    const share = searchParams.get("share") || "";
+    const h = searchParams.get("h") || "";
+    const t = searchParams.get("t") || "";
+
     const map = useMap();
     const [api, setApi] = useState<CarouselApi>();
     const [isVisible, setIsVisible] = useState(true);
@@ -79,7 +79,7 @@ export default function MapFileCarousel({ files, startIndex, onClose, onFileChan
                                     >
                                         <div className="relative w-full h-[200px] bg-white border border-primary rounded-lg overflow-hidden shadow-lg">
                                             <LoadingImage
-                                                src={file.signedUrl}
+                                                src={`/api/folders/${file.folderId}/images/${file.id}?share=${share}&t=${t}&h=${h}`}
                                                 alt={file.name}
                                                 fill
                                                 className="object-cover"

@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../../ui/dialog";
 import { Label } from "../../ui/label";
 import { BrushCleaning, Loader2 } from "lucide-react";
-import { PopoverNonPortal, PopoverContent, PopoverTrigger } from "../../ui/popover-non-portal";
+import { PopoverContent, PopoverNonPortal, PopoverTrigger } from "../../ui/popover-non-portal";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { useState } from "react";
@@ -42,7 +42,10 @@ const AddTagPopover = ({ onTagAdded, folderId }: AddTagPopoverProps) => {
             toast.success(t("addTag.success"));
             onTagAdded(result.tag);
             setOpen(false);
+            return;
         }
+
+        toast.error(t("addTag.errorAdd"));
     };
 
     return (
@@ -66,12 +69,13 @@ const AddTagPopover = ({ onTagAdded, folderId }: AddTagPopoverProps) => {
                     <Label>{t("addTag.color")}</Label>
                     <div className="mt-1 grid grid-cols-3 gap-2">
                         {colors.map(color => (
-                            <div
+                            <button
                                 key={color}
                                 className={cn(
                                     "h-9 rounded-md cursor-pointer transition-all duration-75 ease-in-out outline outline-0 outline-offset-0 outline-transparent",
                                     selectedColor === color && "outline outline-2 outline-offset-2 outline-primary"
                                 )}
+                                type="button"
                                 style={{ backgroundColor: color }}
                                 onClick={() => setSelectedColor(color)}
                             />
@@ -87,10 +91,22 @@ const AddTagPopover = ({ onTagAdded, folderId }: AddTagPopoverProps) => {
     );
 };
 
+/**
+ * Renders a dialog that lets users view, add, and toggle tags for a folder.
+ *
+ * The dialog shows currently selected tags and all tags available on the folder, allows adding new tags (which updates folder context and local state), and invokes provided callbacks when a tag is selected, unselected, or newly added.
+ *
+ * @param children - Trigger element to open the dialog.
+ * @param selectedTags - The initial list of tags considered selected when the dialog opens.
+ * @param onTagSelected - Called when a tag is selected; should return `true` on success, `false` to revert the selection in the UI.
+ * @param onTagUnselected - Called when a tag is unselected; should return `true` on success, `false` to revert the unselection in the UI.
+ * @param onTagAdded - Called after a new tag is created; invoked with the created tag. The component updates folder context and local state regardless of the callback's result.
+ * @param className - Optional CSS class applied to the dialog trigger.
+ * @returns The ManageTagsDialog React element.
+ */
 export default function ManageTagsDialog({
     children,
     selectedTags,
-    availableTags,
     onTagSelected,
     onTagUnselected,
     onTagAdded,
@@ -99,7 +115,6 @@ export default function ManageTagsDialog({
 }: {
     children: React.ReactNode;
     selectedTags: FolderTag[];
-    availableTags: FolderTag[];
     onTagSelected: (tag: FolderTag) => Promise<boolean>;
     onTagUnselected: (tag: FolderTag) => Promise<boolean>;
     onTagAdded: (tag: FolderTag) => Promise<boolean>;
@@ -107,27 +122,26 @@ export default function ManageTagsDialog({
 } & React.ComponentProps<typeof DialogTrigger>) {
     const t = useTranslations("dialogs.files.addTag");
     const [selectedTagsState, setSelectedTags] = useState<FolderTag[]>(selectedTags);
-    const [folderTags, setFolderTags] = useState<FolderTag[]>(availableTags || []);
-    const { folder } = useFolderContext();
+    const { folder, setFolder } = useFolderContext();
 
     const handleTagAdded = async (tag: FolderTag) => {
-        setFolderTags([...folderTags, tag]);
-        setSelectedTags([...selectedTags, tag]);
-        if (onTagAdded) {
-            try {
-                await onTagAdded(tag);
-            } catch {
-                // noop: parent can handle failure visually if needed
-            }
+        setFolder(prev => ({ ...prev, tags: [...prev.tags, tag] }));
+        setSelectedTags(prev => [...prev, tag]);
+
+        if (!onTagAdded) return;
+
+        const r = await onTagAdded(tag);
+
+        if (!r) {
+            setFolder(prev => ({ ...prev, tags: prev.tags.filter(t => t.id !== tag.id) }));
+            setSelectedTags(prev => prev.filter(t => t.id !== tag.id));
         }
     };
 
     const handleTagSelected = async (tag: FolderTag) => {
         setSelectedTags([...selectedTags, tag]);
-        console.log("Added tag");
 
         const result = await onTagSelected(tag);
-        console.log("Result", result);
         if (!result) {
             setSelectedTags(selectedTags.filter(t => t.id !== tag.id));
         }
@@ -188,9 +202,9 @@ export default function ManageTagsDialog({
                             <AddTagPopover onTagAdded={handleTagAdded} folderId={folder.id} />
                         </span>
                     </Label>
-                    {folderTags.length > 0 ? (
+                    {folder.tags.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
-                            {folderTags.map(tag => (
+                            {folder.tags.map(tag => (
                                 <TagChip
                                     key={tag.id}
                                     tag={tag}

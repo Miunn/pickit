@@ -11,6 +11,15 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { TooltipProvider } from "../ui/tooltip";
 import { useTranslations } from "next-intl";
 
+/**
+ * Renders a file's like count and a heart button that allows the current user to toggle their like for the file.
+ *
+ * When the current user is not allowed to like the file, shows a non-interactive heart with a tooltip explaining why.
+ * When the user can like, clicking the heart invokes the like action, updates the files state in context to add or remove the corresponding like, and shows an error toast if the action fails.
+ *
+ * @param file - The file object including its current likes (FileWithLikes).
+ * @returns The JSX element containing the like count and heart button.
+ */
 export default function FileLikeButton({ file }: { file: FileWithLikes }) {
     const t = useTranslations("components.files.likeButton");
     const { files, setFiles, hasUserLikedFile, canUserLikeFile } = useFilesContext();
@@ -21,7 +30,6 @@ export default function FileLikeButton({ file }: { file: FileWithLikes }) {
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
 
-    console.log("Can user like file", canUserLikeFile(file));
     if (!canUserLikeFile(file)) {
         return (
             <div className="flex items-center gap-0.5">
@@ -30,7 +38,13 @@ export default function FileLikeButton({ file }: { file: FileWithLikes }) {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <span tabIndex={0}>
-                                <Button variant={"ghost"} size={"icon"} type="button" className="size-7 p-0 rounded-full hover:bg-muted" disabled>
+                                <Button
+                                    variant={"ghost"}
+                                    size={"icon"}
+                                    type="button"
+                                    className="size-7 p-0 rounded-full hover:bg-muted"
+                                    disabled
+                                >
                                     <Heart className={"size-4 p-0"} fill={"none"} color={"currentColor"} />
                                 </Button>
                             </span>
@@ -47,37 +61,54 @@ export default function FileLikeButton({ file }: { file: FileWithLikes }) {
     return (
         <div className="flex items-center gap-0.5">
             <p className="text-sm text-muted-foreground">{file.likes.length}</p>
-            <Button variant={"ghost"} size={"icon"} type="button" className="size-7 p-0 rounded-full hover:bg-primary/20" onClick={() => {
-                likeFile(file.id, shareToken, shareHashPin).then((result) => {
-                    if (result.error) {
-                        toast.error(result.error);
-                        return;
-                    }
-
-                    if (!result.like) {
-                        return;
-                    }
-
-                    if (!result.liked) {
-                        setFiles(files.map((fileState) => {
-                            if (fileState.id === file.id) {
-                                return { ...fileState, likes: fileState.likes.filter((like) => like.id !== result.like?.id) };
-                            }
-                            return fileState;
-                        }));
-                        return;
-                    }
-
-                    setFiles(files.map((fileState) => {
-                        if (fileState.id === file.id && result.like) {
-                            return { ...fileState, likes: [...fileState.likes, result.like] };
+            <Button
+                variant={"ghost"}
+                size={"icon"}
+                type="button"
+                className="size-7 p-0 rounded-full hover:bg-primary/20"
+                onClick={() => {
+                    likeFile(file.id, shareToken, shareHashPin).then(result => {
+                        if (result.error) {
+                            toast.error(result.error);
+                            return;
                         }
-                        return fileState;
-                    }));
-                });
-            }}>
-                <Heart className={cn("size-4 p-0", userLikedFile ? "text-red-500" : "")} fill={userLikedFile ? "red" : "none"} color={userLikedFile ? "red" : "currentColor"} />
+
+                        if (!result.like) {
+                            return;
+                        }
+
+                        if (!result.liked) {
+                            setFiles(
+                                files.map(fileState => {
+                                    if (fileState.id === file.id) {
+                                        return {
+                                            ...fileState,
+                                            likes: fileState.likes.filter(like => like.id !== result.like?.id),
+                                        };
+                                    }
+                                    return fileState;
+                                })
+                            );
+                            return;
+                        }
+
+                        setFiles(
+                            files.map(fileState => {
+                                if (fileState.id === file.id && result.like) {
+                                    return { ...fileState, likes: [...fileState.likes, result.like] };
+                                }
+                                return fileState;
+                            })
+                        );
+                    });
+                }}
+            >
+                <Heart
+                    className={cn("size-4 p-0", userLikedFile ? "text-red-500" : "")}
+                    fill={userLikedFile ? "red" : "none"}
+                    color={userLikedFile ? "red" : "currentColor"}
+                />
             </Button>
         </div>
-    )
+    );
 }
