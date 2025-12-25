@@ -101,15 +101,13 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
 
         const fileIdFromHash = hash.substring(1); // Remove the '#' character
 
-        setTimeout(() => {
-            // Scroll to the image in the grid
-            const element = document.getElementById(fileIdFromHash);
+        // Scroll to the image in the grid
+        const element = document.getElementById(fileIdFromHash);
 
-            if (!element) return;
+        if (!element) return;
 
-            element.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-            element.focus();
-        }, 1000);
+        element.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+        element.focus();
 
         // Cleanup hash
         return () => {
