@@ -187,6 +187,7 @@ export default function FileOptions({
                             setCopied(false);
                         }, 2000);
                     }}
+                    disabled={copied}
                 >
                     {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 </Button>
