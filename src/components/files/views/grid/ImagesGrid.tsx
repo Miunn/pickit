@@ -67,16 +67,6 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
 
     const [sortedFiles, setSortedFiles] = useState<ContextFile[]>(defaultSortedFiles);
 
-    useEffect(() => {
-        setSortStrategy(sortState);
-        setSortedFiles(getSortedFiles(files));
-    }, [sortState, files, getSortedFiles]);
-
-    // Update context files when infinite files change
-    useEffect(() => {
-        setFiles(files);
-    }, [files, setFiles]);
-
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
@@ -93,11 +83,36 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     );
 
     useEffect(() => {
+        setSortStrategy(sortState);
+        setSortedFiles(getSortedFiles(files));
+    }, [sortState, files, getSortedFiles]);
+
+    // Update context files when infinite files change
+    useEffect(() => {
+        setFiles(files);
+    }, [files, setFiles]);
+
+    useEffect(() => {
         if (selected.length === 0) {
             setSelecting(false);
             setSizeSelected(0);
         }
     }, [selected]);
+
+    // Look for URL hash to open carousel at specific image
+    useEffect(() => {
+        const hash = window.location.hash;
+        if (hash === "") return;
+
+        const fileIdFromHash = hash.substring(1); // Remove the '#' character
+        const fileIndex = files.findIndex(file => file.id === fileIdFromHash);
+
+        // Scroll to the image in the grid and open carousel
+        if (fileIndex !== -1) {
+            setStartIndex(fileIndex);
+            setCarouselOpen(true);
+        }
+    }, [files]);
 
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
