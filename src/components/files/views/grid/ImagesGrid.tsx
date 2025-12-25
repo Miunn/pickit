@@ -101,21 +101,28 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
 
         const fileIdFromHash = hash.substring(1); // Remove the '#' character
 
-        // Scroll to the image in the grid
-        const element = document.getElementById(fileIdFromHash);
+        const scrollToElement = (attempts = 0) => {
+            const element = document.getElementById(fileIdFromHash);
 
-        if (!element) return;
+            if (element) {
+                element.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+                element.focus();
 
-        element.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-        element.focus();
+                // Mark as processed and clean up hash immediately
+                hashProcessedRef.current = true;
+                if (window.location.hash === `#${fileIdFromHash}`) {
+                    history.replaceState("", document.title, window.location.pathname + window.location.search);
+                }
+                return;
+            }
 
-        // Cleanup hash
-        return () => {
-            hashProcessedRef.current = true;
-            if (window.location.hash === `#${fileIdFromHash}`) {
-                history.replaceState("", document.title, window.location.pathname + window.location.search);
+            // Retry up to 10 times with 100ms intervals
+            if (attempts < 10) {
+                setTimeout(() => scrollToElement(attempts + 1), 100);
             }
         };
+
+        scrollToElement();
     }, []);
 
     const handleDragStart = (event: DragStartEvent) => {
