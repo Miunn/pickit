@@ -20,10 +20,15 @@ export default function SortImages({ sortState, setSortState }: SortImagesProps)
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant={"outline"} className="w-32">
-                    <ArrowDownWideNarrow className="mr-2" />
+                <Button variant={"outline"}>
+                    <ArrowDownWideNarrow className="mr-2 shrink-0" />
                     {t("trigger")}
-                    <ChevronDown className="-me-1 ms-2 opacity-60" size={16} strokeWidth={2} aria-hidden="true" />
+                    <ChevronDown
+                        className="-me-1 ms-2 opacity-60 shrink-0"
+                        size={16}
+                        strokeWidth={2}
+                        aria-hidden="true"
+                    />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="min-w-[--radix-dropdown-menu-trigger-width]">
