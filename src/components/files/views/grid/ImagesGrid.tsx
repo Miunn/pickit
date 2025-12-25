@@ -45,7 +45,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     const [sortStrategy, setSortStrategy] = useState<ImagesSortMethod | "dragOrder">(sortState);
 
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
-    const hashProcessedRef = useRef<string>(null);
+    const hashProcessedRef = useRef<boolean>(false);
 
     const getSortedFiles = useCallback(
         (files: ContextFile[]): ContextFile[] => {
@@ -105,8 +105,6 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             // Scroll to the image in the grid
             const element = document.getElementById(fileIdFromHash);
 
-            console.log("Got element", element);
-
             if (!element) return;
 
             element.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
@@ -115,7 +113,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
 
         // Cleanup hash
         return () => {
-            hashProcessedRef.current = fileIdFromHash;
+            hashProcessedRef.current = true;
             if (window.location.hash === `#${fileIdFromHash}`) {
                 history.replaceState("", document.title, window.location.pathname + window.location.search);
             }
