@@ -101,10 +101,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className,
                         {...attributes}
                     >
                         <div
-                            className={cn(
-                                "inline-block w-full rounded-2xl",
-                                selected.includes(file.id) ? "bg-accent" : ""
-                            )}
+                            className={cn("inline-block w-full rounded-2xl", selected.includes(file.id) && "bg-accent")}
                         >
                             <div className={`${selected.includes(file.id) ? "scale-95" : ""}`}>
                                 <FileThumbnail file={file} />

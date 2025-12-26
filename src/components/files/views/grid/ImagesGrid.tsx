@@ -322,53 +322,54 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
         }
 
         return sortedFiles.map(file => (
-            <Fragment key={file.id}>
-                <ImagePreviewGrid
-                    className={`${activeId === file.id ? "opacity-50" : ""}`}
-                    file={file}
-                    selected={selected}
-                    onClick={e => {
-                        if (selecting) {
-                            if (e?.shiftKey && selected.length > 0) {
-                                const lastSelectedId = selected[selected.length - 1];
-                                const lastSelectedIndex = files.findIndex(item => item.id === lastSelectedId);
-                                const currentIndex = files.findIndex(item => item.id === file.id);
+            <ImagePreviewGrid
+                key={file.id}
+                id={file.id}
+                className={`${activeId === file.id ? "opacity-50" : ""}`}
+                file={file}
+                selected={selected}
+                onClick={e => {
+                    if (selecting) {
+                        if (e?.shiftKey && selected.length > 0) {
+                            const lastSelectedId = selected[selected.length - 1];
+                            const lastSelectedIndex = files.findIndex(item => item.id === lastSelectedId);
+                            const currentIndex = files.findIndex(item => item.id === file.id);
 
-                                if (lastSelectedIndex !== -1 && currentIndex !== -1) {
-                                    const start = Math.min(lastSelectedIndex, currentIndex);
-                                    const end = Math.max(lastSelectedIndex, currentIndex);
-                                    const range = files.slice(start, end + 1);
+                            if (lastSelectedIndex !== -1 && currentIndex !== -1) {
+                                const start = Math.min(lastSelectedIndex, currentIndex);
+                                const end = Math.max(lastSelectedIndex, currentIndex);
+                                const range = files.slice(start, end + 1);
 
-                                    const newSelectedIds = range.map(item => item.id);
-                                    const newSize = range.reduce((acc, item) => acc + item.size, 0);
+                                const newSelectedIds = range.map(item => item.id);
+                                const newlySelected = range.filter(item => !selected.includes(item.id));
+                                const newSize = newlySelected.reduce((acc, item) => acc + item.size, 0);
 
-                                    setSelected([...new Set([...selected, ...newSelectedIds])]);
-                                    setSizeSelected(sizeSelected + newSize);
-                                }
-                            } else if (selected.includes(file.id)) {
-                                setSelected(selected.filter(id => id !== file.id));
-                                setSizeSelected(sizeSelected - file.size);
-                            } else {
-                                setSelected([...selected, file.id]);
-                                setSizeSelected(sizeSelected + file.size);
+                                setSelected([...new Set([...selected, ...newSelectedIds])]);
+                                setSizeSelected(sizeSelected + newSize);
                             }
-                        } else {
-                            setStartIndex(files.indexOf(file));
-                            setCarouselOpen(true);
-                        }
-                    }}
-                    onSelect={() => {
-                        if (selected.includes(file.id)) {
+                        } else if (selected.includes(file.id)) {
                             setSelected(selected.filter(id => id !== file.id));
                             setSizeSelected(sizeSelected - file.size);
                         } else {
-                            setSelecting(true);
                             setSelected([...selected, file.id]);
                             setSizeSelected(sizeSelected + file.size);
                         }
-                    }}
-                />
-            </Fragment>
+                    } else {
+                        setStartIndex(files.indexOf(file));
+                        setCarouselOpen(true);
+                    }
+                }}
+                onSelect={() => {
+                    if (selected.includes(file.id)) {
+                        setSelected(selected.filter(id => id !== file.id));
+                        setSizeSelected(sizeSelected - file.size);
+                    } else {
+                        setSelecting(true);
+                        setSelected([...selected, file.id]);
+                        setSizeSelected(sizeSelected + file.size);
+                    }
+                }}
+            />
         ));
     };
 
