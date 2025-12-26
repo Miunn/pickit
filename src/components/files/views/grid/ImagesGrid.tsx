@@ -1,7 +1,7 @@
 "use client";
 
 import { ImagePreviewGrid } from "@/components/files/views/grid/ImagePreviewGrid";
-import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DeleteMultipleImagesDialog } from "@/components/files/dialogs/DeleteMultipleImagesDialog";
 import { CarouselDialog } from "@/components/files/carousel/CarouselDialog";
 import { cn, getSortedImagesVideosContent } from "@/lib/utils";
