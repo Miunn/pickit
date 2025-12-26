@@ -270,7 +270,13 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                                                     const range = files.slice(start, end + 1);
 
                                                     const newSelectedIds = range.map(item => item.id);
-                                                    const newSize = range.reduce((acc, item) => acc + item.size, 0);
+                                                    const newlySelected = range.filter(
+                                                        item => !selected.includes(item.id)
+                                                    );
+                                                    const newSize = newlySelected.reduce(
+                                                        (acc, item) => acc + item.size,
+                                                        0
+                                                    );
 
                                                     setSelected([...new Set([...selected, ...newSelectedIds])]);
                                                     setSizeSelected(sizeSelected + newSize);
