@@ -123,6 +123,10 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
         };
 
         scrollToElement();
+
+        return () => {
+            hashProcessedRef.current = false;
+        };
     }, []);
 
     const handleDragStart = (event: DragStartEvent) => {
@@ -259,15 +263,15 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                                         if (selecting) {
                                             if (e?.shiftKey && selected.length > 0) {
                                                 const lastSelectedId = selected[selected.length - 1];
-                                                const lastSelectedIndex = files.findIndex(
+                                                const lastSelectedIndex = sortedFiles.findIndex(
                                                     item => item.id === lastSelectedId
                                                 );
-                                                const currentIndex = files.findIndex(item => item.id === file.id);
+                                                const currentIndex = sortedFiles.findIndex(item => item.id === file.id);
 
                                                 if (lastSelectedIndex !== -1 && currentIndex !== -1) {
                                                     const start = Math.min(lastSelectedIndex, currentIndex);
                                                     const end = Math.max(lastSelectedIndex, currentIndex);
-                                                    const range = files.slice(start, end + 1);
+                                                    const range = sortedFiles.slice(start, end + 1);
 
                                                     const newSelectedIds = range.map(item => item.id);
                                                     const newlySelected = range.filter(
@@ -289,7 +293,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                                                 setSizeSelected(sizeSelected + file.size);
                                             }
                                         } else {
-                                            setStartIndex(files.indexOf(file));
+                                            setStartIndex(sortedFiles.indexOf(file));
                                             setCarouselOpen(true);
                                         }
                                     }}
@@ -325,7 +329,11 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             <ImagePreviewGrid
                 key={file.id}
                 id={file.id}
-                className={`${activeId === file.id ? "opacity-50" : ""}`}
+                data-id={file.id}
+                className={cn(
+                    "focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background rounded-xl",
+                    activeId === file.id && "opacity-50"
+                )}
                 file={file}
                 selected={selected}
                 onClick={e => {
