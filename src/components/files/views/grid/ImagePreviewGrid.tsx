@@ -96,9 +96,9 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className,
                             className
                         )}
                         style={style}
+                        {...props}
                         {...listeners}
                         {...attributes}
-                        {...props}
                     >
                         <div
                             className={cn(
