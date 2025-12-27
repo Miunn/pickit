@@ -27,15 +27,15 @@ import { toast as sonnerToast } from "sonner";
 import { useSearchParams } from "next/navigation";
 import FileThumbnail from "./FileThumbnail";
 
-export interface ImagePreviewProps {
+export type ImagePreviewProps = {
     file: { folder: FolderWithTags } & FileWithTags;
     selected: string[];
     onClick: (e?: React.MouseEvent) => void;
     onSelect: () => void;
     className?: string;
-}
+} & React.HTMLAttributes<HTMLButtonElement>;
 
-export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className }: ImagePreviewProps) => {
+export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className, ...props }: ImagePreviewProps) => {
     const t = useTranslations("images");
     const deleteTranslations = useTranslations("dialogs.images.delete");
     const searchParams = useSearchParams();
@@ -90,16 +90,18 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className 
                     <button
                         ref={setNodeRef}
                         onClick={onClick}
-                        className="w-full unset cursor-pointer"
+                        className={cn(
+                            "w-full cursor-pointer",
+                            "focus:ring focus:ring-primary focus:ring-offset-2 focus:ring-offset-background focus:outline-none rounded-xl",
+                            className
+                        )}
                         style={style}
+                        {...props}
                         {...listeners}
                         {...attributes}
                     >
                         <div
-                            className={cn(
-                                `inline-block w-full rounded-2xl ${selected.includes(file.id) ? "bg-accent" : ""}`,
-                                className
-                            )}
+                            className={cn("inline-block w-full rounded-2xl", selected.includes(file.id) && "bg-accent")}
                         >
                             <div className={`${selected.includes(file.id) ? "scale-95" : ""}`}>
                                 <FileThumbnail file={file} />
