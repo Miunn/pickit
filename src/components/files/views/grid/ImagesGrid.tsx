@@ -1,10 +1,10 @@
 "use client";
 
 import { ImagePreviewGrid } from "@/components/files/views/grid/ImagePreviewGrid";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DeleteMultipleImagesDialog } from "@/components/files/dialogs/DeleteMultipleImagesDialog";
 import { CarouselDialog } from "@/components/files/carousel/CarouselDialog";
-import { cn, getSortedImagesVideosContent } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { UploadImagesForm } from "@/components/files/upload/UploadImagesForm";
 import { useSession } from "@/providers/SessionProvider";
 import {
@@ -20,20 +20,18 @@ import {
     useSensor,
     useSensors,
 } from "@dnd-kit/core";
-import { arrayMove, SortableContext } from "@dnd-kit/sortable";
+import { SortableContext } from "@dnd-kit/sortable";
 import { updateFilePosition } from "@/actions/files";
 import { useFolderContext } from "@/context/FolderContext";
-import { ImagesSortMethod } from "@/types/imagesSort";
 import { useFilesContext } from "@/context/FilesContext";
-import { ContextFile } from "@/context/FilesContext";
 import SelectingBar from "./SelectingBar";
 import FolderDescription from "@/components/folders/views/grid/FolderDescription";
 import RecentlyAdded from "./RecentlyAdded";
 
-export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
+export const ImagesGrid = () => {
     const { user } = useSession();
     const { folder, isShared /*token, tokenHash*/ } = useFolderContext();
-    const { files, setFiles } = useFilesContext();
+    const { files, setFiles, sortedFiles } = useFilesContext();
 
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
     const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
@@ -42,28 +40,9 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     const [selected, setSelected] = useState<string[]>([]);
     const [sizeSelected, setSizeSelected] = useState<number>(0);
     const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-    const [sortStrategy, setSortStrategy] = useState<ImagesSortMethod | "dragOrder">(sortState);
 
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
     const hashProcessedRef = useRef<boolean>(false);
-
-    const getSortedFiles = useCallback(
-        (files: ContextFile[]): ContextFile[] => {
-            if (sortStrategy !== "dragOrder") {
-                const sortedItems = [...getSortedImagesVideosContent(files, sortState)] as ContextFile[];
-                return sortedItems;
-            }
-
-            const orderedItems = [...files];
-            const sortedItems = [...orderedItems].sort((a, b) => a.position - b.position);
-            return sortedItems;
-        },
-        [sortState, sortStrategy]
-    );
-
-    const defaultSortedFiles = useMemo(() => getSortedFiles(files), [getSortedFiles, files]);
-
-    const [sortedFiles, setSortedFiles] = useState<ContextFile[]>(defaultSortedFiles);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -79,11 +58,6 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             },
         })
     );
-
-    useEffect(() => {
-        setSortStrategy(sortState);
-        setSortedFiles(getSortedFiles(files));
-    }, [sortState, files, getSortedFiles]);
 
     useEffect(() => {
         if (selected.length === 0) {
@@ -203,21 +177,6 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             }
         }, 0);
 
-        setSortedFiles(currentOrder => {
-            const oldIndex = currentOrder.findIndex(file => file.id === activeId);
-            const newIndex = currentOrder.findIndex(file => file.id === overId);
-
-            if (oldIndex === -1) {
-                // If item wasn't in the order, add it at the new position
-                const newOrder = [...currentOrder];
-                newOrder.splice(newIndex, 0, currentOrder.find(file => file.id === activeId)!);
-                return newOrder;
-            }
-
-            setSortStrategy("dragOrder");
-            return arrayMove(currentOrder, oldIndex, newIndex);
-        });
-
         setActiveId(null);
     };
 
@@ -268,7 +227,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                     onDragMove={handleDragMove}
                 >
                     <SortableContext items={sortedFiles.map(item => item.id)}>
-                        {files.length === 0 ? (
+                        {sortedFiles.length === 0 ? (
                             <div
                                 className={
                                     "col-start-1 col-end-3 xl:col-start-2 xl:col-end-4 2xl:col-start-3 2xl:col-end-5 mx-auto mt-6 flex flex-col justify-center items-center max-w-lg"
@@ -278,7 +237,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                                     folderId={folder.id}
                                     shouldDisplayNotify={isShared}
                                     onUpload={uploadedFiles => {
-                                        const newFiles = [...files, ...uploadedFiles];
+                                        const newFiles = [...sortedFiles, ...uploadedFiles];
                                         setFiles(newFiles);
                                     }}
                                 />
@@ -335,37 +294,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                 )}
                 file={file}
                 selected={selected}
-                onClick={e => {
-                    if (selecting) {
-                        if (e?.shiftKey && selected.length > 0) {
-                            const lastSelectedId = selected[selected.length - 1];
-                            const lastSelectedIndex = files.findIndex(item => item.id === lastSelectedId);
-                            const currentIndex = files.findIndex(item => item.id === file.id);
-
-                            if (lastSelectedIndex !== -1 && currentIndex !== -1) {
-                                const start = Math.min(lastSelectedIndex, currentIndex);
-                                const end = Math.max(lastSelectedIndex, currentIndex);
-                                const range = files.slice(start, end + 1);
-
-                                const newSelectedIds = range.map(item => item.id);
-                                const newlySelected = range.filter(item => !selected.includes(item.id));
-                                const newSize = newlySelected.reduce((acc, item) => acc + item.size, 0);
-
-                                setSelected([...new Set([...selected, ...newSelectedIds])]);
-                                setSizeSelected(sizeSelected + newSize);
-                            }
-                        } else if (selected.includes(file.id)) {
-                            setSelected(selected.filter(id => id !== file.id));
-                            setSizeSelected(sizeSelected - file.size);
-                        } else {
-                            setSelected([...selected, file.id]);
-                            setSizeSelected(sizeSelected + file.size);
-                        }
-                    } else {
-                        setStartIndex(sortedFiles.indexOf(file));
-                        setCarouselOpen(true);
-                    }
-                }}
+                onClick={e => handleClickImage(file.id, sortedFiles.indexOf(file), e)}
                 onSelect={() => {
                     if (selected.includes(file.id)) {
                         setSelected(selected.filter(id => id !== file.id));

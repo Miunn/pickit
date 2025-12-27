@@ -1,7 +1,7 @@
 "use client";
 
 import { FileWithComments, FileWithLikes, FolderWithFilesCount, FileWithTags, FolderWithTags } from "@/lib/definitions";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 import { useSession } from "@/providers/SessionProvider";
 import { useTokenContext } from "./TokenContext";
 import { File as PrismaFile } from "@prisma/client";
@@ -19,6 +19,7 @@ export type ContextFile = PrismaFile &
 type FilesContextType = {
     files: ContextFile[];
     setFiles: React.Dispatch<React.SetStateAction<ContextFile[]>>;
+    sortedFiles: ContextFile[];
     hasUserLikedFile: (fileId: string) => boolean;
     canUserLikeFile: (file: FileWithLikes) => boolean;
     getSortedFiles: (sortStrategy: ImagesSortMethod | "dragOrder", sortState: ImagesSortMethod) => ContextFile[];
@@ -96,6 +97,21 @@ export const FilesProvider = ({
         },
     });
 
+    const sortedFiles = useMemo(() => {
+        if (sortState !== ImagesSortMethod.PositionAsc && sortState !== ImagesSortMethod.PositionDesc) {
+            const sortedItems = [...getSortedImagesVideosContent(files, sortState)] as ContextFile[];
+            return sortedItems;
+        }
+
+        if (sortState === ImagesSortMethod.PositionDesc) {
+            const sortedItems = [...files].sort((a, b) => b.position - a.position);
+            return sortedItems;
+        }
+
+        const sortedItems = [...files].sort((a, b) => a.position - b.position);
+        return sortedItems;
+    }, [files, sortState]);
+
     const hasUserLikedFile = (fileId: string) => {
         if (!user && !token) {
             return false;
@@ -159,6 +175,7 @@ export const FilesProvider = ({
             value={{
                 files,
                 setFiles,
+                sortedFiles,
                 hasUserLikedFile,
                 canUserLikeFile,
                 getSortedFiles,
