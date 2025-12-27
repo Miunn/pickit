@@ -99,7 +99,7 @@ export const FilesProvider = ({
 
     const sortedFiles = useMemo(() => {
         if (sortState !== ImagesSortMethod.PositionAsc && sortState !== ImagesSortMethod.PositionDesc) {
-            const sortedItems = [...getSortedImagesVideosContent(files, sortState)] as ContextFile[];
+            const sortedItems = getSortedImagesVideosContent([...files], sortState) as ContextFile[];
             return sortedItems;
         }
 
@@ -155,7 +155,7 @@ export const FilesProvider = ({
         sortState: ImagesSortMethod
     ): ContextFile[] => {
         if (sortStrategy !== "dragOrder") {
-            const sortedItems = [...getSortedImagesVideosContent(files, sortState)] as ContextFile[];
+            const sortedItems = getSortedImagesVideosContent([...files], sortState) as ContextFile[];
             return sortedItems;
         }
 

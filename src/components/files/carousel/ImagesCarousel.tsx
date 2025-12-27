@@ -24,7 +24,7 @@ import TagChip from "@/components/tags/TagChip";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function ImagesCarousel({ startIndex }: { startIndex: number }) {
-    const { sortedFiles, setFiles } = useFilesContext();
+    const { sortedFiles, files, setFiles } = useFilesContext();
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
@@ -54,29 +54,29 @@ export default function ImagesCarousel({ startIndex }: { startIndex: number }) {
         <div className={"w-full overflow-hidden p-2 mx-auto"}>
             <div className="max-w-full flex justify-between items-center mb-2 gap-2 px-2">
                 <div className="font-semibold truncate flex items-center gap-3">
-                    <p className="truncate">{sortedFiles[currentIndex]?.name}</p>
-                    {sortedFiles[currentIndex]?.tags.length > 0 && (
+                    <p className="truncate">{currentFile?.name}</p>
+                    {currentFile?.tags.length > 0 && (
                         <div className="flex gap-1">
-                            <TagChip tag={sortedFiles[currentIndex]?.tags[0]} />
-                            {sortedFiles[currentIndex]?.tags.length > 1 && (
+                            <TagChip tag={currentFile?.tags[0]} />
+                            {currentFile?.tags.length > 1 && (
                                 <TooltipProvider>
                                     <Tooltip delayDuration={0}>
                                         <TooltipTrigger asChild>
                                             <TagChip
                                                 tag={{
                                                     id: "more",
-                                                    name: `+${sortedFiles[currentIndex]?.tags.length - 1}`,
-                                                    color: sortedFiles[currentIndex]?.tags[1].color,
+                                                    name: `+${currentFile?.tags.length - 1}`,
+                                                    color: currentFile?.tags[1].color,
                                                     createdAt: new Date(),
                                                     updatedAt: new Date(),
-                                                    folderId: sortedFiles[currentIndex]?.folderId,
-                                                    userId: sortedFiles[currentIndex]?.createdById,
+                                                    folderId: currentFile?.folderId,
+                                                    userId: currentFile?.createdById,
                                                 }}
                                             />
                                         </TooltipTrigger>
                                         <TooltipContent>
                                             <p className="text-sm capitalize truncate">
-                                                {sortedFiles[currentIndex]?.tags
+                                                {currentFile?.tags
                                                     .slice(1)
                                                     .map(tag => tag.name)
                                                     .join(", ")}
@@ -88,12 +88,7 @@ export default function ImagesCarousel({ startIndex }: { startIndex: number }) {
                         </div>
                     )}
                 </div>
-                <FileOptions
-                    file={currentFile}
-                    fullScreenCarouselFiles={sortedFiles}
-                    currentIndex={currentIndex}
-                    carouselApi={carouselApi}
-                />
+                <FileOptions file={currentFile} currentIndex={currentIndex} carouselApi={carouselApi} />
             </div>
             <Carousel
                 className="w-full h-fit mx-auto max-w-2xl mb-2"
@@ -188,7 +183,7 @@ export default function ImagesCarousel({ startIndex }: { startIndex: number }) {
                             file={currentFile}
                             onSuccess={description => {
                                 setFiles(
-                                    sortedFiles.map(file => {
+                                    files.map(file => {
                                         if (file.id === currentFile.id) {
                                             return { ...file, description: description };
                                         }

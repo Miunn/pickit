@@ -201,10 +201,11 @@ export const ImagesGrid = () => {
                 const range = sortedFiles.slice(start, end + 1);
 
                 const newSelectedIds = range.map(item => item.id);
+                const uniqueNewIds = newSelectedIds.filter(id => !selected.includes(id));
                 const newlySelected = range.filter(item => !selected.includes(item.id));
                 const newSize = newlySelected.reduce((acc, item) => acc + item.size, 0);
 
-                setSelected([...selected, ...newSelectedIds]);
+                setSelected([...selected, ...uniqueNewIds]);
                 setSizeSelected(sizeSelected + newSize);
             }
         } else if (selected.includes(file.id)) {
@@ -219,7 +220,7 @@ export const ImagesGrid = () => {
     const handleSelectFile = (id: string, size: number) => {
         setSelecting(true);
         if (selected.includes(id)) {
-            setSelected(selected.filter(id => id !== id));
+            setSelected(selected.filter(selectedId => selectedId !== id));
             setSizeSelected(sizeSelected - size);
         } else {
             setSelected([...selected, id]);
@@ -248,7 +249,7 @@ export const ImagesGrid = () => {
                                     folderId={folder.id}
                                     shouldDisplayNotify={isShared}
                                     onUpload={uploadedFiles => {
-                                        const newFiles = [...sortedFiles, ...uploadedFiles];
+                                        const newFiles = [...files, ...uploadedFiles];
                                         setFiles(newFiles);
                                     }}
                                 />
