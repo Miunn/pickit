@@ -189,7 +189,7 @@ export default function FolderActionBar() {
                                         }
                                     }}
                                 >
-                                    {t("options.taken")}
+                                    {t("sort.options.taken")}
                                     {sortState === ImagesSortMethod.TakenAsc ? <ArrowUp className="w-4 h-4" /> : null}
                                     {sortState === ImagesSortMethod.TakenDesc ? (
                                         <ArrowDown className="w-4 h-4" />
