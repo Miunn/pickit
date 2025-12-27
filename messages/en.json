@@ -1797,7 +1797,8 @@
             "options": {
                 "name": "Name",
                 "size": "Size",
-                "date": "Date"
+                "date": "Date",
+                "taken": "Taken at"
             }
         },
         "upload": {
