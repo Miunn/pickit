@@ -413,7 +413,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             </div>
 
             <CarouselDialog
-                files={files}
+                files={sortedFiles}
                 title={folder.name}
                 carouselOpen={carouselOpen}
                 setCarouselOpen={setCarouselOpen}
