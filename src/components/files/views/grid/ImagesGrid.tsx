@@ -68,13 +68,13 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
-                delay: 90,
+                delay: 500,
                 tolerance: 5,
             },
         }),
         useSensor(TouchSensor, {
             activationConstraint: {
-                delay: 90,
+                delay: 500,
                 tolerance: 5,
             },
         })
@@ -221,6 +221,42 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
         setActiveId(null);
     };
 
+    const handleClickImage = (fileId: string, idx: number, event?: React.MouseEvent) => {
+        if (!selecting) {
+            setStartIndex(idx);
+            setCarouselOpen(true);
+            return;
+        }
+
+        const file = sortedFiles.find(item => item.id === fileId);
+        if (!file) return;
+
+        if (event && event.shiftKey && selected.length > 0) {
+            const lastSelectedId = selected[selected.length - 1];
+            const lastSelectedIndex = sortedFiles.findIndex(item => item.id === lastSelectedId);
+            const currentIndex = sortedFiles.findIndex(item => item.id === file.id);
+
+            if (lastSelectedIndex !== -1 && currentIndex !== -1) {
+                const start = Math.min(lastSelectedIndex, currentIndex);
+                const end = Math.max(lastSelectedIndex, currentIndex);
+                const range = sortedFiles.slice(start, end + 1);
+
+                const newSelectedIds = range.map(item => item.id);
+                const newlySelected = range.filter(item => !selected.includes(item.id));
+                const newSize = newlySelected.reduce((acc, item) => acc + item.size, 0);
+
+                setSelected([...selected, ...newSelectedIds]);
+                setSizeSelected(sizeSelected + newSize);
+            }
+        } else if (selected.includes(file.id)) {
+            setSelected(selected.filter(id => id !== file.id));
+            setSizeSelected(sizeSelected - file.size);
+        } else {
+            setSelected([...selected, file.id]);
+            setSizeSelected(sizeSelected + file.size);
+        }
+    };
+
     const renderGrid = (): React.ReactNode => {
         if (user?.id === folder.createdById) {
             return (
@@ -248,55 +284,18 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                                 />
                             </div>
                         ) : (
-                            sortedFiles.map(file => (
+                            sortedFiles.map((file, idx) => (
                                 <ImagePreviewGrid
                                     key={file.id}
                                     id={file.id}
                                     data-id={file.id}
                                     className={cn(
-                                        activeId === file.id ? "opacity-50" : "",
+                                        activeId === file.id && "opacity-50",
                                         "focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background rounded-xl"
                                     )}
                                     file={file}
                                     selected={selected}
-                                    onClick={e => {
-                                        if (selecting) {
-                                            if (e?.shiftKey && selected.length > 0) {
-                                                const lastSelectedId = selected[selected.length - 1];
-                                                const lastSelectedIndex = sortedFiles.findIndex(
-                                                    item => item.id === lastSelectedId
-                                                );
-                                                const currentIndex = sortedFiles.findIndex(item => item.id === file.id);
-
-                                                if (lastSelectedIndex !== -1 && currentIndex !== -1) {
-                                                    const start = Math.min(lastSelectedIndex, currentIndex);
-                                                    const end = Math.max(lastSelectedIndex, currentIndex);
-                                                    const range = sortedFiles.slice(start, end + 1);
-
-                                                    const newSelectedIds = range.map(item => item.id);
-                                                    const newlySelected = range.filter(
-                                                        item => !selected.includes(item.id)
-                                                    );
-                                                    const newSize = newlySelected.reduce(
-                                                        (acc, item) => acc + item.size,
-                                                        0
-                                                    );
-
-                                                    setSelected([...new Set([...selected, ...newSelectedIds])]);
-                                                    setSizeSelected(sizeSelected + newSize);
-                                                }
-                                            } else if (selected.includes(file.id)) {
-                                                setSelected(selected.filter(id => id !== file.id));
-                                                setSizeSelected(sizeSelected - file.size);
-                                            } else {
-                                                setSelected([...selected, file.id]);
-                                                setSizeSelected(sizeSelected + file.size);
-                                            }
-                                        } else {
-                                            setStartIndex(sortedFiles.indexOf(file));
-                                            setCarouselOpen(true);
-                                        }
-                                    }}
+                                    onClick={e => handleClickImage(file.id, idx, e)}
                                     onSelect={() => {
                                         if (selected.includes(file.id)) {
                                             setSelected(selected.filter(id => id !== file.id));

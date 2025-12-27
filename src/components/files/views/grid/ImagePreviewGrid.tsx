@@ -91,7 +91,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className,
                         ref={setNodeRef}
                         onClick={onClick}
                         className={cn(
-                            "w-full cursor-pointer",
+                            "w-full cursor-pointer pointer-events-auto",
                             "focus:ring focus:ring-primary focus:ring-offset-2 focus:ring-offset-background focus:outline-none rounded-xl",
                             className
                         )}
