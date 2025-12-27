@@ -36,7 +36,7 @@ export default function ImagesCarousel({ startIndex }: { startIndex: number }) {
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
     const [currentIndex, setCurrentIndex] = useState<number>(startIndex);
 
-    const currentFile: ContextFile = useMemo(() => {
+    const currentFile = useMemo<ContextFile | undefined>(() => {
         return sortedFiles[currentIndex];
     }, [currentIndex, sortedFiles]);
 
@@ -55,7 +55,7 @@ export default function ImagesCarousel({ startIndex }: { startIndex: number }) {
             <div className="max-w-full flex justify-between items-center mb-2 gap-2 px-2">
                 <div className="font-semibold truncate flex items-center gap-3">
                     <p className="truncate">{currentFile?.name}</p>
-                    {currentFile?.tags.length > 0 && (
+                    {currentFile && currentFile?.tags.length > 0 ? (
                         <div className="flex gap-1">
                             <TagChip tag={currentFile?.tags[0]} />
                             {currentFile?.tags.length > 1 && (
@@ -86,9 +86,11 @@ export default function ImagesCarousel({ startIndex }: { startIndex: number }) {
                                 </TooltipProvider>
                             )}
                         </div>
-                    )}
+                    ) : null}
                 </div>
-                <FileOptions file={currentFile} currentIndex={currentIndex} carouselApi={carouselApi} />
+                {currentFile ? (
+                    <FileOptions file={currentFile} currentIndex={currentIndex} carouselApi={carouselApi} />
+                ) : null}
             </div>
             <Carousel
                 className="w-full h-fit mx-auto max-w-2xl mb-2"
@@ -140,7 +142,7 @@ export default function ImagesCarousel({ startIndex }: { startIndex: number }) {
                 <p className="text-sm text-muted-foreground text-nowrap text-end justify-self-end">
                     <span className="hidden sm:inline-block">{`${currentFile?.width}x${currentFile?.height}`}</span>{" "}
                     <span className="hidden sm:inline-block">-</span>{" "}
-                    <span className="hidden sm:inline-block">{`${formatBytes(currentFile?.size, { decimals: 2 })}`}</span>{" "}
+                    <span className="hidden sm:inline-block">{`${formatBytes(currentFile?.size || 0, { decimals: 2 })}`}</span>{" "}
                     <span className="hidden sm:inline-block">-</span>{" "}
                     <span>
                         {t("slide", {
@@ -155,54 +157,56 @@ export default function ImagesCarousel({ startIndex }: { startIndex: number }) {
                 <p
                     className={cn(
                         "text-sm text-muted-foreground flex-1 whitespace-pre-wrap line-clamp-5",
-                        currentFile.description ? "" : "italic"
+                        currentFile?.description ? "" : "italic"
                     )}
                 >
-                    {currentFile.description || t("noDescription")}
+                    {currentFile?.description || t("noDescription")}
                 </p>
 
-                <div className="flex items-center gap-2">
-                    <FileLikeButton file={currentFile} />
+                {currentFile ? (
+                    <div className="flex items-center gap-2">
+                        <FileLikeButton file={currentFile} />
 
-                    <div className="flex items-center gap-0.5">
-                        <p className="text-sm text-muted-foreground">{currentFile.comments.length}</p>
-                        <ImageCommentSection file={currentFile}>
-                            <Button
-                                variant={"ghost"}
-                                size={"icon"}
-                                type="button"
-                                className="size-7 p-0 rounded-full hover:bg-primary/20"
+                        <div className="flex items-center gap-0.5">
+                            <p className="text-sm text-muted-foreground">{currentFile?.comments.length || 0}</p>
+                            <ImageCommentSection file={currentFile}>
+                                <Button
+                                    variant={"ghost"}
+                                    size={"icon"}
+                                    type="button"
+                                    className="size-7 p-0 rounded-full hover:bg-primary/20"
+                                >
+                                    <MessageCircle className="size-4" />
+                                </Button>
+                            </ImageCommentSection>
+                        </div>
+
+                        {user?.role.includes(Role.ADMIN) || user?.id === currentFile.folder.createdById ? (
+                            <EditDescriptionDialog
+                                file={currentFile}
+                                onSuccess={description => {
+                                    setFiles(
+                                        files.map(file => {
+                                            if (file.id === currentFile.id) {
+                                                return { ...file, description: description };
+                                            }
+                                            return file;
+                                        })
+                                    );
+                                }}
                             >
-                                <MessageCircle className="size-4" />
-                            </Button>
-                        </ImageCommentSection>
+                                <Button
+                                    variant={"ghost"}
+                                    size={"icon"}
+                                    type="button"
+                                    className="size-7 p-0 rounded-full hover:bg-primary/20"
+                                >
+                                    <Pencil className="size-4" />
+                                </Button>
+                            </EditDescriptionDialog>
+                        ) : null}
                     </div>
-
-                    {user?.role.includes(Role.ADMIN) || user?.id === currentFile.folder.createdById ? (
-                        <EditDescriptionDialog
-                            file={currentFile}
-                            onSuccess={description => {
-                                setFiles(
-                                    files.map(file => {
-                                        if (file.id === currentFile.id) {
-                                            return { ...file, description: description };
-                                        }
-                                        return file;
-                                    })
-                                );
-                            }}
-                        >
-                            <Button
-                                variant={"ghost"}
-                                size={"icon"}
-                                type="button"
-                                className="size-7 p-0 rounded-full hover:bg-primary/20"
-                            >
-                                <Pencil className="size-4" />
-                            </Button>
-                        </EditDescriptionDialog>
-                    ) : null}
-                </div>
+                ) : null}
             </div>
         </div>
     );
