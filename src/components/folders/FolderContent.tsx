@@ -17,7 +17,7 @@ const ImagesGrid = dynamic(() => import("@/components/files/views/grid/ImagesGri
 export const FolderContent = () => {
     const { isGuest } = useSession();
     const { folder } = useFolderContext();
-    const { viewState, sortState } = useFilesContext();
+    const { viewState } = useFilesContext();
 
     const t = useTranslations("folders");
 
@@ -28,7 +28,7 @@ export const FolderContent = () => {
             case ViewState.TagGrouped:
                 return <TagGroupedGrid />;
             default:
-                return <ImagesGrid sortState={sortState} />;
+                return <ImagesGrid />;
         }
     };
 

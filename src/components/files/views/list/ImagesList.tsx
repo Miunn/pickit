@@ -270,7 +270,6 @@ export default function ImagesList() {
                 </Table>
             </div>
             <CarouselDialog
-                files={tableData}
                 title={folder.name}
                 carouselOpen={carouselOpen}
                 setCarouselOpen={setCarouselOpen}

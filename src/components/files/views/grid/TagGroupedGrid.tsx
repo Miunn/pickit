@@ -18,7 +18,6 @@ export default function TagGroupedGrid() {
     const [sizeSelected, setSizeSelected] = useState<number>(0);
 
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
-    const [carouselFiles, setCarouselFiles] = useState<ContextFile[]>([]);
     const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
     const [startIndex, setStartIndex] = useState(0);
 
@@ -107,7 +106,6 @@ export default function TagGroupedGrid() {
                                             setSizeSelected(sizeSelected + file.size);
                                         }
                                     } else {
-                                        setCarouselFiles(files);
                                         setStartIndex(files.indexOf(file));
                                         setCarouselOpen(true);
                                     }
@@ -154,7 +152,6 @@ export default function TagGroupedGrid() {
                 ))}
             </Accordion>
             <CarouselDialog
-                files={carouselFiles}
                 title={folder.name}
                 carouselOpen={carouselOpen}
                 setCarouselOpen={setCarouselOpen}
