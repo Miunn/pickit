@@ -363,7 +363,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
                             setSizeSelected(sizeSelected + file.size);
                         }
                     } else {
-                        setStartIndex(files.indexOf(file));
+                        setStartIndex(sortedFiles.indexOf(file));
                         setCarouselOpen(true);
                     }
                 }}
@@ -385,7 +385,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
         <div className="mt-10">
             <RecentlyAdded
                 onClickImage={file => {
-                    setStartIndex(files.indexOf(file));
+                    setStartIndex(sortedFiles.indexOf(file));
                     setCarouselOpen(true);
                 }}
             />
@@ -413,7 +413,7 @@ export const ImagesGrid = ({ sortState }: { sortState: ImagesSortMethod }) => {
             </div>
 
             <CarouselDialog
-                files={files}
+                files={sortedFiles}
                 title={folder.name}
                 carouselOpen={carouselOpen}
                 setCarouselOpen={setCarouselOpen}

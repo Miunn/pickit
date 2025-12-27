@@ -178,6 +178,23 @@ export default function FolderActionBar() {
                                     {sortState === ImagesSortMethod.DateAsc ? <ArrowUp className="w-4 h-4" /> : null}
                                     {sortState === ImagesSortMethod.DateDesc ? <ArrowDown className="w-4 h-4" /> : null}
                                 </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    className="flex justify-between items-center"
+                                    onClick={event => {
+                                        event.preventDefault();
+                                        if (sortState === ImagesSortMethod.TakenDesc) {
+                                            setSortState(ImagesSortMethod.TakenAsc);
+                                        } else {
+                                            setSortState(ImagesSortMethod.TakenDesc);
+                                        }
+                                    }}
+                                >
+                                    {t("sort.options.taken")}
+                                    {sortState === ImagesSortMethod.TakenAsc ? <ArrowUp className="w-4 h-4" /> : null}
+                                    {sortState === ImagesSortMethod.TakenDesc ? (
+                                        <ArrowDown className="w-4 h-4" />
+                                    ) : null}
+                                </DropdownMenuItem>
                             </DropdownMenuSubContent>
                         </DropdownMenuSub>
                     ) : null}
