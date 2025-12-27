@@ -1,4 +1,3 @@
-import { FileWithFolder } from "@/lib/definitions";
 import {
     Carousel,
     CarouselApi,
@@ -15,22 +14,22 @@ import LoadingImage from "../LoadingImage";
 import { FileType } from "@prisma/client";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Switch } from "@/components/ui/switch";
+import { useFilesContext } from "@/context/FilesContext";
 
 export default function FullScreenImageCarousel({
-    files,
     defaultIndex,
     children,
     open,
     setOpen,
     parentCarouselApi,
 }: {
-    files: FileWithFolder[];
     defaultIndex: number;
     children?: React.ReactNode;
     open?: boolean;
     setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
     parentCarouselApi?: CarouselApi;
 }) {
+    const { sortedFiles } = useFilesContext();
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
@@ -45,6 +44,8 @@ export default function FullScreenImageCarousel({
         () => carouselApi?.selectedScrollSnap() ?? defaultIndex ?? 0,
         [carouselApi, defaultIndex]
     );
+
+    const currentFile = useMemo(() => sortedFiles[currentIndex], [sortedFiles, currentIndex]);
 
     // Auto-advance effect
     useEffect(() => {
@@ -109,7 +110,7 @@ export default function FullScreenImageCarousel({
                 closeButton={<Cross2Icon className="size-7 bg-gray-600 text-white rounded-md p-1" />}
             >
                 <VisuallyHidden>
-                    <DialogTitle>{files[currentIndex].name}</DialogTitle>
+                    <DialogTitle>{currentFile.name}</DialogTitle>
                 </VisuallyHidden>
                 <div className="fixed inset-0 bg-black/90 flex items-center justify-center">
                     <Carousel
@@ -123,7 +124,7 @@ export default function FullScreenImageCarousel({
                         setApi={setCarouselApi}
                     >
                         <CarouselContent className="h-full">
-                            {files.map(file => (
+                            {sortedFiles.map(file => (
                                 <CarouselItem key={file.id} className="h-full">
                                     <div className="relative h-full w-full flex justify-center items-center p-2">
                                         {file.type === FileType.VIDEO ? (

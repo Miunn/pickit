@@ -216,6 +216,17 @@ export const ImagesGrid = () => {
         }
     };
 
+    const handleSelectFile = (id: string, size: number) => {
+        setSelecting(true);
+        if (selected.includes(id)) {
+            setSelected(selected.filter(id => id !== id));
+            setSizeSelected(sizeSelected - size);
+        } else {
+            setSelected([...selected, id]);
+            setSizeSelected(sizeSelected + size);
+        }
+    };
+
     const renderGrid = (): React.ReactNode => {
         if (user?.id === folder.createdById) {
             return (
@@ -255,16 +266,7 @@ export const ImagesGrid = () => {
                                     file={file}
                                     selected={selected}
                                     onClick={e => handleClickImage(file.id, idx, e)}
-                                    onSelect={() => {
-                                        if (selected.includes(file.id)) {
-                                            setSelected(selected.filter(id => id !== file.id));
-                                            setSizeSelected(sizeSelected - file.size);
-                                        } else {
-                                            setSelecting(true);
-                                            setSelected([...selected, file.id]);
-                                            setSizeSelected(sizeSelected + file.size);
-                                        }
-                                    }}
+                                    onSelect={() => handleSelectFile(file.id, file.size)}
                                 />
                             ))
                         )}
@@ -283,7 +285,7 @@ export const ImagesGrid = () => {
             );
         }
 
-        return sortedFiles.map(file => (
+        return sortedFiles.map((file, idx) => (
             <ImagePreviewGrid
                 key={file.id}
                 id={file.id}
@@ -294,17 +296,8 @@ export const ImagesGrid = () => {
                 )}
                 file={file}
                 selected={selected}
-                onClick={e => handleClickImage(file.id, sortedFiles.indexOf(file), e)}
-                onSelect={() => {
-                    if (selected.includes(file.id)) {
-                        setSelected(selected.filter(id => id !== file.id));
-                        setSizeSelected(sizeSelected - file.size);
-                    } else {
-                        setSelecting(true);
-                        setSelected([...selected, file.id]);
-                        setSizeSelected(sizeSelected + file.size);
-                    }
-                }}
+                onClick={e => handleClickImage(file.id, idx, e)}
+                onSelect={() => handleSelectFile(file.id, file.size)}
             />
         ));
     };
@@ -313,7 +306,7 @@ export const ImagesGrid = () => {
         <div className="mt-10">
             <RecentlyAdded
                 onClickImage={file => {
-                    setStartIndex(sortedFiles.indexOf(file));
+                    setStartIndex(sortedFiles.findIndex(f => f.id === file.id));
                     setCarouselOpen(true);
                 }}
             />
@@ -341,7 +334,6 @@ export const ImagesGrid = () => {
             </div>
 
             <CarouselDialog
-                files={sortedFiles}
                 title={folder.name}
                 carouselOpen={carouselOpen}
                 setCarouselOpen={setCarouselOpen}

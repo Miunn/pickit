@@ -42,12 +42,12 @@ import { useTopLoader } from "nextjs-toploader";
 export default function FileOptions({
     file,
     fullScreenCarouselFiles,
-    currentIndexState,
+    currentIndex,
     carouselApi,
 }: {
     file: { folder: FolderWithTags } & FileWithTags;
     fullScreenCarouselFiles: (FileWithFolder & FileWithTags)[];
-    currentIndexState: number;
+    currentIndex: number;
     carouselApi: CarouselApi;
 }) {
     const { user } = useSession();
@@ -117,7 +117,7 @@ export default function FileOptions({
                 )}
                 <FullScreenImageCarousel
                     files={fullScreenCarouselFiles}
-                    defaultIndex={currentIndexState}
+                    defaultIndex={currentIndex}
                     parentCarouselApi={carouselApi}
                 >
                     <Button variant={"outline"} size={"icon"} type="button">
@@ -230,7 +230,7 @@ export default function FileOptions({
                         <div onClick={e => e.stopPropagation()} className="w-full flex items-center">
                             <FullScreenImageCarousel
                                 files={fullScreenCarouselFiles}
-                                defaultIndex={currentIndexState}
+                                defaultIndex={currentIndex}
                                 parentCarouselApi={carouselApi}
                             >
                                 <div className="w-full flex items-center">
