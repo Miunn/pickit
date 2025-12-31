@@ -72,7 +72,7 @@ export async function createNewAccessToken(
                         locked: accessToken.locked,
                     },
                 ],
-                user.name!,
+                user.name,
                 accessToken.folder.name
             );
         }
@@ -287,7 +287,7 @@ export async function sendAgainAccessToken(token: string) {
         },
     });
 
-    if (!accessToken || !accessToken.email) {
+    if (!accessToken?.email) {
         return { error: "Token not found" };
     }
 
@@ -299,7 +299,7 @@ export async function sendAgainAccessToken(token: string) {
                 locked: accessToken.locked,
             },
         ],
-        user.name!,
+        user.name,
         accessToken.folder.name
     );
 
@@ -330,7 +330,7 @@ export async function notifyAboutUpload(folderId: string, count: number) {
             locked: p.locked,
         }));
 
-    await sendNotifyAboutUploadEmail(personAccessTokens, user.name!, folder.name, count);
+    await sendNotifyAboutUploadEmail(personAccessTokens, user.name, folder.name, count);
 }
 
 async function sendShareFolderEmail(
