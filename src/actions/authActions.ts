@@ -33,15 +33,15 @@ export async function SignIn(
                 role: true,
             },
             where: {
-                email: email as string,
+                email: email,
             },
         });
 
-        if (!user) {
+        if (!user?.password) {
             return { error: "invalid-credentials" };
         }
 
-        const match = bcrypt.compareSync(password as string, user.password as string);
+        const match = bcrypt.compareSync(password, user.password);
 
         if (!match) {
             return { error: "invalid-credentials" };
