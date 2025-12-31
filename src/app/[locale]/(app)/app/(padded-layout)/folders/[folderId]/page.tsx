@@ -1,4 +1,3 @@
-import { FolderContent } from "@/components/folders/FolderContent";
 import UnlockTokenPrompt from "@/components/folders/UnlockTokenPrompt";
 import { ImagesSortMethod } from "@/types/imagesSort";
 import { redirect } from "@/i18n/navigation";
@@ -6,14 +5,14 @@ import { ViewState } from "@/components/folders/ViewSelector";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { isAllowedToAccessFolder } from "@/lib/dal";
-import BreadcrumbPortal from "@/components/layout/BreadcrumbPortal";
-import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
 import { FolderProvider } from "@/context/FolderContext";
 import { FilesProvider } from "@/context/FilesContext";
 import { TokenProvider } from "@/context/TokenContext";
-import { generateV4DownloadUrl } from "@/lib/bucket";
 import { AccessTokenService } from "@/data/access-token-service";
 import { FolderService } from "@/data/folder-service";
+import { getCurrentSession } from "@/lib/session";
+import { ImagesGrid } from "@/components/files/views/grid/ImagesGrid";
+import FolderHeader from "@/components/folders/FolderHeader";
 
 function getSortOrderBy(sort: ImagesSortMethod) {
     switch (sort) {
@@ -201,9 +200,6 @@ export default async function FolderPage(props: {
 
         return (
             <>
-                <BreadcrumbPortal>
-                    <HeaderBreadcumb folderName={accessToken.folder.name} />
-                </BreadcrumbPortal>
                 <UnlockTokenPrompt folderId={params.folderId} wrongPin={hasAccess === 3} />
             </>
         );
@@ -217,18 +213,10 @@ export default async function FolderPage(props: {
         fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/tokens/increment?token=${searchParams.share}`);
     }
 
-    const filesWithSignedUrls = await Promise.all(
-        folder.files.map(async file => ({
-            ...file,
-            signedUrl: await generateV4DownloadUrl(`${file.createdById}/${file.folderId}/${file.id}`),
-        }))
-    );
+    const session = await getCurrentSession();
 
     return (
         <>
-            <BreadcrumbPortal>
-                <HeaderBreadcumb folderName={folder.name} />
-            </BreadcrumbPortal>
             <FolderProvider
                 folderData={folder}
                 tokenData={accessToken}
@@ -236,8 +224,18 @@ export default async function FolderPage(props: {
                 isShared={folder.accessTokens.filter(token => token.email).length > 0}
             >
                 <TokenProvider token={accessToken}>
-                    <FilesProvider filesData={filesWithSignedUrls} defaultView={searchParams.view || ViewState.Grid}>
-                        <FolderContent />
+                    <FilesProvider filesData={folder.files} defaultView={searchParams.view || ViewState.Grid}>
+                        <div>
+                            <FolderHeader
+                                folderName={folder.name}
+                                folderCreatedByName={folder.createdBy.name}
+                                isGuest={!session.user}
+                            />
+
+                            <div className="flex-1 overflow-visible">
+                                <ImagesGrid />
+                            </div>
+                        </div>
                     </FilesProvider>
                 </TokenProvider>
             </FolderProvider>

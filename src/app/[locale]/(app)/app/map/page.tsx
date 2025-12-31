@@ -1,7 +1,6 @@
 import FilesMap from "@/components/map/FilesMap";
 import { redirect } from "@/i18n/navigation";
 import { getCurrentSession } from "@/lib/session";
-import { generateV4DownloadUrl } from "@/lib/bucket";
 import { canAccessMap } from "@/lib/dal";
 import { FilesProvider } from "@/context/FilesContext";
 import { TokenProvider } from "@/context/TokenContext";
@@ -66,17 +65,10 @@ export default async function MapPage(props: {
         return redirect({ href: "/signin", locale: params.locale });
     }
 
-    const filesWithSignedUrlsAndFolders = await Promise.all(
-        files.map(async file => ({
-            ...file,
-            signedUrl: await generateV4DownloadUrl(`${file.createdById}/${file.folderId}/${file.id}`),
-        }))
-    );
-
     return (
         <div className="rounded-b-xl h-full overflow-hidden">
             <TokenProvider token={accessToken}>
-                <FilesProvider filesData={filesWithSignedUrlsAndFolders} defaultView={ViewState.Grid}>
+                <FilesProvider filesData={files} defaultView={ViewState.Grid}>
                     <FilesMap />
                 </FilesProvider>
             </TokenProvider>

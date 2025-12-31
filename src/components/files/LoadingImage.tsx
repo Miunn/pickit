@@ -14,7 +14,15 @@ export default function LoadingImage({ spinnerClassName, alt, src, ...imageProps
             <div className={cn("absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2", spinnerClassName)}>
                 {isLoading && <Loader2 className={cn(spinnerClassName, "animate-spin")} />}
             </div>
-            <Image alt={alt} src={src} {...imageProps} onLoad={() => setIsLoading(false)} />
+            <Image
+                alt={alt}
+                src={src}
+                loading="lazy"
+                decoding="async"
+                fetchPriority="low"
+                {...imageProps}
+                onLoad={() => setIsLoading(false)}
+            />
         </>
     );
 }
