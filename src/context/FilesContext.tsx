@@ -98,18 +98,7 @@ export const FilesProvider = ({
     });
 
     const sortedFiles = useMemo(() => {
-        if (sortState !== ImagesSortMethod.PositionAsc && sortState !== ImagesSortMethod.PositionDesc) {
-            const sortedItems = getSortedImagesVideosContent([...files], sortState) as ContextFile[];
-            return sortedItems;
-        }
-
-        if (sortState === ImagesSortMethod.PositionDesc) {
-            const sortedItems = [...files].sort((a, b) => b.position - a.position);
-            return sortedItems;
-        }
-
-        const sortedItems = [...files].sort((a, b) => a.position - b.position);
-        return sortedItems;
+        return getSortedImagesVideosContent([...files], sortState) as ContextFile[];
     }, [files, sortState]);
 
     const hasUserLikedFile = (fileId: string) => {

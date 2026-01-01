@@ -307,7 +307,8 @@ export const ImagesGrid = () => {
         <div className="mt-10">
             <RecentlyAdded
                 onClickImage={file => {
-                    setStartIndex(sortedFiles.findIndex(f => f.id === file.id));
+                    const index = sortedFiles.findIndex(f => f.id === file.id);
+                    setStartIndex(index >= 0 ? index : 0);
                     setCarouselOpen(true);
                 }}
             />
