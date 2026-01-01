@@ -44,9 +44,16 @@ export default function FullScreenImageCarousel({
     useEffect(() => {
         if (!carouselApi) return;
         setCurrentFile(sortedFiles[carouselApi.selectedScrollSnap()]);
-        carouselApi.on("select", () => {
+
+        const handleSelect = () => {
             setCurrentFile(sortedFiles[carouselApi.selectedScrollSnap()]);
-        });
+        };
+
+        carouselApi.on("select", handleSelect);
+
+        return () => {
+            carouselApi.off("select", handleSelect);
+        };
     }, [carouselApi, sortedFiles]);
 
     // Auto-advance effect
