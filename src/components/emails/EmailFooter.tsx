@@ -8,6 +8,7 @@ export default function EmailFooter() {
     return (
         <Section className="text-center bg-[#f4f4f4] p-4">
             <table className="w-full">
+                <thead></thead>
                 <tbody>
                     <tr className="w-full">
                         <td align="center">
