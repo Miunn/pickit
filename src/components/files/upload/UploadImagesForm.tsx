@@ -75,7 +75,7 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
                             const chunk = fileBuffer.slice(i, Math.min(i + sampleSize, fileBuffer.byteLength));
                             const hashBuffer = await crypto.subtle.digest("SHA-256", chunk);
                             const hashArray = Array.from(new Uint8Array(hashBuffer));
-                            const hashBase64 = btoa(String.fromCharCode.apply(null, hashArray));
+                            const hashBase64 = btoa(String.fromCodePoint.apply(null, hashArray));
                             samples.push(hashBase64);
                         }
 

@@ -4,16 +4,13 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import React from "react";
 import ImagesCarousel from "./ImagesCarousel";
 import { useTranslations } from "next-intl";
-import { ContextFile } from "@/context/FilesContext";
 
 export const CarouselDialog = ({
-    files,
     title,
     carouselOpen,
     setCarouselOpen,
     startIndex,
 }: {
-    files: ContextFile[];
     title: string;
     carouselOpen: boolean;
     setCarouselOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,13 +20,13 @@ export const CarouselDialog = ({
 
     return (
         <Dialog open={carouselOpen} onOpenChange={setCarouselOpen}>
-            <DialogContent className={"w-full max-w-3xl"}>
+            <DialogContent className={"w-full max-w-4xl"}>
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>{t("description")}</DialogDescription>
                 </DialogHeader>
 
-                <ImagesCarousel files={files} startIndex={startIndex} />
+                <ImagesCarousel startIndex={startIndex} />
             </DialogContent>
         </Dialog>
     );

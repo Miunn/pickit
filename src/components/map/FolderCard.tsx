@@ -43,7 +43,7 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
     };
 
     return (
-        <div
+        <button
             className={cn(
                 "relative inline-block w-64 h-20 bg-background",
                 "border border-primary rounded-xl",
@@ -60,7 +60,7 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
                     <Ripple key={ripple.id} x={ripple.x} y={ripple.y} />
                 ))}
             </div>
-            <div className="absolute top-1 left-1 z-10" onClick={e => e.stopPropagation()}>
+            <div className="absolute top-1 left-1 z-10">
                 <Checkbox checked={isSelected} onCheckedChange={onToggle} className="bg-white/90 size-5 rounded-lg" />
             </div>
             {folder.coverId ? (
@@ -131,6 +131,6 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
                     </TooltipProvider>
                 )}
             </div>
-        </div>
+        </button>
     );
 };

@@ -216,7 +216,7 @@ export async function requestPasswordReset(data: z.infer<typeof RequestPasswordR
         select: { id: true, email: true, name: true, password: true },
     });
 
-    if (!user || !user.password) {
+    if (!user?.password) {
         return { error: null }; // Don't leak if the email is registered or not
     }
 

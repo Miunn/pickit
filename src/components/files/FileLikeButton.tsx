@@ -37,12 +37,13 @@ export default function FileLikeButton({ file }: { file: FileWithLikes }) {
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <span tabIndex={0}>
+                            <span>
                                 <Button
                                     variant={"ghost"}
                                     size={"icon"}
                                     type="button"
                                     className="size-7 p-0 rounded-full hover:bg-muted"
+                                    tabIndex={0}
                                     disabled
                                 >
                                     <Heart className={"size-4 p-0"} fill={"none"} color={"currentColor"} />

@@ -10,8 +10,7 @@ import { getCurrentSession } from "@/lib/session";
 import { getLimitsFromPlan } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { UserService } from "@/data/user-service";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+import { stripe } from "@/lib/stripe";
 
 export async function createUserHandler({
     name,

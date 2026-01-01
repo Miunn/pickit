@@ -70,15 +70,15 @@ export default function ImageCommentSection({
         }
 
         setFiles(
-            files.map(file => {
-                if (file.id === file.id) {
+            files.map(f => {
+                if (f.id === file.id) {
                     return {
-                        ...file,
-                        comments: [...file.comments, r],
+                        ...f,
+                        comments: [...f.comments, r],
                     };
                 }
 
-                return file;
+                return f;
             })
         );
 
