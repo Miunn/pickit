@@ -15,7 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useEffect, useState } from "react";
 import { Input } from "./input";
 import { DataTablePagination } from "./data-table-pagination";
-import { createTranslator, useFormatter } from "next-intl";
+import { createTranslator, useFormatter, useLocale } from "next-intl";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -42,6 +42,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = useState<SortingState>([]);
     const formatter = useFormatter();
+    const locale = useLocale();
 
     const table = useReactTable({
         data,
@@ -57,6 +58,7 @@ export function DataTable<TData, TValue>({
             rowSelection: selection,
         },
         meta: {
+            locale,
             intl: {
                 translations,
                 formatter,
@@ -91,7 +93,7 @@ export function DataTable<TData, TValue>({
                                     return (
                                         <TableHead
                                             key={header.id}
-                                            style={{ width: header.getSize() !== 150 ? header.getSize() : undefined }}
+                                            style={{ width: header.getSize() === 150 ? undefined : header.getSize() }}
                                         >
                                             {header.isPlaceholder
                                                 ? null

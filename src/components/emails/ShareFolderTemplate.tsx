@@ -111,7 +111,7 @@ export default function ShareFolderTemplate({
 
                         <Section className="text-center bg-[#f4f4f4] p-4">
                             <table className="w-full">
-                                <tobdy>
+                                <tbody>
                                     <tr className="w-full">
                                         <td align="center">
                                             <Img
@@ -138,7 +138,7 @@ export default function ShareFolderTemplate({
                                             </Text>
                                         </td>
                                     </tr>
-                                </tobdy>
+                                </tbody>
                             </table>
                         </Section>
                     </Section>

@@ -141,12 +141,12 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
         accessorKey: "usedStorage",
         header: ({ table }) => {
             const t = table.options.meta?.intl?.translations;
-            return <p>{t?.("header")}</p>;
+            return <p>{t?.("usedStorage.header")}</p>;
         },
         cell: ({ table, row }) => {
             const t = table.options.meta?.intl?.translations;
             const usedStorage: string = formatBytes(Number(row.getValue("usedStorage")));
-            return <p>{t?.("count", { count: usedStorage })}</p>;
+            return <p>{t?.("usedStorage.count", { count: usedStorage })}</p>;
         },
     },
     {

@@ -308,7 +308,7 @@ export const ImagesGrid = () => {
             <RecentlyAdded
                 onClickImage={file => {
                     const index = sortedFiles.findIndex(f => f.id === file.id);
-                    setStartIndex(index >= 0 ? index : 0);
+                    setStartIndex(Math.max(index, 0));
                     setCarouselOpen(true);
                 }}
             />

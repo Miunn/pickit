@@ -32,7 +32,6 @@ import {
     Pencil,
     PencilOff,
 } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -200,12 +199,12 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
             const t = table.options.meta?.intl?.translations;
             return <p>{t?.("columns.views.header")}</p>;
         },
-        cell: ({ row }) => {
-            const t = useTranslations("dataTables.links.columns.views");
+        cell: ({ table, row }) => {
+            const t = table.options.meta?.intl?.translations;
             const uses: string = row.getValue("uses") ?? 0;
             return (
                 <p className="flex items-center text-muted-foreground truncate">
-                    <Eye className="mr-2" /> {t("columns.views.count", { count: uses })}
+                    <Eye className="mr-2" /> {t?.("columns.views.count", { count: uses })}
                 </p>
             );
         },
@@ -213,17 +212,17 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "createdAt",
-        header: () => {
-            const t = useTranslations("dataTables.links.columns.createdAt");
-            return <p>{t("columns.createdAt.header")}</p>;
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
+            return <p>{t?.("columns.createdAt.header")}</p>;
         },
-        cell: ({ row }) => {
+        cell: ({ table, row }) => {
+            const formatter = table.options.meta?.intl?.formatter;
             const date: Date = row.getValue("createdAt");
 
-            const locale = useLocale();
             return (
                 <p className="capitalize truncate">
-                    {date.toLocaleDateString(locale, {
+                    {formatter?.dateTime(date, {
                         weekday: "long",
                         day: "numeric",
                         year: "numeric",
@@ -236,17 +235,17 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "expires",
-        header: () => {
-            const t = useTranslations("dataTables.links.columns.expiresAt");
-            return <p>{t("columns.expiresAt.header")}</p>;
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
+            return <p>{t?.("columns.expiresAt.header")}</p>;
         },
-        cell: ({ row }) => {
+        cell: ({ table, row }) => {
+            const formatter = table.options.meta?.intl?.formatter;
             const date: Date = row.getValue("expires");
 
-            const locale = useLocale();
             return (
                 <p className="capitalize truncate">
-                    {date.toLocaleDateString(locale, {
+                    {formatter?.dateTime(date, {
                         weekday: "long",
                         day: "numeric",
                         year: "numeric",
@@ -261,9 +260,9 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
         id: "actions",
         cell: ({ table, row }) => {
             const t = table.options.meta?.intl?.translations;
+            const locale = table.options.meta?.locale || "en";
             const accessToken = row.original;
 
-            const locale = useLocale();
             const [lockOpen, setLockOpen] = useState<boolean>(false);
             const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
             const link = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/app/folders/${accessToken.folder.id}?share=${accessToken.token}`;

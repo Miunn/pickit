@@ -1,4 +1,4 @@
-export default async function NotFoundPage(props: Promise<{ readonly params: { readonly locale: string } }>) {
+export default async function NotFoundPage(props: Readonly<Promise<{ readonly params: { readonly locale: string } }>>) {
     const { params } = await props;
 
     return (

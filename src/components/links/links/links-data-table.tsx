@@ -22,10 +22,10 @@ export default function LinksDataTable({
 }) {
     const t = useTranslations("dataTables.links");
     const [selectedTokensIndexes, setSelectedTokensIndexes] = useState<{ [index: number]: boolean }>(
-        defaultTokenIndex !== -1 ? { [defaultTokenIndex]: true } : {}
+        defaultTokenIndex === -1 ? {} : { [defaultTokenIndex]: true }
     );
     const [selectedTokens, setSelectedTokens] = useState<string[]>(
-        defaultTokenIndex !== -1 ? [accessTokens[defaultTokenIndex].token] : []
+        defaultTokenIndex === -1 ? [] : [accessTokens[defaultTokenIndex].token]
     );
     const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
 

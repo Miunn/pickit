@@ -300,12 +300,14 @@ export default function FileOptions({
                         </DropdownMenuItem>
                     ) : null}
                     <DropdownMenuItem>
-                        <ImageExif image={file}>
-                            <div className="w-full flex items-center">
-                                <Braces size={16} className="opacity-60 mr-2" aria-hidden="true" />
-                                {t("metadata")}
-                            </div>
-                        </ImageExif>
+                        <button onClick={e => e.stopPropagation()}>
+                            <ImageExif image={file}>
+                                <div className="w-full flex items-center">
+                                    <Braces size={16} className="opacity-60 mr-2" aria-hidden="true" />
+                                    {t("metadata")}
+                                </div>
+                            </ImageExif>
+                        </button>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
