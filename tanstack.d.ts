@@ -1,5 +1,5 @@
 import "@tanstack/table-core";
-import { createFormatter } from "next-intl";
+import { createFormatter, createTranslator } from "next-intl";
 
 declare module "@tanstack/table-core" {
     export interface TableMeta {
@@ -8,6 +8,7 @@ declare module "@tanstack/table-core" {
             setStartIndex: React.Dispatch<React.SetStateAction<number>>;
         };
         intl?: {
+            translations?: ReturnType<typeof createTranslator>;
             formatter: ReturnType<typeof createFormatter>;
         };
     }

@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
 export async function deleteUser(userId: string) {
     const { user } = await getCurrentSession();
 
-    if (!user || !user.role.includes(Role.ADMIN)) {
+    if (!user?.role.includes(Role.ADMIN)) {
         return { error: "unauthorized" };
     }
 

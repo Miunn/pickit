@@ -166,7 +166,8 @@ export async function isAllowedToDeleteComment(
     }
 
     if (comment.createdByEmail) {
-        if (!shareToken || !isAllowedToAccessFile(comment.fileId, shareToken, accessKey)) {
+        const isAllowed = await isAllowedToAccessFile(comment.fileId, shareToken, accessKey);
+        if (!shareToken || !isAllowed) {
             return false;
         }
 
@@ -244,7 +245,8 @@ export async function canAccessMap(shareToken?: string | null, accessKey?: strin
         return false;
     }
 
-    if (!isAccessWithTokenValid(shareToken, accessKey)) {
+    const isAllowed = await isAccessWithTokenValid(shareToken, accessKey);
+    if (!isAllowed) {
         return false;
     }
 

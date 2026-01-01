@@ -17,12 +17,12 @@ import { z } from "zod";
 import { generateV4DownloadUrl, GoogleBucket } from "@/lib/bucket";
 import mediaInfoFactory, { Track } from "mediainfo.js";
 import ffmpeg from "fluent-ffmpeg";
-import { PassThrough } from "stream";
-import crypto, { randomUUID } from "crypto";
+import { PassThrough } from "node:stream";
+import crypto, { randomUUID } from "node:crypto";
 import { FileType, FileLike, FolderTokenPermission } from "@prisma/client";
-import fs, { mkdtempSync } from "fs";
-import path from "path";
-import { tmpdir } from "os";
+import fs, { mkdtempSync } from "node:fs";
+import path from "node:path";
+import { tmpdir } from "node:os";
 import { canLikeFile, isAccessWithTokenValid, isAllowedToAccessFile } from "@/lib/dal";
 import exifr from "exifr";
 import { AccessTokenService } from "@/data/access-token-service";
@@ -58,8 +58,7 @@ export async function initiateFileUpload(
         console.log("Access token", accessToken);
 
         if (
-            !accessToken ||
-            accessToken.folderId !== parentFolderId ||
+            accessToken?.folderId !== parentFolderId ||
             !(await isAccessWithTokenValid(token, key, FolderTokenPermission.WRITE))
         ) {
             console.log("Access token invalid");
@@ -453,7 +452,8 @@ export async function likeFile(
     shareToken?: string | null,
     accessKey?: string | null
 ): Promise<{ error: string | null; like?: FileLike; liked?: boolean }> {
-    if (!canLikeFile(fileId, shareToken, accessKey)) {
+    const canLike = await canLikeFile(fileId, shareToken, accessKey);
+    if (!canLike) {
         return { error: "You do not have permission to like this file" };
     }
 
@@ -805,8 +805,8 @@ async function extractThumbnailFromBuffer(videoBuffer: Buffer): Promise<Buffer> 
             if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
             if (fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
             fs.rmdirSync(tempDir);
-        } catch (cleanupErr) {
-            console.warn("Temporary file cleanup failed:", cleanupErr);
+        } catch (error_) {
+            console.warn("Temporary file cleanup failed:", error_);
         }
     }
 }

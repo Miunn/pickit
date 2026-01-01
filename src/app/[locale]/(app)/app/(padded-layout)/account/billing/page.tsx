@@ -4,13 +4,13 @@ import { redirect } from "@/i18n/navigation";
 import { getCurrentSession } from "@/lib/session";
 import { getTranslations } from "next-intl/server";
 
-export default async function BillingPage(props: { params: Promise<{ locale: string }> }) {
+export default async function BillingPage(props: { readonly params: Promise<{ locale: string }> }) {
     const params = await props.params;
 
     const { user } = await getCurrentSession();
 
     if (!user) {
-        return redirect({ href: '/signin', locale: params.locale });
+        return redirect({ href: "/signin", locale: params.locale });
     }
 
     const t = await getTranslations("pages.billing");

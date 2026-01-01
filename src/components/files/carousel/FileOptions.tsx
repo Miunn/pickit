@@ -227,18 +227,16 @@ export default function FileOptions({
                         </DropdownMenuItem>
                     )}
                     <DropdownMenuItem onClick={e => e.stopPropagation()}>
-                        <div onClick={e => e.stopPropagation()} className="w-full flex items-center">
-                            <FullScreenImageCarousel
-                                files={fullScreenCarouselFiles}
-                                defaultIndex={currentIndexState}
-                                parentCarouselApi={carouselApi}
-                            >
-                                <div className="w-full flex items-center">
-                                    <Expand size={16} className="opacity-60 mr-2" aria-hidden="true" />
-                                    {t("expand")}
-                                </div>
-                            </FullScreenImageCarousel>
-                        </div>
+                        <FullScreenImageCarousel
+                            files={fullScreenCarouselFiles}
+                            defaultIndex={currentIndexState}
+                            parentCarouselApi={carouselApi}
+                        >
+                            <div className="w-full flex items-center">
+                                <Expand size={16} className="opacity-60 mr-2" aria-hidden="true" />
+                                {t("expand")}
+                            </div>
+                        </FullScreenImageCarousel>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                         <Link
@@ -313,14 +311,12 @@ export default function FileOptions({
                         </DropdownMenuItem>
                     ) : null}
                     <DropdownMenuItem>
-                        <div onClick={e => e.stopPropagation()} className="w-full flex items-center">
-                            <ImageExif image={file}>
-                                <div className="w-full flex items-center">
-                                    <Braces size={16} className="opacity-60 mr-2" aria-hidden="true" />
-                                    {t("metadata")}
-                                </div>
-                            </ImageExif>
-                        </div>
+                        <ImageExif image={file}>
+                            <div className="w-full flex items-center">
+                                <Braces size={16} className="opacity-60 mr-2" aria-hidden="true" />
+                                {t("metadata")}
+                            </div>
+                        </ImageExif>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
