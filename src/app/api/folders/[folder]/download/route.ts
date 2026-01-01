@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAllowedToAccessFile } from "@/lib/dal";
 import { GoogleBucket } from "@/lib/bucket";
 import archiver from "archiver";
 import { PassThrough } from "node:stream";
