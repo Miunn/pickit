@@ -190,7 +190,7 @@ export const ImagesGrid = () => {
         const file = sortedFiles.find(item => item.id === fileId);
         if (!file) return;
 
-        if (event && event.shiftKey && selected.length > 0) {
+        if (event?.shiftKey && selected.length > 0) {
             const lastSelectedId = selected[selected.length - 1];
             const lastSelectedIndex = sortedFiles.findIndex(item => item.id === lastSelectedId);
             const currentIndex = sortedFiles.findIndex(item => item.id === file.id);
