@@ -16,7 +16,6 @@ import {
 import { formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Images, MoreHorizontal } from "lucide-react";
-import { useFormatter, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState, useCallback } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -66,7 +65,11 @@ export const foldersListViewColumns: ColumnDef<
                         className="w-[40px] h-[40px] object-cover rounded-xl"
                     />
                 ) : (
-                    <div className={"w-[40px] h-[40px] bg-gray-100 rounded-xl flex justify-center items-center"}>
+                    <div
+                        className={
+                            "w-[40px] h-[40px] bg-gray-100 dark:bg-gray-800 rounded-xl flex justify-center items-center"
+                        }
+                    >
                         <Images className={"opacity-50 w-[20px] h-[20px]"} />
                     </div>
                 )}
@@ -81,24 +84,24 @@ export const foldersListViewColumns: ColumnDef<
     },
     {
         accessorKey: "size",
-        header: () => {
-            const t = useTranslations("folders.views.list.header");
-            return <p>{t("size")}</p>;
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
+            return <p>{t?.("header.size")}</p>;
         },
         cell: ({ row }) => <p>{formatBytes(row.original.size)}</p>,
     },
     {
         accessorKey: "createdAt",
-        header: () => {
-            const t = useTranslations("folders.views.list.header");
-            return <p>{t("createdAt")}</p>;
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
+            return <p>{t?.("header.createdAt")}</p>;
         },
-        cell: ({ row }) => {
-            const formatter = useFormatter();
+        cell: ({ table, row }) => {
+            const formatter = table.options.meta?.intl?.formatter;
 
             return (
                 <p className="capitalize">
-                    {formatter.dateTime(row.original.createdAt, {
+                    {formatter?.dateTime(row.original.createdAt, {
                         weekday: "long",
                         day: "numeric",
                         month: "short",
@@ -112,16 +115,16 @@ export const foldersListViewColumns: ColumnDef<
     },
     {
         accessorKey: "updatedAt",
-        header: () => {
-            const t = useTranslations("folders.views.list.header");
-            return <p>{t("updatedAt")}</p>;
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
+            return <p>{t?.("header.updatedAt")}</p>;
         },
-        cell: ({ row }) => {
-            const formatter = useFormatter();
+        cell: ({ table, row }) => {
+            const formatter = table.options.meta?.intl?.formatter;
 
             return (
                 <p className="capitalize">
-                    {formatter.dateTime(row.original.createdAt, {
+                    {formatter?.dateTime(row.original.createdAt, {
                         weekday: "long",
                         day: "numeric",
                         month: "short",
@@ -135,8 +138,8 @@ export const foldersListViewColumns: ColumnDef<
     },
     {
         id: "actions",
-        cell: ({ row }) => {
-            const t = useTranslations("folders.views.list.columns.actions");
+        cell: ({ table, row }) => {
+            const t = table.options.meta?.intl?.translations;
             const [folderImages, setFolderImages] = useState<
                 ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[]
             >([]);
@@ -170,32 +173,36 @@ export const foldersListViewColumns: ColumnDef<
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="min-w-40">
-                            <DropdownMenuLabel>{t("label")}</DropdownMenuLabel>
+                            <DropdownMenuLabel>{t?.("columns.actions.label")}</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem asChild>
-                                <Link href={`/app/folders/${row.original.id}`}>{t("open")}</Link>
+                                <Link href={`/app/folders/${row.original.id}`}>{t?.("columns.actions.open")}</Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => row.toggleSelected(!row.getIsSelected())}>
-                                {row.getIsSelected() ? t("deselect") : t("select")}
+                                {row.getIsSelected() ? t?.("columns.actions.deselect") : t?.("columns.actions.select")}
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
                                 <a href={`/api/folders/${row.original.id}/download`} download>
-                                    {t("download")}
+                                    {t?.("columns.actions.download")}
                                 </a>
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setOpenShare(true)}>{t("share")}</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setOpenChangeCover(true)}>
-                                {t("changeCover")}
+                            <DropdownMenuItem onClick={() => setOpenShare(true)}>
+                                {t?.("columns.actions.share")}
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setOpenRename(true)}>{t("rename")}</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setOpenChangeCover(true)}>
+                                {t?.("columns.actions.changeCover")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setOpenRename(true)}>
+                                {t?.("columns.actions.rename")}
+                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setOpenProperties(true)}>
-                                {t("properties")}
+                                {t?.("columns.actions.properties")}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() => setOpenDelete(true)}
                                 className="text-destructive focus:text-destructive font-semibold"
                             >
-                                {t("delete")}
+                                {t?.("columns.actions.delete")}
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

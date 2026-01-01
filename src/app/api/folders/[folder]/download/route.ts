@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAllowedToAccessFile } from "@/lib/dal";
 import { GoogleBucket } from "@/lib/bucket";
 import archiver from "archiver";
 import { PassThrough } from "node:stream";
 import { FolderService } from "@/data/folder-service";
+import { SecureService } from "@/data/secure/secure-service";
 
 /**
  * Streams a ZIP archive containing all files in the specified folder.
@@ -17,20 +17,22 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
 
-    if (!isAllowedToAccessFile(params.folder, shareToken, accessKey)) {
-        return Response.json(
-            { error: "You need to be authenticated or have a magic link to access this resource" },
-            { status: 400 }
-        );
-    }
-
     const folder = await FolderService.get({
         where: { id: params.folder },
-        include: { files: true },
+        include: { files: true, accessTokens: true },
     });
 
     if (!folder) {
         return Response.json({ error: "Folder not found" }, { status: 404 });
+    }
+
+    const isAllowed = await SecureService.folder.enforce(folder, shareToken || undefined, accessKey || undefined);
+
+    if (!isAllowed) {
+        return Response.json(
+            { error: "You need to be authenticated or have a magic link to access this resource" },
+            { status: 400 }
+        );
     }
 
     if (folder.files.length === 0) {

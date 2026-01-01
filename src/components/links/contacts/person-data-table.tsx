@@ -8,6 +8,7 @@ import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessToken
 import { LightFolder, AccessTokenWithFolder } from "@/lib/definitions";
 import { useEffect, useState } from "react";
 import { personColumns } from "./columns-persons";
+import { useTranslations } from "next-intl";
 
 export default function PersonDataTable({
     accessTokens,
@@ -17,6 +18,7 @@ export default function PersonDataTable({
     defaultTokenIndex: number;
     lightFolders: LightFolder[];
 }) {
+    const t = useTranslations("dataTables.people.columns");
     const [selectedTokensIndexes, setSelectedTokensIndexes] = useState<{ [index: number]: boolean }>(
         defaultTokenIndex !== -1 ? { [defaultTokenIndex]: true } : {}
     );
@@ -26,7 +28,7 @@ export default function PersonDataTable({
     const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
 
     useEffect(() => {
-        setSelectedTokens(Object.keys(selectedTokensIndexes).map(k => accessTokens[parseInt(k)].token));
+        setSelectedTokens(Object.keys(selectedTokensIndexes).map(k => accessTokens[Number.parseInt(k)].token));
     }, [selectedTokensIndexes, accessTokens]);
 
     return (
@@ -57,6 +59,7 @@ export default function PersonDataTable({
                     </DeleteAccessTokenDialog>
                 </div>
             }
+            translations={t}
         />
     );
 }

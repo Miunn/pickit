@@ -5,15 +5,16 @@ import {
     CreateCommentFormSchema,
     FolderWithAccessToken,
     FolderWithFilesWithFolderAndCommentsAndCreatedBy,
+    EditCommentFormSchema,
 } from "@/lib/definitions";
 import { getCurrentSession } from "@/lib/session";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import * as bcrypt from "bcryptjs";
 import { isAllowedToDeleteComment } from "@/lib/dal";
-import { EditCommentFormSchema } from "@/lib/definitions";
 import { FileService } from "@/data/file-service";
 import { CommentService } from "@/data/comment-service";
+import { SecureService } from "@/data/secure/secure-service";
+import { FolderPermission } from "@/data/secure/folder";
 
 export async function createComment(
     fileId: string,
@@ -24,7 +25,7 @@ export async function createComment(
 ): Promise<CommentWithCreatedBy | null> {
     const { user } = await getCurrentSession();
 
-    if (!user && (!shareToken || !type)) {
+    if (!user && !shareToken) {
         return null;
     }
 
@@ -49,29 +50,21 @@ export async function createComment(
     let commentName = "Anonymous";
     let createdByEmail = null;
 
+    const hasAccessToFolder = await SecureService.folder.enforce(
+        folder,
+        shareToken || undefined,
+        h || undefined,
+        FolderPermission.READ
+    );
+
+    if (!hasAccessToFolder) {
+        return null;
+    }
+
     if (!user || folder.createdById !== user.id) {
-        if (!shareToken || !type || (type !== "accessToken" && type !== "personAccessToken")) {
-            return null;
-        }
-
         const accessToken = folder.accessTokens.find(a => a.token === shareToken && a.expires >= new Date());
-        if (!accessToken) {
-            return null;
-        }
 
-        if (accessToken.locked) {
-            if (!h) {
-                return null;
-            }
-
-            const match = bcrypt.compareSync(accessToken.pinCode as string, h);
-
-            if (!match) {
-                return null;
-            }
-        }
-
-        if (accessToken.email) {
+        if (accessToken?.email) {
             commentName = accessToken.email.split("@")[0];
             createdByEmail = accessToken.email;
         }
@@ -87,35 +80,25 @@ export async function createComment(
     }
 
     try {
-        let data;
-        if (user) {
-            data = {
-                text: parsedData.data.content,
-                createdBy: { connect: { id: user?.id } },
-                createdByEmail,
-                name: commentName,
-                file: { connect: { id: fileId } },
-            };
-        } else {
-            data = {
-                text: parsedData.data.content,
-                name: commentName,
-                createdByEmail,
-                file: { connect: { id: fileId } },
-            };
-        }
+        const data = {
+            text: parsedData.data.content,
+            createdBy: user ? { connect: { id: user?.id } } : undefined,
+            createdByEmail,
+            name: commentName,
+            file: { connect: { id: fileId } },
+        };
 
         const comment = await CommentService.create(data, { file: { include: { folder: true } }, createdBy: true });
 
         if (!comment) {
-            console.log("Comment creation failed");
+            console.error("Comment creation failed");
             return null;
         }
 
         revalidatePath(`/app/folders/${folder.id}`);
         return comment;
     } catch (e) {
-        console.log("Error creating comment", e);
+        console.error("Error creating comment", e);
         return null;
     }
 }

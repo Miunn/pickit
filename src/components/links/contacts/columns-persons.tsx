@@ -38,7 +38,6 @@ import {
     Pencil,
     PencilOff,
 } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 // Define the permission values as constants
@@ -72,11 +71,11 @@ export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
     {
         id: "folder_name",
         accessorKey: "folder.name",
-        header: ({ column }) => {
-            const t = useTranslations("dataTables.people.columns");
+        header: ({ table, column }) => {
+            const t = table.options.meta?.intl?.translations;
             return (
                 <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    {t("name.header")}
+                    {t?.("name.header")}
                     <ArrowUpDown className="w-4 h-4 ml-2" />
                 </Button>
             );
@@ -88,46 +87,46 @@ export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "email",
-        header: () => {
-            const t = useTranslations("dataTables.people.columns");
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
 
-            return <p>{t("email.header")}</p>;
+            return <p>{t?.("email.header")}</p>;
         },
         size: 340,
     },
     {
         accessorKey: "permission",
-        header: () => {
-            const t = useTranslations("dataTables.people.columns.permission");
-            return <p>{t("header")}</p>;
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
+            return <p>{t?.("permission.header")}</p>;
         },
-        cell: ({ row }) => {
-            const t = useTranslations("dataTables.people.columns.permission");
+        cell: ({ table, row }) => {
+            const t = table.options.meta?.intl?.translations;
             const permission: string = row.getValue("permission");
             if (permission === PERMISSIONS.READ) {
                 return (
                     <Badge className="bg-blue-600 hover:bg-blue-700 flex gap-2 w-fit">
-                        <PencilOff /> {t("read")}
+                        <PencilOff /> {t?.("permission.read")}
                     </Badge>
                 );
             }
             if (permission === PERMISSIONS.WRITE) {
                 return (
                     <Badge className="bg-green-600 hover:bg-green-700 flex gap-2 w-fit">
-                        <Pencil /> {t("write")}
+                        <Pencil /> {t?.("permission.write")}
                     </Badge>
                 );
             }
             if (permission === PERMISSIONS.ADMIN) {
                 return (
                     <Badge className="bg-purple-600 hover:bg-purple-700 flex gap-2 w-fit">
-                        <BadgeCheck /> {t("admin")}
+                        <BadgeCheck /> {t?.("permission.admin")}
                     </Badge>
                 );
             }
             return (
                 <Badge className="bg-gray-600 hover:bg-gray-700 flex gap-2 w-fit">
-                    <BadgeMinus /> {t("none")}
+                    <BadgeMinus /> {t?.("permission.none")}
                 </Badge>
             );
         },
@@ -135,37 +134,37 @@ export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "isActive",
-        header: () => {
-            const t = useTranslations("dataTables.people.columns.active");
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
 
             return (
                 <p className="flex gap-2 items-center">
-                    {t("header")}
+                    {t?.("active.header")}
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger>
                                 <CircleHelp className="w-4 h-4 cursor-pointer" />
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p dangerouslySetInnerHTML={{ __html: t("tooltip") }} />
+                                <p dangerouslySetInnerHTML={{ __html: t?.("active.tooltip") || "" }} />
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
                 </p>
             );
         },
-        cell: ({ row }) => {
-            const t = useTranslations("dataTables.people.columns.active");
+        cell: ({ table, row }) => {
+            const t = table.options.meta?.intl?.translations;
             const isActive: boolean = row.getValue("isActive");
             return (
                 <>
                     {isActive ? (
                         <Badge className="bg-green-600 hover:bg-green-700 flex gap-2 w-fit">
-                            <BadgeCheck /> {t("active")}
+                            <BadgeCheck /> {t?.("active.active")}
                         </Badge>
                     ) : (
                         <Badge className="bg-red-600 hover:bg-red-700 flex gap-2 w-fit">
-                            <BadgeMinus /> {t("inactive")}
+                            <BadgeMinus /> {t?.("active.inactive")}
                         </Badge>
                     )}
                 </>
@@ -175,24 +174,24 @@ export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "allowMap",
-        header: () => {
-            const t = useTranslations("dataTables.people.columns.allowMap");
-            return <p className="min-w-32">{t("header")}</p>;
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
+            return <p className="min-w-32">{t?.("allowMap.header")}</p>;
         },
-        cell: ({ row }) => {
-            const t = useTranslations("dataTables.peopl.columns.allowMap");
+        cell: ({ table, row }) => {
+            const t = table.options.meta?.intl?.translations;
             const allowMap: boolean = row.getValue("allowMap");
             return (
                 <p className="flex items-center text-muted-foreground truncate">
                     {allowMap ? (
                         <>
                             <MapPin className="mr-2" />
-                            {t("allowed")}
+                            {t?.("allowMap.allowed")}
                         </>
                     ) : (
                         <>
                             <MapPinOff className="mr-2" />
-                            {t("notAllowed")}
+                            {t?.("allowMap.notAllowed")}
                         </>
                     )}
                 </p>
@@ -202,23 +201,23 @@ export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "locked",
-        header: () => {
-            const t = useTranslations("dataTables.people.columns");
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
 
-            return <p>{t("locked.header")}</p>;
+            return <p>{t?.("locked.header")}</p>;
         },
-        cell: ({ row }) => {
-            const t = useTranslations("dataTables.people.columns.locked");
+        cell: ({ table, row }) => {
+            const t = table.options.meta?.intl?.translations;
             const isLocked: boolean = row.getValue("locked");
             return (
                 <>
                     {isLocked ? (
                         <p className="flex items-center text-muted-foreground truncate">
-                            <Lock className="mr-2" /> {t("locked")}
+                            <Lock className="mr-2" /> {t?.("locked.locked")}
                         </p>
                     ) : (
                         <p className="flex items-center text-muted-foreground truncate">
-                            <LockOpen className="mr-2" /> {t("unlocked")}
+                            <LockOpen className="mr-2" /> {t?.("locked.unlocked")}
                         </p>
                     )}
                 </>
@@ -228,17 +227,17 @@ export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "uses",
-        header: () => {
-            const t = useTranslations("dataTables.people.columns");
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
 
-            return <p>{t("views.header")}</p>;
+            return <p>{t?.("views.header")}</p>;
         },
-        cell: ({ row }) => {
-            const t = useTranslations("dataTables.people.columns.views");
+        cell: ({ table, row }) => {
+            const t = table.options.meta?.intl?.translations;
             const uses: string = row.getValue("uses") ?? 0;
             return (
                 <p className="flex items-center text-muted-foreground truncate">
-                    <Eye className="mr-2" /> {t("count", { count: uses })}
+                    <Eye className="mr-2" /> {t?.("views.count", { count: uses })}
                 </p>
             );
         },
@@ -246,18 +245,17 @@ export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "createdAt",
-        header: () => {
-            const t = useTranslations("dataTables.people.columns");
-
-            return <p>{t("createdAt.header")}</p>;
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
+            return <p>{t?.("createdAt.header")}</p>;
         },
-        cell: ({ row }) => {
+        cell: ({ table, row }) => {
+            const formatter = table.options.meta?.intl?.formatter;
             const date: Date = row.getValue("createdAt");
 
-            const locale = useLocale();
             return (
                 <p className="capitalize truncate">
-                    {date.toLocaleDateString(locale, {
+                    {formatter?.dateTime(date, {
                         weekday: "long",
                         day: "numeric",
                         year: "numeric",
@@ -270,18 +268,18 @@ export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         accessorKey: "expires",
-        header: () => {
-            const t = useTranslations("dataTables.people.columns");
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
 
-            return <p>{t("expiresAt.header")}</p>;
+            return <p>{t?.("expiresAt.header")}</p>;
         },
-        cell: ({ row }) => {
+        cell: ({ table, row }) => {
+            const formatter = table.options.meta?.intl?.formatter;
             const date: Date = row.getValue("expires");
 
-            const locale = useLocale();
             return (
                 <p className="capitalize truncate">
-                    {date.toLocaleDateString(locale, {
+                    {formatter?.dateTime(date, {
                         weekday: "long",
                         day: "numeric",
                         year: "numeric",
@@ -294,8 +292,8 @@ export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
     },
     {
         id: "actions",
-        cell: ({ row }) => {
-            const t = useTranslations("dataTables.people.columns.actions");
+        cell: ({ table, row }) => {
+            const t = table.options.meta?.intl?.translations;
             const accessToken = row.original;
             const [lockOpen, setLockOpen] = useState<boolean>(false);
             const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
@@ -309,56 +307,56 @@ export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="min-w-40">
-                            <DropdownMenuLabel>{t("label")}</DropdownMenuLabel>
+                            <DropdownMenuLabel>{t?.("actions.label")}</DropdownMenuLabel>
                             <DropdownMenuItem asChild>
                                 <Link href={`/app/folders/${accessToken.folder.id}`} className="cursor-default">
-                                    {t("open")}
+                                    {t?.("actions.open")}
                                 </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={async () => {
                                     toast({
-                                        title: t("sendAgain.inProgress.title"),
-                                        description: t("sendAgain.inProgress.description"),
+                                        title: t?.("actions.sendAgain.inProgress.title"),
+                                        description: t?.("actions.sendAgain.inProgress.description"),
                                     });
                                     const r = await sendAgainAccessToken(accessToken.token);
 
                                     if (r.error) {
                                         toast({
-                                            title: t("sendAgain.error.title"),
-                                            description: t("sendAgain.error.description"),
+                                            title: t?.("actions.sendAgain.error.title"),
+                                            description: t?.("actions.sendAgain.error.description"),
                                         });
                                         return;
                                     }
 
                                     toast({
-                                        title: t("sendAgain.success.title"),
-                                        description: t("sendAgain.success.description"),
+                                        title: t?.("actions.sendAgain.success.title"),
+                                        description: t?.("actions.sendAgain.success.description"),
                                     });
                                 }}
                             >
-                                {t("sendAgain.label")}
+                                {t?.("actions.sendAgain.label")}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>{t("edit")}</DropdownMenuItem>
+                            <DropdownMenuItem>{t?.("actions.edit")}</DropdownMenuItem>
                             {accessToken.isActive ? (
                                 <DropdownMenuItem
                                     onClick={async () => {
                                         const r = await changeAccessTokenActiveState(accessToken.token, false);
                                         if (r.error) {
                                             toast({
-                                                title: t("setInactive.error.title"),
-                                                description: t("setInactive.error.description"),
+                                                title: t?.("actions.setInactive.error.title"),
+                                                description: t?.("actions.setInactive.error.description"),
                                             });
                                             return;
                                         }
                                         toast({
-                                            title: t("setInactive.success.title"),
-                                            description: t("setInactive.success.description"),
+                                            title: t?.("actions.setInactive.success.title"),
+                                            description: t?.("actions.setInactive.success.description"),
                                         });
                                     }}
                                 >
-                                    {t("setInactive.label")}
+                                    {t?.("actions.setInactive.label")}
                                 </DropdownMenuItem>
                             ) : (
                                 <DropdownMenuItem
@@ -366,18 +364,18 @@ export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
                                         const r = await changeAccessTokenActiveState(accessToken.token, true);
                                         if (r.error) {
                                             toast({
-                                                title: t("setActive.error.title"),
-                                                description: t("setActive.error.description"),
+                                                title: t?.("actions.setActive.error.title"),
+                                                description: t?.("actions.setActive.error.description"),
                                             });
                                             return;
                                         }
                                         toast({
-                                            title: t("setActive.success.title"),
-                                            description: t("setActive.success.description"),
+                                            title: t?.("actions.setActive.success.title"),
+                                            description: t?.("actions.setActive.success.description"),
                                         });
                                     }}
                                 >
-                                    {t("setActive.label")}
+                                    {t?.("actions.setActive.label")}
                                 </DropdownMenuItem>
                             )}
                             {accessToken.allowMap ? (
@@ -386,18 +384,18 @@ export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
                                         const r = await changeAccessTokenAllowMap(accessToken.id, false);
                                         if (r.error) {
                                             toast({
-                                                title: t("allowMap.disable.error.title"),
-                                                description: t("allowMap.disable.error.description"),
+                                                title: t?.("actions.allowMap.disable.error.title"),
+                                                description: t?.("actions.allowMap.disable.error.description"),
                                             });
                                             return;
                                         }
                                         toast({
-                                            title: t("allowMap.disable.success.title"),
-                                            description: t("allowMap.disable.success.description"),
+                                            title: t?.("actions.allowMap.disable.success.title"),
+                                            description: t?.("actions.allowMap.disable.success.description"),
                                         });
                                     }}
                                 >
-                                    {t("allowMap.disable.label")}
+                                    {t?.("actions.allowMap.disable.label")}
                                 </DropdownMenuItem>
                             ) : (
                                 <DropdownMenuItem
@@ -405,18 +403,18 @@ export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
                                         const r = await changeAccessTokenAllowMap(accessToken.id, true);
                                         if (r.error) {
                                             toast({
-                                                title: t("allowMap.enable.error.title"),
-                                                description: t("allowMap.enable.error.description"),
+                                                title: t?.("actions.allowMap.enable.error.title"),
+                                                description: t?.("actions.allowMap.enable.error.description"),
                                             });
                                             return;
                                         }
                                         toast({
-                                            title: t("allowMap.enable.success.title"),
-                                            description: t("allowMap.enable.success.description"),
+                                            title: t?.("actions.allowMap.enable.success.title"),
+                                            description: t?.("actions.allowMap.enable.success.description"),
                                         });
                                     }}
                                 >
-                                    {t("allowMap.enable.label")}
+                                    {t?.("actions.allowMap.enable.label")}
                                 </DropdownMenuItem>
                             )}
                             {accessToken.locked ? (
@@ -426,30 +424,32 @@ export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
 
                                         if (r.error) {
                                             toast({
-                                                title: t("unlock.error.title"),
-                                                description: t("unlock.error.description"),
+                                                title: t?.("actions.unlock.error.title"),
+                                                description: t?.("actions.unlock.error.description"),
                                                 variant: "destructive",
                                             });
                                             return;
                                         }
 
                                         toast({
-                                            title: t("unlock.success.title"),
-                                            description: t("unlock.success.description"),
+                                            title: t?.("actions.unlock.success.title"),
+                                            description: t?.("actions.unlock.success.description"),
                                         });
                                     }}
                                 >
-                                    {t("unlock.label")}
+                                    {t?.("actions.unlock.label")}
                                 </DropdownMenuItem>
                             ) : (
-                                <DropdownMenuItem onClick={() => setLockOpen(true)}>{t("lock")}</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setLockOpen(true)}>
+                                    {t?.("actions.lock")}
+                                </DropdownMenuItem>
                             )}
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                                 onClick={() => setDeleteOpen(true)}
                                 className="text-red-600 focus:text-red-600 font-semibold"
                             >
-                                {t("delete.label")}
+                                {t?.("actions.delete.label")}
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

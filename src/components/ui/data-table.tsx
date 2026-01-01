@@ -1,147 +1,131 @@
-"use client"
+"use client";
 
 import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
-  useReactTable,
-} from "@tanstack/react-table"
+    ColumnDef,
+    flexRender,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    SortingState,
+    useReactTable,
+} from "@tanstack/react-table";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { useEffect, useState } from "react"
-import { Input } from "./input"
-import { DataTablePagination } from "./data-table-pagination"
-import { useFormatter } from "next-intl"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useEffect, useState } from "react";
+import { Input } from "./input";
+import { DataTablePagination } from "./data-table-pagination";
+import { createTranslator, useFormatter, useLocale } from "next-intl";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-  selection?: { [index: number]: boolean }
-  setSelection?: React.Dispatch<React.SetStateAction<{ [index: number]: boolean; }>>
-  filterPlaceholder?: string
-  filterColumn?: string
-  rightHeadingNodes?: React.ReactNode
-  hideHeader?: boolean
+    columns: ColumnDef<TData, TValue>[];
+    data: TData[];
+    selection?: { [index: number]: boolean };
+    setSelection?: React.Dispatch<React.SetStateAction<{ [index: number]: boolean }>>;
+    filterPlaceholder?: string;
+    filterColumn?: string;
+    rightHeadingNodes?: React.ReactNode;
+    hideHeader?: boolean;
+    translations?: ReturnType<typeof createTranslator>;
 }
 
 export function DataTable<TData, TValue>({
-  columns,
-  data,
-  selection,
-  setSelection,
-  filterPlaceholder,
-  filterColumn,
-  rightHeadingNodes,
-  hideHeader
-}: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const formatter = useFormatter();
-
-  const table = useReactTable({
-    data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onSortingChange: setSorting,
-    onRowSelectionChange: setSelection,
-    state: {
-      sorting,
-      rowSelection: selection,
-    },
-    meta: {
-      intl: {
-        formatter
-      }
-    }
-  });
+    data,
+    selection,
+    setSelection,
+    filterPlaceholder,
+    filterColumn,
+    rightHeadingNodes,
+    hideHeader,
+    translations,
+}: DataTableProps<TData, TValue>) {
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const formatter = useFormatter();
+    const locale = useLocale();
 
-  useEffect(() => {
-    table.setPageSize(12);
-  }, [table]);
+    const table = useReactTable({
+        data,
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onSortingChange: setSorting,
+        onRowSelectionChange: setSelection,
+        state: {
+            sorting,
+            rowSelection: selection,
+        },
+        meta: {
+            locale,
+            intl: {
+                translations,
+                formatter,
+            },
+        },
+    });
 
-  return (
-    <div className="w-full">
-      <div className={`flex items-center justify-between py-4 ${hideHeader ? "hidden" : ""}`}>
-        {
-          filterColumn
-            ? <Input
-              placeholder={filterPlaceholder}
-              value={(table.getColumn(filterColumn)?.getFilterValue() as string) ?? ""}
-              onChange={(event) =>
-                table.getColumn(filterColumn)?.setFilterValue(event.target.value)
-              }
-              className="max-w-sm"
-            />
-            : null}
+    useEffect(() => {
+        table.setPageSize(12);
+    }, [table]);
 
-        <div>
-          {rightHeadingNodes}
-        </div>
-      </div>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} style={{ width: header.getSize() !== 150 ? header.getSize() : undefined }}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
+    return (
+        <div className="w-full">
+            <div className={`flex items-center justify-between py-4 ${hideHeader ? "hidden" : ""}`}>
+                {filterColumn ? (
+                    <Input
+                        placeholder={filterPlaceholder}
+                        value={(table.getColumn(filterColumn)?.getFilterValue() as string) ?? ""}
+                        onChange={event => table.getColumn(filterColumn)?.setFilterValue(event.target.value)}
+                        className="max-w-sm"
+                    />
+                ) : null}
+
+                <div>{rightHeadingNodes}</div>
+            </div>
+            <div className="rounded-md border">
+                <Table>
+                    <TableHeader>
+                        {table.getHeaderGroups().map(headerGroup => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map(header => {
+                                    return (
+                                        <TableHead
+                                            key={header.id}
+                                            style={{ width: header.getSize() === 150 ? undefined : header.getSize() }}
+                                        >
+                                            {header.isPlaceholder
+                                                ? null
+                                                : flexRender(header.column.columnDef.header, header.getContext())}
+                                        </TableHead>
+                                    );
+                                })}
+                            </TableRow>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map(row => (
+                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                                    {row.getVisibleCells().map(cell => (
+                                        <TableCell key={cell.id}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    No results.
+                                </TableCell>
+                            </TableRow>
                         )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <DataTablePagination table={table} />
-    </div>
-  )
+                    </TableBody>
+                </Table>
+            </div>
+            <DataTablePagination table={table} />
+        </div>
+    );
 }

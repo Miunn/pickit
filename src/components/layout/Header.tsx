@@ -23,7 +23,7 @@ export default function Header({ className }: { className?: string }) {
             if (this.top && window.scrollY > this.topThreshold) {
                 this.top = false;
                 this.updateUI();
-            } else if (!this.top && window.scrollY <= this.topThreshold) {
+            } else if (!top && window.scrollY <= this.topThreshold) {
                 this.top = true;
                 this.updateUI();
             }

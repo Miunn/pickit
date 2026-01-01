@@ -1,11 +1,13 @@
-export default function NotFoundPage() {
-  return (
-    <html>
-      <body>
-        <div className={"flex justify-center items-center"}>
-          <p>{"description"}</p>
-        </div>
-      </body>
-    </html>
-  );
+export default async function NotFoundPage(props: Readonly<Promise<{ readonly params: { readonly locale: string } }>>) {
+    const { params } = await props;
+
+    return (
+        <html lang={params.locale}>
+            <body>
+                <div className={"flex justify-center items-center"}>
+                    <p>{"description"}</p>
+                </div>
+            </body>
+        </html>
+    );
 }

@@ -10,7 +10,7 @@ import { flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactT
 import React from "react";
 import { ChevronDownIcon, ChevronUpIcon, Trash2, X } from "lucide-react";
 import { cn, formatBytes } from "@/lib/utils";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { foldersListViewColumns } from "./columns";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -20,7 +20,8 @@ export default function FoldersList({
 }: {
     folders: (FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments)[];
 }) {
-    const t = useTranslations("folders.views.list.table");
+    const t = useTranslations("folders.views.list");
+    const formatter = useFormatter();
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [rowSelection, setRowSelection] = React.useState({});
 
@@ -35,6 +36,12 @@ export default function FoldersList({
             sorting,
             rowSelection,
         },
+        meta: {
+            intl: {
+                translations: t,
+                formatter: formatter,
+            },
+        },
         enableSortingRemoval: false,
         getRowId: row => row.id,
     });
@@ -42,7 +49,7 @@ export default function FoldersList({
     return (
         <>
             {Object.keys(rowSelection).length > 0 ? (
-                <div className={"flex justify-between items-center mb-5 bg-gray-50 rounded-2xl w-full p-2"}>
+                <div className={"flex justify-between items-center mb-5 bg-accent rounded-2xl w-full p-2"}>
                     <div className={"flex gap-2 items-center"}>
                         <Button
                             variant="ghost"
@@ -93,6 +100,15 @@ export default function FoldersList({
                                                 width: header.getSize(),
                                             },
                                         }}
+                                        onClick={header.column.getToggleSortingHandler()}
+                                        onKeyDown={e => {
+                                            // Enhanced keyboard handling for sorting
+                                            if (header.column.getCanSort() && (e.key === "Enter" || e.key === " ")) {
+                                                e.preventDefault();
+                                                header.column.getToggleSortingHandler()?.(e);
+                                            }
+                                        }}
+                                        tabIndex={header.column.getCanSort() ? 0 : undefined}
                                     >
                                         {header.isPlaceholder ? null : (
                                             <div
@@ -100,18 +116,6 @@ export default function FoldersList({
                                                     header.column.getCanSort() &&
                                                         "flex h-full cursor-pointer items-center justify-between gap-2 select-none"
                                                 )}
-                                                onClick={header.column.getToggleSortingHandler()}
-                                                onKeyDown={e => {
-                                                    // Enhanced keyboard handling for sorting
-                                                    if (
-                                                        header.column.getCanSort() &&
-                                                        (e.key === "Enter" || e.key === " ")
-                                                    ) {
-                                                        e.preventDefault();
-                                                        header.column.getToggleSortingHandler()?.(e);
-                                                    }
-                                                }}
-                                                tabIndex={header.column.getCanSort() ? 0 : undefined}
                                             >
                                                 <span className="truncate">
                                                     {flexRender(header.column.columnDef.header, header.getContext())}
