@@ -10,7 +10,7 @@ import FullScreenImageCarousel from "./FullScrenImageCarousel";
 import { Expand } from "lucide-react";
 import Link from "next/link";
 import { copyImageToClipboard } from "@/lib/utils";
-import { FileWithFolder, FileWithTags, FolderWithTags } from "@/lib/definitions";
+import { FileWithTags, FolderWithTags } from "@/lib/definitions";
 import { toast } from "@/hooks/use-toast";
 import { FileType, FolderTag } from "@prisma/client";
 import { useState } from "react";
@@ -34,20 +34,17 @@ import { useTopLoader } from "nextjs-toploader";
  * Render action controls for a file including tag management, fullscreen carousel, open-in-new-tab, download, copy-to-clipboard, and metadata actions.
  *
  * @param file - The file (with its folder and tags) for which actions are rendered.
- * @param fullScreenCarouselFiles - Array of files (with folder and tags) used as the source for the fullscreen carousel.
- * @param currentIndexState - Initial index to open the fullscreen carousel at.
+ * @param currentIndex - Initial index to open the fullscreen carousel at.
  * @param carouselApi - Carousel API instance used to control the parent carousel.
  * @returns The JSX element containing the file action controls.
  */
 export default function FileOptions({
     file,
-    fullScreenCarouselFiles,
-    currentIndexState,
+    currentIndex,
     carouselApi,
 }: {
     file: { folder: FolderWithTags } & FileWithTags;
-    fullScreenCarouselFiles: (FileWithFolder & FileWithTags)[];
-    currentIndexState: number;
+    currentIndex: number;
     carouselApi: CarouselApi;
 }) {
     const { user } = useSession();
@@ -115,11 +112,7 @@ export default function FileOptions({
                         </Button>
                     </ManageTagsDialog>
                 )}
-                <FullScreenImageCarousel
-                    files={fullScreenCarouselFiles}
-                    defaultIndex={currentIndexState}
-                    parentCarouselApi={carouselApi}
-                >
+                <FullScreenImageCarousel defaultIndex={currentIndex} parentCarouselApi={carouselApi}>
                     <Button variant={"outline"} size={"icon"} type="button">
                         <Expand className="w-4 h-4" />
                     </Button>
@@ -227,11 +220,7 @@ export default function FileOptions({
                         </DropdownMenuItem>
                     )}
                     <DropdownMenuItem onClick={e => e.stopPropagation()}>
-                        <FullScreenImageCarousel
-                            files={fullScreenCarouselFiles}
-                            defaultIndex={currentIndexState}
-                            parentCarouselApi={carouselApi}
-                        >
+                        <FullScreenImageCarousel defaultIndex={currentIndex} parentCarouselApi={carouselApi}>
                             <div className="w-full flex items-center">
                                 <Expand size={16} className="opacity-60 mr-2" aria-hidden="true" />
                                 {t("expand")}

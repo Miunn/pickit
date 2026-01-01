@@ -1,4 +1,3 @@
-import { FileWithFolder } from "@/lib/definitions";
 import {
     Carousel,
     CarouselApi,
@@ -7,7 +6,7 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "../../ui/carousel";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../../ui/dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
@@ -16,22 +15,22 @@ import { FileType } from "@prisma/client";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+import { useFilesContext } from "@/context/FilesContext";
 
 export default function FullScreenImageCarousel({
-    files,
     defaultIndex,
     children,
     open,
     setOpen,
     parentCarouselApi,
 }: {
-    files: FileWithFolder[];
     defaultIndex: number;
     children?: React.ReactNode;
     open?: boolean;
     setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
     parentCarouselApi?: CarouselApi;
 }) {
+    const { sortedFiles } = useFilesContext();
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const shareHashPin = searchParams.get("h");
@@ -40,10 +39,15 @@ export default function FullScreenImageCarousel({
     const [autoPlay, setAutoPlay] = useState(false);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-    const currentIndex = useMemo(
-        () => carouselApi?.selectedScrollSnap() ?? defaultIndex ?? 0,
-        [carouselApi, defaultIndex]
-    );
+    const [currentFile, setCurrentFile] = useState<(typeof sortedFiles)[number] | null>(null);
+
+    useEffect(() => {
+        if (!carouselApi) return;
+        setCurrentFile(sortedFiles[carouselApi.selectedScrollSnap()]);
+        carouselApi.on("select", () => {
+            setCurrentFile(sortedFiles[carouselApi.selectedScrollSnap()]);
+        });
+    }, [carouselApi, sortedFiles]);
 
     // Auto-advance effect
     useEffect(() => {
@@ -97,7 +101,6 @@ export default function FullScreenImageCarousel({
                 }
 
                 if (!open) {
-                    console.log("closing, syncing parent", carouselApi?.selectedScrollSnap());
                     parentCarouselApi?.scrollTo(carouselApi?.selectedScrollSnap() ?? 0);
                 }
             }}
@@ -108,7 +111,7 @@ export default function FullScreenImageCarousel({
                 closeButton={<Cross2Icon className="size-7 bg-gray-600 text-white rounded-md p-1" />}
             >
                 <VisuallyHidden>
-                    <DialogTitle>{files[currentIndex].name}</DialogTitle>
+                    <DialogTitle>{currentFile?.name}</DialogTitle>
                 </VisuallyHidden>
                 <div className="fixed inset-0 bg-black/90 flex items-center justify-center">
                     <Carousel
@@ -122,7 +125,7 @@ export default function FullScreenImageCarousel({
                         setApi={setCarouselApi}
                     >
                         <CarouselContent className="h-full">
-                            {files.map(file => (
+                            {sortedFiles.map(file => (
                                 <CarouselItem key={file.id} className="h-full">
                                     <div className="relative h-full w-full flex justify-center items-center p-2">
                                         {file.type === FileType.VIDEO ? (
