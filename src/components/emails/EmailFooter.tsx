@@ -2,7 +2,7 @@ import { Img, Section, Text } from "@react-email/components";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL ? process.env.NEXT_PUBLIC_APP_URL : "http://localhost:3000";
 const appName = process.env.NEXT_PUBLIC_APP_NAME ? process.env.NEXT_PUBLIC_APP_NAME : "Echomori";
-const supportMail = process.env.NEXT_PUBLIC_SUPPORT_MAIL ? process.env.NEXT_PUBLIC_SUPPORT_MAIL : "
+const supportMail = process.env.NEXT_PUBLIC_SUPPORT_MAIL ? process.env.NEXT_PUBLIC_SUPPORT_MAIL : "";
 
 export default function EmailFooter() {
     return (
