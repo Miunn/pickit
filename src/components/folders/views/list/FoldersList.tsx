@@ -89,7 +89,7 @@ export default function FoldersList({
                         </Button>
                         <h2>
                             <span className={"font-semibold"}>
-                                {t("selection", { count: Object.keys(rowSelection).length })}
+                                {t("table.selection", { count: Object.keys(rowSelection).length })}
                             </span>{" "}
                             -{" "}
                             {formatBytes(
@@ -102,7 +102,7 @@ export default function FoldersList({
                     </div>
 
                     <Button variant="outline">
-                        <Trash2 className={"mr-2"} /> {t("deleteSelected")}
+                        <Trash2 className={"mr-2"} /> {t("table.deleteSelected")}
                     </Button>
                 </div>
             ) : null}
