@@ -18,7 +18,7 @@ import LastUpdatedFolders from "./LastUpdatedFolders";
 export default function DashboardContent({
     lastFolders,
 }: {
-    lastFolders: (FolderWithAccessToken &
+    readonly lastFolders: (FolderWithAccessToken &
         FolderWithFilesCount &
         FolderWithCover & {
             files: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[];

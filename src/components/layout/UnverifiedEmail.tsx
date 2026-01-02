@@ -5,7 +5,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import Link from "next/link";
 import { MouseEventHandler, useRef } from "react";
 
-export default function UnverifiedEmail({ locale, userDeletionDate }: { locale: string; userDeletionDate: Date }) {
+export default function UnverifiedEmail({ locale, userDeletionDate }: { readonly locale: string; readonly userDeletionDate: Date }) {
     const intlFormatter = useFormatter();
     const t = useTranslations("components.unverifiedEmail");
     const ref = useRef<HTMLDivElement>(null);

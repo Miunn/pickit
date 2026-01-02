@@ -23,10 +23,10 @@ export default function DeleteDescriptionDialog({
     setOpen,
     children
 }: {
-    folder: Folder,
-    open?: boolean,
-    setOpen?: React.Dispatch<React.SetStateAction<boolean>>,
-    children?: React.ReactNode
+    readonly folder: Folder,
+    readonly open?: boolean,
+    readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>>,
+    readonly children?: React.ReactNode
 }) {
     const t = useTranslations("dialogs.folders.deleteDescription");
     const [deleting, setDeleting] = useState(false);

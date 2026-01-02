@@ -32,7 +32,7 @@ export const useE2EEncryptionContext = () => {
  * @param children - Child elements that will receive the E2E encryption context
  * @returns A React context provider that supplies `publicKey`, `wrappingKey`, `loadKeys`, `setupKeys`, and `loadWrappingKeyFromSessionStorage` to its descendants
  */
-export function E2EEncryptionProvider({ children }: { children: React.ReactNode }) {
+export function E2EEncryptionProvider({ children }: { readonly children: React.ReactNode }) {
     const [publicKey, setPublicKey] = useState<CryptoKey | null>(null);
     //const [privateKey, setPrivateKey] = useState<CryptoKey | null>(null);
     const [wrappingKey, setWrappingKey] = useState<CryptoKey | null>(null);

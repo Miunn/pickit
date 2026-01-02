@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
-import AccountForm from "@/components/account/accountForm";
-import ReviewFolders from "@/components/account/reviewFolders";
+import AccountForm from "@/components/account/AccountForm";
+import ReviewFolders from "@/components/account/ReviewFolders";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { Metadata } from "next";
@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
     };
 }
 
-export default async function AccountPage(props: { params: Promise<{ readonly locale: string }> }) {
+export default async function AccountPage(props: { readonly params: Promise<{ readonly locale: string }> }) {
     const params = await props.params;
 
     const { user } = await getCurrentSession();

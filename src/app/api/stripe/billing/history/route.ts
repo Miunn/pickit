@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentSession } from "@/lib/session";
-import Stripe from "stripe";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+import { stripe } from "@/lib/stripe";
 
 export async function GET() {
     const { user } = await getCurrentSession();
@@ -21,10 +19,12 @@ export async function GET() {
 
     console.log(payments.data);
 
-    return NextResponse.json(payments.data.map((payment) => ({
-        amount: payment.amount / 100,
-        currency: payment.currency,
-        status: "DONE",
-        date: new Date(payment.created * 1000)
-    })));
+    return NextResponse.json(
+        payments.data.map(payment => ({
+            amount: payment.amount / 100,
+            currency: payment.currency,
+            status: "DONE",
+            date: new Date(payment.created * 1000),
+        }))
+    );
 }

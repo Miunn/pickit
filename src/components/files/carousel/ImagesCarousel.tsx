@@ -23,7 +23,7 @@ import FileLikeButton from "../FileLikeButton";
 import TagChip from "@/components/tags/TagChip";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-export default function ImagesCarousel({ startIndex }: { startIndex: number }) {
+export default function ImagesCarousel({ startIndex }: { readonly startIndex: number }) {
     const { sortedFiles, files, setFiles } = useFilesContext();
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");

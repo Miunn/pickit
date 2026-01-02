@@ -33,13 +33,13 @@ const ImageActionsDropdown = React.memo(
         setOpenProperties,
         setOpenDelete,
     }: {
-        row: Row<FileWithFolder & FileWithComments>;
-        t?: ReturnType<typeof createTranslator>;
-        setCarouselOpen?: (open: boolean) => void;
-        setStartIndex?: (index: number) => void;
-        setOpenRename: (open: boolean) => void;
-        setOpenProperties: (open: boolean) => void;
-        setOpenDelete: (open: boolean) => void;
+        readonly row: Row<FileWithFolder & FileWithComments>;
+        readonly t?: ReturnType<typeof createTranslator>;
+        readonly setCarouselOpen?: (open: boolean) => void;
+        readonly setStartIndex?: (index: number) => void;
+        readonly setOpenRename: (open: boolean) => void;
+        readonly setOpenProperties: (open: boolean) => void;
+        readonly setOpenDelete: (open: boolean) => void;
     }) => {
         const handleSetAsCover = async () => {
             if (!row?.original?.folderId || !row?.original?.id) return;

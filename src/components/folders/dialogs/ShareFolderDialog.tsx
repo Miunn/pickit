@@ -43,9 +43,9 @@ export const ShareFolderDialog = ({
     open,
     setOpen,
 }: {
-    folder: FolderWithAccessToken;
-    open?: boolean;
-    setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+    readonly folder: FolderWithAccessToken;
+    readonly open?: boolean;
+    readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
     const locale = useLocale();
     const t = useTranslations("dialogs.folders.share");

@@ -30,7 +30,13 @@ import { useRouter } from "next/navigation";
 import { SignOut } from "@/actions/authActions";
 import CreateFolderDialog from "@/components/folders/dialogs/CreateFolderDialog";
 
-export function CommandSearch({ folders, files }: { folders: LightFolder[]; files: FileLightWithFolderName[] }) {
+export function CommandSearch({
+    folders,
+    files,
+}: {
+    readonly folders: LightFolder[];
+    readonly files: FileLightWithFolderName[];
+}) {
     const router = useRouter();
     const [open, setOpen] = React.useState(false);
 

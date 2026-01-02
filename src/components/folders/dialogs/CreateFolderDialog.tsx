@@ -22,7 +22,7 @@ import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
 import { CreateFolderFormSchema } from "@/lib/definitions";
 
-export default function CreateFolderDialog({ children, open, setOpen }: { children?: React.ReactNode, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function CreateFolderDialog({ children, open, setOpen }: { readonly children?: React.ReactNode, readonly open?: boolean, readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const t = useTranslations("dialogs.folders.create");
 

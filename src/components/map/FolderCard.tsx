@@ -11,11 +11,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/
 import { cn } from "@/lib/utils";
 
 interface FolderCardProps {
-    folder: FolderWithFilesCount;
-    ignoredFiles: number;
-    isSelected: boolean;
-    onToggle: () => void;
-    formatter: ReturnType<typeof useFormatter>;
+    readonly folder: FolderWithFilesCount;
+    readonly ignoredFiles: number;
+    readonly isSelected: boolean;
+    readonly onToggle: () => void;
+    readonly formatter: ReturnType<typeof useFormatter>;
 }
 
 export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatter }: FolderCardProps) => {

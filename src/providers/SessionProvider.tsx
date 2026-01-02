@@ -12,7 +12,7 @@ interface SessionProviderType {
 
 const SessionContext = createContext<SessionProviderType>({} as SessionProviderType);
 
-export default function SessionProvider({ children, user, session }: { children: React.ReactNode, user: UserWithCounts | null, session: Session | null }) {
+export default function SessionProvider({ children, user, session }: { readonly children: React.ReactNode, readonly user: UserWithCounts | null, readonly session: Session | null }) {
     const isGuest = !session;
 
     return <SessionContext.Provider value={{ user, session, isGuest }}>{children}</SessionContext.Provider>;

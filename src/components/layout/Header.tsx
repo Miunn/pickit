@@ -11,7 +11,7 @@ import { SwitchTheme } from "../generic/SwitchTheme";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import LogoImage from "../generic/LogoImage";
 
-export default function Header({ className }: { className?: string }) {
+export default function Header({ className }: { readonly className?: string }) {
     const t = useTranslations("components.header");
     const locale = useLocale();
     const headerRowRef = React.useRef<HTMLHRElement>(null);

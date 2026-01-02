@@ -15,7 +15,7 @@ import { useRouter } from "@/i18n/navigation"
 import bcrypt from "bcryptjs";
 import { useSearchParams } from "next/navigation"
 
-export default function UnlockTokenPrompt({ folderId, wrongPin }: { folderId: string, wrongPin?: boolean }) {
+export default function UnlockTokenPrompt({ folderId, wrongPin }: { readonly folderId: string, readonly wrongPin?: boolean }) {
     const searchParams = useSearchParams();
     const shareToken = searchParams.get("share");
     const tokenType = searchParams.get("t");

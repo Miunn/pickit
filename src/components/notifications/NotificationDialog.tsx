@@ -17,11 +17,11 @@ export default function NotificationsDialog({
     open,
     onOpenChange,
 }: {
-    notifications: NotificationData[];
-    setNotifications: React.Dispatch<React.SetStateAction<NotificationData[]>>;
-    children?: React.ReactNode;
-    open?: boolean;
-    onOpenChange?: (open: boolean) => void;
+    readonly notifications: NotificationData[];
+    readonly setNotifications: React.Dispatch<React.SetStateAction<NotificationData[]>>;
+    readonly children?: React.ReactNode;
+    readonly open?: boolean;
+    readonly onOpenChange?: (open: boolean) => void;
 }) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
