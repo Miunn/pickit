@@ -117,7 +117,9 @@ export default function ImagesCarousel({ startIndex }: { startIndex: number }) {
                                         }
                                         controls
                                         src={`/api/folders/${file.folder.id}/videos/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
-                                    />
+                                    >
+                                        <track kind="captions" />
+                                    </video>
                                 ) : (
                                     <LoadingImage
                                         src={`/api/folders/${file.folder.id}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
