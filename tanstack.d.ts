@@ -12,5 +12,8 @@ declare module "@tanstack/table-core" {
             translations?: ReturnType<typeof createTranslator>;
             formatter: ReturnType<typeof createFormatter>;
         };
+        states?: {
+            [key: string]: unknown;
+        };
     }
 }

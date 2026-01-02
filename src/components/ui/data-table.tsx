@@ -27,6 +27,7 @@ interface DataTableProps<TData, TValue> {
     rightHeadingNodes?: React.ReactNode;
     hideHeader?: boolean;
     translations?: ReturnType<typeof createTranslator>;
+    states?: { [key: string]: unknown };
 }
 
 export function DataTable<TData, TValue>({
@@ -39,6 +40,7 @@ export function DataTable<TData, TValue>({
     rightHeadingNodes,
     hideHeader,
     translations,
+    states,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = useState<SortingState>([]);
     const formatter = useFormatter();
@@ -63,6 +65,7 @@ export function DataTable<TData, TValue>({
                 translations,
                 formatter,
             },
+            states,
         },
     });
 

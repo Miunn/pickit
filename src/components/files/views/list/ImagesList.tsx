@@ -46,6 +46,11 @@ export default function ImagesList() {
     });
     const [isLoading, setIsLoading] = useState(true);
 
+    // Table states
+    const [openRename, setOpenRename] = useState<boolean>(false);
+    const [openProperties, setOpenProperties] = useState<boolean>(false);
+    const [openDelete, setOpenDelete] = useState<boolean>(false);
+
     // Reference to the table container for virtualization
     const tableContainerRef = useRef<HTMLDivElement>(null);
 
@@ -85,6 +90,14 @@ export default function ImagesList() {
             intl: {
                 translations: t,
                 formatter: formatter,
+            },
+            states: {
+                openRename,
+                setOpenRename,
+                openProperties,
+                setOpenProperties,
+                openDelete,
+                setOpenDelete,
             },
         },
         getRowId: row => row.id,

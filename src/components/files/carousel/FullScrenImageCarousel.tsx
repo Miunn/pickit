@@ -140,7 +140,9 @@ export default function FullScreenImageCarousel({
                                                 className="h-full w-full max-h-dvh object-contain"
                                                 controls
                                                 src={`/api/folders/${file.folder.id}/videos/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
-                                            />
+                                            >
+                                                <track kind="captions" />
+                                            </video>
                                         ) : (
                                             <LoadingImage
                                                 src={`/api/folders/${file.folder.id}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
