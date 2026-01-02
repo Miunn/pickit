@@ -27,7 +27,7 @@ export type NavMainItems = {
     }[];
 }[];
 
-export function NavMain({ items }: { items: NavMainItems }) {
+export function NavMain({ items }: { readonly items: NavMainItems }) {
     const t = useTranslations("sidebar.main");
 
     return (

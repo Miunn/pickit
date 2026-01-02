@@ -45,9 +45,9 @@ export const FilesProvider = ({
     filesData,
     defaultView,
 }: {
-    children: React.ReactNode;
-    filesData: ContextFile[];
-    defaultView: ViewState;
+    readonly children: React.ReactNode;
+    readonly filesData: ContextFile[];
+    readonly defaultView: ViewState;
 }) => {
     const { user } = useSession();
     const { token } = useTokenContext();

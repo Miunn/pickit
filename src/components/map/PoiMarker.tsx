@@ -2,9 +2,9 @@ import React, { useCallback } from "react";
 import { AdvancedMarker, AdvancedMarkerAnchorPoint, useAdvancedMarkerRef } from "@vis.gl/react-google-maps";
 
 type TreeMarkerProps = {
-    position: google.maps.LatLngLiteral;
-    featureId: string;
-    onMarkerClick: (marker: google.maps.marker.AdvancedMarkerElement, featureId: string) => void;
+    readonly position: google.maps.LatLngLiteral;
+    readonly featureId: string;
+    readonly onMarkerClick: (marker: google.maps.marker.AdvancedMarkerElement, featureId: string) => void;
 };
 
 export const PoiMarker = ({ position, featureId, onMarkerClick }: TreeMarkerProps) => {

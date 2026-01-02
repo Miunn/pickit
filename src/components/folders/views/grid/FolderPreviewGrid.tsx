@@ -38,7 +38,7 @@ import FolderPropertiesDialog from "../../dialogs/FolderPropertiesDialogs";
 export default function FolderPreviewGrid({
     folder,
 }: {
-    folder: FolderWithAccessToken &
+    readonly folder: FolderWithAccessToken &
         FolderWithFilesCount &
         FolderWithCover & { files: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[] };
 }) {

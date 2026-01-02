@@ -1,7 +1,3 @@
-export default function PaddedLayout({ children }: { children: React.ReactNode }) {
-    return (
-        <div className="p-4">
-            {children}
-        </div>
-    )
+export default function PaddedLayout({ children }: { readonly children: React.ReactNode }) {
+    return <div className="p-4">{children}</div>;
 }

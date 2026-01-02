@@ -11,10 +11,10 @@ export const CarouselDialog = ({
     setCarouselOpen,
     startIndex,
 }: {
-    title: string;
-    carouselOpen: boolean;
-    setCarouselOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    startIndex: number;
+    readonly title: string;
+    readonly carouselOpen: boolean;
+    readonly setCarouselOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    readonly startIndex: number;
 }) => {
     const t = useTranslations("dialogs.images.carousel");
 

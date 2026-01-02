@@ -26,11 +26,16 @@ import { useFilesContext } from "@/context/FilesContext";
 
 type FormData = z.infer<typeof EditCommentFormSchema>;
 
-export default function EditCommentDialog({ comment, open, setOpen, children }: {
-    comment: Comment,
-    open?: boolean,
-    setOpen?: React.Dispatch<React.SetStateAction<boolean>>,
-    children?: React.ReactNode
+export default function EditCommentDialog({
+    comment,
+    open,
+    setOpen,
+    children,
+}: {
+    readonly comment: Comment;
+    readonly open?: boolean;
+    readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+    readonly children?: React.ReactNode;
 }) {
     const { files, setFiles } = useFilesContext();
     const t = useTranslations("dialogs.comments.edit");
@@ -40,51 +45,48 @@ export default function EditCommentDialog({ comment, open, setOpen, children }: 
     const form = useForm<FormData>({
         resolver: zodResolver(EditCommentFormSchema),
         defaultValues: {
-            content: comment.text
-        }
+            content: comment.text,
+        },
     });
 
     const onSubmit = async (data: FormData) => {
         setEditing(true);
-        const r = await updateComment(
-            comment.id,
-            data.content,
-            searchParams.get("share"),
-            searchParams.get("h"),
-        );
+        const r = await updateComment(comment.id, data.content, searchParams.get("share"), searchParams.get("h"));
         setEditing(false);
 
         if (!r) {
             toast({
-                title: t('errors.unknown.title'),
-                description: t('errors.unknown.description'),
-                variant: "destructive"
+                title: t("errors.unknown.title"),
+                description: t("errors.unknown.description"),
+                variant: "destructive",
             });
             return;
         }
 
-        setFiles(files.map((file) => {
-            if (file.id === comment.fileId) {
-                return {
-                    ...file,
-                    comments: file.comments.map((c) => {
-                        if (c.id === comment.id) {
-                            return r;
-                        }
+        setFiles(
+            files.map(file => {
+                if (file.id === comment.fileId) {
+                    return {
+                        ...file,
+                        comments: file.comments.map(c => {
+                            if (c.id === comment.id) {
+                                return r;
+                            }
 
-                        return c;
-                    })
+                            return c;
+                        }),
+                    };
                 }
-            }
 
-            return file;
-        }));
+                return file;
+            })
+        );
 
         setOpen?.(false);
 
         toast({
-            title: t('success.title'),
-            description: t('success.description'),
+            title: t("success.title"),
+            description: t("success.description"),
         });
     };
 
@@ -93,8 +95,8 @@ export default function EditCommentDialog({ comment, open, setOpen, children }: 
             {children}
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>{t('title')}</DialogTitle>
-                    <DialogDescription>{t('description')}</DialogDescription>
+                    <DialogTitle>{t("title")}</DialogTitle>
+                    <DialogDescription>{t("description")}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -105,7 +107,7 @@ export default function EditCommentDialog({ comment, open, setOpen, children }: 
                                 <FormItem>
                                     <FormControl>
                                         <Textarea
-                                            placeholder={t('content.placeholder')}
+                                            placeholder={t("content.placeholder")}
                                             rows={4}
                                             className="min-h-[100px]"
                                             {...field}
@@ -117,14 +119,14 @@ export default function EditCommentDialog({ comment, open, setOpen, children }: 
                         />
                         <DialogFooter>
                             <Button type="button" onClick={() => setOpen?.(false)} variant="outline">
-                                {t('actions.cancel')}
+                                {t("actions.cancel")}
                             </Button>
                             {editing ? (
                                 <Button disabled={true}>
-                                    <Loader2 className="mr-2 animate-spin" /> {t('actions.submitting')}
+                                    <Loader2 className="mr-2 animate-spin" /> {t("actions.submitting")}
                                 </Button>
                             ) : (
-                                <Button type="submit">{t('actions.submit')}</Button>
+                                <Button type="submit">{t("actions.submit")}</Button>
                             )}
                         </DialogFooter>
                     </form>

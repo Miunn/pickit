@@ -19,9 +19,9 @@ import { notifyAboutUpload } from "@/actions/accessTokens";
 import { useSearchParams } from "next/navigation";
 
 interface UploadImagesFormProps {
-    folderId: string;
-    onUpload?: (files: ContextFile[]) => void;
-    shouldDisplayNotify?: boolean;
+    readonly folderId: string;
+    readonly onUpload?: (files: ContextFile[]) => void;
+    readonly shouldDisplayNotify?: boolean;
 }
 
 interface InitiateUploadResult {

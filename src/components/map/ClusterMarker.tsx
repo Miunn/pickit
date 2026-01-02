@@ -4,11 +4,11 @@ import { useTranslations } from "next-intl";
 import { BookImage } from "lucide-react";
 
 type TreeClusterMarkerProps = {
-    clusterId: number;
-    onMarkerClick?: (marker: google.maps.marker.AdvancedMarkerElement, clusterId: number) => void;
-    position: google.maps.LatLngLiteral;
-    size: number;
-    folders: { name: string; count: number }[];
+    readonly clusterId: number;
+    readonly onMarkerClick?: (marker: google.maps.marker.AdvancedMarkerElement, clusterId: number) => void;
+    readonly position: google.maps.LatLngLiteral;
+    readonly size: number;
+    readonly folders: { name: string; count: number }[];
 };
 
 export const ClusterMarker = ({ position, size, onMarkerClick, clusterId, folders }: TreeClusterMarkerProps) => {

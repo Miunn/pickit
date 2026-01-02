@@ -3,7 +3,7 @@ import EmailFooter from "./EmailFooter";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL ? process.env.NEXT_PUBLIC_APP_URL : "http://localhost:3000";
 
-export default function ResetPasswordTemplate({ name, token }: { name: string; token: string }) {
+export default function ResetPasswordTemplate({ name, token }: { readonly name: string; readonly token: string }) {
     return (
         <Html>
             <Head>

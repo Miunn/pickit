@@ -7,20 +7,20 @@ import { PoiMarker } from "./PoiMarker";
 import { FileWithFolder } from "@/lib/definitions";
 
 type ClusteredMarkersProps = {
-    markers: FeatureCollection<Point, FileWithFolder>;
-    setClusterInfoData: (
+    readonly markers: FeatureCollection<Point, FileWithFolder>;
+    readonly setClusterInfoData: (
         data: {
             anchor: google.maps.marker.AdvancedMarkerElement;
             features: PointFeature<FileWithFolder>[];
         } | null
     ) => void;
-    setPoiInfoData: (
+    readonly setPoiInfoData: (
         data: {
             anchor: google.maps.marker.AdvancedMarkerElement;
             feature: PointFeature<FileWithFolder>;
         } | null
     ) => void;
-    onPoiClick: (feature: PointFeature<FileWithFolder>) => void;
+    readonly onPoiClick: (feature: PointFeature<FileWithFolder>) => void;
 };
 
 const superclusterOptions: Supercluster.Options<GeoJsonProperties, ClusterProperties> = {

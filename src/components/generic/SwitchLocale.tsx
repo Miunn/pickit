@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { usePathname, useSearchParams } from "next/navigation";
 
-export default function SwitchLocale({ locale, className }: { locale: string, className?: string }) {
+export default function SwitchLocale({ locale, className }: { readonly locale: string, readonly className?: string }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 

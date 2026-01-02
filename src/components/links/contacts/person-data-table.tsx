@@ -14,9 +14,9 @@ export default function PersonDataTable({
     accessTokens,
     defaultTokenIndex,
 }: {
-    accessTokens: AccessTokenWithFolder[];
-    defaultTokenIndex: number;
-    lightFolders: LightFolder[];
+    readonly accessTokens: AccessTokenWithFolder[];
+    readonly defaultTokenIndex: number;
+    readonly lightFolders: LightFolder[];
 }) {
     const t = useTranslations("dataTables.people.columns");
     const [selectedTokensIndexes, setSelectedTokensIndexes] = useState<{ [index: number]: boolean }>(

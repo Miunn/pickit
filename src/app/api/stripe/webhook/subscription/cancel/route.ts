@@ -1,10 +1,9 @@
 import { UserService } from "@/data/user-service";
+import { stripe } from "@/lib/stripe";
 import { getLimitsFromPlan } from "@/lib/utils";
 import { Plan } from "@prisma/client";
 import { NextRequest } from "next/server";
 import Stripe from "stripe";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(request: NextRequest) {
     const signature = request.headers.get("stripe-signature");

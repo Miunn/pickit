@@ -5,8 +5,8 @@ import LoadingImage from "../files/LoadingImage";
 import { useSearchParams } from "next/navigation";
 
 type ClusterWindowContentProps = {
-    folders: Folder[];
-    onClose: () => void;
+    readonly folders: Folder[];
+    readonly onClose: () => void;
 };
 
 const ClusterWindowContent = memo(({ folders, onClose }: ClusterWindowContentProps) => {

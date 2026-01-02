@@ -23,9 +23,9 @@ export default function SelectingBar({
     sizeSelected,
     onClose,
 }: {
-    selected: string[];
-    sizeSelected: number;
-    onClose: () => void;
+    readonly selected: string[];
+    readonly sizeSelected: number;
+    readonly onClose: () => void;
 }) {
     const t = useTranslations("files.grid.selectingBar");
 

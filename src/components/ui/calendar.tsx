@@ -13,30 +13,30 @@ export type CalendarProps = DayPickerProps & {
      * In the year view, the number of years to display at once.
      * @default 12
      */
-    yearRange?: number;
+    readonly yearRange?: number;
 
-    monthsClassName?: string;
-    monthCaptionClassName?: string;
-    weekdaysClassName?: string;
-    weekdayClassName?: string;
-    monthClassName?: string;
-    captionClassName?: string;
-    captionLabelClassName?: string;
-    buttonNextClassName?: string;
-    buttonPreviousClassName?: string;
-    navClassName?: string;
-    monthGridClassName?: string;
-    weekClassName?: string;
-    dayClassName?: string;
-    dayButtonClassName?: string;
-    rangeStartClassName?: string;
-    rangeEndClassName?: string;
-    selectedClassName?: string;
-    todayClassName?: string;
-    outsideClassName?: string;
-    disabledClassName?: string;
-    rangeMiddleClassName?: string;
-    hiddenClassName?: string;
+    readonly monthsClassName?: string;
+    readonly monthCaptionClassName?: string;
+    readonly weekdaysClassName?: string;
+    readonly weekdayClassName?: string;
+    readonly monthClassName?: string;
+    readonly captionClassName?: string;
+    readonly captionLabelClassName?: string;
+    readonly buttonNextClassName?: string;
+    readonly buttonPreviousClassName?: string;
+    readonly navClassName?: string;
+    readonly monthGridClassName?: string;
+    readonly weekClassName?: string;
+    readonly dayClassName?: string;
+    readonly dayButtonClassName?: string;
+    readonly rangeStartClassName?: string;
+    readonly rangeEndClassName?: string;
+    readonly selectedClassName?: string;
+    readonly todayClassName?: string;
+    readonly outsideClassName?: string;
+    readonly disabledClassName?: string;
+    readonly rangeMiddleClassName?: string;
+    readonly hiddenClassName?: string;
 };
 
 /**

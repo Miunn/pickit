@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Header from "@/components/layout/Header";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
@@ -16,10 +15,7 @@ export default async function LocaleLayout(
 
     return (
         <>
-            <div className={"min-h-screen flex flex-col"}>
-                <Header />
-                {children}
-            </div>
+            <div className={"min-h-screen flex flex-col"}>{children}</div>
             <Toaster />
         </>
     );

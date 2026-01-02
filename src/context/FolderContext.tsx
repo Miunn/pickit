@@ -45,11 +45,11 @@ export function FolderProvider({
     tokenHash,
     isShared,
 }: {
-    children: React.ReactNode;
-    folderData: FolderWithTags & FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover;
-    tokenData: AccessToken | null;
-    tokenHash: string | null;
-    isShared: boolean;
+    readonly children: React.ReactNode;
+    readonly folderData: FolderWithTags & FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover;
+    readonly tokenData: AccessToken | null;
+    readonly tokenHash: string | null;
+    readonly isShared: boolean;
 }) {
     const [folder, setFolder] = useState<
         FolderWithTags & FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover

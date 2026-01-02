@@ -17,12 +17,18 @@ import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Comment } from "@prisma/client";
 
-export default function DeleteCommentDialog({ comment, open, setOpen, children, onDelete }: { 
-    comment: Comment, 
-    open?: boolean, 
-    setOpen?: React.Dispatch<React.SetStateAction<boolean>>,
-    children?: React.ReactNode,
-    onDelete?: () => void
+export default function DeleteCommentDialog({
+    comment,
+    open,
+    setOpen,
+    children,
+    onDelete,
+}: {
+    readonly comment: Comment;
+    readonly open?: boolean;
+    readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+    readonly children?: React.ReactNode;
+    readonly onDelete?: () => void;
 }) {
     const t = useTranslations("dialogs.comments.delete");
     const [deleting, setDeleting] = useState(false);
@@ -30,18 +36,14 @@ export default function DeleteCommentDialog({ comment, open, setOpen, children, 
 
     const submit = async () => {
         setDeleting(true);
-        const r = await deleteComment(
-            comment.id,
-            searchParams.get("share"),
-            searchParams.get("h"),
-        );
+        const r = await deleteComment(comment.id, searchParams.get("share"), searchParams.get("h"));
         setDeleting(false);
 
         if (!r) {
             toast({
-                title: t('errors.unknown.title'),
-                description: t('errors.unknown.description'),
-                variant: "destructive"
+                title: t("errors.unknown.title"),
+                description: t("errors.unknown.description"),
+                variant: "destructive",
             });
             return;
         }
@@ -55,8 +57,8 @@ export default function DeleteCommentDialog({ comment, open, setOpen, children, 
         }
 
         toast({
-            title: t('success.title'),
-            description: t('success.description'),
+            title: t("success.title"),
+            description: t("success.description"),
         });
     };
 
@@ -65,15 +67,22 @@ export default function DeleteCommentDialog({ comment, open, setOpen, children, 
             {children}
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>{t('title')}</DialogTitle>
-                    <DialogDescription>{t('description')}</DialogDescription>
+                    <DialogTitle>{t("title")}</DialogTitle>
+                    <DialogDescription>{t("description")}</DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button onClick={() => setOpen?.(false)} variant="outline">{t('actions.cancel')}</Button>
-                    {deleting
-                        ? <Button disabled={true} variant="destructive"><Loader2 className={"mr-2 animate-spin"} /> {t('actions.submitting')}</Button>
-                        : <Button onClick={submit} variant="destructive">{t('actions.submit')}</Button>
-                    }
+                    <Button onClick={() => setOpen?.(false)} variant="outline">
+                        {t("actions.cancel")}
+                    </Button>
+                    {deleting ? (
+                        <Button disabled={true} variant="destructive">
+                            <Loader2 className={"mr-2 animate-spin"} /> {t("actions.submitting")}
+                        </Button>
+                    ) : (
+                        <Button onClick={submit} variant="destructive">
+                            {t("actions.submit")}
+                        </Button>
+                    )}
                 </DialogFooter>
             </DialogContent>
         </Dialog>

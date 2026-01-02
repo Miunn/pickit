@@ -21,10 +21,10 @@ export default function DeleteFolderDialog({
     folderId,
     folderName,
 }: {
-    openState: boolean;
-    setOpenState: (open: boolean) => void;
-    folderId: string;
-    folderName: string;
+    readonly openState: boolean;
+    readonly setOpenState: (open: boolean) => void;
+    readonly folderId: string;
+    readonly folderName: string;
 }) {
     const t = useTranslations("dialogs.folders.delete");
     const [loading, setLoading] = useState(false);

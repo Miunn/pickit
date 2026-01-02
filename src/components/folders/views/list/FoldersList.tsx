@@ -21,7 +21,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 export default function FoldersList({
     folders,
 }: {
-    folders: (FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments)[];
+    readonly folders: (FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments)[];
 }) {
     const t = useTranslations("folders.views.list");
     const formatter = useFormatter();
@@ -89,7 +89,7 @@ export default function FoldersList({
                         </Button>
                         <h2>
                             <span className={"font-semibold"}>
-                                {t("selection", { count: Object.keys(rowSelection).length })}
+                                {t("table.selection", { count: Object.keys(rowSelection).length })}
                             </span>{" "}
                             -{" "}
                             {formatBytes(
@@ -102,7 +102,7 @@ export default function FoldersList({
                     </div>
 
                     <Button variant="outline">
-                        <Trash2 className={"mr-2"} /> {t("deleteSelected")}
+                        <Trash2 className={"mr-2"} /> {t("table.deleteSelected")}
                     </Button>
                 </div>
             ) : null}

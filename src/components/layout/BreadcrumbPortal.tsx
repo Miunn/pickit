@@ -3,7 +3,7 @@
 import { createPortal } from 'react-dom';
 import { useEffect, useState } from 'react';
 
-export default function BreadcrumbPortal({ children }: { children: React.ReactNode }) {
+export default function BreadcrumbPortal({ children }: { readonly children: React.ReactNode }) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {

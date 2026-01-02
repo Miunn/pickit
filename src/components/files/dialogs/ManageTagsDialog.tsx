@@ -16,8 +16,8 @@ import { useFolderContext } from "@/context/FolderContext";
 const colors = ["#00a8ff", "#9c88ff", "#487eb0", "#e84118", "#273c75", "#44bd32", "#e67e22", "#1abc9c", "#f1c40f"];
 
 interface AddTagPopoverProps {
-    onTagAdded: (tag: FolderTag) => void;
-    folderId: string;
+    readonly onTagAdded: (tag: FolderTag) => void;
+    readonly folderId: string;
 }
 
 const AddTagPopover = ({ onTagAdded, folderId }: AddTagPopoverProps) => {
@@ -113,12 +113,12 @@ export default function ManageTagsDialog({
     className,
     ...props
 }: {
-    children: React.ReactNode;
-    selectedTags: FolderTag[];
-    onTagSelected: (tag: FolderTag) => Promise<boolean>;
-    onTagUnselected: (tag: FolderTag) => Promise<boolean>;
-    onTagAdded: (tag: FolderTag) => Promise<boolean>;
-    className?: string;
+    readonly children: React.ReactNode;
+    readonly selectedTags: FolderTag[];
+    readonly onTagSelected: (tag: FolderTag) => Promise<boolean>;
+    readonly onTagUnselected: (tag: FolderTag) => Promise<boolean>;
+    readonly onTagAdded: (tag: FolderTag) => Promise<boolean>;
+    readonly className?: string;
 } & React.ComponentProps<typeof DialogTrigger>) {
     const t = useTranslations("dialogs.files.addTag");
     const [selectedTagsState, setSelectedTags] = useState<FolderTag[]>(selectedTags);

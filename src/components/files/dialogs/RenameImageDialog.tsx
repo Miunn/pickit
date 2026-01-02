@@ -26,9 +26,9 @@ export default function RenameImageDialog({
     setOpenState,
     file,
 }: {
-    openState: boolean;
-    setOpenState: (open: boolean) => void;
-    file: FileWithFolder;
+    readonly openState: boolean;
+    readonly setOpenState: (open: boolean) => void;
+    readonly file: FileWithFolder;
 }) {
     const t = useTranslations("dialogs.images.rename");
 

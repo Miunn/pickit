@@ -24,11 +24,11 @@ export default function FullScreenImageCarousel({
     setOpen,
     parentCarouselApi,
 }: {
-    defaultIndex: number;
-    children?: React.ReactNode;
-    open?: boolean;
-    setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-    parentCarouselApi?: CarouselApi;
+    readonly defaultIndex: number;
+    readonly children?: React.ReactNode;
+    readonly open?: boolean;
+    readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+    readonly parentCarouselApi?: CarouselApi;
 }) {
     const { sortedFiles } = useFilesContext();
     const searchParams = useSearchParams();

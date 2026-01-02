@@ -19,12 +19,12 @@ const PricingCard = ({
     selectedPeriod,
     ctaVariant,
 }: {
-    name: string;
-    description: string;
-    price: { monthly: number; yearly: number };
-    features: string[];
-    selectedPeriod: "monthly" | "yearly";
-    ctaVariant: ButtonProps["variant"];
+    readonly name: string;
+    readonly description: string;
+    readonly price: { monthly: number; yearly: number };
+    readonly features: string[];
+    readonly selectedPeriod: "monthly" | "yearly";
+    readonly ctaVariant: ButtonProps["variant"];
 }) => {
     const t = useTranslations("pages.pricing");
     const { getCurrencySymbol } = usePricingContext();

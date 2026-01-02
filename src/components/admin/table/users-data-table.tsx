@@ -10,12 +10,12 @@ export default function UsersDataTable({
     users,
     defaultUserIndex,
 }: {
-    users: UserAdministration[];
-    defaultUserIndex: number;
+    readonly users: UserAdministration[];
+    readonly defaultUserIndex: number;
 }) {
-    const [selectedUsersIndexes, setSelectedUsersIndexes] = useState<{ [index: number]: boolean }>(
-        defaultUserIndex !== -1 ? { [defaultUserIndex]: true } : {}
-    );
+    const [selectedUsersIndexes, setSelectedUsersIndexes] = useState<{ [index: number]: boolean }>({
+        [defaultUserIndex]: true,
+    });
     const [deleteOpen, setDeleteOpen] = useState(false);
     const t = useTranslations("dataTables.users.columns");
 

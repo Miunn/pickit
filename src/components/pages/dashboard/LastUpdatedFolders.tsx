@@ -12,7 +12,7 @@ import { FolderX } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface LastUpdatedFoldersProps {
-    folders: (FolderWithAccessToken &
+    readonly folders: (FolderWithAccessToken &
         FolderWithFilesCount &
         FolderWithCover & { files: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[] })[];
 }

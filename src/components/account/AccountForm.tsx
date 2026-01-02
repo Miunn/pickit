@@ -1,23 +1,22 @@
-"use client"
+"use client";
 
-import { changePassword, sendVerificationEmail, updateUser } from "@/actions/user"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { toast } from "@/hooks/use-toast"
-import { AccountFormSchema, ChangePasswordSchema, UserLight } from "@/lib/definitions"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { CircleAlert, CircleCheck, Loader2 } from "lucide-react"
-import { useTranslations } from "next-intl"
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import ChangeEmailConfirmationDialog from "./ChangeEmailConfirmationDialog"
-import { useSearchParams } from "next/navigation"
+import { changePassword, sendVerificationEmail, updateUser } from "@/actions/user";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
+import { AccountFormSchema, ChangePasswordSchema, UserLight } from "@/lib/definitions";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CircleAlert, CircleCheck, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import ChangeEmailConfirmationDialog from "./ChangeEmailConfirmationDialog";
+import { useSearchParams } from "next/navigation";
 
-export default function AccountForm({ user }: { user: UserLight }) {
-
+export default function AccountForm({ user }: { readonly user: UserLight }) {
     const searchParams = useSearchParams();
     const t = useTranslations("components.account.accountForm");
     const [loadingInfos, setLoadingInfos] = useState<boolean>(false);
@@ -29,19 +28,19 @@ export default function AccountForm({ user }: { user: UserLight }) {
     const accountFormSchema = useForm<z.infer<typeof AccountFormSchema>>({
         resolver: zodResolver(AccountFormSchema),
         defaultValues: {
-            name: user.name || '',
-            email: user.email || '',
-        }
-    })
+            name: user.name || "",
+            email: user.email || "",
+        },
+    });
 
     const passwordFormSchema = useForm<z.infer<typeof ChangePasswordSchema>>({
         resolver: zodResolver(ChangePasswordSchema),
         defaultValues: {
-            oldPassword: '',
-            newPassword: '',
-            passwordConfirmation: '',
-        }
-    })
+            oldPassword: "",
+            newPassword: "",
+            passwordConfirmation: "",
+        },
+    });
 
     async function submitAccount(data: z.infer<typeof AccountFormSchema>) {
         setLoadingInfos(true);
@@ -53,7 +52,7 @@ export default function AccountForm({ user }: { user: UserLight }) {
             toast({
                 title: "Error",
                 description: "An error occured while updating your account",
-                variant: "destructive"
+                variant: "destructive",
             });
         }
 
@@ -73,7 +72,7 @@ export default function AccountForm({ user }: { user: UserLight }) {
                 toast({
                     title: "Error",
                     description: "User not found",
-                    variant: "destructive"
+                    variant: "destructive",
                 });
                 return;
             }
@@ -82,7 +81,7 @@ export default function AccountForm({ user }: { user: UserLight }) {
                 toast({
                     title: "Error",
                     description: "Your email is already verified. Refresh the page if status isn't updated",
-                    variant: "destructive"
+                    variant: "destructive",
                 });
                 return;
             }
@@ -90,7 +89,7 @@ export default function AccountForm({ user }: { user: UserLight }) {
             toast({
                 title: "Error",
                 description: "An error occured while requesting a new verification email",
-                variant: "destructive"
+                variant: "destructive",
             });
             return;
         }
@@ -112,7 +111,7 @@ export default function AccountForm({ user }: { user: UserLight }) {
             toast({
                 title: "Error",
                 description: "An error occured while updating your password",
-                variant: "destructive"
+                variant: "destructive",
             });
             return;
         }
@@ -121,7 +120,7 @@ export default function AccountForm({ user }: { user: UserLight }) {
             toast({
                 title: "Error",
                 description: "Your old password is invalid",
-                variant: "destructive"
+                variant: "destructive",
             });
             return;
         }
@@ -130,7 +129,7 @@ export default function AccountForm({ user }: { user: UserLight }) {
             toast({
                 title: "Error",
                 description: "User not found",
-                variant: "destructive"
+                variant: "destructive",
             });
             return;
         }
@@ -139,7 +138,7 @@ export default function AccountForm({ user }: { user: UserLight }) {
             toast({
                 title: "Error",
                 description: "An error occured while updating your password",
-                variant: "destructive"
+                variant: "destructive",
             });
             return;
         }
@@ -163,7 +162,7 @@ export default function AccountForm({ user }: { user: UserLight }) {
 
     return (
         <div>
-            <Form  {...accountFormSchema}>
+            <Form {...accountFormSchema}>
                 <form onSubmit={accountFormSchema.handleSubmit(submitAccount)} className="space-y-6">
                     <FormField
                         control={accountFormSchema.control}
@@ -171,15 +170,27 @@ export default function AccountForm({ user }: { user: UserLight }) {
                         render={({ field }) => (
                             <FormItem className="flex items-center space-x-4 space-y-0">
                                 <FormControl>
-                                    <Avatar className="h-24 w-24 rounded-lg cursor-pointer" onClick={() => console.log("Click avatar")} {...field}>
-                                        <AvatarImage src={user.image || undefined} alt={user.name} className="hover:bg-gray-500" />
-                                        <AvatarFallback className="rounded-lg transition-colors hover:bg-gray-200">{user.name.split(' ').map((token) => token[0]).join('').toUpperCase()}</AvatarFallback>
+                                    <Avatar
+                                        className="h-24 w-24 rounded-lg cursor-pointer"
+                                        onClick={() => console.log("Click avatar")}
+                                        {...field}
+                                    >
+                                        <AvatarImage
+                                            src={user.image || undefined}
+                                            alt={user.name}
+                                            className="hover:bg-gray-500"
+                                        />
+                                        <AvatarFallback className="rounded-lg transition-colors hover:bg-gray-200">
+                                            {user.name
+                                                .split(" ")
+                                                .map(token => token[0])
+                                                .join("")
+                                                .toUpperCase()}
+                                        </AvatarFallback>
                                     </Avatar>
                                 </FormControl>
                                 <div>
-                                    <FormLabel className="font-normal">
-                                        {t("form.profilePicture.label")}
-                                    </FormLabel>
+                                    <FormLabel className="font-normal">{t("form.profilePicture.label")}</FormLabel>
                                     <FormDescription>{t("form.profilePicture.description")}</FormDescription>
                                     <FormMessage />
                                 </div>
@@ -191,11 +202,9 @@ export default function AccountForm({ user }: { user: UserLight }) {
                         name="name"
                         render={({ field }) => (
                             <FormItem className="space-y-1">
-                                <FormLabel className="font-normal">
-                                    {t('form.name.label')}
-                                </FormLabel>
+                                <FormLabel className="font-normal">{t("form.name.label")}</FormLabel>
                                 <FormControl>
-                                    <Input placeholder={t('form.name.placeholder')} {...field} />
+                                    <Input placeholder={t("form.name.placeholder")} {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -207,49 +216,76 @@ export default function AccountForm({ user }: { user: UserLight }) {
                         render={({ field }) => (
                             <FormItem className="space-y-1">
                                 <FormLabel className="font-normal flex justify-between items-center">
-                                    {t('form.email.label')}
+                                    {t("form.email.label")}
 
-                                    {user.emailVerified ?
-                                        <span className="text-green-600 flex items-center"><CircleCheck className="w-4 h-4 mr-1" /> {t('form.email.verified')}</span>
-                                        : <span className="text-yellow-600 flex items-center"><CircleAlert className="w-4 h-4 mr-1" /> {t('form.email.unverified')}</span>}
+                                    {user.emailVerified ? (
+                                        <span className="text-green-600 flex items-center">
+                                            <CircleCheck className="w-4 h-4 mr-1" /> {t("form.email.verified")}
+                                        </span>
+                                    ) : (
+                                        <span className="text-yellow-600 flex items-center">
+                                            <CircleAlert className="w-4 h-4 mr-1" /> {t("form.email.unverified")}
+                                        </span>
+                                    )}
                                 </FormLabel>
                                 <FormControl>
                                     <Input placeholder="exemple@mail.com" {...field} />
                                 </FormControl>
                                 <FormDescription className="flex justify-between gap-2">
-                                    <span>{t('form.email.warning')}</span>
-                                    {!user.emailVerified
-                                        ? <>
-                                            {newVerficiationLoading
-                                                ? <Button type="button" variant="link" className="text-muted-foreground p-0 h-fit text-[0.8rem] font-normal" disabled>
+                                    <span>{t("form.email.warning")}</span>
+                                    {user.emailVerified ? null : (
+                                        <>
+                                            {newVerficiationLoading ? (
+                                                <Button
+                                                    type="button"
+                                                    variant="link"
+                                                    className="text-muted-foreground p-0 h-fit text-[0.8rem] font-normal"
+                                                    disabled
+                                                >
                                                     <Loader2 className={"w-4 h-4 mr-2 animate-spin"} />
-                                                    {t('form.email.requestVerification')}
+                                                    {t("form.email.requestVerification")}
                                                 </Button>
-                                                : <Button type="button" variant="link" className="text-muted-foreground p-0 h-fit text-[0.8rem] font-normal" onClick={requestNewVerificationEmail}>{t('form.email.requestVerification')}</Button>
-                                            }
+                                            ) : (
+                                                <Button
+                                                    type="button"
+                                                    variant="link"
+                                                    className="text-muted-foreground p-0 h-fit text-[0.8rem] font-normal"
+                                                    onClick={requestNewVerificationEmail}
+                                                >
+                                                    {t("form.email.requestVerification")}
+                                                </Button>
+                                            )}
                                         </>
-                                        : null}
+                                    )}
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
 
-                    {loadingInfos
-                        ? <Button type="button" disabled={true}><Loader2 className={"mr-2 animate-spin"} /> {t('form.actions.submitting')}</Button>
-                        : <Button type="button" onClick={() => {
-                            // If email has changed from default value, trigger the dialog
-                            if (accountFormSchema.getValues().email !== user.email && user.emailVerified === true) {
-                                setOpenEmailDialog(true);
-                            } else {
-                                accountFormSchema.handleSubmit(submitAccount)();
-                            }
-                        }}>{t('form.actions.submit')}</Button>
-                    }
+                    {loadingInfos ? (
+                        <Button type="button" disabled={true}>
+                            <Loader2 className={"mr-2 animate-spin"} /> {t("form.actions.submitting")}
+                        </Button>
+                    ) : (
+                        <Button
+                            type="button"
+                            onClick={() => {
+                                // If email has changed from default value, trigger the dialog
+                                if (accountFormSchema.getValues().email !== user.email && user.emailVerified === true) {
+                                    setOpenEmailDialog(true);
+                                } else {
+                                    accountFormSchema.handleSubmit(submitAccount)();
+                                }
+                            }}
+                        >
+                            {t("form.actions.submit")}
+                        </Button>
+                    )}
                 </form>
             </Form>
 
-            <h4 className="w-fit font-semibold mt-10 mb-2">{t('passwordForm.title')}</h4>
+            <h4 className="w-fit font-semibold mt-10 mb-2">{t("passwordForm.title")}</h4>
             <Form {...passwordFormSchema}>
                 <form onSubmit={passwordFormSchema.handleSubmit(submitPassword)} className="space-y-6">
                     <FormField
@@ -257,10 +293,14 @@ export default function AccountForm({ user }: { user: UserLight }) {
                         name="oldPassword"
                         render={({ field }) => (
                             <FormItem className="space-y-1">
-                                <FormLabel>{t('passwordForm.currentPassword.label')}</FormLabel>
+                                <FormLabel>{t("passwordForm.currentPassword.label")}</FormLabel>
                                 <FormControl>
                                     <FormControl>
-                                        <Input placeholder={t('passwordForm.newPassword.placeholder')} type={"password"} {...field} />
+                                        <Input
+                                            placeholder={t("passwordForm.newPassword.placeholder")}
+                                            type={"password"}
+                                            {...field}
+                                        />
                                     </FormControl>
                                 </FormControl>
                                 <FormMessage />
@@ -272,10 +312,14 @@ export default function AccountForm({ user }: { user: UserLight }) {
                         name="newPassword"
                         render={({ field }) => (
                             <FormItem className="space-y-1">
-                                <FormLabel>{t('passwordForm.newPassword.label')}</FormLabel>
+                                <FormLabel>{t("passwordForm.newPassword.label")}</FormLabel>
                                 <FormControl>
                                     <FormControl>
-                                        <Input placeholder={t('passwordForm.newPassword.placeholder')} type={"password"} {...field} />
+                                        <Input
+                                            placeholder={t("passwordForm.newPassword.placeholder")}
+                                            type={"password"}
+                                            {...field}
+                                        />
                                     </FormControl>
                                 </FormControl>
                                 <FormMessage />
@@ -287,10 +331,14 @@ export default function AccountForm({ user }: { user: UserLight }) {
                         name="passwordConfirmation"
                         render={({ field }) => (
                             <FormItem className="space-y-1">
-                                <FormLabel>{t('passwordForm.confirmPassword.label')}</FormLabel>
+                                <FormLabel>{t("passwordForm.confirmPassword.label")}</FormLabel>
                                 <FormControl>
                                     <FormControl>
-                                        <Input placeholder={t('passwordForm.confirmPassword.placeholder')} type={"password"} {...field} />
+                                        <Input
+                                            placeholder={t("passwordForm.confirmPassword.placeholder")}
+                                            type={"password"}
+                                            {...field}
+                                        />
                                     </FormControl>
                                 </FormControl>
                                 <FormMessage />
@@ -298,10 +346,13 @@ export default function AccountForm({ user }: { user: UserLight }) {
                         )}
                     />
 
-                    {loadingPassword
-                        ? <Button type="button" disabled={true}><Loader2 className={"mr-2 animate-spin"} /> {t('passwordForm.actions.submitting')}</Button>
-                        : <Button type="submit">{t('passwordForm.actions.submit')}</Button>
-                    }
+                    {loadingPassword ? (
+                        <Button type="button" disabled={true}>
+                            <Loader2 className={"mr-2 animate-spin"} /> {t("passwordForm.actions.submitting")}
+                        </Button>
+                    ) : (
+                        <Button type="submit">{t("passwordForm.actions.submit")}</Button>
+                    )}
                 </form>
             </Form>
 
@@ -317,6 +368,6 @@ export default function AccountForm({ user }: { user: UserLight }) {
                     accountFormSchema.handleSubmit(submitAccount)();
                 }}
             />
-        </div >
-    )
+        </div>
+    );
 }

@@ -1,4 +1,5 @@
 import { FolderService } from "@/data/folder-service";
+import Image from "next/image";
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 
@@ -15,7 +16,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ folde
         select: { cover: true },
     });
 
-    if (!folder || !folder.cover) {
+    if (!folder?.cover) {
         return new ImageResponse(
             (
                 <div
@@ -28,7 +29,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ folde
                         backgroundColor: "#ffffff",
                     }}
                 >
-                    <img
+                    <Image
                         src={`${process.env.NEXT_PUBLIC_APP_URL}/opengraph-image.png`}
                         alt="Echomori"
                         style={{
@@ -55,7 +56,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ folde
                     backgroundColor: "#ffffff",
                 }}
             >
-                <img
+                <Image
                     src={`${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folder}/images/${folder.cover.id}?share=${searchParams.get("share")}&t=${searchParams.get("t") === "p" ? "p" : "a"}&h=${searchParams.get("h")}`}
                     alt="Echomori"
                     style={{

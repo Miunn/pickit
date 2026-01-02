@@ -6,8 +6,8 @@ import { Link } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 
 type ClusterWindowContentProps = {
-    file: FileWithFolder;
-    onClose: () => void;
+    readonly file: FileWithFolder;
+    readonly onClose: () => void;
 };
 
 export const PoiWindowContent = ({ file, onClose }: ClusterWindowContentProps) => {

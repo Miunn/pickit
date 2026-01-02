@@ -33,10 +33,10 @@ export function AppSidebar({
     items,
     ...props
 }: {
-    locale: string;
-    user?: UserLight | null;
-    notifications: NotificationData[];
-    items: AppSidebarProps & React.ComponentProps<typeof Sidebar>;
+    readonly locale: string;
+    readonly user?: UserLight | null;
+    readonly notifications: NotificationData[];
+    readonly items: AppSidebarProps & React.ComponentProps<typeof Sidebar>;
 }) {
     const t = useTranslations("sidebar");
     const createFolderTranslations = useTranslations("dialogs.folders.create");
