@@ -33,7 +33,6 @@ import {
     PencilOff,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 
 export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
     {
@@ -263,9 +262,14 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
             const locale = table.options.meta?.locale || "en";
             const accessToken = row.original;
 
-            const [lockOpen, setLockOpen] = useState<boolean>(false);
-            const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
+            const states = table.options.meta?.states;
+            const lockOpen = (states?.lockOpen as boolean) || false;
+            const setLockOpen = states?.setLockOpen as React.Dispatch<React.SetStateAction<boolean>>;
+            const deleteOpen = (states?.deleteOpen as boolean) || false;
+            const setDeleteOpen = states?.setDeleteOpen as React.Dispatch<React.SetStateAction<boolean>>;
+
             const link = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/app/folders/${accessToken.folder.id}?share=${accessToken.token}`;
+
             return (
                 <>
                     <DropdownMenu modal={false}>
