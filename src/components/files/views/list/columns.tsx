@@ -15,7 +15,7 @@ import { MoreHorizontal } from "lucide-react";
 import RenameImageDialog from "../../dialogs/RenameImageDialog";
 import { DeleteImageDialog } from "../../dialogs/DeleteImageDialog";
 import ImagePropertiesDialog from "../../dialogs/ImagePropertiesDialog";
-import React, { useState, useCallback } from "react";
+import React from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { changeFolderCover } from "@/actions/folders";
 import LoadingImage from "@/components/files/LoadingImage";
@@ -41,7 +41,7 @@ const ImageActionsDropdown = React.memo(
         setOpenProperties: (open: boolean) => void;
         setOpenDelete: (open: boolean) => void;
     }) => {
-        const handleSetAsCover = useCallback(async () => {
+        const handleSetAsCover = async () => {
             if (!row?.original?.folderId || !row?.original?.id) return;
 
             const r = await changeFolderCover(row.original.folderId, row.original.id);
@@ -59,7 +59,7 @@ const ImageActionsDropdown = React.memo(
                 title: t?.("columns.actions.setAsCover.success.title"),
                 description: t?.("columns.actions.setAsCover.success.description"),
             });
-        }, [row?.original?.folderId, row?.original?.id, t]);
+        };
 
         const fileType = row?.original?.type === FileType.IMAGE ? "images" : "videos";
 
@@ -260,9 +260,13 @@ export const imagesListViewColumns: ColumnDef<FileWithFolder & FileWithComments>
             const setCarouselOpen = table.options.meta?.imagesListActions?.setCarouselOpen;
             const setStartIndex = table.options.meta?.imagesListActions?.setStartIndex;
 
-            const [openRename, setOpenRename] = useState<boolean>(false);
-            const [openProperties, setOpenProperties] = useState<boolean>(false);
-            const [openDelete, setOpenDelete] = useState<boolean>(false);
+            const states = table.options.meta?.states || {};
+            const openRename = states.openRename as boolean;
+            const openProperties = states.openProperties as boolean;
+            const openDelete = states.openDelete as boolean;
+            const setOpenRename = states.setOpenRename as React.Dispatch<React.SetStateAction<boolean>>;
+            const setOpenDelete = states.setOpenDelete as React.Dispatch<React.SetStateAction<boolean>>;
+            const setOpenProperties = states.setOpenProperties as React.Dispatch<React.SetStateAction<boolean>>;
 
             return (
                 <>

@@ -18,7 +18,6 @@ import { formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 
 export const usersColumns: ColumnDef<UserAdministration>[] = [
     {
@@ -197,7 +196,8 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
         id: "actions",
         cell: ({ table, row }) => {
             const t = table.options.meta?.intl?.translations;
-            const [deleteOpen, setDeleteOpen] = useState(false);
+            const deleteOpen = table.options.meta?.states?.deleteOpen as boolean;
+            const setDeleteOpen = table.options.meta?.states?.setDeleteOpen as (open: boolean) => void;
             const user = row.original;
             return (
                 <>
