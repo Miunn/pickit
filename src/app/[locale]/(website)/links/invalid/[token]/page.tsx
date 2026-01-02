@@ -1,7 +1,6 @@
-import { FolderSearch } from "lucide-react";
+import { ArrowRight, FolderSearch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
-import { ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Toaster } from "@/components/ui/toaster";
 

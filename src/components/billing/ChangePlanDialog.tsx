@@ -1,9 +1,8 @@
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { usePricingContext } from "@/context/PricingContext";
 import { useSession } from "@/providers/SessionProvider";
 import { Plan } from "@prisma/client";
-import { useFormatter } from "next-intl";
 import { updateSubscription } from "@/actions/subscriptions";
 import { Gift, Loader2 } from "lucide-react";
 import { Label } from "../ui/label";
@@ -17,11 +16,11 @@ export default function ChangePlanDialog({
     nextAmount,
     isYearly,
 }: {
-    open: boolean;
-    setOpen: (open: boolean) => void;
-    newPlan: Plan;
-    nextAmount: number;
-    isYearly: boolean;
+    readonly open: boolean;
+    readonly setOpen: (open: boolean) => void;
+    readonly newPlan: Plan;
+    readonly nextAmount: number;
+    readonly isYearly: boolean;
 }) {
     const t = useTranslations("billing.changePlanPreview");
     const formatter = useFormatter();

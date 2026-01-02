@@ -12,7 +12,9 @@ export async function generateMetadata(): Promise<Metadata> {
     };
 }
 
-export default async function ResetPasswordPage(props: { params: Promise<{ locale: string; token: string }> }) {
+export default async function ResetPasswordPage(props: {
+    readonly params: Promise<{ readonly locale: string; readonly token: string }>;
+}) {
     const params = await props.params;
 
     const verifyPasswordResetToken = await PasswordResetRequestService.get({

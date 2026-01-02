@@ -49,7 +49,7 @@ function getCurrentPath(pathname: string, folderName?: string): { path: Breadcru
 
 
 
-export default function HeaderBreadcumb({ folderName, adminUser }: { folderName?: string, adminUser?: UserAdministration }) {
+export default function HeaderBreadcumb({ folderName, adminUser }: { readonly folderName?: string, readonly adminUser?: UserAdministration }) {
     const pathname = usePathname();
     const t = useTranslations('breadcumb');
     const locale = pathname.split('/')[1] || 'en';

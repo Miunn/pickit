@@ -8,7 +8,7 @@ import { stripe } from "@/lib/stripe";
 export const getPreviewInvoiceBeforeUpdate = async (priceId: string) => {
     const { user } = await getCurrentSession();
 
-    if (!user || !user.stripeSubscriptionId) {
+    if (!user?.stripeSubscriptionId) {
         return {
             status: "error",
             message: "User or subscription not found",

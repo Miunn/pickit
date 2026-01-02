@@ -1,4 +1,4 @@
-export const Ripple = ({ x, y }: { x: number; y: number }) => {
+export const Ripple = ({ x, y }: { readonly x: number; readonly y: number }) => {
     return (
         <span
             className="absolute block rounded-full animate-ripple duration-500"

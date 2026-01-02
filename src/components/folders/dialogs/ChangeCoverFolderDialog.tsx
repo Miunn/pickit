@@ -42,10 +42,10 @@ export default function ChangeCoverFolderDialog({
     open,
     setOpen,
 }: {
-    images: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[];
-    folderId: string;
-    open: boolean;
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    readonly images: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[];
+    readonly folderId: string;
+    readonly open: boolean;
+    readonly setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
     const t = useTranslations("dialogs.folders.changeCover");
 

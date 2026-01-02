@@ -9,10 +9,12 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
         title: t("title"),
         description: t("description"),
-    }
+    };
 }
 
-export default async function VerifyAccountPage(props: { params: Promise<{ locale: string, token: string }> }) {
+export default async function VerifyAccountPage(props: {
+    readonly params: Promise<{ readonly locale: string; readonly token: string }>;
+}) {
     const params = await props.params;
 
     const result = await verifyAccount(params.token);
@@ -30,12 +32,15 @@ export default async function VerifyAccountPage(props: { params: Promise<{ local
             {!result.error && result.user ? (
                 <div className="w-fit flex flex-col items-center gap-2">
                     <TicketCheck size={128} className="text-green-600" />
-                    <h1 className="text-center text-xl text-green-600 font-bold">
-                        Account verified!
-                    </h1>
+                    <h1 className="text-center text-xl text-green-600 font-bold">Account verified!</h1>
                     <h2 className="text-center text-lg text-green-700">
-                        Hello { result.user.name }, your account has been verified.<br />
-                        You can now <Link href={`/${params.locale}/signin`} className="underline">login</Link>.
+                        Hello {result.user.name}, your account has been verified.
+                        <br />
+                        You can now{" "}
+                        <Link href={`/${params.locale}/signin`} className="underline">
+                            login
+                        </Link>
+                        .
                     </h2>
                 </div>
             ) : null}

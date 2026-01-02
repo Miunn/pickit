@@ -18,16 +18,16 @@ import { DataTablePagination } from "./data-table-pagination";
 import { createTranslator, useFormatter, useLocale } from "next-intl";
 
 interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[];
-    data: TData[];
-    selection?: { [index: number]: boolean };
-    setSelection?: React.Dispatch<React.SetStateAction<{ [index: number]: boolean }>>;
-    filterPlaceholder?: string;
-    filterColumn?: string;
-    rightHeadingNodes?: React.ReactNode;
-    hideHeader?: boolean;
-    translations?: ReturnType<typeof createTranslator>;
-    states?: { [key: string]: unknown };
+    readonly columns: ColumnDef<TData, TValue>[];
+    readonly data: TData[];
+    readonly selection?: { [index: number]: boolean };
+    readonly setSelection?: React.Dispatch<React.SetStateAction<{ [index: number]: boolean }>>;
+    readonly filterPlaceholder?: string;
+    readonly filterColumn?: string;
+    readonly rightHeadingNodes?: React.ReactNode;
+    readonly hideHeader?: boolean;
+    readonly translations?: ReturnType<typeof createTranslator>;
+    readonly states?: { [key: string]: unknown };
 }
 
 export function DataTable<TData, TValue>({

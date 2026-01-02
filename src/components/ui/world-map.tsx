@@ -7,11 +7,11 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 
 interface MapProps {
-  dots?: Array<{
+  readonly dots?: Array<{
     start: { lat: number; lng: number; label?: string };
     end: { lat: number; lng: number; label?: string };
   }>;
-  lineColor?: string;
+  readonly lineColor?: string;
 }
 
 export default function WorldMap({

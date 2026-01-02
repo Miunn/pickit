@@ -10,11 +10,11 @@ export default function ShareFolderTemplate({
     isLocked,
     message,
 }: {
-    name: string;
-    folderName: string;
-    link: string;
-    isLocked: boolean;
-    message?: string;
+    readonly name: string;
+    readonly folderName: string;
+    readonly link: string;
+    readonly isLocked: boolean;
+    readonly message?: string;
 }) {
     return (
         <Html>

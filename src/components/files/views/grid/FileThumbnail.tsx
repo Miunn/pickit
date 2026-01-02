@@ -18,7 +18,7 @@ import { useFormatter, useTranslations } from "next-intl";
  * @param file - The file and its tags to render (FileWithTags)
  * @returns A JSX element representing the file thumbnail card
  */
-export default function FileThumbnail({ file }: { file: FileWithTags }) {
+export default function FileThumbnail({ file }: { readonly file: FileWithTags }) {
     const t = useTranslations("images");
     const formatter = useFormatter();
     const searchParams = useSearchParams();

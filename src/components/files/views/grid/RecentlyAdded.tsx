@@ -14,7 +14,7 @@ import { X } from "lucide-react";
  * @param onClickImage - Handler invoked with a file when its preview is clicked
  * @returns The component's element when recent files exist, otherwise renders nothing
  */
-export default function RecentlyAdded({ onClickImage }: { onClickImage: (file: ContextFile) => void }) {
+export default function RecentlyAdded({ onClickImage }: { readonly onClickImage: (file: ContextFile) => void }) {
     const { files } = useFilesContext();
     const t = useTranslations("images");
     const [isVisible, setIsVisible] = useState(true);

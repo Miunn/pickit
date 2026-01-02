@@ -11,12 +11,12 @@ export default function NotifyAboutUploadTemplate({
     count,
     lang = "fr",
 }: {
-    name: string;
-    folderName: string;
-    link: string;
-    isLocked: boolean;
-    count: number;
-    lang: string;
+    readonly name: string;
+    readonly folderName: string;
+    readonly link: string;
+    readonly isLocked: boolean;
+    readonly count: number;
+    readonly lang: string;
 }) {
     if (lang === "fr") {
         return (

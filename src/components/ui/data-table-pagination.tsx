@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 
 interface DataTablePaginationProps<TData> {
-    table: Table<TData>;
+    readonly table: Table<TData>;
 }
 
 export function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) {

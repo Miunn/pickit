@@ -28,11 +28,11 @@ import { useSearchParams } from "next/navigation";
 import FileThumbnail from "./FileThumbnail";
 
 export type ImagePreviewProps = {
-    file: { folder: FolderWithTags } & FileWithTags;
-    selected: string[];
-    onClick: (e?: React.MouseEvent) => void;
-    onSelect: () => void;
-    className?: string;
+    readonly file: { folder: FolderWithTags } & FileWithTags;
+    readonly selected: string[];
+    readonly onClick: (e?: React.MouseEvent) => void;
+    readonly onSelect: () => void;
+    readonly className?: string;
 } & React.HTMLAttributes<HTMLButtonElement>;
 
 export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className, ...props }: ImagePreviewProps) => {
@@ -119,7 +119,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className,
                             href={(() => {
                                 const url = new URL(
                                     `/api/folders/${file.folderId}/${file.type === FileType.IMAGE ? "images" : "videos"}/${file.id}/download`,
-                                    window.location.origin
+                                    globalThis.location.origin
                                 );
                                 if (shareToken) url.searchParams.set("share", shareToken);
                                 if (shareHashPin) url.searchParams.set("h", shareHashPin);

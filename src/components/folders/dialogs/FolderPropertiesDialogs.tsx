@@ -7,7 +7,7 @@ import { Label } from "../../ui/label";
 import { formatBytes } from "@/lib/utils";
 import { Button } from "../../ui/button";
 
-export default function FolderPropertiesDialog({ folder, open, setOpen }: { folder: FolderWithFilesCount, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function FolderPropertiesDialog({ folder, open, setOpen }: { readonly folder: FolderWithFilesCount, readonly open?: boolean, readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
     const t = useTranslations("dialogs.folders.properties");
     const formatter = useFormatter();
 

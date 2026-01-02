@@ -1,7 +1,7 @@
 import { NotificationType, Notification as NotificationData } from "@prisma/client";
 import { useFormatter } from "next-intl";
 
-export default function Notification({ notification, onRead }: { notification: NotificationData; onRead: () => void }) {
+export default function Notification({ notification, onRead }: { readonly notification: NotificationData; readonly onRead: () => void }) {
     const formatter = useFormatter();
 
     switch (notification.type) {

@@ -3,7 +3,7 @@ import EmailFooter from "./EmailFooter";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL ? process.env.NEXT_PUBLIC_APP_URL : "http://localhost:3000";
 
-export default function VerifyEmail({ name, token }: { name: string; token: string }) {
+export default function VerifyEmail({ name, token }: { readonly name: string; readonly token: string }) {
     return (
         <Html>
             <Head>

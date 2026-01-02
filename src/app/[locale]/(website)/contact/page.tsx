@@ -13,31 +13,30 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
         title: t("title"),
         description: t("description"),
-    }
+    };
 }
 
 export default function ContactPage() {
-
     const t = useTranslations("pages.contact");
 
     return (
-        <>
-            <div className="min-h-screen grid grid-cols-[1fr_1px_1fr] items-center mx-auto border-t border-primary/50">
-                <div className="w-full h-full relative grid grid-cols-1 grid-rows-[2fr_1fr] place-items-center">
-                    <div className="z-10">
-                        <Label className="text-primary font-semibold">{t('titleMini')}</Label>
-                        <h1 className="text-6xl">{t('title')}</h1>
-                        <p className="mt-6 max-w-lg">
-                            {t('description')}
-                        </p>
+        <div className="min-h-screen grid grid-cols-[1fr_1px_1fr] items-center mx-auto border-t border-primary/50">
+            <div className="w-full h-full relative grid grid-cols-1 grid-rows-[2fr_1fr] place-items-center">
+                <div className="z-10">
+                    <Label className="text-primary font-semibold">{t("titleMini")}</Label>
+                    <h1 className="text-6xl">{t("title")}</h1>
+                    <p className="mt-6 max-w-lg">{t("description")}</p>
 
-                        <Button variant={"link"} className="p-0" asChild>
-                            <Link href={""}>{t('sendEmail')} <ExternalLink className="w-4 h-4 ml-2" /></Link>
-                        </Button>
-                    </div>
+                    <Button variant={"link"} className="p-0" asChild>
+                        <Link href={""}>
+                            {t("sendEmail")} <ExternalLink className="w-4 h-4 ml-2" />
+                        </Link>
+                    </Button>
+                </div>
 
-                    <div className="absolute bottom-0 left-0 right-0 w-full">
-                        <WorldMap dots={[
+                <div className="absolute bottom-0 left-0 right-0 w-full">
+                    <WorldMap
+                        dots={[
                             {
                                 start: { lat: 64.2008, lng: -149.4937 }, // Alaska (Fairbanks)
                                 end: { lat: 34.0522, lng: -118.2437 }, // Los Angeles
@@ -62,16 +61,17 @@ export default function ContactPage() {
                                 start: { lat: 28.6139, lng: 77.209 }, // New Delhi
                                 end: { lat: -1.2921, lng: 36.8219 }, // Nairobi
                             },
-                        ]} lineColor="#1f7551" />
-                    </div>
-                </div>
-
-                <div className="border-l border-primary w-px h-full justify-self-center"></div>
-
-                <div className="max-w-lg w-full mx-auto">
-                    <ContactForm />
+                        ]}
+                        lineColor="#1f7551"
+                    />
                 </div>
             </div>
-        </>
-    )
+
+            <div className="border-l border-primary w-px h-full justify-self-center"></div>
+
+            <div className="max-w-lg w-full mx-auto">
+                <ContactForm />
+            </div>
+        </div>
+    );
 }

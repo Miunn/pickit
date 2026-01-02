@@ -12,12 +12,12 @@ export default function TagChip({
     onTagSelected,
     onTagUnselected,
 }: {
-    tag: FolderTag;
-    className?: string;
-    checked?: boolean;
-    showCheckbox?: boolean;
-    onTagSelected?: (tag: FolderTag) => void;
-    onTagUnselected?: (tag: FolderTag) => void;
+    readonly tag: FolderTag;
+    readonly className?: string;
+    readonly checked?: boolean;
+    readonly showCheckbox?: boolean;
+    readonly onTagSelected?: (tag: FolderTag) => void;
+    readonly onTagUnselected?: (tag: FolderTag) => void;
 }) {
     // Convert hex color to rgb
     const rgb = tag.color.match(/\w\w/g)?.map(hex => Number.parseInt(hex, 16)) ?? [0, 0, 0];

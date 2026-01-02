@@ -24,11 +24,11 @@ export const DeleteMultipleImagesDialog = ({
     setOpen,
     onDelete,
 }: {
-    fileIds: string[];
-    children?: React.ReactNode;
-    open?: boolean;
-    setOpen?: (open: boolean) => void;
-    onDelete: () => void;
+    readonly fileIds: string[];
+    readonly children?: React.ReactNode;
+    readonly open?: boolean;
+    readonly setOpen?: (open: boolean) => void;
+    readonly onDelete: () => void;
 }) => {
     const t = useTranslations("dialogs.images.deleteMultiple");
     const [deleting, setDeleting] = useState(false);

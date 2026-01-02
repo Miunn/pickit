@@ -16,9 +16,9 @@ export default function LinksDataTable({
     defaultTokenIndex,
     lightFolders,
 }: {
-    accessTokens: AccessTokenWithFolder[];
-    defaultTokenIndex: number;
-    lightFolders: LightFolder[];
+    readonly accessTokens: AccessTokenWithFolder[];
+    readonly defaultTokenIndex: number;
+    readonly lightFolders: LightFolder[];
 }) {
     const t = useTranslations("dataTables.links");
     const [selectedTokensIndexes, setSelectedTokensIndexes] = useState<{ [index: number]: boolean }>(

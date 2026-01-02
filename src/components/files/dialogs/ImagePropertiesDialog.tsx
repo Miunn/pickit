@@ -24,9 +24,9 @@ export default function ImagePropertiesDialog({
   open,
   setOpen,
 }: {
-  file: FileWithFolder;
-  open?: boolean;
-  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly file: FileWithFolder;
+  readonly open?: boolean;
+  readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const t = useTranslations("dialogs.images.properties");
   const formatter = useFormatter();

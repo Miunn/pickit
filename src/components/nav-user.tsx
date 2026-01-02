@@ -22,7 +22,7 @@ import { Notification as NotificationData } from "@prisma/client";
 import NotificationsDialog from "./notifications/NotificationDialog";
 import { useMemo, useState } from "react";
 
-export function NavUser({ user, initialNotifications }: { user: UserLight; initialNotifications: NotificationData[] }) {
+export function NavUser({ user, initialNotifications }: { readonly user: UserLight; readonly initialNotifications: NotificationData[] }) {
     const { isMobile } = useSidebar();
     const locale = useLocale();
     const t = useTranslations("sidebar.user");

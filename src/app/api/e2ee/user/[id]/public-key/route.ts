@@ -1,9 +1,8 @@
 import { UserService } from "@/data/user-service";
 import { getCurrentSession } from "@/lib/session";
-import { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(request: NextRequest, { params }: { readonly params: Promise<{ readonly id: string }> }) {
     const session = await getCurrentSession();
     if (!session?.user) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
