@@ -16,6 +16,7 @@ export default function UsersDataTable({
     const [selectedUsersIndexes, setSelectedUsersIndexes] = useState<{ [index: number]: boolean }>(
         defaultUserIndex !== -1 ? { [defaultUserIndex]: true } : {}
     );
+    const [deleteOpen, setDeleteOpen] = useState(false);
     const t = useTranslations("dataTables.users.columns");
 
     return (
@@ -28,6 +29,7 @@ export default function UsersDataTable({
             filterColumn="name"
             rightHeadingNodes={<div className="flex gap-2"></div>}
             translations={t}
+            states={{ deleteOpen, setDeleteOpen }}
         />
     );
 }

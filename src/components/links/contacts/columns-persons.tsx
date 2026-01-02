@@ -38,7 +38,6 @@ import {
     Pencil,
     PencilOff,
 } from "lucide-react";
-import { useState } from "react";
 
 // Define the permission values as constants
 const PERMISSIONS = {
@@ -295,8 +294,14 @@ export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
         cell: ({ table, row }) => {
             const t = table.options.meta?.intl?.translations;
             const accessToken = row.original;
-            const [lockOpen, setLockOpen] = useState<boolean>(false);
-            const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
+            const lockOpen = table.options.meta?.states?.lockOpen as boolean;
+            const setLockOpen = table.options.meta?.states?.setLockOpen as React.Dispatch<
+                React.SetStateAction<boolean>
+            >;
+            const deleteOpen = table.options.meta?.states?.deleteOpen as boolean;
+            const setDeleteOpen = table.options.meta?.states?.setDeleteOpen as React.Dispatch<
+                React.SetStateAction<boolean>
+            >;
             return (
                 <>
                     <DropdownMenu>

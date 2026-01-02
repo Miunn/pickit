@@ -25,8 +25,9 @@ export default function PersonDataTable({
     const [selectedTokens, setSelectedTokens] = useState<string[]>(
         defaultTokenIndex !== -1 ? [accessTokens[defaultTokenIndex].token] : []
     );
+    const [lockOpen, setLockOpen] = useState<boolean>(false);
     const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
-
+    const [deleteSelectionOpen, setDeleteSelectionOpen] = useState<boolean>(false);
     useEffect(() => {
         setSelectedTokens(Object.keys(selectedTokensIndexes).map(k => accessTokens[Number.parseInt(k)].token));
     }, [selectedTokensIndexes, accessTokens]);
@@ -43,8 +44,8 @@ export default function PersonDataTable({
                 <div className="flex gap-2">
                     <DeleteAccessTokenDialog
                         tokens={selectedTokens}
-                        openState={deleteOpen}
-                        setOpenState={setDeleteOpen}
+                        openState={deleteSelectionOpen}
+                        setOpenState={setDeleteSelectionOpen}
                         submitNext={() => setSelectedTokensIndexes({})}
                     >
                         <DialogTrigger asChild>
@@ -60,6 +61,7 @@ export default function PersonDataTable({
                 </div>
             }
             translations={t}
+            states={{ lockOpen, setLockOpen, deleteOpen, setDeleteOpen }}
         />
     );
 }

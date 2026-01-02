@@ -1,10 +1,13 @@
 "use client";
 
 import {
+    FileWithComments,
+    FileWithTags,
     FolderWithAccessToken,
     FolderWithCover,
     FolderWithFilesCount,
     FolderWithFilesWithFolderAndComments,
+    FolderWithTags,
 } from "@/lib/definitions";
 import { flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import React from "react";
@@ -25,6 +28,16 @@ export default function FoldersList({
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [rowSelection, setRowSelection] = React.useState({});
 
+    // Table states
+    const [openShare, setOpenShare] = React.useState<boolean>(false);
+    const [openChangeCover, setOpenChangeCover] = React.useState<boolean>(false);
+    const [openRename, setOpenRename] = React.useState<boolean>(false);
+    const [openProperties, setOpenProperties] = React.useState<boolean>(false);
+    const [openDelete, setOpenDelete] = React.useState<boolean>(false);
+    const [folderImages, setFolderImages] = React.useState<
+        ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[]
+    >([]);
+
     const table = useReactTable({
         data: folders,
         columns: foldersListViewColumns,
@@ -40,6 +53,20 @@ export default function FoldersList({
             intl: {
                 translations: t,
                 formatter: formatter,
+            },
+            states: {
+                folderImages,
+                setFolderImages,
+                openShare,
+                setOpenShare,
+                openChangeCover,
+                setOpenChangeCover,
+                openRename,
+                setOpenRename,
+                openProperties,
+                setOpenProperties,
+                openDelete,
+                setOpenDelete,
             },
         },
         enableSortingRemoval: false,
