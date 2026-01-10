@@ -21,7 +21,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 export default function FoldersList({
     folders,
 }: {
-    readonly folders: (FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments)[];
+    readonly folders: (FolderWithAccessToken &
+        FolderWithFilesCount &
+        FolderWithCover &
+        FolderWithFilesWithFolderAndComments)[];
 }) {
     const t = useTranslations("folders.views.list");
     const formatter = useFormatter();
@@ -111,16 +114,18 @@ export default function FoldersList({
                     {table.getHeaderGroups().map(headerGroup => (
                         <TableRow key={headerGroup.id} className="hover:bg-transparent">
                             {headerGroup.headers.map(header => {
+                                let ariaSort: "ascending" | "descending" | "none" = "none";
+
+                                if (header.column.getIsSorted() === "asc") {
+                                    ariaSort = "ascending";
+                                } else if (header.column.getIsSorted() === "desc") {
+                                    ariaSort = "descending";
+                                }
+
                                 return (
                                     <TableHead
                                         key={header.id}
-                                        aria-sort={
-                                            header.column.getIsSorted() === "asc"
-                                                ? "ascending"
-                                                : header.column.getIsSorted() === "desc"
-                                                  ? "descending"
-                                                  : "none"
-                                        }
+                                        aria-sort={ariaSort}
                                         {...{
                                             colSpan: header.colSpan,
                                             style: {

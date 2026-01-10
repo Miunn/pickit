@@ -5,7 +5,7 @@ import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessTokenDialog";
-import { LightFolder, AccessTokenWithFolder } from "@/lib/definitions";
+import { AccessTokenWithFolder } from "@/lib/definitions";
 import { useEffect, useState } from "react";
 import { personColumns } from "./columns-persons";
 import { useTranslations } from "next-intl";
@@ -16,15 +16,12 @@ export default function PersonDataTable({
 }: {
     readonly accessTokens: AccessTokenWithFolder[];
     readonly defaultTokenIndex: number;
-    readonly lightFolders: LightFolder[];
 }) {
     const t = useTranslations("dataTables.people.columns");
-    const [selectedTokensIndexes, setSelectedTokensIndexes] = useState<{ [index: number]: boolean }>(
-        defaultTokenIndex !== -1 ? { [defaultTokenIndex]: true } : {}
-    );
-    const [selectedTokens, setSelectedTokens] = useState<string[]>(
-        defaultTokenIndex !== -1 ? [accessTokens[defaultTokenIndex].token] : []
-    );
+    const [selectedTokensIndexes, setSelectedTokensIndexes] = useState<{ [index: number]: boolean }>({
+        [defaultTokenIndex]: true,
+    });
+    const [selectedTokens, setSelectedTokens] = useState<string[]>([accessTokens[defaultTokenIndex].token]);
     const [lockOpen, setLockOpen] = useState<boolean>(false);
     const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
     const [deleteSelectionOpen, setDeleteSelectionOpen] = useState<boolean>(false);

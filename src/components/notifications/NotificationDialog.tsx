@@ -23,6 +23,12 @@ export default function NotificationsDialog({
     readonly open?: boolean;
     readonly onOpenChange?: (open: boolean) => void;
 }) {
+    const handleRead = (notificationId: string) => {
+        markNotificationAsRead(notificationId).then(() => {
+            setNotifications(notifications.map(n => (n.id === notificationId ? { ...n, isRead: true } : n)));
+        });
+    };
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogTrigger asChild>{children}</DialogTrigger>
@@ -38,17 +44,7 @@ export default function NotificationsDialog({
                                             <div key={notification.id} className="space-y-1">
                                                 <Notification
                                                     notification={notification}
-                                                    onRead={() => {
-                                                        markNotificationAsRead(notification.id).then(() => {
-                                                            setNotifications(
-                                                                notifications.map(n =>
-                                                                    n.id === notification.id
-                                                                        ? { ...n, isRead: true }
-                                                                        : n
-                                                                )
-                                                            );
-                                                        });
-                                                    }}
+                                                    onRead={() => handleRead(notification.id)}
                                                 />
                                             </div>
                                         ))

@@ -1,8 +1,7 @@
 "use client";
 
 import { AdvancedMarker, APIProvider, Map, AdvancedMarkerAnchorPoint } from "@vis.gl/react-google-maps";
-import { useCallback, useEffect, useMemo } from "react";
-import { useState } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { FileWithFolder } from "@/lib/definitions";
 import ClusteredMarkers from "./ClusteredMarkers";
 import { Point, FeatureCollection } from "geojson";

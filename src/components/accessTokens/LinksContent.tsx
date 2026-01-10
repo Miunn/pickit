@@ -8,48 +8,47 @@ import PersonDataTable from "../links/contacts/person-data-table";
 import LinksDataTable from "../links/links/links-data-table";
 
 export interface LinksContentProps {
-    readonly side: "links" | "contacts";
-    readonly accessTokens: AccessTokenWithFolder[];
-    readonly lightFolders: LightFolder[];
-    readonly defaultSelectedAccessTokenIndex: number;
+	readonly side: "links" | "contacts";
+	readonly accessTokens: AccessTokenWithFolder[];
+	readonly lightFolders: LightFolder[];
+	readonly defaultSelectedAccessTokenIndex: number;
 }
 
 export default function LinksContent({
-    side,
-    accessTokens,
-    lightFolders,
-    defaultSelectedAccessTokenIndex,
+	side,
+	accessTokens,
+	lightFolders,
+	defaultSelectedAccessTokenIndex,
 }: LinksContentProps) {
-    const t = useTranslations("pages.links");
+	const t = useTranslations("pages.links");
 
-    const [sideState, setSideState] = useQueryState<"links" | "contacts">("s", {
-        parse: (value: string | null) => (value === "links" ? "links" : "contacts"),
-        defaultValue: side,
-    });
+	const [sideState, setSideState] = useQueryState<"links" | "contacts">("s", {
+		parse: (value: string | null) => (value === "links" ? "links" : "contacts"),
+		defaultValue: side,
+	});
 
-    return (
-        <Tabs
-            value={sideState}
-            onValueChange={(value: string) => setSideState(value === "links" ? "links" : "contacts")}
-        >
-            <TabsList>
-                <TabsTrigger value="contacts">{t("persons.title")}</TabsTrigger>
-                <TabsTrigger value="links">{t("links.title")}</TabsTrigger>
-            </TabsList>
-            <TabsContent value="contacts">
-                <PersonDataTable
-                    accessTokens={accessTokens.filter(token => token.email)}
-                    defaultTokenIndex={defaultSelectedAccessTokenIndex}
-                    lightFolders={lightFolders}
-                />
-            </TabsContent>
-            <TabsContent value="links">
-                <LinksDataTable
-                    accessTokens={accessTokens.filter(token => !token.email)}
-                    defaultTokenIndex={defaultSelectedAccessTokenIndex}
-                    lightFolders={lightFolders}
-                />
-            </TabsContent>
-        </Tabs>
-    );
+	return (
+		<Tabs
+			value={sideState}
+			onValueChange={(value: string) => setSideState(value === "links" ? "links" : "contacts")}
+		>
+			<TabsList>
+				<TabsTrigger value="contacts">{t("persons.title")}</TabsTrigger>
+				<TabsTrigger value="links">{t("links.title")}</TabsTrigger>
+			</TabsList>
+			<TabsContent value="contacts">
+				<PersonDataTable
+					accessTokens={accessTokens.filter(token => token.email)}
+					defaultTokenIndex={defaultSelectedAccessTokenIndex}
+				/>
+			</TabsContent>
+			<TabsContent value="links">
+				<LinksDataTable
+					accessTokens={accessTokens.filter(token => !token.email)}
+					defaultTokenIndex={defaultSelectedAccessTokenIndex}
+					lightFolders={lightFolders}
+				/>
+			</TabsContent>
+		</Tabs>
+	);
 }

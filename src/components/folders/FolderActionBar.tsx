@@ -44,12 +44,22 @@ export default function FolderActionBar() {
     const [openShare, setOpenShare] = useState(false);
     const [openEditDescription, setOpenEditDescription] = useState(false);
 
+    const handleDownload = () => {
+        toast({
+            title: t("downloadStarted"),
+            description: t("downloadStartedDescription", { name: folder.name }),
+        });
+        setTimeout(() => {
+            done();
+        }, 1000);
+    };
+
     return (
         <>
             <div className="hidden lg:flex gap-4">
                 <ViewSelector viewState={viewState} setViewState={setViewState} />
                 {viewState === ViewState.Grid ? <SortImages sortState={sortState} setSortState={setSortState} /> : null}
-                {!!!isGuest || token?.permission === FolderTokenPermission.WRITE ? (
+                {!isGuest || token?.permission === FolderTokenPermission.WRITE ? (
                     <UploadImagesDialog
                         folderId={folder.id}
                         shouldDisplayNotify={!!!isGuest && !isShared}
@@ -70,28 +80,17 @@ export default function FolderActionBar() {
                                 {t("addDescription")}
                             </DropdownMenuItem>
                         ) : null}
-                        {!!!isGuest || (token?.token && token.allowMap) ? (
+                        {!isGuest || token?.allowMap ? (
                             <DropdownMenuItem asChild>
                                 <Link href={`/app/map${token?.token ? `?share=${token?.token}&h=${tokenHash}` : ""}`}>
                                     {t("actions.map")}
                                 </Link>
                             </DropdownMenuItem>
                         ) : null}
-                        {!!!isGuest ? (
+                        {!isGuest ? (
                             <DropdownMenuItem onClick={() => setOpenShare(true)}>{t("share.label")}</DropdownMenuItem>
                         ) : null}
-                        <DropdownMenuItem
-                            onClick={() => {
-                                toast({
-                                    title: t("downloadStarted"),
-                                    description: t("downloadStartedDescription", { name: folder.name }),
-                                });
-                                setTimeout(() => {
-                                    done();
-                                }, 1000);
-                            }}
-                            asChild
-                        >
+                        <DropdownMenuItem onClick={handleDownload} asChild>
                             <a href={`/api/folders/${folder.id}/download`} download>
                                 {t("download.label")}
                             </a>
@@ -198,17 +197,15 @@ export default function FolderActionBar() {
                             </DropdownMenuSubContent>
                         </DropdownMenuSub>
                     ) : null}
-                    {!!!isGuest || (token?.token && token.allowMap) ? (
+                    {!isGuest || token?.allowMap ? (
                         <DropdownMenuItem asChild>
-                            <Link href={`/app/map${token?.token ? `?share=${token?.token}&h=${tokenHash}` : ""}`}>
-                                {t("actions.map")}
-                            </Link>
+                            <Link href={`/app/map?share=${token?.token}&h=${tokenHash}`}>{t("actions.map")}</Link>
                         </DropdownMenuItem>
                     ) : null}
-                    {!!!isGuest ? (
+                    {!isGuest ? (
                         <DropdownMenuItem onClick={() => setOpenUpload(true)}>{t("upload.label")}</DropdownMenuItem>
                     ) : null}
-                    {!!!isGuest ? (
+                    {!isGuest ? (
                         <DropdownMenuItem onClick={() => setOpenShare(true)}>{t("share.label")}</DropdownMenuItem>
                     ) : null}
                     <DropdownMenuItem asChild>
