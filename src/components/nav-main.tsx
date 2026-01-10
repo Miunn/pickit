@@ -52,7 +52,7 @@ export function NavMain({ items }: { readonly items: NavMainItems }) {
                                         {item.items && item.items.length > 0 ? (
                                             <SidebarMenuSub>
                                                 {item.items
-                                                    .sort((a, b) =>
+                                                    .toSorted((a, b) =>
                                                         a.title.localeCompare(b.title, undefined, { numeric: true })
                                                     )
                                                     .map(subItem => (

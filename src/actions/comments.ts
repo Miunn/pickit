@@ -1,13 +1,12 @@
 "use server";
 
 import {
-    CommentWithCreatedBy,
-    CreateCommentFormSchema,
-    FolderWithAccessToken,
-    FolderWithFilesWithFolderAndCommentsAndCreatedBy,
-    EditCommentFormSchema,
+	CommentWithCreatedBy,
+	CreateCommentFormSchema,
+	FolderWithAccessToken,
+	FolderWithFilesWithFolderAndCommentsAndCreatedBy,
+	EditCommentFormSchema,
 } from "@/lib/definitions";
-import { getCurrentSession } from "@/lib/session";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { isAllowedToDeleteComment } from "@/lib/dal";
@@ -17,149 +16,150 @@ import { SecureService } from "@/data/secure/secure-service";
 import { FolderPermission } from "@/data/secure/folder";
 
 export async function createComment(
-    fileId: string,
-    data: z.infer<typeof CreateCommentFormSchema>,
-    shareToken?: string | null,
-    type?: "accessToken" | "personAccessToken" | null,
-    h?: string | null
+	fileId: string,
+	data: z.infer<typeof CreateCommentFormSchema>,
+	shareToken?: string | null,
+	type?: "accessToken" | "personAccessToken" | null,
+	h?: string | null
 ): Promise<CommentWithCreatedBy | null> {
-    const { user } = await getCurrentSession();
+	const file = await FileService.get({
+		where: { id: fileId },
+		include: {
+			folder: {
+				include: {
+					files: {
+						include: { folder: true, comments: { include: { createdBy: true } } },
+					},
+					createdBy: true,
+					accessTokens: { omit: { pinCode: false } },
+				},
+			},
+		},
+	});
 
-    if (!user && !shareToken) {
-        return null;
-    }
+	if (!file) {
+		return null;
+	}
 
-    const file = await FileService.get({
-        where: { id: fileId },
-        include: {
-            folder: {
-                include: {
-                    files: { include: { folder: true, comments: { include: { createdBy: true } } } },
-                    createdBy: true,
-                    accessTokens: { omit: { pinCode: false } },
-                },
-            },
-        },
-    });
+	const folder: FolderWithFilesWithFolderAndCommentsAndCreatedBy & FolderWithAccessToken = file.folder;
 
-    if (!file) {
-        return null;
-    }
+	const auth = await SecureService.folder.enforce(
+		folder,
+		shareToken || undefined,
+		h || undefined,
+		FolderPermission.READ
+	);
 
-    const folder: FolderWithFilesWithFolderAndCommentsAndCreatedBy & FolderWithAccessToken = file.folder;
-    let commentName = "Anonymous";
-    let createdByEmail = null;
+	if (!auth.allowed) {
+		return null;
+	}
+	let commentName = "Anonymous";
+	let createdByEmail = null;
 
-    const hasAccessToFolder = await SecureService.folder.enforce(
-        folder,
-        shareToken || undefined,
-        h || undefined,
-        FolderPermission.READ
-    );
+	const { user } = auth.session;
 
-    if (!hasAccessToFolder) {
-        return null;
-    }
+	if (!user || folder.createdById !== user.id) {
+		const accessToken = folder.accessTokens.find(a => a.token === shareToken && a.expires >= new Date());
 
-    if (!user || folder.createdById !== user.id) {
-        const accessToken = folder.accessTokens.find(a => a.token === shareToken && a.expires >= new Date());
+		if (accessToken?.email) {
+			commentName = accessToken.email.split("@")[0];
+			createdByEmail = accessToken.email;
+		}
+	} else {
+		commentName = user.name;
+		createdByEmail = user.email;
+	}
 
-        if (accessToken?.email) {
-            commentName = accessToken.email.split("@")[0];
-            createdByEmail = accessToken.email;
-        }
-    } else {
-        commentName = user.name;
-        createdByEmail = user.email;
-    }
+	const parsedData = CreateCommentFormSchema.safeParse(data);
 
-    const parsedData = CreateCommentFormSchema.safeParse(data);
+	if (!parsedData.success) {
+		return null;
+	}
 
-    if (!parsedData.success) {
-        return null;
-    }
+	try {
+		const data = {
+			text: parsedData.data.content,
+			createdBy: user ? { connect: { id: user?.id } } : undefined,
+			createdByEmail,
+			name: commentName,
+			file: { connect: { id: fileId } },
+		};
 
-    try {
-        const data = {
-            text: parsedData.data.content,
-            createdBy: user ? { connect: { id: user?.id } } : undefined,
-            createdByEmail,
-            name: commentName,
-            file: { connect: { id: fileId } },
-        };
+		const comment = await CommentService.create(data, {
+			file: { include: { folder: true } },
+			createdBy: true,
+		});
 
-        const comment = await CommentService.create(data, { file: { include: { folder: true } }, createdBy: true });
+		if (!comment) {
+			console.error("Comment creation failed");
+			return null;
+		}
 
-        if (!comment) {
-            console.error("Comment creation failed");
-            return null;
-        }
-
-        revalidatePath(`/app/folders/${folder.id}`);
-        return comment;
-    } catch (e) {
-        console.error("Error creating comment", e);
-        return null;
-    }
+		revalidatePath(`/app/folders/${folder.id}`);
+		return comment;
+	} catch (e) {
+		console.error("Error creating comment", e);
+		return null;
+	}
 }
 
 export async function deleteComment(commentId: string, shareToken?: string | null, accessKey?: string | null) {
-    const isAllowed = await isAllowedToDeleteComment(commentId, shareToken, accessKey);
+	const isAllowed = await isAllowedToDeleteComment(commentId, shareToken, accessKey);
 
-    if (!isAllowed) {
-        return false;
-    }
+	if (!isAllowed) {
+		return false;
+	}
 
-    try {
-        const comment = await CommentService.delete({
-            commentId,
-            include: { file: { select: { folderId: true } } },
-        });
+	try {
+		const comment = await CommentService.delete({
+			commentId,
+			include: { file: { select: { folderId: true } } },
+		});
 
-        if (!comment) {
-            return false;
-        }
+		if (!comment) {
+			return false;
+		}
 
-        revalidatePath(`/app/folders/${comment.file.folderId}`);
-        return true;
-    } catch (e) {
-        console.log("Error deleting comment", e);
-        return false;
-    }
+		revalidatePath(`/app/folders/${comment.file.folderId}`);
+		return true;
+	} catch (e) {
+		console.log("Error deleting comment", e);
+		return false;
+	}
 }
 
 export async function updateComment(
-    commentId: string,
-    text: string,
-    shareToken?: string | null,
-    accessKey?: string | null
+	commentId: string,
+	text: string,
+	shareToken?: string | null,
+	accessKey?: string | null
 ): Promise<CommentWithCreatedBy | null> {
-    const isAllowed = await isAllowedToDeleteComment(commentId, shareToken, accessKey);
+	const isAllowed = await isAllowedToDeleteComment(commentId, shareToken, accessKey);
 
-    if (!isAllowed) {
-        return null;
-    }
+	if (!isAllowed) {
+		return null;
+	}
 
-    const result = EditCommentFormSchema.safeParse({ content: text });
-    if (!result.success) {
-        return null;
-    }
+	const result = EditCommentFormSchema.safeParse({ content: text });
+	if (!result.success) {
+		return null;
+	}
 
-    try {
-        const comment = await CommentService.update(
-            commentId,
-            { text: result.data.content },
-            { file: { include: { folder: { select: { id: true } } } }, createdBy: true }
-        );
+	try {
+		const comment = await CommentService.update(
+			commentId,
+			{ text: result.data.content },
+			{ file: { include: { folder: { select: { id: true } } } }, createdBy: true }
+		);
 
-        if (!comment) {
-            return null;
-        }
+		if (!comment) {
+			return null;
+		}
 
-        revalidatePath(`/app/folders/${comment.file.folder.id}`);
-        return comment;
-    } catch (e) {
-        console.log("Error updating comment", e);
-        return null;
-    }
+		revalidatePath(`/app/folders/${comment.file.folder.id}`);
+		return comment;
+	} catch (e) {
+		console.log("Error updating comment", e);
+		return null;
+	}
 }

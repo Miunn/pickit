@@ -1,7 +1,7 @@
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { Fragment, useMemo, useState } from "react";
 import { ImagePreviewGrid } from "./ImagePreviewGrid";
-import { cn } from "@/lib/utils";
+import { cn, groupFiles } from "@/lib/utils";
 import { CarouselDialog } from "../../carousel/CarouselDialog";
 import { DeleteMultipleImagesDialog } from "../../dialogs/DeleteMultipleImagesDialog";
 import { useFolderContext } from "@/context/FolderContext";
@@ -15,49 +15,62 @@ export default function TagGroupedGrid() {
 
     const [selecting, setSelecting] = useState<boolean>(false);
     const [selected, setSelected] = useState<string[]>([]);
-    const [sizeSelected, setSizeSelected] = useState<number>(0);
+    const sizeSelected = useMemo(() => {
+        return selected.reduce((acc, id) => {
+            const file = files.find(f => f.id === id);
+            return file ? acc + file.size : acc;
+        }, 0);
+    }, [selected, files]);
 
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
     const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
     const [startIndex, setStartIndex] = useState(0);
 
     // Group files by tag with "No tags" group with all files that don't have any tags
-    const groupedFiles = useMemo(() => {
-        return files
-            .reduce(
-                (acc, file) => {
-                    const fileTags = file.tags;
-                    fileTags.forEach(tag => {
-                        const existingGroup = acc.find(group => group.tag !== "No tags" && group.tag.id === tag.id);
-                        if (existingGroup) {
-                            existingGroup.files.push(file);
-                        } else {
-                            acc.push({ tag: tag, files: [file] });
-                        }
-                    });
-                    if (fileTags.length === 0) {
-                        const existingNoTagsGroup = acc.find(group => group.tag === "No tags");
-                        if (existingNoTagsGroup) {
-                            existingNoTagsGroup.files.push(file);
-                        } else {
-                            acc.push({ tag: "No tags", files: [file] });
-                        }
-                    }
-                    return acc;
-                },
-                [] as { tag: FolderTag | "No tags"; files: ContextFile[] }[]
-            )
-            .sort((a, b) => {
-                if (a.tag === "No tags") return 1;
-                if (b.tag === "No tags") return -1;
-                return a.tag.name.localeCompare(b.tag.name);
-            });
+    const groupedFiles: { [key: string]: ContextFile[] } = useMemo(() => {
+        return groupFiles(files);
     }, [files]);
 
-    const renderGroup = (tag: FolderTag | "No tags", files: ContextFile[]) => {
-        const groupKey = tag !== "No tags" ? tag.id : "no-tags";
-        const headerColor = tag !== "No tags" ? tag.color : "";
-        const headerText = tag !== "No tags" ? tag.name : "No tags";
+    const handleClick = (file: ContextFile, e?: React.MouseEvent) => {
+        if (selecting) {
+            if (e?.shiftKey && selected.length > 0) {
+                const lastSelectedId = selected[selected.length - 1];
+                const lastSelectedIndex = files.findIndex(item => item.id === lastSelectedId);
+                const currentIndex = files.findIndex(item => item.id === file.id);
+
+                if (lastSelectedIndex !== -1 && currentIndex !== -1) {
+                    const start = Math.min(lastSelectedIndex, currentIndex);
+                    const end = Math.max(lastSelectedIndex, currentIndex);
+                    const range = files.slice(start, end + 1);
+
+                    const newSelectedIds = range.map(item => item.id);
+
+                    setSelected([...new Set([...selected, ...newSelectedIds])]);
+                }
+            } else if (selected.includes(file.id)) {
+                setSelected(selected.filter(id => id !== file.id));
+            } else {
+                setSelected([...selected, file.id]);
+            }
+        } else {
+            setStartIndex(files.indexOf(file));
+            setCarouselOpen(true);
+        }
+    };
+
+    const handleSelect = (file: ContextFile) => {
+        if (selected.includes(file.id)) {
+            setSelected(selected.filter(id => id !== file.id));
+        } else {
+            setSelecting(true);
+            setSelected([...selected, file.id]);
+        }
+    };
+
+    const renderGroup = (tag: FolderTag | "no-tags", files: ContextFile[]) => {
+        const groupKey = tag === "no-tags" ? "no-tags" : tag.id;
+        const headerColor = tag === "no-tags" ? "" : tag.color;
+        const headerText = tag === "no-tags" ? "No tags" : tag.name;
 
         return (
             <AccordionItem value={groupKey} className="prose:overflow-visible">
@@ -78,48 +91,8 @@ export default function TagGroupedGrid() {
                             <ImagePreviewGrid
                                 file={file}
                                 selected={selected}
-                                onClick={e => {
-                                    if (selecting) {
-                                        if (e?.shiftKey && selected.length > 0) {
-                                            const lastSelectedId = selected[selected.length - 1];
-                                            const lastSelectedIndex = files.findIndex(
-                                                item => item.id === lastSelectedId
-                                            );
-                                            const currentIndex = files.findIndex(item => item.id === file.id);
-
-                                            if (lastSelectedIndex !== -1 && currentIndex !== -1) {
-                                                const start = Math.min(lastSelectedIndex, currentIndex);
-                                                const end = Math.max(lastSelectedIndex, currentIndex);
-                                                const range = files.slice(start, end + 1);
-
-                                                const newSelectedIds = range.map(item => item.id);
-                                                const newSize = range.reduce((acc, item) => acc + item.size, 0);
-
-                                                setSelected([...new Set([...selected, ...newSelectedIds])]);
-                                                setSizeSelected(sizeSelected + newSize);
-                                            }
-                                        } else if (selected.includes(file.id)) {
-                                            setSelected(selected.filter(id => id !== file.id));
-                                            setSizeSelected(sizeSelected - file.size);
-                                        } else {
-                                            setSelected([...selected, file.id]);
-                                            setSizeSelected(sizeSelected + file.size);
-                                        }
-                                    } else {
-                                        setStartIndex(files.indexOf(file));
-                                        setCarouselOpen(true);
-                                    }
-                                }}
-                                onSelect={() => {
-                                    if (selected.includes(file.id)) {
-                                        setSelected(selected.filter(id => id !== file.id));
-                                        setSizeSelected(sizeSelected - file.size);
-                                    } else {
-                                        setSelecting(true);
-                                        setSelected([...selected, file.id]);
-                                        setSizeSelected(sizeSelected + file.size);
-                                    }
-                                }}
+                                onClick={e => handleClick(file, e)}
+                                onSelect={() => handleSelect(file)}
                             />
                         </Fragment>
                     ))}
@@ -136,20 +109,19 @@ export default function TagGroupedGrid() {
                     sizeSelected={sizeSelected}
                     onClose={() => {
                         setSelected([]);
-                        setSizeSelected(0);
                         setSelecting(false);
                     }}
                 />
             ) : null}
-            <Accordion
-                type="multiple"
-                defaultValue={groupedFiles.map(group => (group.tag !== "No tags" ? group.tag.id : "no-tags"))}
-            >
-                {groupedFiles.map(group => (
-                    <Fragment key={group.tag !== "No tags" ? group.tag.id : "no-tags"}>
-                        {renderGroup(group.tag, group.files)}
-                    </Fragment>
-                ))}
+            <Accordion type="multiple" defaultValue={Object.keys(groupedFiles)}>
+                {Object.entries(groupedFiles).map(item => {
+                    const [tagId, tagFiles] = item;
+                    const tag = folder.tags.find(t => t.id === tagId);
+
+                    if (!tag) return;
+
+                    return <Fragment key={tagId}>{renderGroup(tag, tagFiles)}</Fragment>;
+                })}
             </Accordion>
             <CarouselDialog
                 title={folder.name}

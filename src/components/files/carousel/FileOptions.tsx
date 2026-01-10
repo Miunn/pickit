@@ -53,10 +53,14 @@ export default function FileOptions({
     const [copied, setCopied] = useState(false);
 
     const handleTagSelected = async (tag: FolderTag): Promise<boolean> => {
+        // Optimistically update UI
         setFiles((prev: ContextFile[]) => {
             return prev.map(f => (f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f));
         });
+
         const result = await addTagsToFile(file.id, [tag.id]);
+
+        // Revert UI update if API call fails
         if (!result.success) {
             sonnerToast.error(t("addTag.errorAdd"));
 
