@@ -9,10 +9,7 @@ type TreeMarkerProps = {
 
 export const PoiMarker = ({ position, featureId, onMarkerClick }: TreeMarkerProps) => {
     const [markerRef, marker] = useAdvancedMarkerRef();
-    const handleClick = useCallback(
-        () => onMarkerClick && onMarkerClick(marker!, featureId),
-        [onMarkerClick, marker, featureId]
-    );
+    const handleClick = useCallback(() => onMarkerClick?.(marker!, featureId), [onMarkerClick, marker, featureId]);
 
     return (
         <AdvancedMarker

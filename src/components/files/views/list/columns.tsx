@@ -84,7 +84,7 @@ const ImageActionsDropdown = React.memo(
                     >
                         {t?.("columns.actions.view")}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => row?.toggleSelected && row.toggleSelected(!row.getIsSelected())}>
+                    <DropdownMenuItem onClick={() => row?.toggleSelected(!row.getIsSelected())}>
                         {row?.getIsSelected() ? t?.("columns.actions.deselect") : t?.("columns.actions.select")}
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>

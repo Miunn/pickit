@@ -27,11 +27,15 @@ import { useFilesContext } from "@/context/FilesContext";
 import SelectingBar from "./SelectingBar";
 import FolderDescription from "@/components/folders/views/grid/FolderDescription";
 import RecentlyAdded from "./RecentlyAdded";
+import { usePathname } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
 
 export const ImagesGrid = () => {
     const { user } = useSession();
     const { folder, isShared /*token, tokenHash*/ } = useFolderContext();
     const { files, setFiles, sortedFiles } = useFilesContext();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
     const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
@@ -70,7 +74,7 @@ export const ImagesGrid = () => {
     useEffect(() => {
         if (hashProcessedRef.current) return;
 
-        const hash = window.location.hash;
+        const hash = globalThis.location.hash;
         if (hash === "") return;
 
         const fileIdFromHash = hash.substring(1); // Remove the '#' character
@@ -84,8 +88,8 @@ export const ImagesGrid = () => {
 
                 // Mark as processed and clean up hash immediately
                 hashProcessedRef.current = true;
-                if (window.location.hash === `#${fileIdFromHash}`) {
-                    history.replaceState("", document.title, window.location.pathname + window.location.search);
+                if (hash === `#${fileIdFromHash}`) {
+                    history.replaceState("", document.title, pathname + searchParams.toString());
                 }
                 return;
             }
@@ -101,7 +105,7 @@ export const ImagesGrid = () => {
         return () => {
             hashProcessedRef.current = false;
         };
-    }, []);
+    }, [pathname, searchParams]);
 
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
@@ -153,20 +157,17 @@ export const ImagesGrid = () => {
                 newPosition = (await updateFilePosition(activeId, undefined, sortedFiles[0].id)).newPosition;
             } else if (overIndex === sortedFiles.length - 1) {
                 // We just dragged to the last position
-                newPosition = (await updateFilePosition(activeId, sortedFiles[sortedFiles.length - 2].id, undefined))
-                    .newPosition;
-            } else {
+                newPosition = (await updateFilePosition(activeId, sortedFiles[sortedFiles.length - 2].id)).newPosition;
+            } else if (activeIndex < overIndex) {
                 // We just dragged to the middle
                 // Depending on the direction, we need to update the position of the file
-                if (activeIndex < overIndex) {
-                    newPosition = (
-                        await updateFilePosition(activeId, sortedFiles[overIndex].id, sortedFiles[overIndex + 1].id)
-                    ).newPosition;
-                } else {
-                    newPosition = (
-                        await updateFilePosition(activeId, sortedFiles[overIndex - 1].id, sortedFiles[overIndex].id)
-                    ).newPosition;
-                }
+                newPosition = (
+                    await updateFilePosition(activeId, sortedFiles[overIndex].id, sortedFiles[overIndex + 1].id)
+                ).newPosition;
+            } else {
+                newPosition = (
+                    await updateFilePosition(activeId, sortedFiles[overIndex - 1].id, sortedFiles[overIndex].id)
+                ).newPosition;
             }
 
             if (newPosition) {

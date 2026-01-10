@@ -28,6 +28,10 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
     const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
     const nextId = useRef(0);
 
+    const clearRipple = (id: number) => {
+        setRipples(prev => prev.filter(r => r.id !== id));
+    };
+
     const addRipple = (e: React.MouseEvent) => {
         const rect = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -38,7 +42,7 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
 
         // Remove ripple after animation
         setTimeout(() => {
-            setRipples(prev => prev.filter(r => r.id !== id));
+            clearRipple(id);
         }, 800);
     };
 
@@ -66,7 +70,7 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
             {folder.coverId ? (
                 <div className={`relative w-20 shrink-0 h-full mb-1 flex justify-center items-center rounded-t-xl`}>
                     <Image
-                        src={`/api/folders/${folder.id}/images/${folder.coverId}${share ? `?share=${share}&t=${shareType}&h=${shareHash}` : ""}`}
+                        src={`/api/folders/${folder.id}/images/${folder.coverId}?share=${share}&t=${shareType}&h=${shareHash}`}
                         alt={folder.name}
                         className={"relative rounded-t-xl object-cover"}
                         sizes="33vw"

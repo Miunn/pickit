@@ -206,16 +206,18 @@ export default function ImagesList() {
                         {table.getHeaderGroups().map(headerGroup => (
                             <TableRow key={headerGroup.id} className="hover:bg-transparent">
                                 {headerGroup.headers.map(header => {
+                                    let ariaSort: "none" | "ascending" | "descending" = "none";
+
+                                    if (header.column.getIsSorted() === "asc") {
+                                        ariaSort = "ascending";
+                                    } else if (header.column.getIsSorted() === "desc") {
+                                        ariaSort = "descending";
+                                    }
+
                                     return (
                                         <TableHead
                                             key={header.id}
-                                            aria-sort={
-                                                header.column.getIsSorted() === "asc"
-                                                    ? "ascending"
-                                                    : header.column.getIsSorted() === "desc"
-                                                      ? "descending"
-                                                      : "none"
-                                            }
+                                            aria-sort={ariaSort}
                                             {...{
                                                 colSpan: header.colSpan,
                                                 style: {
