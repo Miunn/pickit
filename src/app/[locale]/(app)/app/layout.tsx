@@ -21,193 +21,206 @@ import { FileService } from "@/data/file-service";
 import { AccessTokenService } from "@/data/access-token-service";
 
 export const metadata: Metadata = {
-    title: "Echomori",
-    description: "Upload and share images with ease.",
+	title: "Echomori",
+	description: "Upload and share images with ease.",
 };
 
 export default async function LocaleLayout(
-    props: Readonly<{
-        children: React.ReactNode;
-        params: Promise<{ locale: string }>;
-        searchParams: { share?: string; h?: string; t?: string };
-    }>
+	props: Readonly<{
+		children: React.ReactNode;
+		params: Promise<{ locale: string }>;
+		searchParams: { share?: string; h?: string; t?: string };
+	}>
 ) {
-    const params = await props.params;
+	const params = await props.params;
 
-    const { locale } = params;
+	const { locale } = params;
 
-    const { children } = props;
+	const { children } = props;
 
-    const { user, session } = await getCurrentSession();
+	const { user, session } = await getCurrentSession();
 
-    const t = await getTranslations("sidebar");
-    const notifications: Notification[] = []; /*user
+	const t = await getTranslations("sidebar");
+	const notifications: Notification[] = []; /*user
         ? await prisma.notification.findMany({
               where: { userId: user.id },
               orderBy: { createdAt: "desc" },
           })
         :*/
-    const folders = user
-        ? await FolderService.getMultiple({
-              where: { createdBy: { id: user.id } },
-              select: { id: true, name: true },
-          })
-        : [];
-    const files = user
-        ? await FileService.getMultiple({
-              where: { createdBy: { id: user.id } },
-              select: {
-                  id: true,
-                  name: true,
-                  folder: {
-                      select: {
-                          id: true,
-                          name: true,
-                      },
-                  },
-              },
-              orderBy: [{ folder: { name: "asc" } }, { name: "asc" }],
-          })
-        : [];
-    const accessTokens = user
-        ? await AccessTokenService.getMultiple({
-              where: {
-                  folder: { createdBy: { id: user.id } },
-                  email: null,
-              },
-              include: { folder: true },
-              orderBy: [{ folder: { name: "asc" } }],
-          })
-        : [];
-    const personsAccessTokens = user
-        ? await AccessTokenService.getMultiple({
-              where: {
-                  folder: { createdBy: { id: user.id } },
-                  email: { not: null },
-              },
-              include: { folder: true },
-              orderBy: [{ folder: { name: "asc" } }],
-          })
-        : [];
-    const sharedWithMeFolders = user
-        ? await AccessTokenService.getMultiple({
-              where: { email: user.email },
-              include: { folder: { include: { createdBy: true } } },
-          })
-        : [];
+	const folders = user
+		? await FolderService.getMultiple({
+				where: { createdBy: { id: user.id } },
+				select: { id: true, name: true },
+			})
+		: [];
+	const files = user
+		? await FileService.getMultiple({
+				where: { createdBy: { id: user.id } },
+				select: {
+					id: true,
+					name: true,
+					folder: {
+						select: {
+							id: true,
+							name: true,
+						},
+					},
+				},
+				orderBy: [{ folder: { name: "asc" } }, { name: "asc" }],
+			})
+		: [];
+	const accessTokens = user
+		? await AccessTokenService.getMultiple({
+				where: {
+					folder: { createdBy: { id: user.id } },
+					email: null,
+				},
+				include: { folder: true },
+				orderBy: [{ folder: { name: "asc" } }],
+			})
+		: [];
+	const personsAccessTokens = user
+		? await AccessTokenService.getMultiple({
+				where: {
+					folder: { createdBy: { id: user.id } },
+					email: { not: null },
+				},
+				include: { folder: true },
+				orderBy: [{ folder: { name: "asc" } }],
+			})
+		: [];
+	const sharedWithMeFolders = user
+		? await AccessTokenService.getMultiple({
+				where: { email: user.email },
+				include: { folder: { include: { createdBy: true } } },
+			})
+		: [];
 
-    return (
-        <NuqsAdapter>
-            <SessionProvider user={user} session={session}>
-                <SidebarProvider defaultOpen={!!user}>
-                    <AppSidebar
-                        locale={locale}
-                        user={user}
-                        notifications={notifications}
-                        items={{
-                            navMainItems: [
-                                {
-                                    key: "folders",
-                                    title: t("main.folders"),
-                                    icon: Folder,
-                                    url: `/${locale}/app/folders`,
-                                    isActive: true,
-                                    items: folders.map(folder => ({
-                                        key: folder.id,
-                                        title: folder.name,
-                                        url: `/${locale}/app/folders/${folder.id}`,
-                                    })),
-                                },
-                                {
-                                    key: "files",
-                                    title: t("main.images"),
-                                    icon: Image,
-                                    url: `/${locale}/app/files`,
-                                    items: files.map(file => ({
-                                        key: file.id,
-                                        title: `${file.folder.name} - ${file.name}`,
-                                        url: `/${locale}/app/folders/${file.folder.id}#${file.id}`,
-                                    })),
-                                },
-                                {
-                                    key: "links",
-                                    title: t("main.links"),
-                                    icon: Link,
-                                    url: `/${locale}/app/links`,
-                                    items: accessTokens
-                                        .map(accessToken => ({
-                                            key: accessToken.id,
-                                            title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
-                                            url: `/${locale}/app/links?l=${accessToken.id}`,
-                                        }))
-                                        .concat(
-                                            personsAccessTokens.map(accessToken => ({
-                                                key: accessToken.id,
-                                                title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
-                                                url: `/${locale}/app/links?l=${accessToken.id}`,
-                                            }))
-                                        ),
-                                },
-                                {
-                                    key: "map",
-                                    title: t("main.map"),
-                                    icon: Map,
-                                    url: `/${locale}/app/map`,
-                                },
-                                {
-                                    key: "shared-with-me",
-                                    title: t("main.sharedWithMe"),
-                                    icon: Folder,
-                                    url: `/${locale}/app/shared-with-me`,
-                                    items: sharedWithMeFolders.map(accessToken => ({
-                                        key: accessToken.folder.id,
-                                        title: `${accessToken.folder.createdBy.name} - ${accessToken.folder.name}`,
-                                        url: `/${locale}/app/folders/${accessToken.folder.id}?share=${accessToken.token}&t=p`,
-                                    })),
-                                },
-                            ],
-                            navSecondaryItems: [
-                                ...(user?.role.includes(Role.ADMIN)
-                                    ? [
-                                          {
-                                              title: "Administration",
-                                              icon: undefined,
-                                              url: `/${locale}/app/administration`,
-                                          },
-                                      ]
-                                    : []),
-                            ],
-                        }}
-                    />
-                    <SidebarInset className="flex-1 max-h-[calc(100svh-theme(spacing.4))]">
-                        <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-                            <div className="w-full flex justify-between items-center px-4">
-                                <div className="flex items-center gap-2">
-                                    <SidebarTrigger className="-ml-1" />
-                                    <Separator orientation="vertical" className="mr-2 h-4" />
-                                    <div id="breadcrumb-container">
-                                        <BreadcrumbWrapper />
-                                    </div>
-                                </div>
-                                <div>
-                                    <SwitchLocale locale={locale} className="text-xs" />
-                                    <SwitchTheme />
-                                </div>
-                            </div>
-                        </header>
-                        {user?.emailVerified === false ? (
-                            <UnverifiedEmail
-                                locale={locale}
-                                userDeletionDate={user.emailVerificationDeadline || addDays(user.createdAt, 7)}
-                            />
-                        ) : null}
+	return (
+		<NuqsAdapter>
+			<SessionProvider user={user} session={session}>
+				<SidebarProvider defaultOpen={!!user}>
+					<AppSidebar
+						locale={locale}
+						user={user}
+						notifications={notifications}
+						items={{
+							navMainItems: [
+								{
+									key: "folders",
+									title: t("main.folders"),
+									icon: Folder,
+									url: `/${locale}/app/folders`,
+									isActive: true,
+									items: folders.map(folder => ({
+										key: folder.id,
+										title: folder.name,
+										url: `/${locale}/app/folders/${folder.id}`,
+									})),
+								},
+								{
+									key: "files",
+									title: t("main.images"),
+									icon: Image,
+									url: `/${locale}/app/files`,
+									items: files.map(file => ({
+										key: file.id,
+										title: `${file.folder.name} - ${file.name}`,
+										url: `/${locale}/app/folders/${file.folder.id}#${file.id}`,
+									})),
+								},
+								{
+									key: "links",
+									title: t("main.links"),
+									icon: Link,
+									url: `/${locale}/app/links`,
+									items: accessTokens
+										.map(accessToken => ({
+											key: accessToken.id,
+											title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
+											url: `/${locale}/app/links?l=${accessToken.id}`,
+										}))
+										.concat(
+											personsAccessTokens.map(
+												accessToken => ({
+													key: accessToken.id,
+													title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
+													url: `/${locale}/app/links?l=${accessToken.id}`,
+												})
+											)
+										),
+								},
+								{
+									key: "map",
+									title: t("main.map"),
+									icon: Map,
+									url: `/${locale}/app/map`,
+								},
+								{
+									key: "shared-with-me",
+									title: t("main.sharedWithMe"),
+									icon: Folder,
+									url: `/${locale}/app/shared-with-me`,
+									items: sharedWithMeFolders.map(accessToken => ({
+										key: accessToken.folder.id,
+										title: `${accessToken.folder.createdBy.name} - ${accessToken.folder.name}`,
+										url: `/${locale}/app/folders/${accessToken.folder.id}?share=${accessToken.token}&t=p`,
+									})),
+								},
+							],
+							navSecondaryItems: [
+								...(user?.role.includes(Role.ADMIN)
+									? [
+											{
+												title: "Administration",
+												icon: undefined,
+												url: `/${locale}/app/administration`,
+											},
+										]
+									: []),
+							],
+						}}
+					/>
+					<SidebarInset className="flex-1 max-h-[calc(100svh-theme(spacing.4))]">
+						<header className="flex h-16 shrink-0 items-center gap-2 border-b">
+							<div className="w-full flex justify-between items-center px-4">
+								<div className="flex items-center gap-2">
+									<SidebarTrigger className="-ml-1" />
+									<Separator
+										orientation="vertical"
+										className="mr-2 h-4"
+									/>
+									<div id="breadcrumb-container">
+										<BreadcrumbWrapper />
+									</div>
+								</div>
+								<div>
+									<SwitchLocale
+										locale={locale}
+										className="text-xs"
+									/>
+									<SwitchTheme />
+								</div>
+							</div>
+						</header>
+						{user?.emailVerified === false ? (
+							<UnverifiedEmail
+								locale={locale}
+								userDeletionDate={
+									user.emailVerificationDeadline ||
+									addDays(user.createdAt, 7)
+								}
+							/>
+						) : null}
 
-                        <div className="flex flex-1 flex-col gap-4 overflow-auto">{children}</div>
-                    </SidebarInset>
-                </SidebarProvider>
-            </SessionProvider>
-            <CommandSearch folders={folders} files={files} />
-            <Toaster />
-        </NuqsAdapter>
-    );
+						<div className="flex flex-1 flex-col gap-4 overflow-auto">
+							{children}
+						</div>
+					</SidebarInset>
+				</SidebarProvider>
+			</SessionProvider>
+			<CommandSearch folders={folders} files={files} />
+			<Toaster />
+		</NuqsAdapter>
+	);
 }
