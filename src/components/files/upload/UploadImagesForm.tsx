@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { notifyAboutUpload } from "@/actions/accessTokens";
 import { useSearchParams } from "next/navigation";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 interface UploadImagesFormProps {
 	readonly folderId: string;

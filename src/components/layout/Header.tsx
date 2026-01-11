@@ -11,109 +11,111 @@ import { SwitchTheme } from "../generic/SwitchTheme";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import LogoImage from "../generic/LogoImage";
 
+const NavLinks = ({ locale, t }: { readonly locale: string; readonly t: ReturnType<typeof useTranslations> }) => (
+	<>
+		<Link href={`/${locale}/features`} className="hover:text-primary transition-colors">
+			{t("nav.features")}
+		</Link>
+		<Link href={`/${locale}/pricing`} className="hover:text-primary transition-colors">
+			{t("nav.pricing")}
+		</Link>
+		<Link href={`/${locale}/contact`} className="hover:text-primary transition-colors">
+			{t("nav.contact")}
+		</Link>
+	</>
+);
+
 export default function Header({ className }: { readonly className?: string }) {
-    const t = useTranslations("components.header");
-    const locale = useLocale();
-    const headerRowRef = React.useRef<HTMLHRElement>(null);
-    const [isOpen, setIsOpen] = React.useState(false);
-    const scrollState = {
-        top: true,
-        topThreshold: 10,
-        onScroll: function () {
-            if (this.top && window.scrollY > this.topThreshold) {
-                this.top = false;
-                this.updateUI();
-            } else if (!top && window.scrollY <= this.topThreshold) {
-                this.top = true;
-                this.updateUI();
-            }
-        },
-        updateUI: function () {
-            headerRowRef.current?.classList.toggle("opacity-0");
-            headerRowRef.current?.classList.toggle("opacity-100");
-        },
-    };
+	const t = useTranslations("components.header");
+	const locale = useLocale();
+	const headerRowRef = React.useRef<HTMLHRElement>(null);
+	const [isOpen, setIsOpen] = React.useState(false);
+	const scrollState = {
+		top: true,
+		topThreshold: 10,
+		onScroll: function () {
+			if (this.top && window.scrollY > this.topThreshold) {
+				this.top = false;
+				this.updateUI();
+			} else if (!top && window.scrollY <= this.topThreshold) {
+				this.top = true;
+				this.updateUI();
+			}
+		},
+		updateUI: function () {
+			headerRowRef.current?.classList.toggle("opacity-0");
+			headerRowRef.current?.classList.toggle("opacity-100");
+		},
+	};
 
-    React.useEffect(() => {
-        window.addEventListener("scroll", () => scrollState.onScroll());
-        return () => window.removeEventListener("scroll", () => scrollState.onScroll());
-    });
+	React.useEffect(() => {
+		window.addEventListener("scroll", () => scrollState.onScroll());
+		return () => window.removeEventListener("scroll", () => scrollState.onScroll());
+	});
 
-    const NavLinks = () => (
-        <>
-            <Link href={`/${locale}/features`} className="hover:text-primary transition-colors">
-                {t("nav.features")}
-            </Link>
-            <Link href={`/${locale}/pricing`} className="hover:text-primary transition-colors">
-                {t("nav.pricing")}
-            </Link>
-            <Link href={`/${locale}/contact`} className="hover:text-primary transition-colors">
-                {t("nav.contact")}
-            </Link>
-        </>
-    );
+	return (
+		<header
+			className={cn(
+				"flex items-center justify-between py-4",
+				"sticky top-0 z-50 bg-background/90 backdrop-blur",
+				className
+			)}
+		>
+			<div className={"w-full grid grid-cols-3 items-center max-w-7xl mx-auto px-4"}>
+				<Link href={`/${locale}`} className="w-fit flex items-center gap-2">
+					<LogoImage size="small" />
+					<h1 className="text-xl text-primary font-bold">Echomori</h1>
+				</Link>
 
-    return (
-        <header
-            className={cn(
-                "flex items-center justify-between py-4",
-                "sticky top-0 z-50 bg-background/90 backdrop-blur",
-                className
-            )}
-        >
-            <div className={"w-full grid grid-cols-3 items-center max-w-7xl mx-auto px-4"}>
-                <Link href={`/${locale}`} className="w-fit flex items-center gap-2">
-                    <LogoImage size="small" />
-                    <h1 className="text-xl text-primary font-bold">Echomori</h1>
-                </Link>
+				<nav className="opacity-0 md:opacity-100 place-self-center">
+					<ul className="grid grid-cols-3 place-items-center gap-10 font-semibold text-sm">
+						<NavLinks locale={locale} t={t} />
+					</ul>
+				</nav>
 
-                <nav className="opacity-0 md:opacity-100 place-self-center">
-                    <ul className="grid grid-cols-3 place-items-center gap-10 font-semibold text-sm">
-                        <NavLinks />
-                    </ul>
-                </nav>
+				<div className="w-fit place-self-end flex gap-2 items-center justify-end">
+					<div className="hidden md:flex gap-2">
+						<Button asChild>
+							<Link href={`/${locale}/signin`}>{t("nav.login")}</Link>
+						</Button>
+						<SwitchLocale locale={locale} />
+						<SwitchTheme />
+					</div>
 
-                <div className="w-fit place-self-end flex gap-2 items-center justify-end">
-                    <div className="hidden md:flex gap-2">
-                        <Button asChild>
-                            <Link href={`/${locale}/signin`}>{t("nav.login")}</Link>
-                        </Button>
-                        <SwitchLocale locale={locale} />
-                        <SwitchTheme />
-                    </div>
+					<Sheet open={isOpen} onOpenChange={setIsOpen}>
+						<SheetTrigger asChild>
+							<Button variant="ghost" size="icon" className="md:hidden">
+								<Menu className="h-5 w-5" />
+							</Button>
+						</SheetTrigger>
+						<SheetContent side="right" className="w-[300px] sm:w-[400px] z-[100]">
+							<nav className="flex flex-col gap-4 mt-8">
+								<NavLinks locale={locale} t={t} />
+								<div className="flex flex-col gap-4 mt-4">
+									<Button asChild className="w-full">
+										<Link href={`/${locale}/signin`}>
+											{t("nav.login")}
+										</Link>
+									</Button>
+									<div className="flex justify-center gap-4 relative">
+										<div className="relative z-[101]">
+											<SwitchLocale locale={locale} />
+										</div>
+										<div className="relative z-[101]">
+											<SwitchTheme />
+										</div>
+									</div>
+								</div>
+							</nav>
+						</SheetContent>
+					</Sheet>
+				</div>
+			</div>
 
-                    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                        <SheetTrigger asChild>
-                            <Button variant="ghost" size="icon" className="md:hidden">
-                                <Menu className="h-5 w-5" />
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent side="right" className="w-[300px] sm:w-[400px] z-[100]">
-                            <nav className="flex flex-col gap-4 mt-8">
-                                <NavLinks />
-                                <div className="flex flex-col gap-4 mt-4">
-                                    <Button asChild className="w-full">
-                                        <Link href={`/${locale}/signin`}>{t("nav.login")}</Link>
-                                    </Button>
-                                    <div className="flex justify-center gap-4 relative">
-                                        <div className="relative z-[101]">
-                                            <SwitchLocale locale={locale} />
-                                        </div>
-                                        <div className="relative z-[101]">
-                                            <SwitchTheme />
-                                        </div>
-                                    </div>
-                                </div>
-                            </nav>
-                        </SheetContent>
-                    </Sheet>
-                </div>
-            </div>
-
-            <hr
-                ref={headerRowRef}
-                className="absolute w-full bottom-0 transition-opacity duration-300 ease-in-out opacity-0"
-            ></hr>
-        </header>
-    );
+			<hr
+				ref={headerRowRef}
+				className="absolute w-full bottom-0 transition-opacity duration-300 ease-in-out opacity-0"
+			></hr>
+		</header>
+	);
 }
