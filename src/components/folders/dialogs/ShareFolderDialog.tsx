@@ -111,141 +111,136 @@ export const ShareFolderDialog = ({
 	};
 
 	return (
-		<>
-			<Dialog open={open} onOpenChange={setOpen}>
-				{!open && !setOpen ? (
-					<DialogTrigger asChild>
-						<Button variant="outline">
-							<Share2 className="mr-2" /> {t("trigger")}
-						</Button>
-					</DialogTrigger>
-				) : null}
-				<DialogContent
-					className={`sm:h-auto w-full max-w-full md:max-w-3xl overflow-auto`}
-					onPointerDownOutside={e => e.preventDefault()}
+		<Dialog open={open} onOpenChange={setOpen}>
+			{!open && !setOpen ? (
+				<DialogTrigger asChild>
+					<Button variant="outline">
+						<Share2 className="mr-2" /> {t("trigger")}
+					</Button>
+				</DialogTrigger>
+			) : null}
+			<DialogContent
+				className={`sm:h-auto w-full max-w-full md:max-w-3xl overflow-auto`}
+				onPointerDownOutside={e => e.preventDefault()}
+			>
+				<motion.div
+					initial={false}
+					transition={{
+						type: "spring",
+						stiffness: 300,
+						damping: 30,
+					}}
+					className="w-full"
 				>
-					<motion.div
-						initial={false}
-						transition={{
-							type: "spring",
-							stiffness: 300,
-							damping: 30,
-						}}
-						className="w-full"
-					>
-						<DialogHeader>
-							<DialogTitle className="text-xl">
-								{showMessageStep ? (
-									<div className="flex items-center gap-2">
-										<ChevronLeft
-											className="size-4 cursor-pointer"
-											onClick={handleBackToContacts}
-										/>
-										{t("title")}
-									</div>
-								) : (
-									t("title")
-								)}
-							</DialogTitle>
-							<DialogDescription className="text-sm">
-								{showMessageStep
-									? t("message.description")
-									: t("description")}
-							</DialogDescription>
-						</DialogHeader>
-
-						<AnimatePresence mode="wait">
+					<DialogHeader>
+						<DialogTitle className="text-xl">
 							{showMessageStep ? (
-								<motion.div
-									key="message-view"
-									initial={{ opacity: 0, x: 20 }}
-									animate={{ opacity: 1, x: 0 }}
-									exit={{ opacity: 0, x: -20 }}
-									transition={{
-										duration: 0.3,
-										ease: "easeInOut",
-									}}
-									className="w-full"
-								>
-									<ShareMessageView
-										tokenList={tokenList}
-										shareMessage={shareMessage}
-										setShareMessage={setShareMessage}
+								<div className="flex items-center gap-2">
+									<ChevronLeft
+										className="size-4 cursor-pointer"
+										onClick={handleBackToContacts}
 									/>
-									<DialogFooter className="flex-col sm:flex-row gap-2 pt-4">
+									{t("title")}
+								</div>
+							) : (
+								t("title")
+							)}
+						</DialogTitle>
+						<DialogDescription className="text-sm">
+							{showMessageStep ? t("message.description") : t("description")}
+						</DialogDescription>
+					</DialogHeader>
+
+					<AnimatePresence mode="wait">
+						{showMessageStep ? (
+							<motion.div
+								key="message-view"
+								initial={{ opacity: 0, x: 20 }}
+								animate={{ opacity: 1, x: 0 }}
+								exit={{ opacity: 0, x: -20 }}
+								transition={{
+									duration: 0.3,
+									ease: "easeInOut",
+								}}
+								className="w-full"
+							>
+								<ShareMessageView
+									tokenList={tokenList}
+									shareMessage={shareMessage}
+									setShareMessage={setShareMessage}
+								/>
+								<DialogFooter className="flex-col sm:flex-row gap-2 pt-4">
+									<Button
+										variant="outline"
+										onClick={handleBackToContacts}
+										className="w-full sm:w-auto"
+									>
+										{t("message.back") || "Back"}
+									</Button>
+									{loadingShare ? (
+										<Button
+											disabled
+											className="w-full sm:w-auto"
+										>
+											<Loader2
+												className={
+													"w-4 h-4 mr-2 animate-spin"
+												}
+											/>{" "}
+											{t("message.sending") ||
+												"Sending emails"}
+										</Button>
+									) : (
+										<Button
+											onClick={
+												submitSharePersonTokens
+											}
+											className="w-full sm:w-auto"
+										>
+											{t("message.send") || "Send"}
+										</Button>
+									)}
+								</DialogFooter>
+							</motion.div>
+						) : (
+							<motion.div
+								key="share-view"
+								initial={{ opacity: 0, x: -20 }}
+								animate={{ opacity: 1, x: 0 }}
+								exit={{ opacity: 0, x: 20 }}
+								transition={{
+									duration: 0.3,
+									ease: "easeInOut",
+								}}
+								className="w-full"
+							>
+								<ShareContactView
+									tokenList={tokenList}
+									handleAddToken={handleAddToken}
+									handleRemoveToken={handleRemoveToken}
+									folder={folder}
+								/>
+								<DialogFooter className="flex-col sm:flex-row gap-2 pt-4">
+									<DialogClose asChild>
 										<Button
 											variant="outline"
-											onClick={handleBackToContacts}
 											className="w-full sm:w-auto"
 										>
-											{t("message.back") || "Back"}
+											{t("cancel")}
 										</Button>
-										{loadingShare ? (
-											<Button
-												disabled
-												className="w-full sm:w-auto"
-											>
-												<Loader2
-													className={
-														"w-4 h-4 mr-2 animate-spin"
-													}
-												/>{" "}
-												{t("message.sending") ||
-													"Sending emails"}
-											</Button>
-										) : (
-											<Button
-												onClick={
-													submitSharePersonTokens
-												}
-												className="w-full sm:w-auto"
-											>
-												{t("message.send") ||
-													"Send"}
-											</Button>
-										)}
-									</DialogFooter>
-								</motion.div>
-							) : (
-								<motion.div
-									key="share-view"
-									initial={{ opacity: 0, x: -20 }}
-									animate={{ opacity: 1, x: 0 }}
-									exit={{ opacity: 0, x: 20 }}
-									transition={{
-										duration: 0.3,
-										ease: "easeInOut",
-									}}
-									className="w-full"
-								>
-									<ShareContactView
-										tokenList={tokenList}
-										handleAddToken={handleAddToken}
-										handleRemoveToken={handleRemoveToken}
-										folder={folder}
-									/>
-									<DialogFooter className="flex-col sm:flex-row gap-2 pt-4">
-										<DialogClose asChild>
-											<Button
-												variant="outline"
-												className="w-full sm:w-auto"
-											>
-												{t("cancel")}
-											</Button>
-										</DialogClose>
-										<Button
-											onClick={handleShareClick}
-											className="w-full sm:w-auto"
-										>
-											{t("share")}
-										</Button>
-									</DialogFooter>
-								</motion.div>
-							)}
-						</AnimatePresence>
-					</motion.div>
-				</DialogContent>
-			</Dialog>
-		</>
+									</DialogClose>
+									<Button
+										onClick={handleShareClick}
+										className="w-full sm:w-auto"
+									>
+										{t("share")}
+									</Button>
+								</DialogFooter>
+							</motion.div>
+						)}
+					</AnimatePresence>
+				</motion.div>
+			</DialogContent>
+		</Dialog>
 	);
 };

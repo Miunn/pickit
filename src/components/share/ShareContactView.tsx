@@ -17,7 +17,7 @@ import { CreatePersonAccessTokenFormSchema, FolderWithAccessToken } from "@/lib/
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import LockTokenDialog from "@/components/folders/dialogs/LockTokenDialog";
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { zodResolver } from "@hookform/resolvers/zod";
