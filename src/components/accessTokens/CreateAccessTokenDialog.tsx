@@ -1,7 +1,15 @@
-"use client"
+"use client";
 
 import { Button } from "../ui/button";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "../ui/dialog";
 import { useState } from "react";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -20,11 +28,16 @@ import { createNewAccessToken } from "@/actions/accessTokens";
 import { toast } from "@/hooks/use-toast";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 
-export default function CreateAccessTokenDialog({ children, folders }: { children?: React.ReactNode, folders: LightFolder[] }) {
-
+export default function CreateAccessTokenDialog({
+    children,
+    folders,
+}: {
+    readonly children?: React.ReactNode;
+    readonly folders: LightFolder[];
+}) {
     const locale = useLocale();
     const intlFormatter = useFormatter();
-    const t = useTranslations('dialogs.accessTokens.create');
+    const t = useTranslations("dialogs.accessTokens.create");
     const [loading, setLoading] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
 
@@ -33,9 +46,9 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
         defaultValues: {
             folder: folders[0] ? folders[0].id : undefined,
             permission: "READ",
-            expiresAt: addYears(new Date(), 1)
-        }
-    })
+            expiresAt: addYears(new Date(), 1),
+        },
+    });
 
     async function submit(data: z.infer<typeof CreateAccessTokenFormSchema>) {
         setLoading(true);
@@ -46,16 +59,16 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
 
         if (r.error) {
             toast({
-                title: t('errors.unknown.title'),
-                description: t('errors.unknown.description'),
-                variant: "destructive"
+                title: t("errors.unknown.title"),
+                description: t("errors.unknown.description"),
+                variant: "destructive",
             });
             return;
         }
 
         toast({
-            title: t('success.title'),
-            description: t('success.description')
+            title: t("success.title"),
+            description: t("success.description"),
         });
 
         setOpen(false);
@@ -66,8 +79,8 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
             {children}
             <DialogContent className="max-w-lg">
                 <DialogHeader>
-                    <DialogTitle>{t('title')}</DialogTitle>
-                    <DialogDescription>{t('description')}</DialogDescription>
+                    <DialogTitle>{t("title")}</DialogTitle>
+                    <DialogDescription>{t("description")}</DialogDescription>
                 </DialogHeader>
                 <Form {...newTokenForm}>
                     <form onSubmit={newTokenForm.handleSubmit(submit)} className="space-y-6">
@@ -76,7 +89,7 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
                             name="folder"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{t('form.folder.label')}</FormLabel>
+                                    <FormLabel>{t("form.folder.label")}</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
                                             <SelectTrigger className="w-[462px] truncate">
@@ -84,8 +97,10 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {folders.map((folder) => (
-                                                <SelectItem key={folder.id} value={folder.id} className="truncate">{folder.name}</SelectItem>
+                                            {folders.map(folder => (
+                                                <SelectItem key={folder.id} value={folder.id} className="truncate">
+                                                    {folder.name}
+                                                </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
@@ -98,7 +113,7 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
                             name="permission"
                             render={({ field }) => (
                                 <FormItem className="space-y-1">
-                                    <FormLabel>{t('form.permissions.label')}</FormLabel>
+                                    <FormLabel>{t("form.permissions.label")}</FormLabel>
                                     <FormControl>
                                         <RadioGroup
                                             onValueChange={field.onChange}
@@ -110,7 +125,7 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
                                                     <RadioGroupItem value="READ" />
                                                 </FormControl>
                                                 <FormLabel className="font-normal">
-                                                    {t('form.permissions.options.read')}
+                                                    {t("form.permissions.options.read")}
                                                 </FormLabel>
                                             </FormItem>
                                             <FormItem className="flex items-center space-x-3 space-y-0">
@@ -118,7 +133,7 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
                                                     <RadioGroupItem value="WRITE" />
                                                 </FormControl>
                                                 <FormLabel className="font-normal">
-                                                    {t('form.permissions.options.write')}
+                                                    {t("form.permissions.options.write")}
                                                 </FormLabel>
                                             </FormItem>
                                         </RadioGroup>
@@ -132,7 +147,7 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
                             name="expiresAt"
                             render={({ field }) => (
                                 <FormItem className="flex flex-col">
-                                    <FormLabel>{t('form.expiry.label')}</FormLabel>
+                                    <FormLabel>{t("form.expiry.label")}</FormLabel>
                                     <Popover>
                                         <PopoverTrigger asChild>
                                             <FormControl>
@@ -144,7 +159,11 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
                                                     )}
                                                 >
                                                     {field.value ? (
-                                                        intlFormatter.dateTime(field.value, { month: "long", day: "numeric", year: "numeric" })
+                                                        intlFormatter.dateTime(field.value, {
+                                                            month: "long",
+                                                            day: "numeric",
+                                                            year: "numeric",
+                                                        })
                                                     ) : (
                                                         <span>Pick a date</span>
                                                     )}
@@ -157,29 +176,32 @@ export default function CreateAccessTokenDialog({ children, folders }: { childre
                                                 mode="single"
                                                 selected={field.value}
                                                 onSelect={field.onChange}
-                                                disabled={(date) => date < new Date()}
-                                                locale={locale === "fr" && fr || en}
+                                                disabled={date => date < new Date()}
+                                                locale={(locale === "fr" && fr) || en}
                                                 initialFocus
                                             />
                                         </PopoverContent>
                                     </Popover>
-                                    <FormDescription>{t('form.expiry.description')}</FormDescription>
+                                    <FormDescription>{t("form.expiry.description")}</FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
                         <DialogFooter className="mt-4">
                             <DialogClose asChild>
-                                <Button variant="outline">{t('actions.cancel')}</Button>
+                                <Button variant="outline">{t("actions.cancel")}</Button>
                             </DialogClose>
-                            {loading
-                                ? <Button type="button" disabled={true}><Loader2 className={"mr-2 animate-spin"} /> {t('actions.submitting')}</Button>
-                                : <Button type="submit">{t('actions.submit')}</Button>
-                            }
+                            {loading ? (
+                                <Button type="button" disabled={true}>
+                                    <Loader2 className={"mr-2 animate-spin"} /> {t("actions.submitting")}
+                                </Button>
+                            ) : (
+                                <Button type="submit">{t("actions.submit")}</Button>
+                            )}
                         </DialogFooter>
                     </form>
                 </Form>
             </DialogContent>
         </Dialog>
-    )
+    );
 }

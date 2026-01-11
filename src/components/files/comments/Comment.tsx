@@ -3,8 +3,12 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useFormatter, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Ellipsis } from "lucide-react";
-import { DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { DropdownMenu } from "@/components/ui/dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import DeleteCommentDialog from "./DeleteCommentDialog";
 import { useSession } from "@/providers/SessionProvider";
@@ -12,7 +16,7 @@ import { useFolderContext } from "@/context/FolderContext";
 import EditCommentDialog from "./EditCommentDialog";
 import { useFilesContext } from "@/context/FilesContext";
 
-export function Comment({ comment }: { comment: CommentType }) {
+export function Comment({ comment }: { readonly comment: CommentType }) {
     const { user } = useSession();
     const { token } = useFolderContext();
     const { files, setFiles } = useFilesContext();

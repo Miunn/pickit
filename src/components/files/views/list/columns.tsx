@@ -12,15 +12,15 @@ import { FileWithComments, FileWithFolder } from "@/lib/definitions";
 import { formatBytes } from "@/lib/utils";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import { useFormatter, useTranslations } from "next-intl";
 import RenameImageDialog from "../../dialogs/RenameImageDialog";
 import { DeleteImageDialog } from "../../dialogs/DeleteImageDialog";
 import ImagePropertiesDialog from "../../dialogs/ImagePropertiesDialog";
-import React, { useState, useCallback } from "react";
+import React from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { changeFolderCover } from "@/actions/folders";
 import LoadingImage from "@/components/files/LoadingImage";
 import { FileType } from "@prisma/client";
+import { createTranslator } from "next-intl";
 
 // Memoized dropdown menu component
 const ImageActionsDropdown = React.memo(
@@ -33,33 +33,33 @@ const ImageActionsDropdown = React.memo(
         setOpenProperties,
         setOpenDelete,
     }: {
-        row: Row<FileWithFolder & FileWithComments>;
-        t: ReturnType<typeof useTranslations>;
-        setCarouselOpen?: (open: boolean) => void;
-        setStartIndex?: (index: number) => void;
-        setOpenRename: (open: boolean) => void;
-        setOpenProperties: (open: boolean) => void;
-        setOpenDelete: (open: boolean) => void;
+        readonly row: Row<FileWithFolder & FileWithComments>;
+        readonly t?: ReturnType<typeof createTranslator>;
+        readonly setCarouselOpen?: (open: boolean) => void;
+        readonly setStartIndex?: (index: number) => void;
+        readonly setOpenRename: (open: boolean) => void;
+        readonly setOpenProperties: (open: boolean) => void;
+        readonly setOpenDelete: (open: boolean) => void;
     }) => {
-        const handleSetAsCover = useCallback(async () => {
+        const handleSetAsCover = async () => {
             if (!row?.original?.folderId || !row?.original?.id) return;
 
             const r = await changeFolderCover(row.original.folderId, row.original.id);
 
             if (r.error) {
                 toast({
-                    title: t("setAsCover.error.title"),
-                    description: t("setAsCover.error.description"),
+                    title: t?.("columns.actions.setAsCover.error.title"),
+                    description: t?.("columns.actions.setAsCover.error.description"),
                     variant: "destructive",
                 });
                 return;
             }
 
             toast({
-                title: t("setAsCover.success.title"),
-                description: t("setAsCover.success.description"),
+                title: t?.("columns.actions.setAsCover.success.title"),
+                description: t?.("columns.actions.setAsCover.success.description"),
             });
-        }, [row?.original?.folderId, row?.original?.id, t]);
+        };
 
         const fileType = row?.original?.type === FileType.IMAGE ? "images" : "videos";
 
@@ -72,7 +72,7 @@ const ImageActionsDropdown = React.memo(
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="min-w-40">
-                    <DropdownMenuLabel>{t("label")}</DropdownMenuLabel>
+                    <DropdownMenuLabel>{t?.("columns.actions.label")}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                         onClick={() => {
@@ -82,27 +82,33 @@ const ImageActionsDropdown = React.memo(
                             }
                         }}
                     >
-                        {t("view")}
+                        {t?.("columns.actions.view")}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => row?.toggleSelected && row.toggleSelected(!row.getIsSelected())}>
-                        {row?.getIsSelected() ? t("deselect") : t("select")}
+                    <DropdownMenuItem onClick={() => row?.toggleSelected(!row.getIsSelected())}>
+                        {row?.getIsSelected() ? t?.("columns.actions.deselect") : t?.("columns.actions.select")}
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                         <a
                             href={`/api/folders/${row.original.folderId}/${fileType}/${row.original.id}/download`}
                             download
                         >
-                            {t("download")}
+                            {t?.("columns.actions.download")}
                         </a>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setOpenRename(true)}>{t("rename")}</DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleSetAsCover}>{t("setAsCover.label")}</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setOpenProperties(true)}>{t("properties")}</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setOpenRename(true)}>
+                        {t?.("columns.actions.rename")}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleSetAsCover}>
+                        {t?.("columns.actions.setAsCover.label")}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setOpenProperties(true)}>
+                        {t?.("columns.actions.properties")}
+                    </DropdownMenuItem>
                     <DropdownMenuItem
                         onClick={() => setOpenDelete(true)}
                         className="text-destructive focus:text-destructive font-semibold"
                     >
-                        {t("delete")}
+                        {t?.("columns.actions.delete")}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
@@ -173,15 +179,19 @@ export const imagesListViewColumns: ColumnDef<FileWithFolder & FileWithComments>
                             />
                         )}
                     </div>
-                    <p
-                        onClick={() => {
-                            if (setCarouselOpen && setStartIndex && row?.index !== undefined) {
-                                setStartIndex(row.index);
-                                setCarouselOpen(true);
-                            }
-                        }}
-                        className="hover:underline cursor-pointer"
-                    >{`${row.getValue("name") || ""}.${row.original.extension || ""}`}</p>
+                    <p>
+                        <button
+                            className="hover:underline"
+                            onClick={() => {
+                                if (setCarouselOpen && setStartIndex && row?.index !== undefined) {
+                                    setStartIndex(row.index);
+                                    setCarouselOpen(true);
+                                }
+                            }}
+                        >
+                            {`${row.getValue("name") || ""}.${row.original.extension || ""}`}
+                        </button>
+                    </p>
                 </div>
             );
         },
@@ -191,44 +201,44 @@ export const imagesListViewColumns: ColumnDef<FileWithFolder & FileWithComments>
     {
         accessorKey: "folder_name",
         accessorFn: row => row?.folder?.name || "",
-        header: () => {
-            const t = useTranslations("images.views.list.header");
-            return <p>{t("folder")}</p>;
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
+            return <p>{t?.("header.folder")}</p>;
         },
     },
     {
         accessorKey: "size",
-        header: () => {
-            const t = useTranslations("images.views.list.header");
-            return <p>{t("size")}</p>;
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
+            return <p>{t?.("header.size")}</p>;
         },
         cell: ({ row }) => <p>{formatBytes(row.original.size)}</p>,
     },
     {
         accessorKey: "comments",
-        header: () => {
-            const t = useTranslations("images.views.list.header");
-            return <p>{t("comments")}</p>;
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
+            return <p>{t?.("header.comments")}</p>;
         },
-        cell: ({ row }) => {
-            const t = useTranslations("images.views.list.columns");
-            if (!row?.original?.comments) return <p>{t("comments", { count: 0 })}</p>;
+        cell: ({ table, row }) => {
+            const t = table.options.meta?.intl?.translations;
+            if (!row?.original?.comments) return <p>{t?.("columns.comments", { count: 0 })}</p>;
 
-            return <p>{t("comments", { count: row.original.comments.length })}</p>;
+            return <p>{t?.("columns.comments", { count: row.original.comments.length })}</p>;
         },
     },
     {
         accessorKey: "createdAt",
-        header: () => {
-            const t = useTranslations("images.views.list.header");
-            return <p>{t("uploadedAt")}</p>;
+        header: ({ table }) => {
+            const t = table.options.meta?.intl?.translations;
+            return <p>{t?.("header.uploadedAt")}</p>;
         },
-        cell: ({ row }) => {
-            const formatter = useFormatter();
+        cell: ({ table, row }) => {
+            const formatter = table.options.meta?.intl?.formatter;
 
             return (
                 <p className="capitalize">
-                    {formatter.dateTime(row.original.createdAt, {
+                    {formatter?.dateTime(row.original.createdAt, {
                         weekday: "long",
                         day: "numeric",
                         month: "short",
@@ -245,14 +255,18 @@ export const imagesListViewColumns: ColumnDef<FileWithFolder & FileWithComments>
         cell: ({ row, table }) => {
             if (!row?.original) return null;
 
-            const t = useTranslations("images.views.list.columns.actions");
+            const t = table.options.meta?.intl?.translations;
 
             const setCarouselOpen = table.options.meta?.imagesListActions?.setCarouselOpen;
             const setStartIndex = table.options.meta?.imagesListActions?.setStartIndex;
 
-            const [openRename, setOpenRename] = useState<boolean>(false);
-            const [openProperties, setOpenProperties] = useState<boolean>(false);
-            const [openDelete, setOpenDelete] = useState<boolean>(false);
+            const states = table.options.meta?.states || {};
+            const openRename = states.openRename as boolean;
+            const openProperties = states.openProperties as boolean;
+            const openDelete = states.openDelete as boolean;
+            const setOpenRename = states.setOpenRename as React.Dispatch<React.SetStateAction<boolean>>;
+            const setOpenDelete = states.setOpenDelete as React.Dispatch<React.SetStateAction<boolean>>;
+            const setOpenProperties = states.setOpenProperties as React.Dispatch<React.SetStateAction<boolean>>;
 
             return (
                 <>

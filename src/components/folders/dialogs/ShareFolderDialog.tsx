@@ -25,17 +25,16 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccessToken, FolderTokenPermission } from "@prisma/client";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { addMonths, format } from "date-fns";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../../ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { Calendar } from "../../ui/calendar";
-import { createMultipleAccessTokens } from "@/actions/accessTokens";
-import { unlockAccessToken } from "@/actions/accessTokens";
+import { Calendar } from "@/components/ui/calendar";
+import { createMultipleAccessTokens, unlockAccessToken } from "@/actions/accessTokens";
 import LockTokenDialog from "./LockTokenDialog";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "../../ui/input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp";
 import { motion, AnimatePresence } from "motion/react";
 
 export const ShareFolderDialog = ({
@@ -43,9 +42,9 @@ export const ShareFolderDialog = ({
     open,
     setOpen,
 }: {
-    folder: FolderWithAccessToken;
-    open?: boolean;
-    setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+    readonly folder: FolderWithAccessToken;
+    readonly open?: boolean;
+    readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
     const locale = useLocale();
     const t = useTranslations("dialogs.folders.share");
@@ -61,12 +60,8 @@ export const ShareFolderDialog = ({
 
     const [openLockToken, setOpenLockToken] = useState(false);
     const [lockToken, setLockToken] = useState<AccessToken | null>(null);
-    //const [lockTokenType, setLockTokenType] = useState<"accessToken" | "personAccessToken">("accessToken");
-
     const [openExpiryDatePopover, setOpenExpiryDatePopover] = useState(false);
-    //const [showPersonAccessTokenLock, setShowPersonAccessTokenLock] = useState(false);
 
-    // New state for the two-step process
     const [showMessageStep, setShowMessageStep] = useState(false);
     const [shareMessage, setShareMessage] = useState("");
 
@@ -120,16 +115,12 @@ export const ShareFolderDialog = ({
             return;
         }
 
-        console.log("Add email", { email, permission, expiryDate: expiresAt, pinCode, allowMap });
-
-        //setShowPersonAccessTokenLock(false);
         setTokenList([...tokenList, { email, permission, expiryDate: expiresAt, pinCode, allowMap }]);
         sharePersonAccessTokenForm.reset();
     };
 
     const submitSharePersonTokens = async () => {
         setLoadingShare(true);
-        console.log("Submit share person tokens", { tokenList, shareMessage });
         const r = await createMultipleAccessTokens(
             folder.id,
             tokenList.map(token => ({
@@ -211,7 +202,7 @@ export const ShareFolderDialog = ({
                                         className="hidden sm:block"
                                         placeholder={t("links.link.placeholder")}
                                         disabled={true}
-                                        value={`${typeof window !== "undefined" ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folder.id}?share=${token.token}`}
+                                        value={`${typeof window !== "undefined" ? globalThis.location.origin : process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folder.id}?share=${token.token}`}
                                     />
                                     <div className="flex items-center gap-2">
                                         {token.locked ? (
@@ -228,7 +219,6 @@ export const ShareFolderDialog = ({
                                                 size={"icon"}
                                                 onClick={() => {
                                                     setLockToken(token);
-                                                    //setLockTokenType("accessToken");
                                                     setOpenLockToken(true);
                                                 }}
                                             >
@@ -238,7 +228,7 @@ export const ShareFolderDialog = ({
                                         <Button
                                             onClick={() =>
                                                 copyToClipboard(
-                                                    `${typeof window !== "undefined" ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folder.id}?share=${token.token}`
+                                                    `${typeof window !== "undefined" ? globalThis.location.origin : process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folder.id}?share=${token.token}`
                                                 )
                                             }
                                             className="text-start flex-1 sm:flex-none"
@@ -598,13 +588,6 @@ export const ShareFolderDialog = ({
                 >
                     <motion.div
                         initial={false}
-                        // animate={{
-                        //     width: showMessageStep
-                        //         ? '48rem'
-                        //         : showPersonAccessTokenLock
-                        //             ? '66rem'
-                        //             : '48rem',
-                        // }}
                         transition={{
                             type: "spring",
                             stiffness: 300,

@@ -1,6 +1,7 @@
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { FlatCompat } from "@eslint/eslintrc";
+import { globalIgnores } from "eslint/config";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -13,12 +14,14 @@ const eslintConfig = [
     ...compat.config({
         extends: ["next/core-web-vitals", "next/typescript", "prettier"],
     }),
+    globalIgnores(["node_modules/", ".next/"]),
     {
         /* Global rules */
         files: ["src/**/*.{js,ts,jsx,tsx}"],
         rules: {
             "react-hooks/rules-of-hooks": "off",
             eqeqeq: ["error"],
+            "react/prefer-read-only-props": "error",
             "no-restricted-imports": [
                 "error",
                 {

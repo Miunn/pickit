@@ -18,7 +18,7 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
      * @default undefined
      * @example value={files}
      */
-    value?: File[];
+    readonly value?: File[];
 
     /**
      * Function to be called when the value changes.
@@ -26,7 +26,7 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
      * @default undefined
      * @example onValueChange={(files) => setFiles(files)}
      */
-    onValueChange?: (files: File[]) => void;
+    readonly onValueChange?: (files: File[]) => void;
 
     /**
      * Function to be called when files are uploaded.
@@ -34,7 +34,7 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
      * @default undefined
      * @example onUpload={(files) => uploadFiles(files)}
      */
-    onUpload?: (files: File[]) => Promise<void>;
+    readonly onUpload?: (files: File[]) => Promise<void>;
 
     /**
      * Progress of the uploaded files.
@@ -42,7 +42,7 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
      * @default undefined
      * @example progresses={{ "file1.png": 50 }}
      */
-    progresses?: Record<string, number>;
+    readonly progresses?: Record<string, number>;
 
     /**
      * Accepted file types for the uploader.
@@ -53,7 +53,7 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
      * ```
      * @example accept={["image/png", "image/jpeg"]}
      */
-    accept?: DropzoneProps["accept"];
+    readonly accept?: DropzoneProps["accept"];
 
     /**
      * Maximum file size for the uploader.
@@ -61,7 +61,7 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
      * @default 1024 * 1024 * 2 // 2MB
      * @example maxSize={1024 * 1024 * 2} // 2MB
      */
-    maxSize?: DropzoneProps["maxSize"];
+    readonly maxSize?: DropzoneProps["maxSize"];
 
     /**
      * Maximum number of files for the uploader.
@@ -69,7 +69,7 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
      * @default 1
      * @example maxFileCount={4}
      */
-    maxFileCount?: DropzoneProps["maxFiles"];
+    readonly maxFileCount?: DropzoneProps["maxFiles"];
 
     /**
      * Whether the uploader should accept multiple files.
@@ -77,7 +77,7 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
      * @default false
      * @example multiple
      */
-    multiple?: boolean;
+    readonly multiple?: boolean;
 
     /**
      * Whether the uploader is disabled.
@@ -85,7 +85,7 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
      * @default false
      * @example disabled
      */
-    disabled?: boolean;
+    readonly disabled?: boolean;
 }
 
 export const FileUploader = (props: FileUploaderProps) => {
@@ -258,9 +258,9 @@ export const FileUploader = (props: FileUploaderProps) => {
 };
 
 interface FileCardProps {
-    file: File;
-    onRemove: () => void;
-    progress?: number;
+    readonly file: File;
+    readonly onRemove: () => void;
+    readonly progress?: number;
 }
 
 function FileCard({ file, progress, onRemove }: FileCardProps) {
@@ -292,7 +292,7 @@ function isFileWithPreview(file: File): file is File & { preview: string } {
 }
 
 interface FilePreviewProps {
-    file: File & { preview: string };
+    readonly file: File & { preview: string };
 }
 
 function FilePreview({ file }: FilePreviewProps) {

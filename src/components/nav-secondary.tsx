@@ -25,9 +25,9 @@ export function NavSecondary({
     items,
     ...props
 }: {
-    userUsedStorage: bigint;
-    userMaxStorage: bigint;
-    items: NavSecondaryItems & React.ComponentPropsWithoutRef<typeof SidebarGroup>;
+    readonly userUsedStorage: bigint;
+    readonly userMaxStorage: bigint;
+    readonly items: NavSecondaryItems & React.ComponentPropsWithoutRef<typeof SidebarGroup>;
 }) {
     const t = useTranslations("sidebar.secondary");
 

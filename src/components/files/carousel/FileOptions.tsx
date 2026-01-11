@@ -1,13 +1,7 @@
-import { Braces, Download, Ellipsis, Tags } from "lucide-react";
-
-import { Copy } from "lucide-react";
-
-import { Check } from "lucide-react";
+import { Braces, Check, Copy, Download, Ellipsis, Expand, ExternalLink, Tags } from "lucide-react";
 import { toast as sonnerToast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ExternalLink } from "lucide-react";
 import FullScreenImageCarousel from "./FullScrenImageCarousel";
-import { Expand } from "lucide-react";
 import Link from "next/link";
 import { copyImageToClipboard } from "@/lib/utils";
 import { FileWithTags, FolderWithTags } from "@/lib/definitions";
@@ -43,9 +37,9 @@ export default function FileOptions({
     currentIndex,
     carouselApi,
 }: {
-    file: { folder: FolderWithTags } & FileWithTags;
-    currentIndex: number;
-    carouselApi: CarouselApi;
+    readonly file: { folder: FolderWithTags } & FileWithTags;
+    readonly currentIndex: number;
+    readonly carouselApi: CarouselApi;
 }) {
     const { user } = useSession();
     const { setFiles } = useFilesContext();
@@ -59,10 +53,14 @@ export default function FileOptions({
     const [copied, setCopied] = useState(false);
 
     const handleTagSelected = async (tag: FolderTag): Promise<boolean> => {
+        // Optimistically update UI
         setFiles((prev: ContextFile[]) => {
             return prev.map(f => (f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f));
         });
+
         const result = await addTagsToFile(file.id, [tag.id]);
+
+        // Revert UI update if API call fails
         if (!result.success) {
             sonnerToast.error(t("addTag.errorAdd"));
 
@@ -220,14 +218,12 @@ export default function FileOptions({
                         </DropdownMenuItem>
                     )}
                     <DropdownMenuItem onClick={e => e.stopPropagation()}>
-                        <div onClick={e => e.stopPropagation()} className="w-full flex items-center">
-                            <FullScreenImageCarousel defaultIndex={currentIndex} parentCarouselApi={carouselApi}>
-                                <div className="w-full flex items-center">
-                                    <Expand size={16} className="opacity-60 mr-2" aria-hidden="true" />
-                                    {t("expand")}
-                                </div>
-                            </FullScreenImageCarousel>
-                        </div>
+                        <FullScreenImageCarousel defaultIndex={currentIndex} parentCarouselApi={carouselApi}>
+                            <div className="w-full flex items-center">
+                                <Expand size={16} className="opacity-60 mr-2" aria-hidden="true" />
+                                {t("expand")}
+                            </div>
+                        </FullScreenImageCarousel>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                         <Link
@@ -254,15 +250,10 @@ export default function FileOptions({
                             href={`/api/folders/${file.folder.id}/${file.type === FileType.VIDEO ? "videos" : "images"}/${file.id}/download`}
                             download
                         >
-                            {/*{downloading ? (
-                                <Loader2 size={16} className="opacity-60 animate-spin mr-2" aria-hidden="true" />
-                            ) : (
-                                <Download size={16} className="opacity-60 mr-2" aria-hidden="true" />
-                            )}*/}
                             {t("download.label")}
                         </a>
                     </DropdownMenuItem>
-                    {file.type !== FileType.VIDEO ? (
+                    {file.type === FileType.VIDEO ? null : (
                         <DropdownMenuItem
                             onClick={async () => {
                                 if (file.type === FileType.VIDEO) {
@@ -300,16 +291,16 @@ export default function FileOptions({
                             )}
                             {t("copy.title")}
                         </DropdownMenuItem>
-                    ) : null}
+                    )}
                     <DropdownMenuItem>
-                        <div onClick={e => e.stopPropagation()} className="w-full flex items-center">
+                        <button onClick={e => e.stopPropagation()}>
                             <ImageExif image={file}>
                                 <div className="w-full flex items-center">
                                     <Braces size={16} className="opacity-60 mr-2" aria-hidden="true" />
                                     {t("metadata")}
                                 </div>
                             </ImageExif>
-                        </div>
+                        </button>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

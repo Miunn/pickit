@@ -17,10 +17,10 @@ export default function CheckoutDialog({
     open,
     onOpenChange,
 }: {
-    plan: Plan;
-    children?: React.ReactNode;
-    open?: boolean;
-    onOpenChange?: (open: boolean) => void;
+    readonly plan: Plan;
+    readonly children?: React.ReactNode;
+    readonly open?: boolean;
+    readonly onOpenChange?: (open: boolean) => void;
 }) {
     const t = useTranslations("billing.checkoutDialog");
     const { getPriceId, selectedPeriod, plans } = usePricingContext();

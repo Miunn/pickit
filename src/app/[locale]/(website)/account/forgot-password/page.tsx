@@ -7,12 +7,13 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
         title: t("title"),
         description: t("description"),
-    }
+    };
 }
 
-export default async function ResetPasswordPage(
-    props: { params: Promise<{ locale: string }>, searchParams: Promise<{ d?: string }> }
-) {
+export default async function ResetPasswordPage(props: {
+    readonly params: Promise<{ readonly locale: string }>;
+    readonly searchParams: Promise<{ readonly d?: string }>;
+}) {
     const searchParams = await props.searchParams;
     const params = await props.params;
     return (

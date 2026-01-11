@@ -33,10 +33,10 @@ export default function ImageCommentSection({
     setOpen,
     children,
 }: {
-    file: FileWithComments & FileWithTags;
-    open?: boolean;
-    setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-    children: React.ReactNode;
+    readonly file: FileWithComments & FileWithTags;
+    readonly open?: boolean;
+    readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+    readonly children: React.ReactNode;
 }) {
     const t = useTranslations("components.images.comments");
     const createCommentForm = useForm<z.infer<typeof CreateCommentFormSchema>>({
@@ -70,15 +70,15 @@ export default function ImageCommentSection({
         }
 
         setFiles(
-            files.map(file => {
-                if (file.id === file.id) {
+            files.map(f => {
+                if (f.id === file.id) {
                     return {
-                        ...file,
-                        comments: [...file.comments, r],
+                        ...f,
+                        comments: [...f.comments, r],
                     };
                 }
 
-                return file;
+                return f;
             })
         );
 

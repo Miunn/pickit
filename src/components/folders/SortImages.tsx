@@ -10,8 +10,8 @@ import { ImagesSortMethod } from "@/types/imagesSort";
 // Using shared enum from src/types/imagesSort
 
 export interface SortImagesProps {
-    sortState: ImagesSortMethod;
-    setSortState: React.Dispatch<React.SetStateAction<ImagesSortMethod>>;
+    readonly sortState: ImagesSortMethod;
+    readonly setSortState: React.Dispatch<React.SetStateAction<ImagesSortMethod>>;
 }
 
 export default function SortImages({ sortState, setSortState }: SortImagesProps) {

@@ -13,7 +13,7 @@ import { toast } from "@/hooks/use-toast";
 import { lockAccessToken } from "@/actions/accessTokens";
 import { useTranslations } from "next-intl";
 
-export default function LockTokenDialog({ children, openState, setOpenState, tokenId }: { children?: React.ReactNode, openState?: boolean, setOpenState?: React.Dispatch<React.SetStateAction<boolean>>, tokenId: string }) {
+export default function LockTokenDialog({ children, openState, setOpenState, tokenId }: { readonly children?: React.ReactNode, readonly openState?: boolean, readonly setOpenState?: React.Dispatch<React.SetStateAction<boolean>>, readonly tokenId: string }) {
 
     const t = useTranslations("dialogs.accessTokens.lockToken");
     const [saveLoading, setSaveLoading] = useState<boolean>(false);

@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Plan } from "@prisma/client";
-import { FolderWithFilesWithFolderAndComments, FileWithFolder } from "./definitions";
+import { FolderWithFilesWithFolderAndComments, FileWithFolder, FileWithTags } from "./definitions";
 import { ImagesSortMethod } from "@/types/imagesSort";
 
 export const plansBenefits: Record<Plan, { storage: number; albums: number; sharingLinks: number }> = {
@@ -144,6 +144,25 @@ export const getSortedFolderContent = (
             return folderContent;
     }
 };
+
+export function groupFiles<T extends FileWithTags>(files: T[]): { [key: string]: T[] } {
+    const groups: { [key: string]: T[] } = {};
+
+    files.forEach(file => {
+        if (file.tags.length === 0) {
+            groups["no-tags"].push(file);
+        }
+
+        file.tags.forEach(tag => {
+            if (!groups[tag.id]) {
+                groups[tag.id] = [];
+            }
+            groups[tag.id].push(file);
+        });
+    });
+
+    return groups;
+}
 
 export const getSortedImagesVideosContent = (arr: FileWithFolder[], sort: ImagesSortMethod) => {
     switch (sort) {

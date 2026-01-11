@@ -1,6 +1,6 @@
 import Image from "next/image"
 
-export default function LogoImage({ color, size }: { color?: "primary" | "secondary" | "white", size?: "small" | "medium" | "large" }) {
+export default function LogoImage({ color, size }: { readonly color?: "primary" | "secondary" | "white", readonly size?: "small" | "medium" | "large" }) {
 
     const getSrc = () => {
         if (color === "primary") return "/static/logo-primary-svg.svg"

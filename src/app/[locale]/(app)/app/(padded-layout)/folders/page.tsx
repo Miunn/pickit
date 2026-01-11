@@ -15,8 +15,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function FoldersPage(props: {
-    params: Promise<{ locale: string }>;
-    searchParams: Promise<{ view?: ViewState }>;
+    readonly params: Promise<{ readonly locale: string }>;
+    readonly searchParams: Promise<{ readonly view?: ViewState }>;
 }) {
     const searchParams = await props.searchParams;
     const params = await props.params;

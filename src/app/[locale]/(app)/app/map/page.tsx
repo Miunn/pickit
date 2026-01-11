@@ -10,8 +10,8 @@ import { FileService } from "@/data/file-service";
 import { AccessTokenService } from "@/data/access-token-service";
 
 export default async function MapPage(props: {
-    params: Promise<{ locale: string }>;
-    searchParams: Promise<{ share?: string; h?: string; t?: string }>;
+    readonly params: Promise<{ readonly locale: string }>;
+    readonly searchParams: Promise<{ readonly share?: string; readonly h?: string; readonly t?: string }>;
 }) {
     const searchParams = await props.searchParams;
     const params = await props.params;

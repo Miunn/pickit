@@ -18,7 +18,7 @@ export const useTokenContext = () => {
     return context;
 }
 
-export const TokenProvider = ({ children, token }: { children: React.ReactNode, token: AccessToken | null }) => {
+export const TokenProvider = ({ children, token }: { readonly children: React.ReactNode, readonly token: AccessToken | null }) => {
     return (
         <TokenContext.Provider value={{ token }}>
             {children}

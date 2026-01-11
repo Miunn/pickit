@@ -15,10 +15,10 @@ import { motion, AnimatePresence } from "motion/react";
 import { useSearchParams } from "next/navigation";
 
 interface FileCarouselProps {
-    files: FileWithFolder[];
-    startIndex: number;
-    onClose: () => void;
-    onFileChange?: (file: FileWithFolder) => void;
+    readonly files: FileWithFolder[];
+    readonly startIndex: number;
+    readonly onClose: () => void;
+    readonly onFileChange?: (file: FileWithFolder) => void;
 }
 
 export default function MapFileCarousel({ files, startIndex, onClose, onFileChange }: FileCarouselProps) {
@@ -37,7 +37,7 @@ export default function MapFileCarousel({ files, startIndex, onClose, onFileChan
         api.on("select", () => {
             const index = api.selectedScrollSnap();
             const file = files[index];
-            if (file && file.latitude && file.longitude) {
+            if (file.latitude && file.longitude) {
                 // Pan the map to the new file location
                 map?.panTo({ lat: file.latitude, lng: file.longitude });
                 // Update POI window data

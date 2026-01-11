@@ -23,8 +23,8 @@ export default function FoldersContent({
     defaultView,
     folders,
 }: {
-    defaultView?: ViewState;
-    folders: (FolderWithCreatedBy &
+    readonly defaultView?: ViewState;
+    readonly folders: (FolderWithCreatedBy &
         FolderWithAccessToken &
         FolderWithFilesCount &
         FolderWithCover & { files: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[] })[];

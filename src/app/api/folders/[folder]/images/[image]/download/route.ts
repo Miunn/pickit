@@ -16,7 +16,9 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
     const shareToken = req.nextUrl.searchParams.get("share");
     const accessKey = req.nextUrl.searchParams.get("h");
 
-    if (!isAllowedToAccessFile(params.image, shareToken, accessKey)) {
+    const isAllowed = await isAllowedToAccessFile(params.image, shareToken, accessKey);
+
+    if (!isAllowed) {
         return Response.json(
             { error: "You need to be authenticated or have a magic link to access this resource" },
             { status: 400 }

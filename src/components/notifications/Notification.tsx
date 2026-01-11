@@ -1,13 +1,16 @@
 import { NotificationType, Notification as NotificationData } from "@prisma/client";
 import { useFormatter } from "next-intl";
 
-export default function Notification({ notification, onRead }: { notification: NotificationData; onRead: () => void }) {
+export default function Notification({ notification, onRead }: { readonly notification: NotificationData; readonly onRead: () => void }) {
     const formatter = useFormatter();
 
     switch (notification.type) {
         case NotificationType.FOLDER_SHARED:
             return (
-                <div onClick={onRead} className="flex items-center justify-between gap-2 hover:bg-muted rounded-lg p-4">
+                <button
+                    onClick={onRead}
+                    className="flex items-center justify-between gap-2 hover:bg-muted rounded-lg p-4"
+                >
                     <div>
                         <p>
                             <span className="font-bold text-foreground">{notification.authorName}</span> shared{" "}
@@ -18,12 +21,15 @@ export default function Notification({ notification, onRead }: { notification: N
                         </p>
                     </div>
                     {notification.isRead ? null : <div className="w-2 h-2 bg-primary rounded-full" />}
-                </div>
+                </button>
             );
 
         case NotificationType.FILE_UPLOADED:
             return (
-                <div onClick={onRead} className="flex items-center justify-between gap-2 hover:bg-muted rounded-lg p-4">
+                <button
+                    onClick={onRead}
+                    className="flex items-center justify-between gap-2 hover:bg-muted rounded-lg p-4"
+                >
                     <div>
                         <p>
                             <span className="font-bold text-foreground">{notification.authorName}</span> uploaded some
@@ -35,7 +41,7 @@ export default function Notification({ notification, onRead }: { notification: N
                         </p>
                     </div>
                     {notification.isRead ? null : <div className="w-2 h-2 bg-primary rounded-full" />}
-                </div>
+                </button>
             );
 
         default:

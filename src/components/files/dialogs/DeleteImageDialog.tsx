@@ -18,7 +18,7 @@ import { toast } from "@/hooks/use-toast";
 import { useSearchParams } from "next/navigation";
 import { FileWithFolder } from "@/lib/definitions";
 
-export const DeleteImageDialog = ({ file, children, open, setOpen }: { file: FileWithFolder, children?: React.ReactNode, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
+export const DeleteImageDialog = ({ file, children, open, setOpen }: { readonly file: FileWithFolder, readonly children?: React.ReactNode, readonly open?: boolean, readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
     const t = useTranslations("dialogs.images.delete");
     const [deleting, setDeleting] = useState(false);

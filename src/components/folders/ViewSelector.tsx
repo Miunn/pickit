@@ -10,7 +10,7 @@ export enum ViewState {
     TagGrouped = "tagGrouped"
 }
 
-export default function ViewSelector({ viewState, setViewState }: { viewState: ViewState, setViewState: React.Dispatch<React.SetStateAction<ViewState>> }) {
+export default function ViewSelector({ viewState, setViewState }: { readonly viewState: ViewState, readonly setViewState: React.Dispatch<React.SetStateAction<ViewState>> }) {
 
     const t = useTranslations("components.viewSelector");
 

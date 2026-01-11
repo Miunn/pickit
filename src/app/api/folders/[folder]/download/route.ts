@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAllowedToAccessFile } from "@/lib/dal";
 import { GoogleBucket } from "@/lib/bucket";
 import archiver from "archiver";
 import { PassThrough } from "node:stream";
 import { FolderService } from "@/data/folder-service";
+import { SecureService } from "@/data/secure/secure-service";
 
 /**
  * Streams a ZIP archive containing all files in the specified folder.
@@ -13,61 +13,63 @@ import { FolderService } from "@/data/folder-service";
  * @returns A NextResponse whose body is a streaming ZIP of the folder's files; returns a JSON error response with status 400 if access is denied, or 404 if the folder is not found or contains no files.
  */
 export async function GET(req: NextRequest, props: { params: Promise<{ folder: string }> }) {
-    const params = await props.params;
-    const shareToken = req.nextUrl.searchParams.get("share");
-    const accessKey = req.nextUrl.searchParams.get("h");
+	const params = await props.params;
+	const shareToken = req.nextUrl.searchParams.get("share");
+	const accessKey = req.nextUrl.searchParams.get("h");
 
-    if (!isAllowedToAccessFile(params.folder, shareToken, accessKey)) {
-        return Response.json(
-            { error: "You need to be authenticated or have a magic link to access this resource" },
-            { status: 400 }
-        );
-    }
+	const folder = await FolderService.get({
+		where: { id: params.folder },
+		include: { files: true, accessTokens: true },
+	});
 
-    const folder = await FolderService.get({
-        where: { id: params.folder },
-        include: { files: true },
-    });
+	if (!folder) {
+		return Response.json({ error: "Folder not found" }, { status: 404 });
+	}
 
-    if (!folder) {
-        return Response.json({ error: "Folder not found" }, { status: 404 });
-    }
+	const { allowed } = await SecureService.folder.enforce(folder, shareToken || undefined, accessKey || undefined);
 
-    if (folder.files.length === 0) {
-        return Response.json({ error: "No files found in this folder" }, { status: 404 });
-    }
+	if (!allowed) {
+		return Response.json(
+			{ error: "You need to be authenticated or have a magic link to access this resource" },
+			{ status: 400 }
+		);
+	}
 
-    const archive = archiver("zip", { zlib: { level: 9 } });
-    const stream = new PassThrough();
+	if (folder.files.length === 0) {
+		return Response.json({ error: "No files found in this folder" }, { status: 404 });
+	}
 
-    archive.on("error", err => {
-        console.error(err);
-        stream.destroy(err);
-    });
+	const archive = archiver("zip", { zlib: { level: 9 } });
+	const stream = new PassThrough();
 
-    archive.pipe(stream);
+	archive.on("error", err => {
+		console.error(err);
+		stream.destroy(err);
+	});
 
-    for (const file of folder.files) {
-        const path = `${folder.createdById}/${folder.id}/${file.id}`;
-        const fileStream = GoogleBucket.file(path).createReadStream();
+	archive.pipe(stream);
 
-        archive.append(fileStream, { name: `${file.name}.${file.extension}` });
-    }
+	for (const file of folder.files) {
+		const path = `${folder.createdById}/${folder.id}/${file.id}`;
+		const fileStream = GoogleBucket.file(path).createReadStream();
 
-    archive.finalize();
+		archive.append(fileStream, { name: `${file.name}.${file.extension}` });
+	}
 
-    const webStream = new ReadableStream({
-        start(controller) {
-            stream.on("data", chunk => controller.enqueue(chunk));
-            stream.on("end", () => controller.close());
-            stream.on("error", err => controller.error(err));
-        },
-    });
+	archive.finalize();
 
-    return new NextResponse(webStream, {
-        headers: {
-            "Content-Type": "application/zip",
-            "Content-Disposition": `attachment; filename=${encodeURIComponent(folder.name)}.zip; filename*=UTF-8''${encodeURIComponent(folder.name)}.zip`,
-        },
-    });
+	const webStream = new ReadableStream({
+		start(controller) {
+			stream.on("data", chunk => controller.enqueue(chunk));
+			stream.on("end", () => controller.close());
+			stream.on("error", err => controller.error(err));
+		},
+	});
+
+	return new NextResponse(webStream, {
+		headers: {
+			"Content-Type": "application/zip",
+			"Content-Disposition": `attachment; filename=${encodeURIComponent(folder.name)}.zip; filename*=UTF-8''${encodeURIComponent(folder.name)}.zip`,
+		},
+	});
 }

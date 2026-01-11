@@ -23,9 +23,9 @@ export default function SelectingBar({
     sizeSelected,
     onClose,
 }: {
-    selected: string[];
-    sizeSelected: number;
-    onClose: () => void;
+    readonly selected: string[];
+    readonly sizeSelected: number;
+    readonly onClose: () => void;
 }) {
     const t = useTranslations("files.grid.selectingBar");
 
@@ -48,6 +48,45 @@ export default function SelectingBar({
         };
     }, [stickyRef]);
 
+    const handleTagAdded = async (tag: FolderTag) => {
+        setFiles((prev: ContextFile[]) =>
+            prev.map(f => (selected.includes(f.id) ? { ...f, tags: [...f.tags, tag] } : f))
+        );
+
+        return true;
+    };
+
+    const handleTagSelected = async (tag: FolderTag) => {
+        setFiles((prev: ContextFile[]) => {
+            return prev.map(f => (selected.includes(f.id) ? { ...f, tags: [...f.tags, tag] } : f));
+        });
+        const result = await addTagsToFiles(selected, [tag.id]);
+        if (!result.success) {
+            toast.error(t("addTag.errorAdd"));
+
+            setFiles((prev: ContextFile[]) => {
+                return prev.map(f =>
+                    selected.includes(f.id) ? { ...f, tags: f.tags.filter(t => t.id !== tag.id) } : f
+                );
+            });
+        }
+
+        return result.success;
+    };
+
+    const handleTagUnselected = async (tag: FolderTag) => {
+        setFiles(prev =>
+            prev.map(f => (selected.includes(f.id) ? { ...f, tags: f.tags.filter(t => t.id !== tag.id) } : f))
+        );
+        const result = await removeTagsFromFiles(selected, [tag.id]);
+        if (!result.success) {
+            toast.error(t("addTag.errorRemove"));
+            setFiles(prev => prev.map(f => (selected.includes(f.id) ? { ...f, tags: [...f.tags, tag] } : f)));
+        }
+
+        return result.success;
+    };
+
     return (
         <div
             ref={stickyRef}
@@ -69,46 +108,9 @@ export default function SelectingBar({
             <div className="space-x-2">
                 <ManageTagsDialog
                     selectedTags={[]}
-                    onTagAdded={async (tag: FolderTag) => {
-                        setFiles((prev: ContextFile[]) =>
-                            prev.map(f => (selected.includes(f.id) ? { ...f, tags: [...f.tags, tag] } : f))
-                        );
-
-                        return true;
-                    }}
-                    onTagSelected={async (tag: FolderTag) => {
-                        setFiles((prev: ContextFile[]) => {
-                            return prev.map(f => (selected.includes(f.id) ? { ...f, tags: [...f.tags, tag] } : f));
-                        });
-                        const result = await addTagsToFiles(selected, [tag.id]);
-                        if (!result.success) {
-                            toast.error(t("addTag.errorAdd"));
-
-                            setFiles((prev: ContextFile[]) => {
-                                return prev.map(f =>
-                                    selected.includes(f.id) ? { ...f, tags: f.tags.filter(t => t.id !== tag.id) } : f
-                                );
-                            });
-                        }
-
-                        return result.success;
-                    }}
-                    onTagUnselected={async (tag: FolderTag) => {
-                        setFiles(prev =>
-                            prev.map(f =>
-                                selected.includes(f.id) ? { ...f, tags: f.tags.filter(t => t.id !== tag.id) } : f
-                            )
-                        );
-                        const result = await removeTagsFromFiles(selected, [tag.id]);
-                        if (!result.success) {
-                            toast.error(t("addTag.errorRemove"));
-                            setFiles(prev =>
-                                prev.map(f => (selected.includes(f.id) ? { ...f, tags: [...f.tags, tag] } : f))
-                            );
-                        }
-
-                        return result.success;
-                    }}
+                    onTagAdded={handleTagAdded}
+                    onTagSelected={handleTagSelected}
+                    onTagUnselected={handleTagUnselected}
                 >
                     <Button variant={"outline"}>
                         <Tag className="mr-2" /> {t("manageTags")}

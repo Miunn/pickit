@@ -5,28 +5,28 @@ import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessTokenDialog";
-import { LightFolder, AccessTokenWithFolder } from "@/lib/definitions";
+import { AccessTokenWithFolder } from "@/lib/definitions";
 import { useEffect, useState } from "react";
 import { personColumns } from "./columns-persons";
+import { useTranslations } from "next-intl";
 
 export default function PersonDataTable({
     accessTokens,
     defaultTokenIndex,
 }: {
-    accessTokens: AccessTokenWithFolder[];
-    defaultTokenIndex: number;
-    lightFolders: LightFolder[];
+    readonly accessTokens: AccessTokenWithFolder[];
+    readonly defaultTokenIndex: number;
 }) {
-    const [selectedTokensIndexes, setSelectedTokensIndexes] = useState<{ [index: number]: boolean }>(
-        defaultTokenIndex !== -1 ? { [defaultTokenIndex]: true } : {}
-    );
-    const [selectedTokens, setSelectedTokens] = useState<string[]>(
-        defaultTokenIndex !== -1 ? [accessTokens[defaultTokenIndex].token] : []
-    );
+    const t = useTranslations("dataTables.people.columns");
+    const [selectedTokensIndexes, setSelectedTokensIndexes] = useState<{ [index: number]: boolean }>({
+        [defaultTokenIndex]: true,
+    });
+    const [selectedTokens, setSelectedTokens] = useState<string[]>([accessTokens[defaultTokenIndex].token]);
+    const [lockOpen, setLockOpen] = useState<boolean>(false);
     const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
-
+    const [deleteSelectionOpen, setDeleteSelectionOpen] = useState<boolean>(false);
     useEffect(() => {
-        setSelectedTokens(Object.keys(selectedTokensIndexes).map(k => accessTokens[parseInt(k)].token));
+        setSelectedTokens(Object.keys(selectedTokensIndexes).map(k => accessTokens[Number.parseInt(k)].token));
     }, [selectedTokensIndexes, accessTokens]);
 
     return (
@@ -41,8 +41,8 @@ export default function PersonDataTable({
                 <div className="flex gap-2">
                     <DeleteAccessTokenDialog
                         tokens={selectedTokens}
-                        openState={deleteOpen}
-                        setOpenState={setDeleteOpen}
+                        openState={deleteSelectionOpen}
+                        setOpenState={setDeleteSelectionOpen}
                         submitNext={() => setSelectedTokensIndexes({})}
                     >
                         <DialogTrigger asChild>
@@ -57,6 +57,8 @@ export default function PersonDataTable({
                     </DeleteAccessTokenDialog>
                 </div>
             }
+            translations={t}
+            states={{ lockOpen, setLockOpen, deleteOpen, setDeleteOpen }}
         />
     );
 }

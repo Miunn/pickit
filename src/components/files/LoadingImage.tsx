@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LoadingImageProps extends ImageProps {
-    spinnerClassName?: string;
+    readonly spinnerClassName?: string;
 }
 
 export default function LoadingImage({ spinnerClassName, alt, src, ...imageProps }: LoadingImageProps) {

@@ -15,8 +15,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function LinksPage(props: {
-    params: Promise<{ locale: string }>;
-    searchParams: Promise<{ s?: "links" | "contacts"; l?: string }>;
+    readonly params: Promise<{ readonly locale: string }>;
+    readonly searchParams: Promise<{ readonly s?: "links" | "contacts"; readonly l?: string }>;
 }) {
     const searchParams = await props.searchParams;
     const params = await props.params;

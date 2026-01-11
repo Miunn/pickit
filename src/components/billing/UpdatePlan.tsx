@@ -26,14 +26,14 @@ const PlanCard = ({
     isYearly,
     features,
 }: {
-    selected: boolean;
-    isCurrentPlan: boolean;
-    plan: Plan;
-    name: string;
-    price: { monthly: number; yearly: number };
-    currency: string;
-    isYearly: boolean;
-    features: string[];
+    readonly selected: boolean;
+    readonly isCurrentPlan: boolean;
+    readonly plan: Plan;
+    readonly name: string;
+    readonly price: { monthly: number; yearly: number };
+    readonly currency: string;
+    readonly isYearly: boolean;
+    readonly features: string[];
 }) => {
     const t = useTranslations("billing.dashboard");
     return (
@@ -60,7 +60,7 @@ const PlanCard = ({
     );
 };
 
-export default function UpdatePlan({ currentPlan }: { currentPlan: Plan }) {
+export default function UpdatePlan({ currentPlan }: { readonly currentPlan: Plan }) {
     const t = useTranslations("billing.dashboard");
     const { plans, getCurrencySymbol, getPriceId } = usePricingContext();
 
@@ -111,7 +111,9 @@ export default function UpdatePlan({ currentPlan }: { currentPlan: Plan }) {
                                 {t("upgrade.button")}
                             </Button>
                         </CheckoutDialog>
-                    ) : selectedPlan === Plan.FREE ? (
+                    ) : null}
+
+                    {selectedPlan === Plan.FREE && currentPlan !== Plan.FREE ? (
                         <Button
                             className="w-full text-center mt-2"
                             disabled={backToFree}

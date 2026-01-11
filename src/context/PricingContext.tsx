@@ -41,7 +41,7 @@ export const usePricingContext = () => {
     return context;
 };
 
-export const PricingProvider = ({ children }: { children: React.ReactNode }) => {
+export const PricingProvider = ({ children }: { readonly children: React.ReactNode }) => {
     const [selectedPeriod, setSelectedPeriod] = useState<"monthly" | "yearly">("yearly");
 
     const t = useTranslations("pages.pricing");

@@ -38,11 +38,11 @@ export default function EditDescriptionDialog({
   children,
   onSuccess,
 }: {
-  file: FileWithFolder;
-  open?: boolean;
-  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  children?: React.ReactNode;
-  onSuccess?: (newDescription: string) => void;
+  readonly file: FileWithFolder;
+  readonly open?: boolean;
+  readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly children?: React.ReactNode;
+  readonly onSuccess?: (newDescription: string) => void;
 }) {
   const t = useTranslations("dialogs.images.editDescription");
   const [internalOpen, setInternalOpen] = useState(false);

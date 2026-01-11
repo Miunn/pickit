@@ -11,11 +11,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/
 import { cn } from "@/lib/utils";
 
 interface FolderCardProps {
-    folder: FolderWithFilesCount;
-    ignoredFiles: number;
-    isSelected: boolean;
-    onToggle: () => void;
-    formatter: ReturnType<typeof useFormatter>;
+    readonly folder: FolderWithFilesCount;
+    readonly ignoredFiles: number;
+    readonly isSelected: boolean;
+    readonly onToggle: () => void;
+    readonly formatter: ReturnType<typeof useFormatter>;
 }
 
 export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatter }: FolderCardProps) => {
@@ -28,6 +28,10 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
     const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
     const nextId = useRef(0);
 
+    const clearRipple = (id: number) => {
+        setRipples(prev => prev.filter(r => r.id !== id));
+    };
+
     const addRipple = (e: React.MouseEvent) => {
         const rect = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -38,12 +42,12 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
 
         // Remove ripple after animation
         setTimeout(() => {
-            setRipples(prev => prev.filter(r => r.id !== id));
+            clearRipple(id);
         }, 800);
     };
 
     return (
-        <div
+        <button
             className={cn(
                 "relative inline-block w-64 h-20 bg-background",
                 "border border-primary rounded-xl",
@@ -60,13 +64,13 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
                     <Ripple key={ripple.id} x={ripple.x} y={ripple.y} />
                 ))}
             </div>
-            <div className="absolute top-1 left-1 z-10" onClick={e => e.stopPropagation()}>
+            <div className="absolute top-1 left-1 z-10">
                 <Checkbox checked={isSelected} onCheckedChange={onToggle} className="bg-white/90 size-5 rounded-lg" />
             </div>
             {folder.coverId ? (
                 <div className={`relative w-20 shrink-0 h-full mb-1 flex justify-center items-center rounded-t-xl`}>
                     <Image
-                        src={`/api/folders/${folder.id}/images/${folder.coverId}${share ? `?share=${share}&t=${shareType}&h=${shareHash}` : ""}`}
+                        src={`/api/folders/${folder.id}/images/${folder.coverId}?share=${share}&t=${shareType}&h=${shareHash}`}
                         alt={folder.name}
                         className={"relative rounded-t-xl object-cover"}
                         sizes="33vw"
@@ -131,6 +135,6 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
                     </TooltipProvider>
                 )}
             </div>
-        </div>
+        </button>
     );
 };

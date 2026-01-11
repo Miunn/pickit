@@ -1,16 +1,19 @@
 "use client";
 
 import {
+    FileWithComments,
+    FileWithTags,
     FolderWithAccessToken,
     FolderWithCover,
     FolderWithFilesCount,
     FolderWithFilesWithFolderAndComments,
+    FolderWithTags,
 } from "@/lib/definitions";
 import { flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import React from "react";
 import { ChevronDownIcon, ChevronUpIcon, Trash2, X } from "lucide-react";
 import { cn, formatBytes } from "@/lib/utils";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { foldersListViewColumns } from "./columns";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -18,11 +21,25 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 export default function FoldersList({
     folders,
 }: {
-    folders: (FolderWithAccessToken & FolderWithFilesCount & FolderWithCover & FolderWithFilesWithFolderAndComments)[];
+    readonly folders: (FolderWithAccessToken &
+        FolderWithFilesCount &
+        FolderWithCover &
+        FolderWithFilesWithFolderAndComments)[];
 }) {
-    const t = useTranslations("folders.views.list.table");
+    const t = useTranslations("folders.views.list");
+    const formatter = useFormatter();
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [rowSelection, setRowSelection] = React.useState({});
+
+    // Table states
+    const [openShare, setOpenShare] = React.useState<boolean>(false);
+    const [openChangeCover, setOpenChangeCover] = React.useState<boolean>(false);
+    const [openRename, setOpenRename] = React.useState<boolean>(false);
+    const [openProperties, setOpenProperties] = React.useState<boolean>(false);
+    const [openDelete, setOpenDelete] = React.useState<boolean>(false);
+    const [folderImages, setFolderImages] = React.useState<
+        ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[]
+    >([]);
 
     const table = useReactTable({
         data: folders,
@@ -35,6 +52,26 @@ export default function FoldersList({
             sorting,
             rowSelection,
         },
+        meta: {
+            intl: {
+                translations: t,
+                formatter: formatter,
+            },
+            states: {
+                folderImages,
+                setFolderImages,
+                openShare,
+                setOpenShare,
+                openChangeCover,
+                setOpenChangeCover,
+                openRename,
+                setOpenRename,
+                openProperties,
+                setOpenProperties,
+                openDelete,
+                setOpenDelete,
+            },
+        },
         enableSortingRemoval: false,
         getRowId: row => row.id,
     });
@@ -42,7 +79,7 @@ export default function FoldersList({
     return (
         <>
             {Object.keys(rowSelection).length > 0 ? (
-                <div className={"flex justify-between items-center mb-5 bg-gray-50 rounded-2xl w-full p-2"}>
+                <div className={"flex justify-between items-center mb-5 bg-accent rounded-2xl w-full p-2"}>
                     <div className={"flex gap-2 items-center"}>
                         <Button
                             variant="ghost"
@@ -55,7 +92,7 @@ export default function FoldersList({
                         </Button>
                         <h2>
                             <span className={"font-semibold"}>
-                                {t("selection", { count: Object.keys(rowSelection).length })}
+                                {t("table.selection", { count: Object.keys(rowSelection).length })}
                             </span>{" "}
                             -{" "}
                             {formatBytes(
@@ -68,7 +105,7 @@ export default function FoldersList({
                     </div>
 
                     <Button variant="outline">
-                        <Trash2 className={"mr-2"} /> {t("deleteSelected")}
+                        <Trash2 className={"mr-2"} /> {t("table.deleteSelected")}
                     </Button>
                 </div>
             ) : null}
@@ -77,22 +114,33 @@ export default function FoldersList({
                     {table.getHeaderGroups().map(headerGroup => (
                         <TableRow key={headerGroup.id} className="hover:bg-transparent">
                             {headerGroup.headers.map(header => {
+                                let ariaSort: "ascending" | "descending" | "none" = "none";
+
+                                if (header.column.getIsSorted() === "asc") {
+                                    ariaSort = "ascending";
+                                } else if (header.column.getIsSorted() === "desc") {
+                                    ariaSort = "descending";
+                                }
+
                                 return (
                                     <TableHead
                                         key={header.id}
-                                        aria-sort={
-                                            header.column.getIsSorted() === "asc"
-                                                ? "ascending"
-                                                : header.column.getIsSorted() === "desc"
-                                                  ? "descending"
-                                                  : "none"
-                                        }
+                                        aria-sort={ariaSort}
                                         {...{
                                             colSpan: header.colSpan,
                                             style: {
                                                 width: header.getSize(),
                                             },
                                         }}
+                                        onClick={header.column.getToggleSortingHandler()}
+                                        onKeyDown={e => {
+                                            // Enhanced keyboard handling for sorting
+                                            if (header.column.getCanSort() && (e.key === "Enter" || e.key === " ")) {
+                                                e.preventDefault();
+                                                header.column.getToggleSortingHandler()?.(e);
+                                            }
+                                        }}
+                                        tabIndex={header.column.getCanSort() ? 0 : undefined}
                                     >
                                         {header.isPlaceholder ? null : (
                                             <div
@@ -100,18 +148,6 @@ export default function FoldersList({
                                                     header.column.getCanSort() &&
                                                         "flex h-full cursor-pointer items-center justify-between gap-2 select-none"
                                                 )}
-                                                onClick={header.column.getToggleSortingHandler()}
-                                                onKeyDown={e => {
-                                                    // Enhanced keyboard handling for sorting
-                                                    if (
-                                                        header.column.getCanSort() &&
-                                                        (e.key === "Enter" || e.key === " ")
-                                                    ) {
-                                                        e.preventDefault();
-                                                        header.column.getToggleSortingHandler()?.(e);
-                                                    }
-                                                }}
-                                                tabIndex={header.column.getCanSort() ? 0 : undefined}
                                             >
                                                 <span className="truncate">
                                                     {flexRender(header.column.columnDef.header, header.getContext())}

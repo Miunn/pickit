@@ -13,7 +13,7 @@ import { changeFolderDescription } from "@/actions/folders";
 import { toast } from "sonner";
 import { useState } from "react";
 
-export default function EditDescriptionDialog({ folder, children, open, setOpen }: { folder: Folder, children?: React.ReactNode, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function EditDescriptionDialog({ folder, children, open, setOpen }: { readonly folder: Folder, readonly children?: React.ReactNode, readonly open?: boolean, readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
     const t = useTranslations("dialogs.folders.editDescription");
     const [internalOpen, setInternalOpen] = useState(false);
     const openState = open ?? internalOpen;

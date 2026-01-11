@@ -102,7 +102,7 @@ export async function generateMetadata(props: {
             images: [
                 {
                     alt: "Echomori",
-                    url: `${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folderId}/og?${searchParams.share ? `share=${searchParams.share}` : ""}&${searchParams.h ? `h=${searchParams.h}` : ""}`,
+                    url: `${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folderId}/og?share=${searchParams.share}&h=${searchParams.h}`,
                     type: "image/png",
                     width: 1200,
                     height: 630,
@@ -134,15 +134,15 @@ export async function generateMetadata(props: {
  * @returns The React element for the folder page, or a redirect response when access is denied, a share link is invalid, or the folder is not found.
  */
 export default async function FolderPage(props: {
-    params: Promise<{ folderId: string; locale: string }>;
-    searchParams: Promise<{
-        sort?: ImagesSortMethod;
-        view?: ViewState;
-        share?: string;
-        t?: string;
-        h?: string;
-        codeNeeded?: boolean;
-        wrongPin?: boolean;
+    readonly params: Promise<{ readonly folderId: string; readonly locale: string }>;
+    readonly searchParams: Promise<{
+        readonly sort?: ImagesSortMethod;
+        readonly view?: ViewState;
+        readonly share?: string;
+        readonly t?: string;
+        readonly h?: string;
+        readonly codeNeeded?: boolean;
+        readonly wrongPin?: boolean;
     }>;
 }) {
     const searchParams = await props.searchParams;
@@ -233,7 +233,7 @@ export default async function FolderPage(props: {
                 folderData={folder}
                 tokenData={accessToken}
                 tokenHash={searchParams.h ?? null}
-                isShared={folder.accessTokens.filter(token => token.email).length > 0}
+                isShared={folder.accessTokens.some(token => token.email)}
             >
                 <TokenProvider token={accessToken}>
                     <FilesProvider filesData={filesWithSignedUrls} defaultView={searchParams.view || ViewState.Grid}>

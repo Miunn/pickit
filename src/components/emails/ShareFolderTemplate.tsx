@@ -1,4 +1,5 @@
 import { Body, Button, Column, Font, Head, Html, Img, Row, Section, Tailwind, Text } from "@react-email/components";
+import EmailFooter from "./EmailFooter";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL ? process.env.NEXT_PUBLIC_APP_URL : "http://localhost:3000";
 
@@ -9,11 +10,11 @@ export default function ShareFolderTemplate({
     isLocked,
     message,
 }: {
-    name: string;
-    folderName: string;
-    link: string;
-    isLocked: boolean;
-    message?: string;
+    readonly name: string;
+    readonly folderName: string;
+    readonly link: string;
+    readonly isLocked: boolean;
+    readonly message?: string;
 }) {
     return (
         <Html>
@@ -109,36 +110,7 @@ export default function ShareFolderTemplate({
                             </Column>
                         </Row>
 
-                        <Section className="text-center bg-[#f4f4f4] p-4">
-                            <table className="w-full">
-                                <tr className="w-full">
-                                    <td align="center">
-                                        <Img
-                                            alt={process.env.NEXT_PUBLIC_APP_NAME}
-                                            height="42"
-                                            src={`${baseUrl}/static/logo-primary-png.png`}
-                                        />
-                                    </td>
-                                </tr>
-                                <tr className="w-full">
-                                    <td align="center">
-                                        <Text className="!my-[8px] !text-[16px] !font-semibold !leading-[24px] !text-gray-900">
-                                            {process.env.NEXT_PUBLIC_APP_NAME}
-                                        </Text>
-                                        <Text className="!mb-0 !mt-[4px] !text-[16px] !leading-[24px] !text-gray-500">
-                                            Upload and share your memories easily
-                                        </Text>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align="center">
-                                        <Text className="!mb-0 !mt-[4px] !text-[16px] !font-semibold !leading-[24px] !text-gray-500">
-                                            {process.env.NEXT_PUBLIC_SUPPORT_MAIL}
-                                        </Text>
-                                    </td>
-                                </tr>
-                            </table>
-                        </Section>
+                        <EmailFooter />
                     </Section>
                 </Body>
             </Tailwind>

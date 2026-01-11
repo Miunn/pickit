@@ -15,7 +15,7 @@ import { ChevronDownIcon, ChevronLeft, ChevronRight, ChevronUpIcon, Loader2, Tra
 import { cn, formatBytes } from "@/lib/utils";
 import { CarouselDialog } from "../../carousel/CarouselDialog";
 import { Button } from "../../../ui/button";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { DeleteMultipleImagesDialog } from "../../dialogs/DeleteMultipleImagesDialog";
 import { Select, SelectItem, SelectContent, SelectValue, SelectTrigger } from "../../../ui/select";
 import { useFolderContext } from "@/context/FolderContext";
@@ -31,7 +31,8 @@ import { useFilesContext } from "@/context/FilesContext";
  * @returns The React element representing the images list UI.
  */
 export default function ImagesList() {
-    const t = useTranslations("images.views.list.table");
+    const t = useTranslations("images.views.list");
+    const formatter = useFormatter();
     const { folder } = useFolderContext();
     const { files } = useFilesContext();
     const [carouselOpen, setCarouselOpen] = React.useState<boolean>(false);
@@ -44,6 +45,11 @@ export default function ImagesList() {
         pageSize: 10,
     });
     const [isLoading, setIsLoading] = useState(true);
+
+    // Table states
+    const [openRename, setOpenRename] = useState<boolean>(false);
+    const [openProperties, setOpenProperties] = useState<boolean>(false);
+    const [openDelete, setOpenDelete] = useState<boolean>(false);
 
     // Reference to the table container for virtualization
     const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -81,6 +87,18 @@ export default function ImagesList() {
                 setCarouselOpen,
                 setStartIndex,
             },
+            intl: {
+                translations: t,
+                formatter: formatter,
+            },
+            states: {
+                openRename,
+                setOpenRename,
+                openProperties,
+                setOpenProperties,
+                openDelete,
+                setOpenDelete,
+            },
         },
         getRowId: row => row.id,
     });
@@ -101,7 +119,7 @@ export default function ImagesList() {
                 </div>
                 <div className="ml-auto flex items-center gap-2">
                     <p className="text-sm">
-                        {t("page.label", {
+                        {t("table.page.label", {
                             pageStart: table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1,
                             pageEnd: Math.min(
                                 table.getState().pagination.pageIndex * table.getState().pagination.pageSize +
@@ -147,7 +165,7 @@ export default function ImagesList() {
                 </div>
             </div>
             {Object.keys(rowSelection).length > 0 ? (
-                <div className={"flex justify-between items-center mb-5 bg-gray-50 rounded-2xl w-full p-2"}>
+                <div className={"flex justify-between items-center mb-5 bg-accent rounded-2xl w-full p-2"}>
                     <div className={"flex gap-2 items-center"}>
                         <Button
                             variant="ghost"
@@ -160,7 +178,7 @@ export default function ImagesList() {
                         </Button>
                         <h2>
                             <span className={"font-semibold"}>
-                                {t("selection", { count: Object.keys(rowSelection).length })}
+                                {t("table.selection", { count: Object.keys(rowSelection).length })}
                             </span>{" "}
                             -{" "}
                             {formatBytes(
@@ -178,7 +196,7 @@ export default function ImagesList() {
                             setOpenDeleteSelection(true);
                         }}
                     >
-                        <Trash2 className={"mr-2"} /> {t("deleteSelected")}
+                        <Trash2 className={"mr-2"} /> {t("table.deleteSelected")}
                     </Button>
                 </div>
             ) : null}
@@ -188,39 +206,41 @@ export default function ImagesList() {
                         {table.getHeaderGroups().map(headerGroup => (
                             <TableRow key={headerGroup.id} className="hover:bg-transparent">
                                 {headerGroup.headers.map(header => {
+                                    let ariaSort: "none" | "ascending" | "descending" = "none";
+
+                                    if (header.column.getIsSorted() === "asc") {
+                                        ariaSort = "ascending";
+                                    } else if (header.column.getIsSorted() === "desc") {
+                                        ariaSort = "descending";
+                                    }
+
                                     return (
                                         <TableHead
                                             key={header.id}
-                                            aria-sort={
-                                                header.column.getIsSorted() === "asc"
-                                                    ? "ascending"
-                                                    : header.column.getIsSorted() === "desc"
-                                                      ? "descending"
-                                                      : "none"
-                                            }
+                                            aria-sort={ariaSort}
                                             {...{
                                                 colSpan: header.colSpan,
                                                 style: {
                                                     width: header.getSize(),
                                                 },
                                             }}
+                                            onClick={header.column.getToggleSortingHandler()}
+                                            onKeyDown={e => {
+                                                if (
+                                                    header.column.getCanSort() &&
+                                                    (e.key === "Enter" || e.key === " ")
+                                                ) {
+                                                    e.preventDefault();
+                                                    header.column.getToggleSortingHandler()?.(e);
+                                                }
+                                            }}
+                                            tabIndex={header.column.getCanSort() ? 0 : undefined}
                                         >
                                             <div
                                                 className={cn(
                                                     header.column.getCanSort() &&
                                                         "flex h-full cursor-pointer items-center justify-between gap-2 select-none"
                                                 )}
-                                                onClick={header.column.getToggleSortingHandler()}
-                                                onKeyDown={e => {
-                                                    if (
-                                                        header.column.getCanSort() &&
-                                                        (e.key === "Enter" || e.key === " ")
-                                                    ) {
-                                                        e.preventDefault();
-                                                        header.column.getToggleSortingHandler()?.(e);
-                                                    }
-                                                }}
-                                                tabIndex={header.column.getCanSort() ? 0 : undefined}
                                             >
                                                 <span className="truncate">
                                                     {flexRender(header.column.columnDef.header, header.getContext())}
@@ -262,7 +282,7 @@ export default function ImagesList() {
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={imagesListViewColumns.length} className="h-24 text-center">
-                                    {t("empty")}
+                                    {t("table.page.empty")}
                                 </TableCell>
                             </TableRow>
                         )}

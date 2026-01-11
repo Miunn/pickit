@@ -12,7 +12,7 @@ const validateEmail = async (email: string, checkout: CheckoutContextValue) => {
     const updateResult = await checkout.updateEmail(email);
     const isValid = updateResult.type !== "error";
 
-    return { isValid, message: !isValid ? updateResult.error.message : null };
+    return { isValid, message: isValid ? null : updateResult.error.message };
 };
 
 const EmailInput = ({
@@ -22,11 +22,11 @@ const EmailInput = ({
     setError,
     disabled,
 }: {
-    email: string;
-    setEmail: (email: string) => void;
-    error: string | null;
-    setError: React.Dispatch<React.SetStateAction<string | null>>;
-    disabled?: boolean;
+    readonly email: string;
+    readonly setEmail: (email: string) => void;
+    readonly error: string | null;
+    readonly setError: React.Dispatch<React.SetStateAction<string | null>>;
+    readonly disabled?: boolean;
 }) => {
     const checkout = useCheckout();
 

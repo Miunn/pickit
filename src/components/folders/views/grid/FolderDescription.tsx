@@ -13,7 +13,7 @@ import DeleteDescriptionDialog from "../../dialogs/DeleteDescriptionDialog";
  *
  * @returns A React element showing the folder description and, when permitted, edit and delete action buttons.
  */
-export default function FolderDescription({ className }: { className?: string }) {
+export default function FolderDescription({ className }: { readonly className?: string }) {
     const { user } = useSession();
     const { folder } = useFolderContext();
 
