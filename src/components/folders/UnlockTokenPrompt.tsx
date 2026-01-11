@@ -24,7 +24,6 @@ export default function UnlockTokenPrompt({
 }) {
 	const searchParams = useSearchParams();
 	const shareToken = searchParams.get("share");
-	const tokenType = searchParams.get("t");
 
 	const t = useTranslations("components.accessTokens.unlock");
 	const router = useRouter();
