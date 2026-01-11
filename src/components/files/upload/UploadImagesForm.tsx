@@ -18,7 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { notifyAboutUpload } from "@/actions/accessTokens";
 import { useSearchParams } from "next/navigation";
 import crypto from "crypto";
-zd;
+
 interface UploadImagesFormProps {
 	readonly folderId: string;
 	readonly onUpload?: (files: ContextFile[]) => void;
