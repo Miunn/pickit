@@ -14,7 +14,7 @@ export default async function UnlockFolderPage(props: UnlockFolderPageProps) {
 	const { share, error } = await props.searchParams;
 
 	if (!share) {
-		return redirect({ href: `/folders/${folderId}`, locale });
+		return redirect({ href: `/app/folders/${folderId}`, locale });
 	}
 
 	const accessToken = await AccessTokenService.get({

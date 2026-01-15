@@ -1,6 +1,5 @@
-import { unlockAccessToken } from "@/actions/accessTokens";
-import { AccessToken, FolderTokenPermission } from "@prisma/client";
-import { Link, Lock, CalendarIcon, X, Eye, Pen } from "lucide-react";
+import { FolderTokenPermission } from "@prisma/client";
+import { Lock, CalendarIcon, X, Eye, Pen } from "lucide-react";
 import {
 	Dialog,
 	DialogClose,
@@ -16,9 +15,9 @@ import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@/comp
 import { CreatePersonAccessTokenFormSchema, FolderWithAccessToken } from "@/lib/definitions";
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import LockTokenDialog from "@/components/folders/dialogs/LockTokenDialog";
-import { useEffect, useMemo, useRef, useState } from "react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
+import ShareTokenList from "@/components/share/ShareTokenList";
+import { useEffect, useMemo, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@/components/ui/separator";
@@ -31,8 +30,8 @@ import { toast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { addMonths } from "date-fns";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { z } from "zod";
-import ShareTokenList from "./ShareTokenList";
 
 interface ShareContactViewProps {
 	readonly tokenList: {
@@ -70,8 +69,6 @@ export default function ShareContactView({
 				.sort((a, b) => a.permission.localeCompare(b.permission)),
 		[folder]
 	);
-	const [openLockToken, setOpenLockToken] = useState(false);
-	const [lockToken, setLockToken] = useState<AccessToken | null>(null);
 
 	const sharePersonAccessTokenForm = useForm<z.infer<typeof CreatePersonAccessTokenFormSchema>>({
 		resolver: zodResolver(CreatePersonAccessTokenFormSchema),
@@ -117,15 +114,6 @@ export default function ShareContactView({
 		emailScroll.current!.scrollIntoView(false);
 	}, [tokenList]);
 
-	const handleLockToken = (token: AccessToken) => {
-		setLockToken(token);
-		setOpenLockToken(true);
-	};
-
-	const handleUnlockToken = async (tokenId: string) => {
-		unlockAccessToken(tokenId);
-	};
-
 	return (
 		<>
 			<div className="flex flex-row justify-between items-center gap-2">
@@ -140,12 +128,7 @@ export default function ShareContactView({
 				}
 			>
 				{folderTokens.length > 0 ? (
-					<ShareTokenList
-						tokenList={folderTokens}
-						handleUnlockToken={handleUnlockToken}
-						handleLockToken={handleLockToken}
-						folderId={folder.id}
-					/>
+					<ShareTokenList tokenList={folderTokens} folderId={folder.id} />
 				) : (
 					<p className="col-span-1 sm:col-span-3 text-sm">{t("links.empty")}</p>
 				)}
@@ -580,11 +563,6 @@ export default function ShareContactView({
 					</div>
 				</ScrollArea>
 			</div>
-			<LockTokenDialog
-				tokenId={lockToken?.id || ""}
-				openState={openLockToken}
-				setOpenState={setOpenLockToken}
-			/>
 		</>
 	);
 }

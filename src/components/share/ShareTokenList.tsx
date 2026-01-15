@@ -1,6 +1,5 @@
 import { AccessToken, FolderTokenPermission } from "@prisma/client";
 import { Button } from "../ui/button";
-import { Lock, Unlock } from "lucide-react";
 import { Fragment } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -9,13 +8,9 @@ import { toast } from "@/hooks/use-toast";
 
 export default function ShareTokenList({
 	tokenList,
-	handleLockToken,
-	handleUnlockToken,
 	folderId,
 }: {
 	readonly tokenList: AccessToken[];
-	readonly handleLockToken: (token: AccessToken) => void;
-	readonly handleUnlockToken: (tokenId: string) => void;
 	readonly folderId: string;
 }) {
 	const t = useTranslations("dialogs.folders.share");
@@ -54,23 +49,6 @@ export default function ShareTokenList({
 						value={`${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folderId}?share=${token.token}`}
 					/>
 					<div className="flex items-center gap-2">
-						{token.locked ? (
-							<Button
-								variant={"outline"}
-								size={"icon"}
-								onClick={() => handleUnlockToken(token.id)}
-							>
-								<Lock className="w-4 h-4" />
-							</Button>
-						) : (
-							<Button
-								variant={"outline"}
-								size={"icon"}
-								onClick={() => handleLockToken(token)}
-							>
-								<Unlock className="w-4 h-4" />
-							</Button>
-						)}
 						<Button
 							onClick={() =>
 								copyToClipboard(
