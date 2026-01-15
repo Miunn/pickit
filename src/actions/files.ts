@@ -3,6 +3,10 @@
 import { revalidatePath } from "next/cache";
 import {
 	FileWithComments,
+<<<<<<< HEAD
+=======
+	FileWithFolder,
+>>>>>>> main
 	FileWithLikes,
 	FileWithTags,
 	FolderWithFilesCount,
@@ -23,7 +27,10 @@ import { FileLikeService } from "@/data/file-like-service";
 import { SecureService } from "@/data/secure/secure-service";
 import { FolderPermission } from "@/data/secure/folder";
 import { FileVerificationService } from "@/data/file-verification-service";
+<<<<<<< HEAD
 import { FilePermission } from "@/data/secure/file";
+=======
+>>>>>>> main
 
 export async function initiateFileUpload(
 	data: z.infer<typeof RequestFileUploadFormSchema>,
@@ -204,7 +211,11 @@ function isValidFileType(fileType: string): boolean {
 }
 
 export async function getImagesWithFolderAndCommentsFromFolder(folderId: string): Promise<{
+<<<<<<< HEAD
 	images: (FileWithTags & FileWithComments & { folder: FolderWithTags })[];
+=======
+	images: (FileWithFolder & FileWithComments)[];
+>>>>>>> main
 	error: string | null;
 }> {
 	const { user } = await getCurrentSession();
@@ -223,9 +234,14 @@ export async function getImagesWithFolderAndCommentsFromFolder(folderId: string)
 			type: FileType.IMAGE,
 		},
 		include: {
+<<<<<<< HEAD
 			folder: { include: { tags: true } },
 			comments: { include: { createdBy: true } },
 			tags: true,
+=======
+			folder: true,
+			comments: { include: { createdBy: true } },
+>>>>>>> main
 		},
 	});
 
@@ -359,6 +375,7 @@ export async function updateFilePosition(
 	previousId?: string,
 	nextId?: string
 ): Promise<{ error: string | null; newPosition?: number }> {
+<<<<<<< HEAD
 	const file = await FileService.get({
 		where: { id: fileId },
 		include: { folder: { include: { accessTokens: true } } },
@@ -433,6 +450,79 @@ export async function updateFilePosition(
 		return { error: "Failed to update file position" };
 	}
 
+=======
+	const { user } = await getCurrentSession();
+
+	if (!user) {
+		return { error: "You must be logged in to update file position" };
+	}
+
+	const file = await FileService.get({
+		where: { id: fileId, createdById: user.id },
+	});
+
+	let previousFile = null;
+	let nextFile = null;
+
+	if (previousId) {
+		previousFile = await FileService.get({
+			where: { id: previousId, createdById: user.id },
+		});
+	}
+
+	if (nextId) {
+		nextFile = await FileService.get({
+			where: { id: nextId, createdById: user.id },
+		});
+	}
+
+	if (!file || (previousId && !previousFile) || (nextId && !nextFile)) {
+		return { error: "File not found" };
+	}
+
+	if (
+		(previousFile && previousFile.folderId !== file.folderId) ||
+		(nextFile && nextFile.folderId !== file.folderId)
+	) {
+		return { error: "File not found" };
+	}
+
+	if (previousFile && nextFile && previousFile.position > nextFile.position) {
+		return {
+			error: "Previous file position must be less than next file position",
+		};
+	}
+
+	if (nextFile && previousFile && nextFile.position - previousFile.position < 2) {
+		await reNormalizePositions(file.folderId);
+		return updateFilePosition(fileId, previousId, nextId);
+	}
+
+	let position = 1;
+	// Handle start inserting edge case
+	if (!previousFile && nextFile && nextFile.position < 2) {
+		await reNormalizePositions(file.folderId);
+		position = 500;
+	} else if (!previousFile && nextFile) {
+		position = nextFile.position / 2;
+	}
+
+	if (!nextFile && previousFile) {
+		position = previousFile.position + 1000;
+	}
+
+	if (previousFile && nextFile) {
+		position = (nextFile.position + previousFile.position) / 2;
+	}
+
+	try {
+		await FileService.update(fileId, { position });
+	} catch (err) {
+		console.error("Error updating file position:", err);
+		return { error: "Failed to update file position" };
+	}
+
+>>>>>>> main
 	return { error: null, newPosition: position };
 }
 
