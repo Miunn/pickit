@@ -33,8 +33,6 @@ export async function enforceFolder(
 		return { allowed: false };
 	}
 
-	console.log("Got matching token", matchingToken);
-
 	if (matchingToken.locked) {
 		const tokenPin = await AccessTokenService.get({
 			where: { id: matchingToken.id },
