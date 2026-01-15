@@ -22,7 +22,7 @@ export const SignupFormSchema = z
 			.string()
 			.min(8, { message: "Be at least 8 characters long" })
 			.regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
-			.regex(/[0-9]/, { message: "Contain at least one number." })
+			.regex(/\d/, { message: "Contain at least one number." })
 			.regex(/[^a-zA-Z0-9]/, { message: "Contain at least one special character." })
 			.trim(),
 		passwordConfirmation: z.string(),
@@ -66,7 +66,7 @@ export const EditFolderDescriptionFormSchema = z.object({
 
 export const UploadImagesFormSchema = z.object({
 	images:
-		typeof window === "undefined"
+		typeof globalThis === "undefined"
 			? z
 					.any()
 					.refine(file => {
@@ -224,7 +224,7 @@ export const ChangePasswordSchema = z
 			.string()
 			.min(8, { message: "Must be at least 8 characters long" })
 			.regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
-			.regex(/[0-9]/, { message: "Contain at least one number." })
+			.regex(/\d/, { message: "Contain at least one number." })
 			.regex(/[^a-zA-Z0-9]/, { message: "Contain at least one special character." })
 			.trim(),
 		passwordConfirmation: z.string(),
@@ -249,7 +249,7 @@ export const ResetPasswordFormSchema = z
 			.string()
 			.min(8, { message: "Must be at least 8 characters long" })
 			.regex(/[a-zA-Z]/, { message: "Must contain at least one letter." })
-			.regex(/[0-9]/, { message: "Must contain at least one number." })
+			.regex(/\d/, { message: "Must contain at least one number." })
 			.regex(/[^a-zA-Z0-9]/, { message: "Must contain at least one special character." })
 			.trim(),
 		passwordConfirmation: z.string(),

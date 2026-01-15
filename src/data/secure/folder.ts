@@ -2,6 +2,7 @@ import { FolderWithAccessToken } from "@/lib/definitions";
 import { getCurrentSession, SessionValidationResult } from "@/lib/session";
 import { FolderTokenPermission } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { AccessTokenService } from "@/data/access-token-service";
 
 export enum FolderPermission {
 	READ = "read",
@@ -15,7 +16,7 @@ export async function enforceFolder(
 	token?: string,
 	hash?: string,
 	permission: FolderPermission = FolderPermission.READ
-): Promise<{ allowed: true; session: SessionValidationResult } | { allowed: false }> {
+): Promise<{ allowed: true; session: SessionValidationResult } | { allowed: false; reason?: string }> {
 	const user = await getCurrentSession();
 
 	if (user.user && folder.createdById === user.user.id) {
@@ -32,15 +33,21 @@ export async function enforceFolder(
 		return { allowed: false };
 	}
 
-	if (matchingToken.pinCode) {
-		if (!hash) {
-			return { allowed: false };
+	if (matchingToken.locked) {
+		const tokenPin = await AccessTokenService.get({
+			where: { id: matchingToken.id },
+			method: "unique",
+			select: { pinCode: true },
+		});
+
+		if (!hash || !tokenPin?.pinCode) {
+			return { allowed: false, reason: "invalid-pin" };
 		}
 
-		const matchHash = await bcrypt.compare(matchingToken.pinCode, hash);
+		const matchHash = await bcrypt.compare(tokenPin.pinCode, hash);
 
 		if (!matchHash) {
-			return { allowed: false };
+			return { allowed: false, reason: "invalid-pin" };
 		}
 	}
 

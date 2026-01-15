@@ -67,12 +67,6 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
 							.createHash("md5")
 							.update(fileBuffer)
 							.digest("base64");
-						console.log("Sended metadata checksum", {
-							name: file.name,
-							size: file.size,
-							type: file.type,
-							md5: checksum,
-						});
 
 						// Step 2: Send metadata and samples to get verification URL
 						const verificationResult = await initiateFileUpload(

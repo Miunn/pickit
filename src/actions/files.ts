@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import {
 	FileWithComments,
-	FileWithFolder,
 	FileWithLikes,
 	FileWithTags,
 	FolderWithFilesCount,
@@ -24,6 +23,7 @@ import { FileLikeService } from "@/data/file-like-service";
 import { SecureService } from "@/data/secure/secure-service";
 import { FolderPermission } from "@/data/secure/folder";
 import { FileVerificationService } from "@/data/file-verification-service";
+import { FilePermission } from "@/data/secure/file";
 
 export async function initiateFileUpload(
 	data: z.infer<typeof RequestFileUploadFormSchema>,
@@ -204,7 +204,7 @@ function isValidFileType(fileType: string): boolean {
 }
 
 export async function getImagesWithFolderAndCommentsFromFolder(folderId: string): Promise<{
-	images: (FileWithFolder & FileWithComments)[];
+	images: (FileWithTags & FileWithComments & { folder: FolderWithTags })[];
 	error: string | null;
 }> {
 	const { user } = await getCurrentSession();
@@ -223,8 +223,9 @@ export async function getImagesWithFolderAndCommentsFromFolder(folderId: string)
 			type: FileType.IMAGE,
 		},
 		include: {
-			folder: true,
+			folder: { include: { tags: true } },
 			comments: { include: { createdBy: true } },
+			tags: true,
 		},
 	});
 
@@ -358,40 +359,42 @@ export async function updateFilePosition(
 	previousId?: string,
 	nextId?: string
 ): Promise<{ error: string | null; newPosition?: number }> {
-	const { user } = await getCurrentSession();
+	const file = await FileService.get({
+		where: { id: fileId },
+		include: { folder: { include: { accessTokens: true } } },
+	});
 
-	if (!user) {
-		return { error: "You must be logged in to update file position" };
+	if (!file) {
+		return { error: "file-not-found" };
 	}
 
-	const file = await FileService.get({
-		where: { id: fileId, createdById: user.id },
-	});
+	const auth = await SecureService.file.enforce(file, FilePermission.UPDATE);
+
+	if (!auth.isAllowed) {
+		return { error: "unauthorized" };
+	}
 
 	let previousFile = null;
 	let nextFile = null;
 
 	if (previousId) {
 		previousFile = await FileService.get({
-			where: { id: previousId, createdById: user.id },
+			where: { id: previousId },
 		});
+
+		if (previousFile?.folderId !== file.folderId) {
+			return { error: "file-not-in-folder" };
+		}
 	}
 
 	if (nextId) {
 		nextFile = await FileService.get({
-			where: { id: nextId, createdById: user.id },
+			where: { id: nextId },
 		});
-	}
 
-	if (!file || (previousId && !previousFile) || (nextId && !nextFile)) {
-		return { error: "File not found" };
-	}
-
-	if (
-		(previousFile && previousFile.folderId !== file.folderId) ||
-		(nextFile && nextFile.folderId !== file.folderId)
-	) {
-		return { error: "File not found" };
+		if (nextFile?.folderId !== file.folderId) {
+			return { error: "file-not-in-folder" };
+		}
 	}
 
 	if (previousFile && nextFile && previousFile.position > nextFile.position) {
@@ -400,7 +403,8 @@ export async function updateFilePosition(
 		};
 	}
 
-	if (nextFile && previousFile && nextFile.position - previousFile.position < 2) {
+	const delta = (nextFile?.position || 0) - (previousFile?.position || 0);
+	if (delta < 2) {
 		await reNormalizePositions(file.folderId);
 		return updateFilePosition(fileId, previousId, nextId);
 	}
