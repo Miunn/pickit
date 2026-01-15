@@ -65,7 +65,7 @@ export default function FolderActionBar() {
 				{!isGuest || token?.permission === FolderTokenPermission.WRITE ? (
 					<UploadImagesDialog
 						folderId={folder.id}
-						shouldDisplayNotify={!!!isGuest && !isShared}
+						shouldDisplayNotify={!isGuest && !isShared}
 						onUpload={uploadedFiles => {
 							setFiles([...files, ...uploadedFiles]);
 						}}

@@ -5,7 +5,7 @@ import { ViewState } from "@/components/folders/ViewSelector";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import BreadcrumbPortal from "@/components/layout/BreadcrumbPortal";
-import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
+import HeaderBreadcumb from "@/components/layout/breadcrumb/HeaderBreadcumb";
 import { FolderProvider } from "@/context/FolderContext";
 import { FilesProvider } from "@/context/FilesContext";
 import { TokenProvider } from "@/context/TokenContext";
