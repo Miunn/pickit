@@ -79,7 +79,7 @@ export default function FolderActionBar() {
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
 						<DropdownMenuItem
-							className={cn(folder.description && "hidden")}
+							className={cn((folder.description || isGuest) && "hidden")}
 							onClick={() => setOpenEditDescription(true)}
 						>
 							{t("addDescription")}
