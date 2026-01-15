@@ -35,7 +35,7 @@ export type ImagePreviewProps = {
 	readonly className?: string;
 } & React.HTMLAttributes<HTMLButtonElement>;
 
-export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className, ...props }: ImagePreviewProps) => {
+export function ImagePreviewGrid({ file, selected, onClick, onSelect, className, ...props }: ImagePreviewProps) {
 	const t = useTranslations("images");
 	const deleteTranslations = useTranslations("dialogs.images.delete");
 	const searchParams = useSearchParams();
@@ -80,6 +80,35 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className,
 			});
 		}
 
+		return result.success;
+	};
+
+	const handleTagUnselected = async (tag: FolderTag) => {
+		setFiles(prev =>
+			prev.map(f =>
+				f.id === file.id
+					? {
+							...f,
+							tags: f.tags.filter(t => t.id !== tag.id),
+						}
+					: f
+			)
+		);
+		const result = await removeTagsFromFile(file.id, [tag.id]);
+
+		if (result.success) return true;
+
+		sonnerToast.error(t("addTag.errorRemove"));
+		setFiles(prev =>
+			prev.map(f =>
+				f.id === file.id
+					? {
+							...f,
+							tags: [...f.tags, tag],
+						}
+					: f
+			)
+		);
 		return result.success;
 	};
 
@@ -144,46 +173,7 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className,
 								selectedTags={file.tags}
 								onTagAdded={handleTagSelected}
 								onTagSelected={handleTagSelected}
-								onTagUnselected={async (tag: FolderTag) => {
-									setFiles(prev =>
-										prev.map(f =>
-											f.id === file.id
-												? {
-														...f,
-														tags: f.tags.filter(
-															t =>
-																t.id !==
-																tag.id
-														),
-													}
-												: f
-										)
-									);
-									const result = await removeTagsFromFile(
-										file.id,
-										[tag.id]
-									);
-									if (!result.success) {
-										sonnerToast.error(
-											t("addTag.errorRemove")
-										);
-										setFiles(prev =>
-											prev.map(f =>
-												f.id === file.id
-													? {
-															...f,
-															tags: [
-																...f.tags,
-																tag,
-															],
-														}
-													: f
-											)
-										);
-									}
-
-									return result.success;
-								}}
+								onTagUnselected={handleTagUnselected}
 							>
 								<span>{t("actions.addTag")}</span>
 							</ManageTagsDialog>
@@ -247,4 +237,4 @@ export const ImagePreviewGrid = ({ file, selected, onClick, onSelect, className,
 			<ImagePropertiesDialog file={file} open={openProperties} setOpen={setOpenProperties} />
 		</>
 	);
-};
+}
