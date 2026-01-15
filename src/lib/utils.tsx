@@ -245,7 +245,6 @@ export const getPlanFromPriceId = (priceId: string) => {
 };
 
 export const getLimitsFromPlan = (plan: Plan): { storage: number; albums: number; sharingLinks: number } => {
-	console.log("Benefits", plansBenefits.PRO);
 	switch (plan) {
 		case Plan.FREE:
 			return {
@@ -295,4 +294,8 @@ export function isNewFile(date: Date) {
  */
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
+}
+
+export function filterOut<T>(arr: T[], elmt: T) {
+	return arr.filter(item => item !== elmt);
 }

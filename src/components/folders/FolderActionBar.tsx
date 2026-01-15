@@ -278,7 +278,10 @@ export default function FolderActionBar() {
 						{t("share.label")}
 					</DropdownMenuItem>
 					<DropdownMenuItem asChild>
-						<a href={`/api/folders/${folder.id}/download`} download>
+						<a
+							href={`/api/folders/${folder.id}/download?share==${token?.token}&h=${tokenHash}`}
+							download
+						>
 							{t("download.label")}
 						</a>
 					</DropdownMenuItem>

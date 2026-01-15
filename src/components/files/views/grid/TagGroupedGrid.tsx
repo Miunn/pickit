@@ -69,7 +69,7 @@ export default function TagGroupedGrid() {
 
 	const renderGroup = (tag: FolderTag | "no-tags", files: ContextFile[]) => {
 		const groupKey = tag === "no-tags" ? "no-tags" : tag.id;
-		const headerColor = tag === "no-tags" ? "#000" : tag.color;
+		const headerColor = tag === "no-tags" ? "" : tag.color;
 		const headerText = tag === "no-tags" ? "No tags" : tag.name;
 
 		return (

@@ -61,55 +61,58 @@ export function ImagePreviewGrid({ file, selected, onClick, onSelect, className,
 			: undefined;
 
 	const handleTagSelected = async (tag: FolderTag) => {
-		setFiles((prev: ContextFile[]) => {
-			return prev.map(f => (f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f));
-		});
-		const result = await addTagsToFile(file.id, [tag.id]);
-		if (!result.success) {
+		addTag(tag);
+		try {
+			const result = await addTagsToFile(file.id, [tag.id]);
+
+			if (result.success) {
+				return true;
+			}
+
+			removeTag(tag);
 			sonnerToast.error(t("addTag.errorAdd"));
-
-			setFiles((prev: ContextFile[]) => {
-				return prev.map(f =>
-					f.id === file.id
-						? {
-								...f,
-								tags: f.tags.filter(t => t.id !== tag.id),
-							}
-						: f
-				);
-			});
+			return result.success;
+		} catch {
+			sonnerToast.error(t("addTag.errorAdd"));
+			removeTag(tag);
+			return false;
 		}
-
-		return result.success;
 	};
 
 	const handleTagUnselected = async (tag: FolderTag) => {
-		setFiles(prev =>
-			prev.map(f =>
+		removeTag(tag);
+		try {
+			const result = await removeTagsFromFile(file.id, [tag.id]);
+			if (result.success) return true;
+
+			addTag(tag);
+			sonnerToast.error(t("addTag.errorRemove"));
+			return result.success;
+		} catch {
+			sonnerToast.error(t("addTag.errorRemove"));
+
+			addTag(tag);
+			return false;
+		}
+	};
+
+	const addTag = (tag: FolderTag) => {
+		setFiles((prev: ContextFile[]) =>
+			prev.map(f => (f.id === file.id ? { ...f, tags: [...f.tags, tag] } : f))
+		);
+	};
+
+	const removeTag = (tag: FolderTag) => {
+		setFiles((prev: ContextFile[]) => {
+			return prev.map(f =>
 				f.id === file.id
 					? {
 							...f,
 							tags: f.tags.filter(t => t.id !== tag.id),
 						}
 					: f
-			)
-		);
-		const result = await removeTagsFromFile(file.id, [tag.id]);
-
-		if (result.success) return true;
-
-		sonnerToast.error(t("addTag.errorRemove"));
-		setFiles(prev =>
-			prev.map(f =>
-				f.id === file.id
-					? {
-							...f,
-							tags: [...f.tags, tag],
-						}
-					: f
-			)
-		);
-		return result.success;
+			);
+		});
 	};
 
 	return (
