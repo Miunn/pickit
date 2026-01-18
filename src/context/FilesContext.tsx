@@ -1,7 +1,7 @@
 "use client";
 
 import { FileWithComments, FileWithLikes, FolderWithFilesCount, FileWithTags, FolderWithTags } from "@/lib/definitions";
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import { useSession } from "@/providers/SessionProvider";
 import { useTokenContext } from "./TokenContext";
 import { File as PrismaFile } from "@prisma/client";
@@ -99,80 +99,99 @@ export const FilesProvider = ({
 		return getSortedImagesVideosContent([...files], sortState) as ContextFile[];
 	}, [files, sortState]);
 
-	const hasUserLikedFile = (fileId: string) => {
-		if (!user && !token) {
-			return false;
-		}
+	const hasUserLikedFile = useCallback(
+		(fileId: string) => {
+			if (!user && !token) {
+				return false;
+			}
 
-		const file = files.find(file => file.id === fileId);
+			const file = files.find(file => file.id === fileId);
 
-		if (!file) {
-			return false;
-		}
+			if (!file) {
+				return false;
+			}
 
-		const userAuthorized = file.likes.some(like => like.createdByEmail === user?.email);
+			const userAuthorized = file.likes.some(like => like.createdByEmail === user?.email);
 
-		if (!token || !("email" in token)) {
-			return userAuthorized;
-		}
+			if (!token || !("email" in token)) {
+				return userAuthorized;
+			}
 
-		const tokenAuthorized = file.likes.some(like => like.createdByEmail === token?.email);
+			const tokenAuthorized = file.likes.some(like => like.createdByEmail === token?.email);
 
-		return userAuthorized || tokenAuthorized;
-	};
-
-	const canUserLikeFile = (file: FileWithLikes) => {
-		if (user?.id === file.createdById) {
-			return true;
-		}
-
-		if (!user && !token) {
-			return false;
-		}
-
-		if (!token || !("email" in token)) {
-			return false;
-		}
-
-		return true;
-	};
-
-	const getSortedFiles = (
-		sortStrategy: ImagesSortMethod | "dragOrder",
-		sortState: ImagesSortMethod
-	): ContextFile[] => {
-		if (sortStrategy !== "dragOrder") {
-			const sortedItems = getSortedImagesVideosContent([...files], sortState) as ContextFile[];
-			return sortedItems;
-		}
-
-		const orderedItems = [...files];
-		const sortedItems = [...orderedItems].sort((a, b) => {
-			const aIndex = files.findIndex(file => file.id === a.id);
-			const bIndex = files.findIndex(file => file.id === b.id);
-			if (aIndex === -1) return 1;
-			if (bIndex === -1) return -1;
-			return aIndex - bIndex;
-		});
-		return sortedItems;
-	};
-
-	return (
-		<FilesContext.Provider
-			value={{
-				files,
-				setFiles,
-				sortedFiles,
-				hasUserLikedFile,
-				canUserLikeFile,
-				getSortedFiles,
-				viewState,
-				setViewState,
-				sortState,
-				setSortState,
-			}}
-		>
-			{children}
-		</FilesContext.Provider>
+			return userAuthorized || tokenAuthorized;
+		},
+		[user, token, files]
 	);
+
+	const canUserLikeFile = useCallback(
+		(file: FileWithLikes) => {
+			if (user?.id === file.createdById) {
+				return true;
+			}
+
+			if (!user && !token) {
+				return false;
+			}
+
+			if (!token || !("email" in token)) {
+				return false;
+			}
+
+			return true;
+		},
+		[user, token]
+	);
+
+	const getSortedFiles = useCallback(
+		(sortStrategy: ImagesSortMethod | "dragOrder", sortState: ImagesSortMethod): ContextFile[] => {
+			if (sortStrategy !== "dragOrder") {
+				const sortedItems = getSortedImagesVideosContent(
+					[...files],
+					sortState
+				) as ContextFile[];
+				return sortedItems;
+			}
+
+			const orderedItems = [...files];
+			const sortedItems = [...orderedItems].sort((a, b) => {
+				const aIndex = files.findIndex(file => file.id === a.id);
+				const bIndex = files.findIndex(file => file.id === b.id);
+				if (aIndex === -1) return 1;
+				if (bIndex === -1) return -1;
+				return aIndex - bIndex;
+			});
+			return sortedItems;
+		},
+		[files]
+	);
+
+	const providerValue = useMemo(
+		() => ({
+			files,
+			setFiles,
+			sortedFiles,
+			hasUserLikedFile,
+			canUserLikeFile,
+			getSortedFiles,
+			viewState,
+			setViewState,
+			sortState,
+			setSortState,
+		}),
+		[
+			files,
+			setFiles,
+			sortedFiles,
+			hasUserLikedFile,
+			canUserLikeFile,
+			getSortedFiles,
+			viewState,
+			setViewState,
+			sortState,
+			setSortState,
+		]
+	);
+
+	return <FilesContext.Provider value={providerValue}>{children}</FilesContext.Provider>;
 };
