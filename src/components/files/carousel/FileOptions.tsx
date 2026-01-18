@@ -3,7 +3,7 @@ import { toast as sonnerToast } from "sonner";
 import { Button } from "@/components/ui/button";
 import FullScreenImageCarousel from "./FullScrenImageCarousel";
 import Link from "next/link";
-import { copyImageToClipboard } from "@/lib/utils";
+import { copyImageToClipboard, filterObjectOut } from "@/lib/utils";
 import { FileWithTags, FolderWithTags } from "@/lib/definitions";
 import { toast } from "@/hooks/use-toast";
 import { FileType, FolderTag } from "@prisma/client";
@@ -59,11 +59,9 @@ export default function FileOptions({
 	};
 
 	const clientHandleTagRemove = (tagId: string) => {
-		setFiles((prev: ContextFile[]) => {
-			return prev.map(f =>
-				f.id === file.id ? { ...f, tags: f.tags.filter(t => t.id !== tagId) } : f
-			);
-		});
+		setFiles((prev: ContextFile[]) =>
+			prev.map(f => (f.id === file.id ? { ...f, tags: filterObjectOut(f.tags, "id", tagId) } : f))
+		);
 	};
 
 	const handleTagSelected = async (tag: FolderTag): Promise<boolean> => {

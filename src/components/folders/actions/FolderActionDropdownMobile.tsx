@@ -1,116 +1,39 @@
 import {
 	DropdownMenu,
-	DropdownMenuTrigger,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuSub,
-	DropdownMenuSubTrigger,
 	DropdownMenuPortal,
+	DropdownMenuSub,
 	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
+	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { MoreHorizontal, LayoutGrid, List, ArrowUp, ArrowDown, Tag } from "lucide-react";
-import { UploadImagesDialog } from "../files/upload/UploadImagesDialog";
-import EditDescriptionDialog from "./dialogs/EditDescriptionDialog";
-import { ShareFolderDialog } from "./dialogs/ShareFolderDialog";
-import SortImages from "./SortImages";
-import ViewSelector, { ViewState } from "./ViewSelector";
-import { useFolderContext } from "@/context/FolderContext";
-import { useState } from "react";
 import { useFilesContext } from "@/context/FilesContext";
+import { useFolderContext } from "@/context/FolderContext";
+import { ArrowDown, ArrowUp, Check, LayoutGrid, List, MoreHorizontal, Tag } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useSession } from "@/providers/SessionProvider";
-import { Link } from "@/i18n/navigation";
-import { FolderTokenPermission } from "@prisma/client";
+import { ViewState } from "../ViewSelector";
 import { ImagesSortMethod } from "@/types/imagesSort";
-import { useTopLoader } from "nextjs-toploader";
-import { toast } from "@/hooks/use-toast";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useSession } from "@/providers/SessionProvider";
+import { UploadImagesDialog } from "@/components/files/upload/UploadImagesDialog";
+import { ShareFolderDialog } from "../dialogs/ShareFolderDialog";
+import { useState } from "react";
 
-/**
- * Renders action controls for a folder including view and sort selectors, upload/share/download actions, map navigation, and description editing.
- *
- * Access to upload and share actions is gated by session and folder token permissions. Uploads append new files to the current files list. The download action starts a toast notification and triggers the top loader completion after a short delay. Map links preserve sharing token parameters when present.
- *
- * @returns The FolderActionBar component's JSX element containing menu triggers, dialogs (upload, share, edit description), and view/sort controls.
- */
-export default function FolderActionBar() {
-	const { isGuest } = useSession();
-	const { done } = useTopLoader();
-	const { folder, token, tokenHash, isShared } = useFolderContext();
-	const { viewState, sortState, setViewState, setSortState, files, setFiles } = useFilesContext();
+export default function FolderActionDropdownMobile() {
 	const t = useTranslations("folders");
+	const { files, viewState, sortState, setViewState, setSortState, setFiles } = useFilesContext();
+	const { folder, token, tokenHash, isShared } = useFolderContext();
+	const { isGuest } = useSession();
 
 	const [openUpload, setOpenUpload] = useState(false);
 	const [openShare, setOpenShare] = useState(false);
-	const [openEditDescription, setOpenEditDescription] = useState(false);
-
-	const handleDownload = () => {
-		toast({
-			title: t("downloadStarted"),
-			description: t("downloadStartedDescription", { name: folder.name }),
-		});
-		setTimeout(() => {
-			done();
-		}, 1000);
-	};
 
 	return (
 		<>
-			<div className="hidden lg:flex gap-4">
-				<ViewSelector viewState={viewState} setViewState={setViewState} />
-				{viewState === ViewState.Grid ? (
-					<SortImages sortState={sortState} setSortState={setSortState} />
-				) : null}
-				{!isGuest || token?.permission === FolderTokenPermission.WRITE ? (
-					<UploadImagesDialog
-						folderId={folder.id}
-						shouldDisplayNotify={!isGuest && !isShared}
-						onUpload={uploadedFiles => {
-							setFiles([...files, ...uploadedFiles]);
-						}}
-					/>
-				) : null}
-				<DropdownMenu modal={false}>
-					<DropdownMenuTrigger asChild>
-						<Button variant="outline" size={"icon"}>
-							<MoreHorizontal className="w-4 h-4" />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent>
-						<DropdownMenuItem
-							className={cn((folder.description || isGuest) && "hidden")}
-							onClick={() => setOpenEditDescription(true)}
-						>
-							{t("addDescription")}
-						</DropdownMenuItem>
-						<DropdownMenuItem
-							className={cn(isGuest && !token?.allowMap && "hidden")}
-							asChild
-						>
-							<Link href={`/app/map?share=${token?.token}&h=${tokenHash}`}>
-								{t("actions.map")}
-							</Link>
-						</DropdownMenuItem>
-						<DropdownMenuItem
-							className={cn(isGuest && "hidden")}
-							onClick={() => setOpenShare(true)}
-						>
-							{t("share.label")}
-						</DropdownMenuItem>
-						<DropdownMenuItem onClick={handleDownload} asChild>
-							<a
-								href={`/api/folders/${folder.id}/download?share=${token?.token}&h=${tokenHash}`}
-								download
-							>
-								{t("download.label")}
-							</a>
-						</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
-			</div>
 			<DropdownMenu modal={false}>
-				<DropdownMenuTrigger className="lg:hidden">
+				<DropdownMenuTrigger>
 					<MoreHorizontal className="w-4 h-4" />
 				</DropdownMenuTrigger>
 				<DropdownMenuContent>
@@ -150,6 +73,18 @@ export default function FolderActionBar() {
 								{t("sort.label")}
 							</DropdownMenuSubTrigger>
 							<DropdownMenuSubContent>
+								<DropdownMenuItem
+									className="flex justify-between items-center"
+									onClick={event => {
+										event.preventDefault();
+										setSortState(ImagesSortMethod.Position);
+									}}
+								>
+									{t("sort.options.manual")}
+									{sortState === ImagesSortMethod.Position ? (
+										<Check className="w-4 h-4" />
+									) : null}
+								</DropdownMenuItem>
 								<DropdownMenuItem
 									onClick={event => {
 										event.preventDefault();
@@ -287,11 +222,6 @@ export default function FolderActionBar() {
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
-			<EditDescriptionDialog
-				open={openEditDescription}
-				setOpen={setOpenEditDescription}
-				folder={folder}
-			/>
 			<UploadImagesDialog
 				open={openUpload}
 				setOpen={setOpenUpload}

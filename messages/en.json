@@ -1802,6 +1802,7 @@
 		"sort": {
 			"label": "Sort by",
 			"options": {
+				"manual": "Manual",
 				"name": "Name",
 				"size": "Size",
 				"date": "Date",

@@ -1860,6 +1860,7 @@
 		"sort": {
 			"label": "Trier par",
 			"options": {
+				"manual": "Manuel",
 				"name": "Nom",
 				"size": "Taille",
 				"date": "Date",

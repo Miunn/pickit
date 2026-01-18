@@ -10,7 +10,7 @@ import {
 	ContextMenuSeparator,
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { cn } from "@/lib/utils";
+import { cn, filterObjectOut } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { changeFolderCover } from "@/actions/folders";
 import { useSession } from "@/providers/SessionProvider";
@@ -103,16 +103,16 @@ export function ImagePreviewGrid({ file, selected, onClick, onSelect, className,
 	};
 
 	const removeTag = (tag: FolderTag) => {
-		setFiles((prev: ContextFile[]) => {
-			return prev.map(f =>
+		setFiles((prev: ContextFile[]) =>
+			prev.map(f =>
 				f.id === file.id
 					? {
 							...f,
-							tags: f.tags.filter(t => t.id !== tag.id),
+							tags: filterObjectOut(f.tags, "id", tag.id),
 						}
 					: f
-			);
-		});
+			)
+		);
 	};
 
 	return (
