@@ -144,32 +144,36 @@ export function buildBreadcrumbTrail(
 	switch (currentPath.type) {
 		case "folder":
 			// Dashboard > Folders > FolderName
-			items.push({
-				key: "folders",
-				type: "folders",
-				href: `/${locale}/app/folders`,
-				itemHiddenClass: "hidden lg:block",
-			});
-			items.push({
-				key: `folder-${currentPath.folderId ?? "unknown"}`,
-				label: folderName ?? currentPath.folderId,
-				isCurrent: true,
-			});
+			items.push(
+				{
+					key: "folders",
+					type: "folders",
+					href: `/${locale}/app/folders`,
+					itemHiddenClass: "hidden lg:block",
+				},
+				{
+					key: `folder-${currentPath.folderId ?? "unknown"}`,
+					label: folderName ?? currentPath.folderId,
+					isCurrent: true,
+				}
+			);
 			break;
 
 		case "administrationUsers":
 			// Dashboard > Administration > UserName
-			items.push({
-				key: "administration",
-				type: "administration",
-				href: `/${locale}/app/administration`,
-				itemHiddenClass: "hidden lg:block",
-			});
-			items.push({
-				key: `admin-user-${currentPath.userId ?? "unknown"}`,
-				label: adminUser?.name ?? currentPath.userId,
-				isCurrent: true,
-			});
+			items.push(
+				{
+					key: "administration",
+					type: "administration",
+					href: `/${locale}/app/administration`,
+					itemHiddenClass: "hidden lg:block",
+				},
+				{
+					key: `admin-user-${currentPath.userId ?? "unknown"}`,
+					label: adminUser?.name ?? currentPath.userId,
+					isCurrent: true,
+				}
+			);
 			break;
 
 		default:
