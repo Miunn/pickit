@@ -22,7 +22,10 @@ export default function UnverifiedEmail({
 	};
 
 	return (
-		<div ref={ref} className="relative w-full h-fit bg-orange-400 hover:bg-orange-500 cursor-pointer py-1">
+		<div
+			ref={ref}
+			className="relative w-full h-fit min-h-12 bg-orange-400 hover:bg-orange-500 cursor-pointer py-1"
+		>
 			<Link
 				href={`/${locale}/app/account`}
 				className="w-full h-full flex justify-center items-center"

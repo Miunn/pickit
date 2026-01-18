@@ -28,8 +28,6 @@ async function create(
 	return file;
 }
 
-async function upload() {}
-
 // Define types for better overload handling
 type GetOptions<
 	S extends Prisma.FileSelect | undefined = undefined,
@@ -296,7 +294,6 @@ async function extractThumbnailFromBuffer(videoBuffer: Buffer): Promise<Buffer> 
 
 export const FileService = {
 	create,
-	upload,
 	get,
 	getMultiple,
 	update,

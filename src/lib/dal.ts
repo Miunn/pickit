@@ -224,7 +224,7 @@ export async function canLikeComment(commentId: string, shareToken?: string | nu
 		where: { token: shareToken },
 	});
 
-	if (!token || !token.email) {
+	if (!token?.email) {
 		return false;
 	}
 

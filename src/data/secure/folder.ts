@@ -17,10 +17,10 @@ export async function enforceFolder(
 	hash?: string,
 	permission: FolderPermission = FolderPermission.READ
 ): Promise<{ allowed: true; session: SessionValidationResult } | { allowed: false; reason?: string }> {
-	const user = await getCurrentSession();
+	const session = await getCurrentSession();
 
-	if (user.user && folder.createdById === user.user.id) {
-		return { allowed: true, session: user };
+	if (folder.createdById === session?.user?.id) {
+		return { allowed: true, session: session };
 	}
 
 	if (!token) {
@@ -29,7 +29,7 @@ export async function enforceFolder(
 
 	const matchingToken = folder.accessTokens.find(t => t.token === token);
 
-	if (!matchingToken || !matchingToken.isActive) {
+	if (!matchingToken?.isActive) {
 		return { allowed: false };
 	}
 
@@ -52,19 +52,15 @@ export async function enforceFolder(
 	}
 
 	if (permission === FolderPermission.READ_MAP && matchingToken.allowMap) {
-		return { allowed: true, session: user };
-	} else if (permission === FolderPermission.READ_MAP && !matchingToken.allowMap) {
-		return { allowed: false };
+		return { allowed: true, session };
 	}
 
 	if (permission === FolderPermission.WRITE && matchingToken.permission === FolderTokenPermission.WRITE) {
-		return { allowed: true, session: user };
-	} else if (permission === FolderPermission.WRITE && matchingToken.permission !== FolderTokenPermission.WRITE) {
-		return { allowed: false };
+		return { allowed: true, session };
 	}
 
 	if (permission === FolderPermission.READ) {
-		return { allowed: true, session: user };
+		return { allowed: true, session };
 	}
 
 	return { allowed: false };

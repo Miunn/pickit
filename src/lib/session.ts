@@ -18,10 +18,10 @@ export async function createSession(token: string, userId: string): Promise<Sess
 	const session: Session = {
 		sessionToken: sessionId,
 		userId,
-		expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30)
+		expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
 	};
 	await prisma.session.create({
-		data: session
+		data: session,
 	});
 	return session;
 }
@@ -30,7 +30,7 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 	const result = await prisma.session.findUnique({
 		where: { sessionToken: sessionId },
-		include: { user: { include: { _count: { select: { folders: true } } } } }
+		include: { user: { include: { _count: { select: { folders: true } } } } },
 	});
 	if (result === null) {
 		return { session: null, user: null };
@@ -45,8 +45,8 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 		await prisma.session.update({
 			where: { sessionToken: session.sessionToken },
 			data: {
-				expiresAt: session.expiresAt
-			}
+				expiresAt: session.expiresAt,
+			},
 		});
 	}
 	return { session, user };
@@ -77,7 +77,7 @@ export async function setSessionTokenCookie(token: string, expiresAt: Date): Pro
 		sameSite: "lax",
 		secure: process.env.NODE_ENV === "production",
 		expires: expiresAt,
-		path: "/"
+		path: "/",
 	});
 }
 
@@ -88,10 +88,8 @@ export async function deleteSessionTokenCookie(): Promise<void> {
 		sameSite: "lax",
 		secure: process.env.NODE_ENV === "production",
 		maxAge: 0,
-		path: "/"
+		path: "/",
 	});
 }
 
-export type SessionValidationResult =
-	| { session: Session; user: UserWithCounts }
-	| { session: null; user: null };
+export type SessionValidationResult = { session: Session; user: UserWithCounts } | { session: null; user: null };
