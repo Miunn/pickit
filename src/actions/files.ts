@@ -364,6 +364,8 @@ export async function updateFilePosition(
 		include: { folder: { include: { accessTokens: true } } },
 	});
 
+	console.log("File to update position:", file?.name);
+
 	if (!file) {
 		return { error: "file-not-found" };
 	}

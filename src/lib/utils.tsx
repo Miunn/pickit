@@ -297,3 +297,7 @@ export function cn(...inputs: ClassValue[]) {
 export function filterOut<T>(arr: T[], elmt: T) {
 	return arr.filter(item => item !== elmt);
 }
+
+export function filterObjectOut<T>(arr: T[], property: keyof T, value: T[keyof T]) {
+	return arr.filter(item => item[property] !== value);
+}

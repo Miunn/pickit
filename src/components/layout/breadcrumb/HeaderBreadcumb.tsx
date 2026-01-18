@@ -13,6 +13,7 @@ import {
 import { UserAdministration } from "@/lib/definitions";
 import { useLocale, useTranslations } from "next-intl";
 import { parsePathname, buildBreadcrumbTrail } from "./helpers";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function HeaderBreadcumb({
 	folderName,
@@ -24,6 +25,7 @@ export default function HeaderBreadcumb({
 	const locale = useLocale();
 	const pathname = usePathname();
 	const t = useTranslations("breadcumb");
+	const isMobile = useIsMobile();
 
 	const { path: currentPath } = useMemo(() => parsePathname(pathname, folderName), [pathname, folderName]);
 
@@ -32,9 +34,22 @@ export default function HeaderBreadcumb({
 		[currentPath, locale, folderName, adminUser]
 	);
 
-	if (!trail.length) return null;
+	if (trail.length < 1) return null;
 
-	console.log("Trail", trail);
+	if (isMobile) {
+		const lastItem = trail.at(-1)!;
+
+		return (
+			<Breadcrumb>
+				<BreadcrumbItem key={lastItem.key}>
+					<BreadcrumbPage>
+						{lastItem.type ? t(lastItem.type) : lastItem.label}
+					</BreadcrumbPage>
+				</BreadcrumbItem>
+			</Breadcrumb>
+		);
+	}
+
 	return (
 		<Breadcrumb>
 			<BreadcrumbList>
