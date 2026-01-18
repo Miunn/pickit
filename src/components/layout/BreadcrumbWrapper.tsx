@@ -1,13 +1,14 @@
-'use client';
+"use client";
 
-import { usePathname } from 'next/navigation';
-import HeaderBreadcumb from './HeaderBreadcumb';
+import { usePathname } from "next/navigation";
+import HeaderBreadcumb from "./breadcrumb/HeaderBreadcumb";
 
 export default function BreadcrumbWrapper() {
-    const pathname = usePathname();
-    const shouldHideDefaultBreadcrumb = pathname?.includes('/app/folders/') || pathname?.includes('/app/administration/users/');
+	const pathname = usePathname();
+	const shouldHideDefaultBreadcrumb =
+		pathname?.includes("/app/folders/") || pathname?.includes("/app/administration/users/");
 
-    if (shouldHideDefaultBreadcrumb) return null;
+	if (shouldHideDefaultBreadcrumb) return null;
 
-    return <HeaderBreadcumb />;
-} 
+	return <HeaderBreadcumb />;
+}

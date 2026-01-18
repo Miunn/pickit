@@ -17,81 +17,72 @@ import { FolderCard } from "./FolderCard";
  * @returns The JSX element for the folder selection UI.
  */
 export default function FoldersList({
-    folders,
-    displayedFilesByFolder,
-    onSelectionChange,
+	folders,
+	displayedFilesByFolder,
+	onSelectionChange,
 }: {
-    readonly folders: FolderWithFilesCount[];
-    readonly displayedFilesByFolder: Record<string, number>;
-    readonly onSelectionChange: (selectedFolders: Set<string>) => void;
+	readonly folders: FolderWithFilesCount[];
+	readonly displayedFilesByFolder: Record<string, number>;
+	readonly onSelectionChange: (selectedFolders: string[]) => void;
 }) {
-    const formatter = useFormatter();
-    const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set(folders.map(folder => folder.id)));
+	const formatter = useFormatter();
+	const [selectedFolders, setSelectedFolders] = useState<string[]>(() => folders.map(folder => folder.id));
 
-    const toggleFolderSelection = (folderId: string) => {
-        setSelectedFolders(prev => {
-            const newSet = new Set(prev);
-            if (newSet.has(folderId)) {
-                newSet.delete(folderId);
-            } else {
-                newSet.add(folderId);
-            }
-            onSelectionChange(newSet);
-            return newSet;
-        });
-    };
+	const toggleFolderSelection = (folderId: string) => {
+		setSelectedFolders(prev => {
+			if (prev.includes(folderId)) {
+				return prev.filter(id => id !== folderId);
+			}
 
-    useEffect(() => {
-        const folderIds = new Set(folders.map(folder => folder.id));
-        setSelectedFolders(prev => {
-            const newSet = new Set([...prev].filter(id => folderIds.has(id)));
-            // Add any new folders that weren't in the previous selection
-            folders.forEach(folder => {
-                if (!prev.has(folder.id)) {
-                    newSet.add(folder.id);
-                }
-            });
-            if (newSet.size !== prev.size || [...newSet].some(id => !prev.has(id))) {
-                onSelectionChange(newSet);
-                return newSet;
-            }
-            return prev;
-        });
-    }, [folders, onSelectionChange]);
+			return [...prev, folderId];
+		});
+	};
 
-    return (
-        <>
-            <div className="hidden lg:flex flex-col gap-2">
-                {folders.map(folder => (
-                    <FolderCard
-                        key={folder.id}
-                        folder={folder}
-                        ignoredFiles={folder._count.files - (displayedFilesByFolder[folder.id] || 0)}
-                        isSelected={selectedFolders.has(folder.id)}
-                        onToggle={() => toggleFolderSelection(folder.id)}
-                        formatter={formatter}
-                    />
-                ))}
-            </div>
-            <DropdownMenu>
-                <DropdownMenuTrigger className="lg:hidden" asChild>
-                    <Button variant="outline" size="icon">
-                        <MoreHorizontal className="size-4" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                    {folders.map(folder => (
-                        <DropdownMenuItem
-                            key={folder.id}
-                            onClick={() => toggleFolderSelection(folder.id)}
-                            className="flex items-center gap-2"
-                        >
-                            <Checkbox checked={selectedFolders.has(folder.id)} />
-                            <p>{folder.name}</p>
-                        </DropdownMenuItem>
-                    ))}
-                </DropdownMenuContent>
-            </DropdownMenu>
-        </>
-    );
+	useEffect(() => {
+		setSelectedFolders(prev => {
+			const newFoldersIds = folders.map(f => f.id).filter(id => !prev.includes(id));
+			if (newFoldersIds.length > 0) {
+				onSelectionChange([...prev, ...newFoldersIds]);
+			}
+			return [...prev, ...newFoldersIds];
+		});
+	}, [folders, onSelectionChange]);
+
+	return (
+		<>
+			<div className="hidden lg:flex flex-col gap-2">
+				{folders.map(folder => (
+					<FolderCard
+						key={folder.id}
+						folder={folder}
+						ignoredFiles={
+							folder._count.files - (displayedFilesByFolder[folder.id] || 0)
+						}
+						isSelected={selectedFolders.includes(folder.id)}
+						onToggle={() => toggleFolderSelection(folder.id)}
+						formatter={formatter}
+					/>
+				))}
+			</div>
+			<DropdownMenu>
+				<DropdownMenuTrigger className="lg:hidden" asChild>
+					<Button variant="outline" size="icon">
+						<MoreHorizontal className="size-4" />
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent>
+					{folders.map(folder => (
+						<DropdownMenuItem
+							key={folder.id}
+							onClick={() => toggleFolderSelection(folder.id)}
+							className="flex items-center gap-2"
+						>
+							<Checkbox checked={selectedFolders.includes(folder.id)} />
+							<p>{folder.name}</p>
+						</DropdownMenuItem>
+					))}
+				</DropdownMenuContent>
+			</DropdownMenu>
+		</>
+	);
 }

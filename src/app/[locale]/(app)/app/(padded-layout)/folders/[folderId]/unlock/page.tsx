@@ -1,6 +1,6 @@
 import UnlockTokenPrompt from "@/components/folders/UnlockTokenPrompt";
 import BreadcrumbPortal from "@/components/layout/BreadcrumbPortal";
-import HeaderBreadcumb from "@/components/layout/HeaderBreadcumb";
+import HeaderBreadcumb from "@/components/layout/breadcrumb/HeaderBreadcumb";
 import { AccessTokenService } from "@/data/access-token-service";
 import { redirect } from "@/i18n/navigation";
 

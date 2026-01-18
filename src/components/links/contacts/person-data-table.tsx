@@ -11,54 +11,58 @@ import { personColumns } from "./columns-persons";
 import { useTranslations } from "next-intl";
 
 export default function PersonDataTable({
-    accessTokens,
-    defaultTokenIndex,
+	accessTokens,
+	defaultTokenIndex,
 }: {
-    readonly accessTokens: AccessTokenWithFolder[];
-    readonly defaultTokenIndex: number;
+	readonly accessTokens: AccessTokenWithFolder[];
+	readonly defaultTokenIndex: number;
 }) {
-    const t = useTranslations("dataTables.people.columns");
-    const [selectedTokensIndexes, setSelectedTokensIndexes] = useState<{ [index: number]: boolean }>({
-        [defaultTokenIndex]: true,
-    });
-    const [selectedTokens, setSelectedTokens] = useState<string[]>([accessTokens[defaultTokenIndex].token]);
-    const [lockOpen, setLockOpen] = useState<boolean>(false);
-    const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
-    const [deleteSelectionOpen, setDeleteSelectionOpen] = useState<boolean>(false);
-    useEffect(() => {
-        setSelectedTokens(Object.keys(selectedTokensIndexes).map(k => accessTokens[Number.parseInt(k)].token));
-    }, [selectedTokensIndexes, accessTokens]);
+	const t = useTranslations("dataTables.people.columns");
+	const [selectedTokensIndexes, setSelectedTokensIndexes] = useState<{ [index: number]: boolean }>({
+		[defaultTokenIndex]: true,
+	});
+	const [selectedTokens, setSelectedTokens] = useState<string[]>([accessTokens[defaultTokenIndex]?.token]);
+	const [lockOpen, setLockOpen] = useState<boolean>(false);
+	const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
+	const [deleteSelectionOpen, setDeleteSelectionOpen] = useState<boolean>(false);
+	useEffect(() => {
+		setSelectedTokens(Object.keys(selectedTokensIndexes).map(k => accessTokens[Number.parseInt(k)]?.token));
+	}, [selectedTokensIndexes, accessTokens]);
 
-    return (
-        <DataTable
-            columns={personColumns}
-            data={accessTokens}
-            selection={selectedTokensIndexes}
-            setSelection={setSelectedTokensIndexes}
-            filterPlaceholder="Search links"
-            filterColumn="folder_name"
-            rightHeadingNodes={
-                <div className="flex gap-2">
-                    <DeleteAccessTokenDialog
-                        tokens={selectedTokens}
-                        openState={deleteSelectionOpen}
-                        setOpenState={setDeleteSelectionOpen}
-                        submitNext={() => setSelectedTokensIndexes({})}
-                    >
-                        <DialogTrigger asChild>
-                            <Button
-                                variant="outline"
-                                disabled={selectedTokens.length === 0}
-                                className={selectedTokens.length === 0 ? "!opacity-0" : "opacity-100"}
-                            >
-                                <Trash2 className="w-4 h-4 mr-2" /> Delete selection
-                            </Button>
-                        </DialogTrigger>
-                    </DeleteAccessTokenDialog>
-                </div>
-            }
-            translations={t}
-            states={{ lockOpen, setLockOpen, deleteOpen, setDeleteOpen }}
-        />
-    );
+	return (
+		<DataTable
+			columns={personColumns}
+			data={accessTokens}
+			selection={selectedTokensIndexes}
+			setSelection={setSelectedTokensIndexes}
+			filterPlaceholder="Search links"
+			filterColumn="folder_name"
+			rightHeadingNodes={
+				<div className="flex gap-2">
+					<DeleteAccessTokenDialog
+						tokens={selectedTokens}
+						openState={deleteSelectionOpen}
+						setOpenState={setDeleteSelectionOpen}
+						submitNext={() => setSelectedTokensIndexes({})}
+					>
+						<DialogTrigger asChild>
+							<Button
+								variant="outline"
+								disabled={selectedTokens.length === 0}
+								className={
+									selectedTokens.length === 0
+										? "!opacity-0"
+										: "opacity-100"
+								}
+							>
+								<Trash2 className="w-4 h-4 mr-2" /> Delete selection
+							</Button>
+						</DialogTrigger>
+					</DeleteAccessTokenDialog>
+				</div>
+			}
+			translations={t}
+			states={{ lockOpen, setLockOpen, deleteOpen, setDeleteOpen }}
+		/>
+	);
 }

@@ -13,25 +13,25 @@ import { useFilesContext } from "@/context/FilesContext";
 import FoldersList from "./FoldersList";
 import { useTheme } from "next-themes";
 
-const filterFilesWithLocation = (files: FileWithFolder[], selectedFolders: Set<string>) => {
-    return files.filter(file => file.latitude && file.longitude && selectedFolders.has(file.folder.id));
+const filterFilesWithLocation = (files: FileWithFolder[], selectedFolders: string[]) => {
+	return files.filter(file => file.latitude && file.longitude && selectedFolders.includes(file.folder.id));
 };
 
-const getDefaultMarkers = (files: FileWithFolder[], selectedFolders: Set<string>) => {
-    const filteredFiles = filterFilesWithLocation(files, selectedFolders);
+const getDefaultMarkers = (files: FileWithFolder[], selectedFolders: string[]) => {
+	const filteredFiles = filterFilesWithLocation(files, selectedFolders);
 
-    return {
-        type: "FeatureCollection" as const,
-        features: filteredFiles.map(file => ({
-            type: "Feature" as const,
-            id: file.id,
-            geometry: {
-                type: "Point" as const,
-                coordinates: [file.longitude!, file.latitude!],
-            },
-            properties: file,
-        })),
-    };
+	return {
+		type: "FeatureCollection" as const,
+		features: filteredFiles.map(file => ({
+			type: "Feature" as const,
+			id: file.id,
+			geometry: {
+				type: "Point" as const,
+				coordinates: [file.longitude!, file.latitude!],
+			},
+			properties: file,
+		})),
+	};
 };
 
 /**
@@ -42,169 +42,174 @@ const getDefaultMarkers = (files: FileWithFolder[], selectedFolders: Set<string>
  * @returns The component's React element tree representing the map and its UI overlays (markers, info windows, carousel, and folder list).
  */
 export default function FilesMap() {
-    const { resolvedTheme = "light" } = useTheme();
-    const { files } = useFilesContext();
+	const { resolvedTheme = "light" } = useTheme();
+	const { files } = useFilesContext();
 
-    const uniqueFolders = useMemo(() => {
-        return files
-            .map(file => file.folder)
-            .filter((folder, index, self) => self.findIndex(t => t.id === folder.id) === index);
-    }, [files]);
+	const uniqueFolders = useMemo(() => {
+		return files
+			.map(file => file.folder)
+			.filter((folder, index, self) => self.findIndex(t => t.id === folder.id) === index);
+	}, [files]);
 
-    const [selectedFolders, setSelectedFolders] = useState<Set<string>>(
-        new Set(uniqueFolders.map(folder => folder.id))
-    );
-    const locatedFiles = useMemo<FileWithFolder[]>(
-        () => filterFilesWithLocation(files, selectedFolders),
-        [files, selectedFolders]
-    );
+	const [selectedFolders, setSelectedFolders] = useState<string[]>(() => uniqueFolders.map(folder => folder.id));
+	const locatedFiles = useMemo<FileWithFolder[]>(
+		() => filterFilesWithLocation(files, selectedFolders),
+		[files, selectedFolders]
+	);
 
-    const displayedFilesByFolder = useMemo<Record<string, number>>(() => {
-        const counts: Record<string, number> = {};
-        locatedFiles.forEach(file => {
-            counts[file.folder.id] = (counts[file.folder.id] || 0) + 1;
-        });
-        return counts;
-    }, [locatedFiles]);
+	const displayedFilesByFolder = useMemo<Record<string, number>>(() => {
+		const counts: Record<string, number> = {};
+		locatedFiles.forEach(file => {
+			counts[file.folder.id] = (counts[file.folder.id] || 0) + 1;
+		});
+		return counts;
+	}, [locatedFiles]);
 
-    const [markers, setMarkers] = useState<FeatureCollection<Point, FileWithFolder>>(() =>
-        getDefaultMarkers(locatedFiles, selectedFolders)
-    );
-    const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
-    const [carouselStartIndex, setCarouselStartIndex] = useState<number>(0);
+	const [markers, setMarkers] = useState<FeatureCollection<Point, FileWithFolder>>(() =>
+		getDefaultMarkers(locatedFiles, selectedFolders)
+	);
+	const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
+	const [carouselStartIndex, setCarouselStartIndex] = useState<number>(0);
 
-    const [clusterInfoData, setClusterInfoData] = useState<{
-        anchor: google.maps.marker.AdvancedMarkerElement;
-        features: PointFeature<FileWithFolder>[];
-    } | null>(null);
+	const [clusterInfoData, setClusterInfoData] = useState<{
+		anchor: google.maps.marker.AdvancedMarkerElement;
+		features: PointFeature<FileWithFolder>[];
+	} | null>(null);
 
-    const [poiInfoData, setPoiInfoData] = useState<{
-        anchor: google.maps.marker.AdvancedMarkerElement;
-        feature: PointFeature<FileWithFolder>;
-    } | null>(null);
+	const [poiInfoData, setPoiInfoData] = useState<{
+		anchor: google.maps.marker.AdvancedMarkerElement;
+		feature: PointFeature<FileWithFolder>;
+	} | null>(null);
 
-    const handleClusterInfoWindowClose = useCallback(() => setClusterInfoData(null), [setClusterInfoData]);
+	const handleClusterInfoWindowClose = useCallback(() => setClusterInfoData(null), [setClusterInfoData]);
 
-    const handlePoiInfoWindowClose = useCallback(() => setPoiInfoData(null), [setPoiInfoData]);
+	const handlePoiInfoWindowClose = useCallback(() => setPoiInfoData(null), [setPoiInfoData]);
 
-    const handlePoiClick = useCallback(
-        (feature: PointFeature<FileWithFolder>) => {
-            const clickedFile = feature.properties;
+	const handlePoiClick = useCallback(
+		(feature: PointFeature<FileWithFolder>) => {
+			const clickedFile = feature.properties;
 
-            const startIndex = locatedFiles.findIndex(file => file.id === clickedFile.id);
-            setCarouselStartIndex(startIndex);
-            setCarouselOpen(true);
-        },
-        [locatedFiles]
-    );
+			const startIndex = locatedFiles.findIndex(file => file.id === clickedFile.id);
+			setCarouselStartIndex(startIndex);
+			setCarouselOpen(true);
+		},
+		[locatedFiles]
+	);
 
-    const handleCarouselClose = useCallback(() => {
-        setCarouselOpen(false);
-    }, []);
+	const handleCarouselClose = useCallback(() => {
+		setCarouselOpen(false);
+	}, []);
 
-    const handleFileChange = useCallback(
-        (file: FileWithFolder) => {
-            // Find the marker for this file
-            const feature = markers?.features.find(f => f.properties.id === file.id);
-            if (feature) {
-                // Create a new marker element
-                const marker = new google.maps.marker.AdvancedMarkerElement({
-                    position: { lat: file.latitude!, lng: file.longitude! },
-                });
+	const handleFileChange = useCallback(
+		(file: FileWithFolder) => {
+			// Find the marker for this file
+			const feature = markers?.features.find(f => f.properties.id === file.id);
+			if (feature) {
+				// Create a new marker element
+				const marker = new google.maps.marker.AdvancedMarkerElement({
+					position: { lat: file.latitude!, lng: file.longitude! },
+				});
 
-                // Update POI window data
-                setPoiInfoData({
-                    anchor: marker,
-                    feature,
-                });
-            }
-        },
-        [markers]
-    );
+				// Update POI window data
+				setPoiInfoData({
+					anchor: marker,
+					feature,
+				});
+			}
+		},
+		[markers]
+	);
 
-    useEffect(() => {
-        const filteredFiles = locatedFiles.filter(
-            file =>
-                file.latitude && file.longitude && (selectedFolders.size === 0 || selectedFolders.has(file.folder.id))
-        );
+	useEffect(() => {
+		const filteredFiles = locatedFiles.filter(
+			file =>
+				file.latitude &&
+				file.longitude &&
+				(selectedFolders.length === 0 || selectedFolders.includes(file.folder.id))
+		);
 
-        setMarkers({
-            type: "FeatureCollection",
-            features: filteredFiles.map(file => ({
-                type: "Feature",
-                id: file.id,
-                geometry: {
-                    type: "Point",
-                    coordinates: [file.longitude!, file.latitude!],
-                },
-                properties: file,
-            })),
-        });
-    }, [locatedFiles, selectedFolders]);
+		setMarkers({
+			type: "FeatureCollection",
+			features: filteredFiles.map(file => ({
+				type: "Feature",
+				id: file.id,
+				geometry: {
+					type: "Point",
+					coordinates: [file.longitude!, file.latitude!],
+				},
+				properties: file,
+			})),
+		});
+	}, [locatedFiles, selectedFolders]);
 
-    return (
-        <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}>
-            <Map
-                mapId={process.env.NEXT_PUBLIC_USER_MAP_ID || ""}
-                mapTypeControl={true}
-                colorScheme={resolvedTheme === "dark" ? "DARK" : "LIGHT"}
-                defaultCenter={{ lat: 22.54992, lng: 0 }}
-                defaultZoom={3}
-                gestureHandling={"greedy"}
-                disableDefaultUI={true}
-            >
-                {markers && (
-                    <ClusteredMarkers
-                        markers={markers}
-                        setClusterInfoData={setClusterInfoData}
-                        setPoiInfoData={setPoiInfoData}
-                        onPoiClick={handlePoiClick}
-                    />
-                )}
+	return (
+		<APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}>
+			<Map
+				mapId={process.env.NEXT_PUBLIC_USER_MAP_ID || ""}
+				mapTypeControl={true}
+				colorScheme={resolvedTheme === "dark" ? "DARK" : "LIGHT"}
+				defaultCenter={{ lat: 22.54992, lng: 0 }}
+				defaultZoom={3}
+				gestureHandling={"greedy"}
+				disableDefaultUI={true}
+			>
+				{markers && (
+					<ClusteredMarkers
+						markers={markers}
+						setClusterInfoData={setClusterInfoData}
+						setPoiInfoData={setPoiInfoData}
+						onPoiClick={handlePoiClick}
+					/>
+				)}
 
-                {clusterInfoData && (
-                    <AdvancedMarker
-                        position={clusterInfoData.anchor.position}
-                        anchorPoint={AdvancedMarkerAnchorPoint.BOTTOM}
-                        style={{
-                            marginBottom: `${clusterInfoData.anchor.getBoundingClientRect().height / 2 + 11}px`,
-                        }}
-                    >
-                        <ClusterWindowContent
-                            folders={clusterInfoData.features.map(feature => feature.properties.folder)}
-                            onClose={handleClusterInfoWindowClose}
-                        />
-                    </AdvancedMarker>
-                )}
+				{clusterInfoData && (
+					<AdvancedMarker
+						position={clusterInfoData.anchor.position}
+						anchorPoint={AdvancedMarkerAnchorPoint.BOTTOM}
+						style={{
+							marginBottom: `${clusterInfoData.anchor.getBoundingClientRect().height / 2 + 11}px`,
+						}}
+					>
+						<ClusterWindowContent
+							folders={clusterInfoData.features.map(
+								feature => feature.properties.folder
+							)}
+							onClose={handleClusterInfoWindowClose}
+						/>
+					</AdvancedMarker>
+				)}
 
-                {poiInfoData && (
-                    <AdvancedMarker
-                        position={poiInfoData.anchor.position}
-                        anchorPoint={["50%", "101.5%"]}
-                        style={{ zIndex: 1000 }}
-                    >
-                        <PoiWindowContent file={poiInfoData.feature.properties} onClose={handlePoiInfoWindowClose} />
-                    </AdvancedMarker>
-                )}
+				{poiInfoData && (
+					<AdvancedMarker
+						position={poiInfoData.anchor.position}
+						anchorPoint={["50%", "101.5%"]}
+						style={{ zIndex: 1000 }}
+					>
+						<PoiWindowContent
+							file={poiInfoData.feature.properties}
+							onClose={handlePoiInfoWindowClose}
+						/>
+					</AdvancedMarker>
+				)}
 
-                {carouselOpen && (
-                    <MapFileCarousel
-                        files={filterFilesWithLocation(locatedFiles, selectedFolders)}
-                        startIndex={carouselStartIndex}
-                        onClose={handleCarouselClose}
-                        onFileChange={handleFileChange}
-                    />
-                )}
-                {uniqueFolders.length > 0 && (
-                    <div className="absolute top-3 right-3 bottom-3 overflow-y-auto">
-                        <FoldersList
-                            folders={uniqueFolders}
-                            displayedFilesByFolder={displayedFilesByFolder}
-                            onSelectionChange={setSelectedFolders}
-                        />
-                    </div>
-                )}
-            </Map>
-        </APIProvider>
-    );
+				{carouselOpen && (
+					<MapFileCarousel
+						files={filterFilesWithLocation(locatedFiles, selectedFolders)}
+						startIndex={carouselStartIndex}
+						onClose={handleCarouselClose}
+						onFileChange={handleFileChange}
+					/>
+				)}
+				{uniqueFolders.length > 0 && (
+					<div className="absolute top-3 right-3 bottom-3 overflow-y-auto">
+						<FoldersList
+							folders={uniqueFolders}
+							displayedFilesByFolder={displayedFilesByFolder}
+							onSelectionChange={setSelectedFolders}
+						/>
+					</div>
+				)}
+			</Map>
+		</APIProvider>
+	);
 }
