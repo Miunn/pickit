@@ -474,6 +474,7 @@
 			"sort": {
 				"trigger": "Sort by",
 				"options": {
+					"manual": "Manual",
 					"name": "Name",
 					"size": "Size",
 					"date": "Upload date",

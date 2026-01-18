@@ -32,10 +32,8 @@ function getSortOrderBy(sort: ImagesSortMethod) {
 			return { takenAt: "asc" as const };
 		case ImagesSortMethod.TakenDesc:
 			return { takenAt: "desc" as const };
-		case ImagesSortMethod.PositionAsc:
+		case ImagesSortMethod.Position:
 			return { position: "asc" as const };
-		case ImagesSortMethod.PositionDesc:
-			return { position: "desc" as const };
 		default:
 			return { createdAt: "desc" as const };
 	}
