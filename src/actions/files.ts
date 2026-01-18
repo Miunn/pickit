@@ -364,6 +364,8 @@ export async function updateFilePosition(
 		include: { folder: { include: { accessTokens: true } } },
 	});
 
+	console.log("File to update position:", file?.name);
+
 	if (!file) {
 		return { error: "file-not-found" };
 	}
@@ -379,23 +381,19 @@ export async function updateFilePosition(
 
 	if (previousId) {
 		previousFile = await FileService.get({
-			where: { id: previousId },
+			where: { id: previousId, folderId: file.folderId },
 		});
-
-		if (previousFile?.folderId !== file.folderId) {
-			return { error: "file-not-in-folder" };
-		}
+		console.log("Previous file:", previousFile?.name);
 	}
 
 	if (nextId) {
 		nextFile = await FileService.get({
-			where: { id: nextId },
+			where: { id: nextId, folderId: file.folderId },
 		});
-
-		if (nextFile?.folderId !== file.folderId) {
-			return { error: "file-not-in-folder" };
-		}
+		console.log("Next file:", nextFile?.name);
 	}
+
+	console.log("Previous file position:", previousFile?.position, "Next file position:", nextFile?.position);
 
 	if (previousFile && nextFile && previousFile.position > nextFile.position) {
 		return {
@@ -403,31 +401,27 @@ export async function updateFilePosition(
 		};
 	}
 
-	const delta = (nextFile?.position || 0) - (previousFile?.position || 0);
+	const delta = Math.abs((nextFile?.position || 0) - (previousFile?.position || 0));
+	console.log("Delta:", delta);
 	if (delta < 2) {
 		await reNormalizePositions(file.folderId);
 		return updateFilePosition(fileId, previousId, nextId);
 	}
 
 	let position = 1;
-	// Handle start inserting edge case
-	if (!previousFile && nextFile && nextFile.position < 2) {
-		await reNormalizePositions(file.folderId);
-		position = 500;
-	} else if (!previousFile && nextFile) {
-		position = nextFile.position / 2;
+	if (nextFile) {
+		console.log("Got nextFile position to n + p / 2", nextFile.position, previousFile?.position);
+		position = (nextFile.position + (previousFile?.position || 0)) / 2;
+	} else {
+		console.log("No next file, setting position to previous + 1000", previousFile?.position);
+		position = (previousFile?.position || 0) + 1000;
 	}
 
-	if (!nextFile && previousFile) {
-		position = previousFile.position + 1000;
-	}
-
-	if (previousFile && nextFile) {
-		position = (nextFile.position + previousFile.position) / 2;
-	}
+	console.log("Set to position:", position);
 
 	try {
-		await FileService.update(fileId, { position });
+		const updatedFile = await FileService.update(fileId, { position: Math.round(position) });
+		console.log("Updated file position:", updatedFile.position);
 	} catch (err) {
 		console.error("Error updating file position:", err);
 		return { error: "Failed to update file position" };

@@ -206,10 +206,8 @@ export const getSortedImagesVideosContent = (arr: FileWithFolder[], sort: Images
 			return arr.sort((a, b) => (a.takenAt?.getTime() || 0) - (b.takenAt?.getTime() || 0));
 		case ImagesSortMethod.TakenDesc:
 			return arr.sort((a, b) => (b.takenAt?.getTime() || 0) - (a.takenAt?.getTime() || 0));
-		case ImagesSortMethod.PositionAsc:
+		case ImagesSortMethod.Position:
 			return arr.sort((a, b) => a.position - b.position);
-		case ImagesSortMethod.PositionDesc:
-			return arr.sort((a, b) => b.position - a.position);
 		default:
 			return arr;
 	}

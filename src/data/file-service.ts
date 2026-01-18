@@ -68,6 +68,7 @@ function get<S extends Prisma.FileSelect | undefined = undefined, I extends Pris
 			where: options.where,
 			select: "select" in options ? options.select : undefined,
 			include: "include" in options ? options.include : undefined,
+			orderBy: "orderBy" in options ? options.orderBy : undefined,
 		}) as Promise<GetResult<S, I> | null>;
 	}
 
