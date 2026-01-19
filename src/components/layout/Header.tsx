@@ -4,12 +4,14 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
-import React from "react";
+import React, { useCallback } from "react";
 import SwitchLocale from "../generic/SwitchLocale";
 import { useLocale, useTranslations } from "next-intl";
 import { SwitchTheme } from "../generic/SwitchTheme";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import LogoImage from "../generic/LogoImage";
+
+const TOP_THRESHOLD = 10;
 
 const NavLinks = ({ locale, t }: { readonly locale: string; readonly t: ReturnType<typeof useTranslations> }) => (
 	<>
@@ -30,27 +32,26 @@ export default function Header({ className }: { readonly className?: string }) {
 	const locale = useLocale();
 	const headerRowRef = React.useRef<HTMLHRElement>(null);
 	const [isOpen, setIsOpen] = React.useState(false);
-	const scrollState = {
-		top: true,
-		topThreshold: 10,
-		onScroll: function () {
-			if (this.top && window.scrollY > this.topThreshold) {
-				this.top = false;
-				this.updateUI();
-			} else if (!top && window.scrollY <= this.topThreshold) {
-				this.top = true;
-				this.updateUI();
-			}
-		},
-		updateUI: function () {
-			headerRowRef.current?.classList.toggle("opacity-0");
-			headerRowRef.current?.classList.toggle("opacity-100");
-		},
-	};
+	const [top, setTop] = React.useState(true);
+
+	const updateUI = useCallback(() => {
+		headerRowRef.current?.classList.toggle("opacity-0");
+		headerRowRef.current?.classList.toggle("opacity-100");
+	}, []);
+
+	const handleScroll = useCallback(() => {
+		if (top && window.scrollY > TOP_THRESHOLD) {
+			setTop(false);
+			updateUI();
+		} else if (!top && window.scrollY <= TOP_THRESHOLD) {
+			setTop(true);
+			updateUI();
+		}
+	}, [top, updateUI]);
 
 	React.useEffect(() => {
-		window.addEventListener("scroll", () => scrollState.onScroll());
-		return () => window.removeEventListener("scroll", () => scrollState.onScroll());
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
 	});
 
 	return (
