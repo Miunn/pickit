@@ -29,7 +29,7 @@ import FolderDescription from "@/components/folders/views/grid/FolderDescription
 import RecentlyAdded from "./RecentlyAdded";
 import { usePathname } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
-import { ImagesSortMethod } from "@/types/imagesSort";
+import { FilesSort } from "@/types/imagesSort";
 
 export const ImagesGrid = () => {
 	const { user } = useSession();
@@ -252,7 +252,7 @@ export const ImagesGrid = () => {
 	};
 
 	const renderGrid = (): React.ReactNode => {
-		if (user?.id === folder.createdById && sortState === ImagesSortMethod.Position) {
+		if (user?.id === folder.createdById && sortState === FilesSort.Position) {
 			return (
 				<DndContext
 					sensors={sensors}
