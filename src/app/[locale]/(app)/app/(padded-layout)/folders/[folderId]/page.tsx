@@ -1,5 +1,5 @@
 import { FolderContent } from "@/components/folders/FolderContent";
-import { ImagesSortMethod } from "@/types/imagesSort";
+import { FilesSort, FilesSortDefinition } from "@/types/imagesSort";
 import { redirect } from "@/i18n/navigation";
 import { ViewState } from "@/components/folders/ViewSelector";
 import { getTranslations } from "next-intl/server";
@@ -14,25 +14,25 @@ import { AccessTokenService } from "@/data/access-token-service";
 import { FolderService } from "@/data/folder-service";
 import { SecureService } from "@/data/secure/secure-service";
 
-function getSortOrderBy(sort: ImagesSortMethod) {
+function getSortOrderBy(sort: FilesSortDefinition) {
 	switch (sort) {
-		case ImagesSortMethod.NameAsc:
+		case FilesSort.Name.Asc:
 			return { name: "asc" as const };
-		case ImagesSortMethod.NameDesc:
+		case FilesSort.Name.Desc:
 			return { name: "desc" as const };
-		case ImagesSortMethod.SizeAsc:
+		case FilesSort.Size.Asc:
 			return { size: "asc" as const };
-		case ImagesSortMethod.SizeDesc:
+		case FilesSort.Size.Desc:
 			return { size: "desc" as const };
-		case ImagesSortMethod.DateAsc:
+		case FilesSort.Date.Asc:
 			return { createdAt: "asc" as const };
-		case ImagesSortMethod.DateDesc:
+		case FilesSort.Date.Desc:
 			return { createdAt: "desc" as const };
-		case ImagesSortMethod.TakenAsc:
+		case FilesSort.Taken.Asc:
 			return { takenAt: "asc" as const };
-		case ImagesSortMethod.TakenDesc:
+		case FilesSort.Taken.Desc:
 			return { takenAt: "desc" as const };
-		case ImagesSortMethod.Position:
+		case FilesSort.Position:
 			return { position: "asc" as const };
 		default:
 			return { createdAt: "desc" as const };
@@ -42,7 +42,7 @@ function getSortOrderBy(sort: ImagesSortMethod) {
 export async function generateMetadata(props: {
 	params: Promise<{ folderId: string; locale: string }>;
 	searchParams: Promise<{
-		sort?: ImagesSortMethod;
+		sort?: FilesSortDefinition;
 		view?: ViewState;
 		share?: string;
 		h?: string;
@@ -133,7 +133,7 @@ export async function generateMetadata(props: {
 export default async function FolderPage(props: {
 	readonly params: Promise<{ readonly folderId: string; readonly locale: string }>;
 	readonly searchParams: Promise<{
-		readonly sort?: ImagesSortMethod;
+		readonly sort?: FilesSortDefinition;
 		readonly view?: ViewState;
 		readonly share?: string;
 		readonly t?: string;
@@ -157,7 +157,7 @@ export default async function FolderPage(props: {
 					likes: true,
 					tags: true,
 				},
-				orderBy: getSortOrderBy(sort || ImagesSortMethod.DateDesc),
+				orderBy: getSortOrderBy(sort || FilesSort.Position),
 			},
 			createdBy: true,
 			accessTokens: true,

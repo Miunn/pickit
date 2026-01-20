@@ -5,10 +5,10 @@ import { createContext, useCallback, useContext, useMemo, useState } from "react
 import { useSession } from "@/providers/SessionProvider";
 import { useTokenContext } from "./TokenContext";
 import { File as PrismaFile } from "@prisma/client";
-import { ImagesSortMethod } from "@/types/imagesSort";
-import { getSortedImagesVideosContent } from "@/lib/utils";
+import { getSortedContent } from "@/lib/utils";
 import { ViewState } from "@/components/folders/ViewSelector";
 import { useQueryState } from "nuqs";
+import { FilesSort, FilesSortDefinition } from "@/types/imagesSort";
 
 export type ContextFile = PrismaFile &
 	FileWithTags & {
@@ -22,11 +22,14 @@ type FilesContextType = {
 	sortedFiles: ContextFile[];
 	hasUserLikedFile: (fileId: string) => boolean;
 	canUserLikeFile: (file: FileWithLikes) => boolean;
-	getSortedFiles: (sortStrategy: ImagesSortMethod | "dragOrder", sortState: ImagesSortMethod) => ContextFile[];
+	getSortedFiles: (
+		sortStrategy: FilesSortDefinition | "dragOrder",
+		sortState: FilesSortDefinition
+	) => ContextFile[];
 	viewState: ViewState;
 	setViewState: React.Dispatch<React.SetStateAction<ViewState>>;
-	sortState: ImagesSortMethod;
-	setSortState: React.Dispatch<React.SetStateAction<ImagesSortMethod>>;
+	sortState: FilesSortDefinition;
+	setSortState: React.Dispatch<React.SetStateAction<FilesSortDefinition>>;
 };
 
 const FilesContext = createContext<FilesContextType | undefined>(undefined);
@@ -67,36 +70,36 @@ export const FilesProvider = ({
 			}
 		},
 	});
-	const [sortState, setSortState] = useQueryState<ImagesSortMethod>("sort", {
-		defaultValue: ImagesSortMethod.Position,
+	const [sortState, setSortState] = useQueryState<FilesSortDefinition>("sort", {
+		defaultValue: FilesSort.Position,
 		parse: v => {
 			switch (v) {
 				case "name-asc":
-					return ImagesSortMethod.NameAsc;
+					return FilesSort.Name.Asc;
 				case "name-desc":
-					return ImagesSortMethod.NameDesc;
+					return FilesSort.Name.Desc;
 				case "size-asc":
-					return ImagesSortMethod.SizeAsc;
+					return FilesSort.Size.Asc;
 				case "size-desc":
-					return ImagesSortMethod.SizeDesc;
+					return FilesSort.Size.Desc;
 				case "date-asc":
-					return ImagesSortMethod.DateAsc;
+					return FilesSort.Date.Asc;
 				case "date-desc":
-					return ImagesSortMethod.DateDesc;
+					return FilesSort.Date.Desc;
 				case "taken-asc":
-					return ImagesSortMethod.TakenAsc;
+					return FilesSort.Taken.Asc;
 				case "taken-desc":
-					return ImagesSortMethod.TakenDesc;
+					return FilesSort.Taken.Desc;
 				case "position":
-					return ImagesSortMethod.Position;
+					return FilesSort.Position;
 				default:
-					return ImagesSortMethod.Position;
+					return FilesSort.Position;
 			}
 		},
 	});
 
 	const sortedFiles = useMemo(() => {
-		return getSortedImagesVideosContent([...files], sortState) as ContextFile[];
+		return getSortedContent([...files], sortState) as ContextFile[];
 	}, [files, sortState]);
 
 	const hasUserLikedFile = useCallback(
@@ -144,12 +147,9 @@ export const FilesProvider = ({
 	);
 
 	const getSortedFiles = useCallback(
-		(sortStrategy: ImagesSortMethod | "dragOrder", sortState: ImagesSortMethod): ContextFile[] => {
+		(sortStrategy: FilesSortDefinition | "dragOrder"): ContextFile[] => {
 			if (sortStrategy !== "dragOrder") {
-				const sortedItems = getSortedImagesVideosContent(
-					[...files],
-					sortState
-				) as ContextFile[];
+				const sortedItems = getSortedContent([...files], sortStrategy) as ContextFile[];
 				return sortedItems;
 			}
 
