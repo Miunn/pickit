@@ -2,6 +2,7 @@ import { GoogleBucket } from "@/lib/bucket";
 import { NextRequest, NextResponse } from "next/server";
 import { isAllowedToAccessFile } from "@/lib/dal";
 import { FileService } from "@/data/file-service";
+import { webStreamFromFile } from "@/lib/utils";
 
 /**
  * Serves a video's thumbnail stream or an authentication/error JSON response.
@@ -19,51 +20,39 @@ import { FileService } from "@/data/file-service";
  *          or a JSON error response with status 400 (authentication required) or 404 (not found).
  */
 export async function GET(req: NextRequest, props: { params: Promise<{ folder: string; video: string }> }) {
-    const params = await props.params;
-    const shareToken = req.nextUrl.searchParams.get("share");
-    const accessKey = req.nextUrl.searchParams.get("h");
+	const params = await props.params;
+	const shareToken = req.nextUrl.searchParams.get("share");
+	const accessKey = req.nextUrl.searchParams.get("h");
 
-    const isAllowed = await isAllowedToAccessFile(params.video, shareToken, accessKey);
-    if (!isAllowed) {
-        return Response.json(
-            { error: "You need to be authenticated or have a magic link to access this resource" },
-            { status: 400 }
-        );
-    }
+	const isAllowed = await isAllowedToAccessFile(params.video, shareToken, accessKey);
+	if (!isAllowed) {
+		return Response.json(
+			{ error: "You need to be authenticated or have a magic link to access this resource" },
+			{ status: 400 }
+		);
+	}
 
-    const video = await FileService.get({
-        where: {
-            id: params.video,
-            folderId: params.folder,
-        },
-    });
+	const video = await FileService.get({
+		where: {
+			id: params.video,
+			folderId: params.folder,
+		},
+	});
 
-    if (!video) {
-        return Response.json({ error: "No videos found in this folder" }, { status: 404 });
-    }
+	if (!video) {
+		return Response.json({ error: "No videos found in this folder" }, { status: 404 });
+	}
 
-    const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.thumbnail}`);
+	const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.thumbnail}`);
 
-    const stream = file.createReadStream();
+	const webStream = webStreamFromFile(file);
 
-    // Convert Node.js Readable (from Google Cloud Storage) to a Web ReadableStream
-    // suitable for the Fetch API / NextResponse
-    const webStream = new globalThis.ReadableStream({
-        start(controller) {
-            stream.on("data", chunk => controller.enqueue(chunk));
-            stream.on("end", () => controller.close());
-            stream.on("error", err => controller.error(err));
-        },
-        cancel() {
-            stream.destroy();
-        },
-    });
-    const res = new NextResponse(webStream, {
-        headers: {
-            "Content-Type": "image/jpeg",
-            "Cache-Control": "private, max-age=2592000, immutable",
-        },
-    });
+	const res = new NextResponse(webStream, {
+		headers: {
+			"Content-Type": "image/jpeg",
+			"Cache-Control": "private, max-age=2592000, immutable",
+		},
+	});
 
-    return res;
+	return res;
 }
