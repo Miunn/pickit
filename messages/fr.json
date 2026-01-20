@@ -1453,7 +1453,7 @@
 				"goToLast": "Aller à la dernière page"
 			}
 		},
-		"people": {
+		"links": {
 			"columns": {
 				"name": {
 					"header": "Nom"
@@ -1468,130 +1468,7 @@
 				},
 				"active": {
 					"header": "Actif",
-					"tooltip": "Un lien inactif ne peut pas être utilisé pour accéder au dossier.<br />L'état peut être modifié à tout moment",
-					"active": "Actif",
-					"inactive": "Inactif"
-				},
-				"locked": {
-					"header": "Verrouillé",
-					"locked": "Verrouillé",
-					"unlocked": "Dévérouillé"
-				},
-				"views": {
-					"header": "Vues",
-					"count": "{count, plural, one {# vue} other {# vues}}"
-				},
-				"createdAt": {
-					"header": "Créé le"
-				},
-				"expiresAt": {
-					"header": "Expire le"
-				},
-				"actions": {
-					"label": "Actions",
-					"open": "Ouvrir",
-					"sendAgain": {
-						"label": "Renvoyer l'email",
-						"inProgress": {
-							"title": "En cours d'envoi",
-							"description": "L'email est en cours d'envoi"
-						},
-						"success": {
-							"title": "Email envoyé",
-							"description": "L'email a été envoyé avec succès"
-						},
-						"error": {
-							"title": "Impossible d'envoyer l'email",
-							"description": "Une erreur est survenue lors de l'envoi de l'email"
-						}
-					},
-					"edit": "Modifier les permissions",
-					"setActive": {
-						"label": "Définir comme actif",
-						"success": {
-							"title": "Accès activé",
-							"description": "L'accès pour cette personne a été activé"
-						},
-						"error": {
-							"title": "Impossible d'activer l'accès",
-							"description": "Une erreur est survenue lors de l'activation de l'accès"
-						}
-					},
-					"setInactive": {
-						"label": "Définir comme inactif",
-						"success": {
-							"title": "Accès désactivé",
-							"description": "L'accès pour cette personne a été désactivé"
-						},
-						"error": {
-							"title": "Impossible de désactiver l'accès",
-							"description": "Une erreur est survenue lors de la désactivation de l'accès"
-						}
-					},
-					"lock": "Vérouiller",
-					"unlock": {
-						"label": "Dévérouiller",
-						"error": {
-							"title": "Impossible de dévérouiller l'accès",
-							"description": "Une erreur est survenue lors du dévérouillage de l'accès"
-						},
-						"success": {
-							"title": "Accès dévérouillé",
-							"description": "L'accès pour cette personne a été dévérouillé"
-						}
-					},
-					"delete": {
-						"label": "Supprimer",
-						"success": {
-							"title": "Accès supprimée",
-							"description": "L'accès pour cette personne a été supprimé"
-						}
-					},
-					"allowMap": {
-						"disable": {
-							"label": "Supprimer l'accès à la carte",
-							"error": {
-								"title": "Impossible de supprimer l'accès",
-								"description": "Une erreur inconnue est survenue lors de la suppression de l'accès à la carte. Réessayez"
-							},
-							"success": {
-								"title": "Accès à la carte supprimé",
-								"description": "L'accès à la carte a été supprimé avec succès"
-							}
-						},
-						"enable": {
-							"label": "Activer l'accès à la carte",
-							"error": {
-								"title": "Impossible d'activer l'accès",
-								"description": "Une erreur inconnue est survenue lors de l'activation de l'accès à la carte. Réessayez"
-							},
-							"success": {
-								"title": "Accès à la carte activé",
-								"description": "L'accès à la carte a été activé avec succès"
-							}
-						}
-					}
-				},
-				"allowMap": {
-					"header": "Carte autorisée",
-					"allowed": "Oui",
-					"notAllowed": "Non"
-				}
-			}
-		},
-		"links": {
-			"columns": {
-				"name": {
-					"header": "Nom"
-				},
-				"permission": {
-					"header": "Permission",
-					"read": "Voir",
-					"write": "Modifier"
-				},
-				"active": {
-					"header": "Actif",
-					"tooltip": "Un lien inactif ne peut pas être utilisé pour accéder au dossier.<br />L'état peut être modifié à tout moment",
+					"tooltip": "Un lien inactif ne peut pas être utilisé pour accéder au dossier. L'état peut être modifié à tout moment",
 					"active": "Actif",
 					"inactive": "Inactif"
 				},
@@ -1613,6 +1490,21 @@
 				"actions": {
 					"label": "Actions",
 					"open": "Ouvrir le dossier",
+					"sendAgain": {
+						"label": "Renvoyer l'email",
+						"inProgress": {
+							"title": "En cours d'envoi",
+							"description": "L'email est en cours d'envoi"
+						},
+						"success": {
+							"title": "Email envoyé",
+							"description": "L'email a été envoyé avec succès"
+						},
+						"error": {
+							"title": "Impossible d'envoyer l'email",
+							"description": "Une erreur est survenue lors de l'envoi de l'email"
+						}
+					},
 					"copy": {
 						"label": "Copier le lien",
 						"success": {
@@ -1644,7 +1536,17 @@
 						}
 					},
 					"lock": "Vérouiller",
-					"unlock": "Dévérouiller",
+					"unlock": {
+						"label": "Dévérouiller",
+						"error": {
+							"title": "Impossible de dévérouiller l'accès",
+							"description": "Une erreur est survenue lors du dévérouillage de l'accès"
+						},
+						"success": {
+							"title": "Accès dévérouillé",
+							"description": "L'accès pour cette personne a été dévérouillé"
+						}
+					},
 					"delete": {
 						"label": "Supprimer",
 						"success": {

@@ -1454,7 +1454,7 @@
 				"goToLast": "Go to last page"
 			}
 		},
-		"people": {
+		"links": {
 			"columns": {
 				"name": {
 					"header": "Folders name"
@@ -1469,7 +1469,7 @@
 				},
 				"active": {
 					"header": "Is active",
-					"tooltip": "An inactive link can't be used to access the folder.<br />It can be reactivated at any time in the options.",
+					"tooltip": "An inactive link can't be used to access the folder. It can be reactivated at any time in the options.",
 					"active": "Active",
 					"inactive": "Inactive"
 				},
@@ -1506,114 +1506,6 @@
 							"description": "An error occurred while sending the email"
 						}
 					},
-					"edit": "Edit permission",
-					"setActive": {
-						"label": "Set as active",
-						"success": {
-							"title": "Access activated",
-							"description": "The access for this person has been activated successfully"
-						},
-						"error": {
-							"title": "Can't activate access",
-							"description": "An error occurred while activating the access"
-						}
-					},
-					"setInactive": {
-						"label": "Set as inactive",
-						"success": {
-							"title": "Access deactivated",
-							"description": "The access for this person has been deactivated successfully"
-						},
-						"error": {
-							"title": "Can't deactivate access",
-							"description": "An error occurred while deactivating the access"
-						}
-					},
-					"lock": "Lock",
-					"unlock": {
-						"label": "Unlock",
-						"errors": {
-							"title": "Can't unlock access",
-							"description": "An error occurred while unlocking the access"
-						},
-						"success": {
-							"title": "Access unlocked",
-							"description": "The access for this person has been unlocked successfully"
-						}
-					},
-					"delete": {
-						"label": "Delete",
-						"success": {
-							"title": "Access deleted",
-							"description": "The access for this person has been deleted successfully"
-						}
-					},
-					"allowMap": {
-						"disable": {
-							"label": "Remove map access",
-							"error": {
-								"title": "Can't remove access",
-								"description": "An unknown error happened while removing map access. Please try again"
-							},
-							"success": {
-								"title": "Map access removed",
-								"description": "Map access has been removed successfully"
-							}
-						},
-						"enable": {
-							"label": "Enable map access",
-							"error": {
-								"title": "Can't enable access",
-								"description": "An unknown error happened while enabling map access. Please try again"
-							},
-							"success": {
-								"title": "Map access enabled",
-								"description": "Map access has been enabled successfully"
-							}
-						}
-					}
-				},
-				"allowMap": {
-					"header": "Is map allowed",
-					"allowed": "Yes",
-					"notAllowed": "No"
-				}
-			}
-		},
-		"links": {
-			"columns": {
-				"name": {
-					"header": "Folders name"
-				},
-				"permission": {
-					"header": "Permission",
-					"read": "View",
-					"write": "Edit"
-				},
-				"active": {
-					"header": "Is active",
-					"tooltip": "An inactive link can't be used to access the folder.<br />It can be reactivated at any time in the options.",
-					"active": "Active",
-					"inactive": "Inactive"
-				},
-				"locked": {
-					"header": "Is locked",
-					"locked": "Locked",
-					"unlocked": "Unlocked"
-				},
-				"views": {
-					"header": "Views",
-					"count": "{count, plural, one {# view} other {# views}}"
-				},
-				"createdAt": {
-					"header": "Created at"
-				},
-				"expiresAt": {
-					"header": "Expires at"
-				},
-				"actions": {
-					"label": "Actions",
-					"open": "Open folder",
 					"copy": {
 						"label": "Copy link",
 						"success": {
@@ -1645,7 +1537,17 @@
 						}
 					},
 					"lock": "Lock",
-					"unlock": "Unlock",
+					"unlock": {
+						"label": "Unlock",
+						"errors": {
+							"title": "Can't unlock access",
+							"description": "An error occurred while unlocking the access"
+						},
+						"success": {
+							"title": "Access unlocked",
+							"description": "The access for this person has been unlocked successfully"
+						}
+					},
 					"delete": {
 						"label": "Delete",
 						"success": {
