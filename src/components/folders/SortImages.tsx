@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { ArrowDownWideNarrow, Check, ChevronDown } from "lucide-react";
 import React, { useMemo } from "react";
-import { FilesSort, FilesSortDefinition, parseFilesSort, SortAttribute, SortDirection } from "@/types/imagesSort";
+import { FilesSort, FilesSortDefinition, parseFilesSort, SortAttribute } from "@/types/imagesSort";
 import SortArrow from "../generic/SortArrow";
 
 export interface SortImagesProps {
