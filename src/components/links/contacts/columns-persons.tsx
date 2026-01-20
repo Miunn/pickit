@@ -13,7 +13,6 @@ import ActiveTooltip from "@/components/generic/ActiveTooltip";
 import LockBadge from "@/components/generic/LockBadge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -24,6 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "@/i18n/navigation";
+import { select } from "@/lib/columns-common";
 import { AccessTokenWithFolder } from "@/lib/definitions";
 import { ColumnDef } from "@tanstack/react-table";
 import {
@@ -46,29 +46,7 @@ const PERMISSIONS = {
 } as const;
 
 export const personColumns: ColumnDef<AccessTokenWithFolder>[] = [
-	{
-		id: "select",
-		header: ({ table }) => (
-			<Checkbox
-				checked={
-					table.getIsAllPageRowsSelected() ||
-					(table.getIsSomePageRowsSelected() && "indeterminate")
-				}
-				onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-				aria-label="Select all"
-			/>
-		),
-		cell: ({ row }) => (
-			<Checkbox
-				checked={row.getIsSelected()}
-				onCheckedChange={value => row.toggleSelected(!!value)}
-				aria-label="Select row"
-			/>
-		),
-		enableSorting: false,
-		enableHiding: false,
-		size: 50,
-	},
+	select as ColumnDef<AccessTokenWithFolder>,
 	{
 		id: "folder_name",
 		accessorKey: "folder.name",

@@ -16,11 +16,11 @@ import RenameImageDialog from "@/components/files/dialogs/RenameImageDialog";
 import { DeleteImageDialog } from "@/components/files/dialogs/DeleteImageDialog";
 import ImagePropertiesDialog from "@/components/files/dialogs/ImagePropertiesDialog";
 import React from "react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { changeFolderCover } from "@/actions/folders";
 import LoadingImage from "@/components/files/LoadingImage";
 import { FileType } from "@prisma/client";
 import { createTranslator } from "next-intl";
+import { select } from "@/lib/columns-common";
 
 // Memoized dropdown menu component
 const ImageActionsDropdown = React.memo(
@@ -125,29 +125,7 @@ const ImageActionsDropdown = React.memo(
 ImageActionsDropdown.displayName = "ImageActionsDropdown";
 
 export const imagesListViewColumns: ColumnDef<FileWithFolder & FileWithComments>[] = [
-	{
-		id: "select",
-		header: ({ table }) => (
-			<Checkbox
-				checked={
-					table.getIsAllPageRowsSelected() ||
-					(table.getIsSomePageRowsSelected() && "indeterminate")
-				}
-				onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-				aria-label="Select all"
-			/>
-		),
-		cell: ({ row }) => (
-			<Checkbox
-				checked={row.getIsSelected()}
-				onCheckedChange={value => row.toggleSelected(!!value)}
-				aria-label="Select row"
-			/>
-		),
-		enableSorting: false,
-		enableHiding: false,
-		size: 25,
-	},
+	select as ColumnDef<FileWithFolder & FileWithComments>,
 	{
 		header: "Name",
 		accessorKey: "name",
