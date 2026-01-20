@@ -1,8 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Plan } from "@prisma/client";
-import { FolderWithFilesWithFolderAndComments, FileWithFolder, FileWithTags } from "./definitions";
-import { ImagesSortMethod } from "@/types/imagesSort";
+import { FileWithFolder, FileWithTags } from "./definitions";
+import { FilesSort, FilesSortDefinition } from "@/types/imagesSort";
 
 export const plansBenefits: Record<Plan, { storage: number; albums: number; sharingLinks: number }> = {
 	[Plan.FREE]: {
@@ -97,66 +97,6 @@ export const copyImageToClipboard = async (
 	return true;
 };
 
-export const getSortedFolderContent = (
-	folderContent: FolderWithFilesWithFolderAndComments,
-	sort: ImagesSortMethod
-): FolderWithFilesWithFolderAndComments => {
-	switch (sort) {
-		case ImagesSortMethod.NameAsc:
-			return {
-				...folderContent,
-				files: folderContent.files.sort(
-					(a, b) =>
-						a.name.localeCompare(b.name) ||
-						a.createdAt.getTime() - b.createdAt.getTime()
-				),
-			};
-		case ImagesSortMethod.NameDesc:
-			return {
-				...folderContent,
-				files: folderContent.files.sort(
-					(a, b) =>
-						b.name.localeCompare(a.name) ||
-						a.createdAt.getTime() - b.createdAt.getTime()
-				),
-			};
-		case ImagesSortMethod.SizeAsc:
-			return {
-				...folderContent,
-				files: folderContent.files.sort(
-					(a, b) => a.size - b.size || a.name.localeCompare(b.name)
-				),
-			};
-		case ImagesSortMethod.SizeDesc:
-			return {
-				...folderContent,
-				files: folderContent.files.sort(
-					(a, b) => b.size - a.size || a.name.localeCompare(b.name)
-				),
-			};
-		case ImagesSortMethod.DateAsc:
-			return {
-				...folderContent,
-				files: folderContent.files.sort(
-					(a, b) =>
-						a.createdAt.getTime() - b.createdAt.getTime() ||
-						a.name.localeCompare(b.name)
-				),
-			};
-		case ImagesSortMethod.DateDesc:
-			return {
-				...folderContent,
-				files: folderContent.files.sort(
-					(a, b) =>
-						b.createdAt.getTime() - a.createdAt.getTime() ||
-						a.name.localeCompare(b.name)
-				),
-			};
-		default:
-			return folderContent;
-	}
-};
-
 export function groupFiles<T extends FileWithTags>(files: T[]): { [key: string]: T[] } {
 	const groups: { [key: string]: T[] } = {};
 
@@ -180,33 +120,33 @@ export function groupFiles<T extends FileWithTags>(files: T[]): { [key: string]:
 	return groups;
 }
 
-export const getSortedImagesVideosContent = (arr: FileWithFolder[], sort: ImagesSortMethod) => {
+export const getSortedContent = (arr: FileWithFolder[], sort: FilesSortDefinition) => {
 	switch (sort) {
-		case ImagesSortMethod.NameAsc:
+		case FilesSort.Name.Asc:
 			return arr.sort(
 				(a, b) => a.name.localeCompare(b.name) || a.createdAt.getTime() - b.createdAt.getTime()
 			);
-		case ImagesSortMethod.NameDesc:
+		case FilesSort.Name.Desc:
 			return arr.sort(
 				(a, b) => b.name.localeCompare(a.name) || a.createdAt.getTime() - b.createdAt.getTime()
 			);
-		case ImagesSortMethod.SizeAsc:
+		case FilesSort.Size.Asc:
 			return arr.sort((a, b) => a.size - b.size || a.name.localeCompare(b.name));
-		case ImagesSortMethod.SizeDesc:
+		case FilesSort.Size.Desc:
 			return arr.sort((a, b) => b.size - a.size || a.name.localeCompare(b.name));
-		case ImagesSortMethod.DateAsc:
+		case FilesSort.Date.Asc:
 			return arr.sort(
 				(a, b) => a.createdAt.getTime() - b.createdAt.getTime() || a.name.localeCompare(b.name)
 			);
-		case ImagesSortMethod.DateDesc:
+		case FilesSort.Date.Desc:
 			return arr.sort(
 				(a, b) => b.createdAt.getTime() - a.createdAt.getTime() || a.name.localeCompare(b.name)
 			);
-		case ImagesSortMethod.TakenAsc:
+		case FilesSort.Taken.Asc:
 			return arr.sort((a, b) => (a.takenAt?.getTime() || 0) - (b.takenAt?.getTime() || 0));
-		case ImagesSortMethod.TakenDesc:
+		case FilesSort.Taken.Desc:
 			return arr.sort((a, b) => (b.takenAt?.getTime() || 0) - (a.takenAt?.getTime() || 0));
-		case ImagesSortMethod.Position:
+		case FilesSort.Position:
 			return arr.sort((a, b) => a.position - b.position);
 		default:
 			return arr;

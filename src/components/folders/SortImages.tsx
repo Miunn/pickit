@@ -3,19 +3,35 @@
 import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { ArrowDown, ArrowDownWideNarrow, ArrowUp, Check, ChevronDown } from "lucide-react";
-import React from "react";
-import { ImagesSortMethod } from "@/types/imagesSort";
-
-// Using shared enum from src/types/imagesSort
+import { ArrowDownWideNarrow, Check, ChevronDown } from "lucide-react";
+import React, { useMemo } from "react";
+import { FilesSort, FilesSortDefinition, parseFilesSort, SortAttribute, SortDirection } from "@/types/imagesSort";
+import SortArrow from "../generic/SortArrow";
 
 export interface SortImagesProps {
-	readonly sortState: ImagesSortMethod;
-	readonly setSortState: React.Dispatch<React.SetStateAction<ImagesSortMethod>>;
+	readonly sortState: FilesSortDefinition;
+	readonly setSortState: React.Dispatch<React.SetStateAction<FilesSortDefinition>>;
 }
 
 export default function SortImages({ sortState, setSortState }: SortImagesProps) {
 	const t = useTranslations("components.images.sort");
+	const { attribute, direction } = useMemo(() => parseFilesSort(sortState), [sortState]);
+
+	const handleSortChange = (sortAttribute: SortAttribute) => {
+		if (sortAttribute === SortAttribute.Position) {
+			setSortState(FilesSort.Position);
+			return;
+		}
+
+		if (attribute === sortAttribute) {
+			setSortState(
+				direction === "Asc" ? FilesSort[sortAttribute].Desc : FilesSort[sortAttribute].Asc
+			);
+			return;
+		}
+
+		setSortState(FilesSort[sortAttribute].Asc);
+	};
 
 	return (
 		<DropdownMenu>
@@ -34,89 +50,53 @@ export default function SortImages({ sortState, setSortState }: SortImagesProps)
 			<DropdownMenuContent className="min-w-[--radix-dropdown-menu-trigger-width]">
 				<DropdownMenuItem
 					className="flex justify-between items-center"
-					onClick={event => {
-						event.preventDefault();
-						setSortState(ImagesSortMethod.Position);
+					onClick={e => {
+						e.preventDefault();
+						handleSortChange(SortAttribute.Position);
 					}}
 				>
 					{t("options.manual")}
-					{sortState === ImagesSortMethod.Position ? <Check className="w-4 h-4" /> : null}
+					{sortState === FilesSort.Position ? <Check className="w-4 h-4" /> : null}
 				</DropdownMenuItem>
 				<DropdownMenuItem
 					className="flex justify-between items-center"
-					onClick={event => {
-						event.preventDefault();
-						if (sortState === ImagesSortMethod.NameDesc) {
-							setSortState(ImagesSortMethod.NameAsc);
-						} else {
-							setSortState(ImagesSortMethod.NameDesc);
-						}
+					onClick={e => {
+						e.preventDefault();
+						handleSortChange(SortAttribute.Name);
 					}}
 				>
 					{t("options.name")}
-					{sortState === ImagesSortMethod.NameAsc ? (
-						<ArrowUp className="w-4 h-4" />
-					) : null}
-					{sortState === ImagesSortMethod.NameDesc ? (
-						<ArrowDown className="w-4 h-4" />
-					) : null}
+					<SortArrow direction={attribute === SortAttribute.Name ? direction : null} />
 				</DropdownMenuItem>
 				<DropdownMenuItem
 					className="flex justify-between items-center"
-					onClick={event => {
-						event.preventDefault();
-						if (sortState === ImagesSortMethod.SizeDesc) {
-							setSortState(ImagesSortMethod.SizeAsc);
-						} else {
-							setSortState(ImagesSortMethod.SizeDesc);
-						}
+					onClick={e => {
+						e.preventDefault();
+						handleSortChange(SortAttribute.Size);
 					}}
 				>
 					{t("options.size")}
-					{sortState === ImagesSortMethod.SizeAsc ? (
-						<ArrowUp className="w-4 h-4" />
-					) : null}
-					{sortState === ImagesSortMethod.SizeDesc ? (
-						<ArrowDown className="w-4 h-4" />
-					) : null}
+					<SortArrow direction={attribute === SortAttribute.Size ? direction : null} />
 				</DropdownMenuItem>
 				<DropdownMenuItem
 					className="flex justify-between items-center"
-					onClick={event => {
-						event.preventDefault();
-						if (sortState === ImagesSortMethod.DateDesc) {
-							setSortState(ImagesSortMethod.DateAsc);
-						} else {
-							setSortState(ImagesSortMethod.DateDesc);
-						}
+					onClick={e => {
+						e.preventDefault();
+						handleSortChange(SortAttribute.Date);
 					}}
 				>
 					{t("options.date")}
-					{sortState === ImagesSortMethod.DateAsc ? (
-						<ArrowUp className="w-4 h-4" />
-					) : null}
-					{sortState === ImagesSortMethod.DateDesc ? (
-						<ArrowDown className="w-4 h-4" />
-					) : null}
+					<SortArrow direction={attribute === SortAttribute.Date ? direction : null} />
 				</DropdownMenuItem>
 				<DropdownMenuItem
 					className="flex justify-between items-center"
-					onClick={event => {
-						event.preventDefault();
-						if (sortState === ImagesSortMethod.TakenDesc) {
-							setSortState(ImagesSortMethod.TakenAsc);
-						} else {
-							setSortState(ImagesSortMethod.TakenDesc);
-						}
+					onClick={e => {
+						e.preventDefault();
+						handleSortChange(SortAttribute.Taken);
 					}}
 				>
 					{t("options.taken")}
-					{sortState === ImagesSortMethod.TakenAsc ? (
-						<ArrowUp className="w-4 h-4" />
-					) : null}
-					{sortState === ImagesSortMethod.TakenDesc ? (
-						<ArrowDown className="w-4 h-4" />
-					) : null}
+					<SortArrow direction={attribute === SortAttribute.Taken ? direction : null} />
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
