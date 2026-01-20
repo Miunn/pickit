@@ -11,12 +11,12 @@ export default function ActiveTooltip({
 }) {
 	return (
 		<TooltipProvider>
-			<Tooltip>
+			<Tooltip delayDuration={0}>
 				<TooltipTrigger>
 					<CircleHelp className="w-4 h-4 cursor-pointer" />
 				</TooltipTrigger>
-				<TooltipContent>
-					<p dangerouslySetInnerHTML={{ __html: t?.(tooltipKey) || "" }} />
+				<TooltipContent className="max-w-80 text-center">
+					<span>{t?.(tooltipKey)}</span>
 				</TooltipContent>
 			</Tooltip>
 		</TooltipProvider>

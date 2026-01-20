@@ -47,6 +47,16 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
 		},
 	},
 	{
+		id: "email",
+		accessorKey: "email",
+		header: ({ table }) => {
+			const t = table.options.meta?.intl?.translations;
+
+			return <p>{t?.("columns.email.header")}</p>;
+		},
+		size: 340,
+	},
+	{
 		accessorKey: "permission",
 		header: ({ table }) => {
 			const t = table.options.meta?.intl?.translations;
@@ -72,7 +82,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
 				);
 			}
 		},
-		size: 260,
+		size: 200,
 	},
 	{
 		accessorKey: "isActive",
@@ -124,7 +134,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
 				</p>
 			);
 		},
-		size: 120,
+		size: 200,
 	},
 	{
 		accessorKey: "locked",
@@ -144,7 +154,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
 				/>
 			);
 		},
-		size: 120,
+		size: 160,
 	},
 	{
 		accessorKey: "uses",
@@ -161,7 +171,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
 				</p>
 			);
 		},
-		size: 120,
+		size: 180,
 	},
 	{
 		accessorKey: "createdAt",
