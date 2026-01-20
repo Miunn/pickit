@@ -19,7 +19,6 @@ import { formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Images, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
-import { Checkbox } from "@/components/ui/checkbox";
 import RenameFolderDialog from "@/components/folders/dialogs/RenameFolderDialog";
 import DeleteFolderDialog from "@/components/folders/dialogs/DeleteFolderDialog";
 import FolderPropertiesDialog from "@/components/folders/dialogs/FolderPropertiesDialogs";
