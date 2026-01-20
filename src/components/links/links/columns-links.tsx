@@ -152,7 +152,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
 		accessorKey: "locked",
 		header: ({ table }) => {
 			const t = table.options.meta?.intl?.translations;
-			return <p>{t?.("locked.header")}</p>;
+			return <p>{t?.("columns.locked.header")}</p>;
 		},
 		cell: ({ table, row }) => {
 			const t = table.options.meta?.intl?.translations;

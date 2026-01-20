@@ -1573,7 +1573,9 @@
 					}
 				},
 				"allowMap": {
-					"header": "Carte autorisée"
+					"header": "Carte autorisée",
+					"allowed": "Oui",
+					"notAllowed": "Non"
 				}
 			}
 		},

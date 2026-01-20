@@ -1574,7 +1574,9 @@
 					}
 				},
 				"allowMap": {
-					"header": "Is map allowed"
+					"header": "Is map allowed",
+					"allowed": "Yes",
+					"notAllowed": "No"
 				}
 			}
 		},
