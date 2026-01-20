@@ -13,7 +13,7 @@ import { useFolderContext } from "@/context/FolderContext";
 import { Check, LayoutGrid, List, MoreHorizontal, Tag } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { ViewState } from "../ViewSelector";
-import { FilesSort, parseFilesSort, SortAttribute, SortDirection } from "@/types/imagesSort";
+import { FilesSort, parseFilesSort, SortAttribute } from "@/types/imagesSort";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useSession } from "@/providers/SessionProvider";
