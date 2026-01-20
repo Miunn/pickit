@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { Plan } from "@prisma/client";
 import { FileWithFolder, FileWithTags } from "./definitions";
 import { FilesSort, FilesSortDefinition } from "@/types/imagesSort";
+import { File } from "@google-cloud/storage";
 
 export const plansBenefits: Record<Plan, { storage: number; albums: number; sharingLinks: number }> = {
 	[Plan.FREE]: {
@@ -222,6 +223,23 @@ export function isNewFile(date: Date) {
 	const diffTime = Math.abs(now.getTime() - date.getTime());
 	const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 	return diffDays <= 3;
+}
+
+export function webStreamFromFile(file: File): ReadableStream {
+	const stream = file.createReadStream();
+
+	// Convert Node.js Readable (from Google Cloud Storage) to a Web ReadableStream
+	// suitable for the Fetch API / NextResponse
+	return new globalThis.ReadableStream({
+		start(controller) {
+			stream.on("data", chunk => controller.enqueue(chunk));
+			stream.on("end", () => controller.close());
+			stream.on("error", err => controller.error(err));
+		},
+		cancel() {
+			stream.destroy();
+		},
+	});
 }
 
 /**

@@ -19,7 +19,6 @@ import { formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Images, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
-import { Checkbox } from "@/components/ui/checkbox";
 import RenameFolderDialog from "@/components/folders/dialogs/RenameFolderDialog";
 import DeleteFolderDialog from "@/components/folders/dialogs/DeleteFolderDialog";
 import FolderPropertiesDialog from "@/components/folders/dialogs/FolderPropertiesDialogs";
@@ -27,33 +26,12 @@ import Link from "next/link";
 import { ShareFolderDialog } from "@/components/folders/dialogs/ShareFolderDialog";
 import ChangeCoverFolderDialog from "@/components/folders/dialogs/ChangeCoverFolderDialog";
 import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/files";
+import { select } from "@/lib/columns-common";
 
 export const foldersListViewColumns: ColumnDef<
 	FolderWithAccessToken & FolderWithFilesCount & FolderWithFilesWithFolderAndComments
 >[] = [
-	{
-		id: "select",
-		header: ({ table }) => (
-			<Checkbox
-				checked={
-					table.getIsAllPageRowsSelected() ||
-					(table.getIsSomePageRowsSelected() && "indeterminate")
-				}
-				onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-				aria-label="Select all"
-			/>
-		),
-		cell: ({ row }) => (
-			<Checkbox
-				checked={row.getIsSelected()}
-				onCheckedChange={value => row.toggleSelected(!!value)}
-				aria-label="Select row"
-			/>
-		),
-		enableSorting: false,
-		enableHiding: false,
-		size: 25,
-	},
+	select as ColumnDef<FolderWithAccessToken & FolderWithFilesCount & FolderWithFilesWithFolderAndComments>,
 	{
 		header: "Name",
 		accessorKey: "name",

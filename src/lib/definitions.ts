@@ -3,6 +3,14 @@
 import { FolderTokenPermission, Prisma, FileType } from "@prisma/client";
 import { z } from "zod";
 
+const passwordValidation = z
+	.string()
+	.min(8, { message: "Be at least 8 characters long" })
+	.regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
+	.regex(/\d/, { message: "Contain at least one number." })
+	.regex(/[^a-zA-Z0-9]/, { message: "Contain at least one special character." })
+	.trim();
+
 export type ActionResult = {
 	status: string;
 	message?: string;
@@ -18,13 +26,7 @@ export const SignupFormSchema = z
 	.object({
 		name: z.string().min(3, { message: "Be at least 3 characters long" }).trim(),
 		email: z.string().email({ message: "Please enter a valid email." }).trim(),
-		password: z
-			.string()
-			.min(8, { message: "Be at least 8 characters long" })
-			.regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
-			.regex(/\d/, { message: "Contain at least one number." })
-			.regex(/[^a-zA-Z0-9]/, { message: "Contain at least one special character." })
-			.trim(),
+		password: passwordValidation,
 		passwordConfirmation: z.string(),
 	})
 	.superRefine(({ password, passwordConfirmation }, ctx) => {
@@ -245,13 +247,7 @@ export const RequestPasswordResetFormSchema = z.object({
 
 export const ResetPasswordFormSchema = z
 	.object({
-		password: z
-			.string()
-			.min(8, { message: "Must be at least 8 characters long" })
-			.regex(/[a-zA-Z]/, { message: "Must contain at least one letter." })
-			.regex(/\d/, { message: "Must contain at least one number." })
-			.regex(/[^a-zA-Z0-9]/, { message: "Must contain at least one special character." })
-			.trim(),
+		password: passwordValidation,
 		passwordConfirmation: z.string(),
 	})
 	.superRefine(({ password, passwordConfirmation }, ctx) => {
