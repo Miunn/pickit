@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { notifyAboutUpload } from "@/actions/accessTokens";
 import { useSearchParams } from "next/navigation";
-import crypto from "crypto";
+import SparkMD5 from "spark-md5";
 
 interface UploadImagesFormProps {
 	readonly folderId: string;
@@ -62,11 +62,8 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
 					try {
 						// Step 1: Compute CRC32C checksum
 						const fileArrayBuffer = await file.arrayBuffer();
-						const fileBuffer = Buffer.from(fileArrayBuffer);
-						const checksum = crypto
-							.createHash("md5")
-							.update(fileBuffer)
-							.digest("base64");
+						const rawMD5 = SparkMD5.ArrayBuffer.hash(fileArrayBuffer, true);
+						const checksum = Buffer.from(rawMD5, "binary").toString("base64");
 
 						// Step 2: Send metadata and samples to get verification URL
 						const verificationResult = await initiateFileUpload(

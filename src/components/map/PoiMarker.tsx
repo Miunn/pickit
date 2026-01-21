@@ -1,23 +1,15 @@
 import React, { useCallback } from "react";
-import {
-	AdvancedMarker,
-	AdvancedMarkerAnchorPoint,
-	AdvancedMarkerRef,
-	useAdvancedMarkerRef,
-} from "@vis.gl/react-google-maps";
+import { AdvancedMarker, AdvancedMarkerAnchorPoint, useAdvancedMarkerRef } from "@vis.gl/react-google-maps";
 
 type TreeMarkerProps = {
 	readonly position: google.maps.LatLngLiteral;
 	readonly featureId: string;
-	readonly onMarkerClick: (marker: google.maps.marker.AdvancedMarkerElement, featureId: string) => void;
+	readonly onMarkerClick: (marker: google.maps.marker.AdvancedMarkerElement | null, featureId: string) => void;
 };
 
 export const PoiMarker = ({ position, featureId, onMarkerClick }: TreeMarkerProps) => {
-	const [markerRef, marker]: readonly [
-		(m: AdvancedMarkerRef) => void,
-		google.maps.marker.AdvancedMarkerElement | null,
-	] = useAdvancedMarkerRef();
-	const handleClick = useCallback(() => onMarkerClick?.(marker!, featureId), [onMarkerClick, marker, featureId]);
+	const [markerRef, marker] = useAdvancedMarkerRef();
+	const handleClick = useCallback(() => onMarkerClick?.(marker, featureId), [onMarkerClick, marker, featureId]);
 
 	return (
 		<AdvancedMarker
