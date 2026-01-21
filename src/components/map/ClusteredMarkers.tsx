@@ -49,7 +49,8 @@ export default function ClusteredMarkers({
 	);
 
 	const handlePoiClick = useCallback(
-		(marker: google.maps.marker.AdvancedMarkerElement, featureId: string) => {
+		(marker: google.maps.marker.AdvancedMarkerElement | null, featureId: string) => {
+			if (!marker) return;
 			const feature = markers.features.find(f => f.id === featureId);
 			if (feature) {
 				setPoiInfoData({
