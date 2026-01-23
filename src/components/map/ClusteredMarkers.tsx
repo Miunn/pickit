@@ -7,107 +7,110 @@ import { PoiMarker } from "./PoiMarker";
 import { FileWithFolder } from "@/lib/definitions";
 
 type ClusteredMarkersProps = {
-    readonly markers: FeatureCollection<Point, FileWithFolder>;
-    readonly setClusterInfoData: (
-        data: {
-            anchor: google.maps.marker.AdvancedMarkerElement;
-            features: PointFeature<FileWithFolder>[];
-        } | null
-    ) => void;
-    readonly setPoiInfoData: (
-        data: {
-            anchor: google.maps.marker.AdvancedMarkerElement;
-            feature: PointFeature<FileWithFolder>;
-        } | null
-    ) => void;
-    readonly onPoiClick: (feature: PointFeature<FileWithFolder>) => void;
+	readonly markers: FeatureCollection<Point, FileWithFolder>;
+	readonly setClusterInfoData: (
+		data: {
+			anchor: google.maps.marker.AdvancedMarkerElement;
+			features: PointFeature<FileWithFolder>[];
+		} | null
+	) => void;
+	readonly setPoiInfoData: (
+		data: {
+			anchor: google.maps.marker.AdvancedMarkerElement;
+			feature: PointFeature<FileWithFolder>;
+		} | null
+	) => void;
+	readonly onPoiClick: (feature: PointFeature<FileWithFolder>) => void;
 };
 
 const superclusterOptions: Supercluster.Options<GeoJsonProperties, ClusterProperties> = {
-    extent: 512,
-    radius: 160,
-    maxZoom: 10,
+	extent: 512,
+	radius: 160,
+	maxZoom: 10,
 };
 
 export default function ClusteredMarkers({
-    markers,
-    setClusterInfoData,
-    setPoiInfoData,
-    onPoiClick,
+	markers,
+	setClusterInfoData,
+	setPoiInfoData,
+	onPoiClick,
 }: ClusteredMarkersProps) {
-    const { clusters, getLeaves } = useSupercluster<FileWithFolder>(markers, superclusterOptions);
+	const { clusters, getLeaves } = useSupercluster<FileWithFolder>(markers, superclusterOptions);
 
-    const handleClusterClick = useCallback(
-        (marker: google.maps.marker.AdvancedMarkerElement, clusterId: number) => {
-            const leaves = getLeaves(clusterId);
+	const handleClusterClick = useCallback(
+		(marker: google.maps.marker.AdvancedMarkerElement | null, clusterId: number) => {
+			if (!marker) return;
 
-            setClusterInfoData({ anchor: marker, features: leaves });
-        },
-        [getLeaves, setClusterInfoData]
-    );
+			const leaves = getLeaves(clusterId);
 
-    const handlePoiClick = useCallback(
-        (marker: google.maps.marker.AdvancedMarkerElement, featureId: string) => {
-            const feature = markers.features.find(f => f.id === featureId);
-            if (feature) {
-                setPoiInfoData({
-                    anchor: marker,
-                    feature,
-                });
-                onPoiClick(feature);
-            }
-        },
-        [markers, setPoiInfoData, onPoiClick]
-    );
+			setClusterInfoData({ anchor: marker, features: leaves });
+		},
+		[getLeaves, setClusterInfoData]
+	);
 
-    const getClusterFolders = useCallback(
-        (clusterId: number) => {
-            const leaves = getLeaves(clusterId);
-            const names = leaves.map((leaf: Feature<Point>) => leaf.properties?.folder.name);
+	const handlePoiClick = useCallback(
+		(marker: google.maps.marker.AdvancedMarkerElement | null, featureId: string) => {
+			if (!marker) return;
+			const feature = markers.features.find(f => f.id === featureId);
+			if (feature) {
+				setPoiInfoData({
+					anchor: marker,
+					feature,
+				});
+				onPoiClick(feature);
+			}
+		},
+		[markers, setPoiInfoData, onPoiClick]
+	);
 
-            // Count the occurrences of each name
-            const counts = names.reduce((acc: Record<string, number>, name) => {
-                if (name) {
-                    acc[name] = (acc[name] || 0) + 1;
-                }
-                return acc;
-            }, {});
+	const getClusterFolders = useCallback(
+		(clusterId: number) => {
+			const leaves = getLeaves(clusterId);
+			const names = leaves.map((leaf: Feature<Point>) => leaf.properties?.folder.name);
 
-            return Object.entries(counts).map(([name, count]) => ({ name, count }));
-        },
-        [getLeaves]
-    );
+			// Count the occurrences of each name
+			const counts = names.reduce((acc: Record<string, number>, name) => {
+				if (name) {
+					acc[name] = (acc[name] || 0) + 1;
+				}
+				return acc;
+			}, {});
 
-    return (
-        <>
-            {clusters.map(feature => {
-                const [lng, lat] = feature.geometry.coordinates;
+			return Object.entries(counts).map(([name, count]) => ({ name, count }));
+		},
+		[getLeaves]
+	);
 
-                if ("cluster" in feature.properties) {
-                    const clusterProperties = feature.properties as ClusterProperties;
-                    const clusterFolders = getClusterFolders(clusterProperties.cluster_id);
+	return (
+		<>
+			{clusters.map(feature => {
+				const [lng, lat] = feature.geometry.coordinates;
 
-                    return (
-                        <ClusterMarker
-                            key={feature.id}
-                            clusterId={clusterProperties.cluster_id}
-                            position={{ lat, lng }}
-                            size={clusterProperties.point_count}
-                            onMarkerClick={handleClusterClick}
-                            folders={clusterFolders}
-                        />
-                    );
-                }
+				if ("cluster" in feature.properties) {
+					const clusterProperties = feature.properties as ClusterProperties;
+					const clusterFolders = getClusterFolders(clusterProperties.cluster_id);
 
-                return (
-                    <PoiMarker
-                        key={feature.id}
-                        featureId={feature.id?.toString() || ""}
-                        position={{ lat, lng }}
-                        onMarkerClick={handlePoiClick}
-                    />
-                );
-            })}
-        </>
-    );
+					return (
+						<ClusterMarker
+							key={feature.id}
+							clusterId={clusterProperties.cluster_id}
+							position={{ lat, lng }}
+							size={clusterProperties.point_count}
+							onMarkerClick={handleClusterClick}
+							folders={clusterFolders}
+						/>
+					);
+				}
+
+				return (
+					<PoiMarker
+						key={feature.id}
+						featureId={feature.id?.toString() || ""}
+						position={{ lat, lng }}
+						onMarkerClick={handlePoiClick}
+					/>
+				);
+			})}
+		</>
+	);
 }
