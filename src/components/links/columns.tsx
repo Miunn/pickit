@@ -89,10 +89,10 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
 		header: ({ table }) => {
 			const t = table.options.meta?.intl?.translations;
 			return (
-				<p className="flex gap-2 items-center">
-					{t?.("columns.active.header")}
+				<div className="flex gap-2 items-center">
+					<p>{t?.("columns.active.header")}</p>
 					<ActiveTooltip t={t} tooltipKey="columns.active.tooltip" />
-				</p>
+				</div>
 			);
 		},
 		cell: ({ table, row }) => {
@@ -373,7 +373,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
 									onClick={async () => {
 										const r =
 											await changeAccessTokenAllowMap(
-												accessToken.id,
+												accessToken.token,
 												true
 											);
 										if (r.error) {
@@ -416,7 +416,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
 								onClick={() => setDeleteOpen(true)}
-								className="text-red-600 focus:text-red-600 font-semibold"
+								className="font-semibold text-destructive focus:bg-destructive/10 focus:text-destructive"
 							>
 								{t?.("columns.actions.delete.label")}
 							</DropdownMenuItem>

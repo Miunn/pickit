@@ -19,6 +19,7 @@ import SessionProvider from "@/providers/SessionProvider";
 import { FolderService } from "@/data/folder-service";
 import { FileService } from "@/data/file-service";
 import { AccessTokenService } from "@/data/access-token-service";
+import LinkIcon from "@/components/links/LinkIcon";
 
 export const metadata: Metadata = {
 	title: "Echomori",
@@ -71,20 +72,7 @@ export default async function LocaleLayout(
 		: [];
 	const accessTokens = user
 		? await AccessTokenService.getMultiple({
-				where: {
-					folder: { createdBy: { id: user.id } },
-					email: null,
-				},
-				include: { folder: true },
-				orderBy: [{ folder: { name: "asc" } }],
-			})
-		: [];
-	const personsAccessTokens = user
-		? await AccessTokenService.getMultiple({
-				where: {
-					folder: { createdBy: { id: user.id } },
-					email: { not: null },
-				},
+				where: { folder: { createdBy: { id: user.id } } },
 				include: { folder: true },
 				orderBy: [{ folder: { name: "asc" } }],
 			})
@@ -134,21 +122,18 @@ export default async function LocaleLayout(
 									title: t("main.links"),
 									icon: Link,
 									url: `/${locale}/app/links`,
-									items: accessTokens
-										.map(accessToken => ({
-											key: accessToken.id,
-											title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
-											url: `/${locale}/app/links?l=${accessToken.id}`,
-										}))
-										.concat(
-											personsAccessTokens.map(
-												accessToken => ({
-													key: accessToken.id,
-													title: `${accessToken.permission.toString()} - ${accessToken.folder.name}`,
-													url: `/${locale}/app/links?l=${accessToken.id}`,
-												})
-											)
+									items: accessTokens.map(accessToken => ({
+										key: accessToken.id,
+										icon: (
+											<LinkIcon
+												permission={
+													accessToken.permission
+												}
+											/>
 										),
+										title: `${accessToken.folder.name}`,
+										url: `/${locale}/app/links?l=${accessToken.id}`,
+									})),
 								},
 								{
 									key: "map",

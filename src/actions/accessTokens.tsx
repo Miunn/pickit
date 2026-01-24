@@ -137,7 +137,7 @@ export async function changeAccessTokenActiveState(
 	return { error: null };
 }
 
-export async function changeAccessTokenAllowMap(tokenId: string, allowMap: boolean): Promise<{ error: string | null }> {
+export async function changeAccessTokenAllowMap(token: string, allowMap: boolean): Promise<{ error: string | null }> {
 	const { user } = await getCurrentSession();
 
 	if (!user) {
@@ -145,7 +145,7 @@ export async function changeAccessTokenAllowMap(tokenId: string, allowMap: boole
 	}
 
 	try {
-		await AccessTokenService.update(tokenId, { allowMap });
+		await AccessTokenService.update(token, { allowMap });
 		revalidatePath("/app/links");
 		return { error: null };
 	} catch {

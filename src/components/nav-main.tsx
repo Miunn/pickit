@@ -2,84 +2,132 @@ import { ChevronRight, type LucideIcon } from "lucide-react";
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
-    SidebarGroup,
-    SidebarGroupLabel,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
+	SidebarGroup,
+	SidebarGroupLabel,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+	SidebarMenuSub,
+	SidebarMenuSubButton,
+	SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 export type NavMainItems = {
-    key: string;
-    title: string;
-    url: string;
-    icon: LucideIcon;
-    isActive?: boolean;
-    items?: {
-        key: string;
-        title: string;
-        url: string;
-    }[];
+	key: string;
+	title: string;
+	url: string;
+	icon: LucideIcon;
+	isActive?: boolean;
+	items?: {
+		key: string;
+		icon?: React.ReactElement;
+		title: string;
+		url: string;
+	}[];
 }[];
 
 export function NavMain({ items }: { readonly items: NavMainItems }) {
-    const t = useTranslations("sidebar.main");
+	const t = useTranslations("sidebar.main");
 
-    return (
-        <SidebarGroup>
-            <SidebarGroupLabel>{t("title")}</SidebarGroupLabel>
-            <SidebarMenu>
-                {items.map(item => (
-                    <Collapsible key={item.key} asChild defaultOpen={item.isActive} className="group/collapsible">
-                        <SidebarMenuItem>
-                            {item.items && item.items.length > 0 ? (
-                                <>
-                                    <CollapsibleTrigger asChild>
-                                        <SidebarMenuButton tooltip={item.title}>
-                                            <Link className="flex items-center gap-2" href={item.url}>
-                                                {item.icon && <item.icon className="w-4 h-4" />}
-                                                <span>{item.title}</span>
-                                            </Link>
-                                            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                                        </SidebarMenuButton>
-                                    </CollapsibleTrigger>
-                                    <CollapsibleContent>
-                                        {item.items && item.items.length > 0 ? (
-                                            <SidebarMenuSub>
-                                                {item.items
-                                                    .toSorted((a, b) =>
-                                                        a.title.localeCompare(b.title, undefined, { numeric: true })
-                                                    )
-                                                    .map(subItem => (
-                                                        <SidebarMenuSubItem key={subItem.key}>
-                                                            <SidebarMenuSubButton asChild>
-                                                                <Link href={subItem.url}>
-                                                                    <span>{subItem.title}</span>
-                                                                </Link>
-                                                            </SidebarMenuSubButton>
-                                                        </SidebarMenuSubItem>
-                                                    ))}
-                                            </SidebarMenuSub>
-                                        ) : null}
-                                    </CollapsibleContent>
-                                </>
-                            ) : (
-                                <SidebarMenuButton tooltip={item.title} asChild>
-                                    <Link className="flex items-center gap-2" href={item.url}>
-                                        {item.icon && <item.icon className="w-4 h-4" />}
-                                        <span>{item.title}</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            )}
-                        </SidebarMenuItem>
-                    </Collapsible>
-                ))}
-            </SidebarMenu>
-        </SidebarGroup>
-    );
+	return (
+		<SidebarGroup>
+			<SidebarGroupLabel>{t("title")}</SidebarGroupLabel>
+			<SidebarMenu>
+				{items.map(item => (
+					<Collapsible
+						key={item.key}
+						asChild
+						defaultOpen={item.isActive}
+						className="group/collapsible"
+					>
+						<SidebarMenuItem>
+							{item.items && item.items.length > 0 ? (
+								<>
+									<CollapsibleTrigger asChild>
+										<SidebarMenuButton tooltip={item.title}>
+											<Link
+												className="flex items-center gap-2"
+												href={item.url}
+											>
+												{item.icon && (
+													<item.icon className="w-4 h-4" />
+												)}
+												<span>
+													{item.title}
+												</span>
+											</Link>
+											<ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+										</SidebarMenuButton>
+									</CollapsibleTrigger>
+									<CollapsibleContent>
+										{item.items && item.items.length > 0 ? (
+											<SidebarMenuSub>
+												{item.items
+													.toSorted(
+														(
+															a,
+															b
+														) =>
+															a.title.localeCompare(
+																b.title,
+																undefined,
+																{
+																	numeric: true,
+																}
+															)
+													)
+													.map(
+														subItem => (
+															<SidebarMenuSubItem
+																key={
+																	subItem.key
+																}
+															>
+																<SidebarMenuSubButton
+																	asChild
+																>
+																	<Link
+																		className="w-full flex items-center gap-2 text-ellipsis"
+																		href={
+																			subItem.url
+																		}
+																	>
+																		{
+																			subItem.icon
+																		}
+																		<span className="max-w-full text-ellipsis whitespace-nowrap">
+																			{
+																				subItem.title
+																			}
+																		</span>
+																	</Link>
+																</SidebarMenuSubButton>
+															</SidebarMenuSubItem>
+														)
+													)}
+											</SidebarMenuSub>
+										) : null}
+									</CollapsibleContent>
+								</>
+							) : (
+								<SidebarMenuButton tooltip={item.title} asChild>
+									<Link
+										className="flex items-center gap-2"
+										href={item.url}
+									>
+										{item.icon && (
+											<item.icon className="w-4 h-4" />
+										)}
+										<span>{item.title}</span>
+									</Link>
+								</SidebarMenuButton>
+							)}
+						</SidebarMenuItem>
+					</Collapsible>
+				))}
+			</SidebarMenu>
+		</SidebarGroup>
+	);
 }
