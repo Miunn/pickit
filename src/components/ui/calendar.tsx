@@ -317,17 +317,30 @@ function Calendar({ className, showOutsideDays = true, yearRange = 12, numberOfM
 	const _disabledClassName = cn("text-muted-foreground opacity-50", props.disabledClassName);
 	const _hiddenClassName = cn("invisible hidden", props.hiddenClassName);
 
-	const contextValue: CalendarContextValue = {
-		navView,
-		setNavView,
-		displayYears,
-		setDisplayYears,
-		yearRange,
-		startMonth,
-		endMonth,
-		onNextClick,
-		onPrevClick,
-	};
+	const contextValue: CalendarContextValue = React.useMemo(
+		() => ({
+			navView,
+			setNavView,
+			displayYears,
+			setDisplayYears,
+			yearRange,
+			startMonth,
+			endMonth,
+			onNextClick,
+			onPrevClick,
+		}),
+		[
+			navView,
+			setNavView,
+			displayYears,
+			setDisplayYears,
+			yearRange,
+			startMonth,
+			endMonth,
+			onNextClick,
+			onPrevClick,
+		]
+	);
 
 	const components: Partial<DayPickerProps["components"]> = {
 		Chevron: CalendarChevron,
