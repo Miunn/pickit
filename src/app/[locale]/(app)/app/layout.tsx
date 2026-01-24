@@ -10,7 +10,7 @@ import BreadcrumbWrapper from "@/components/layout/BreadcrumbWrapper";
 import UnverifiedEmail from "@/components/layout/UnverifiedEmail";
 import { addDays } from "date-fns";
 import SwitchLocale from "@/components/generic/SwitchLocale";
-import { FolderTokenPermission, Notification, Role } from "@prisma/client";
+import { Notification, Role } from "@prisma/client";
 import { getCurrentSession } from "@/lib/session";
 import { CommandSearch } from "@/components/generic/CommandSearch";
 import { NuqsAdapter } from "nuqs/adapters/react";
