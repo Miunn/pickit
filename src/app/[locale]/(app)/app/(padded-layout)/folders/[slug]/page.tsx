@@ -40,7 +40,7 @@ function getSortOrderBy(sort: FilesSortDefinition) {
 }
 
 export async function generateMetadata(props: {
-	params: Promise<{ folderId: string; locale: string }>;
+	params: Promise<{ slug: string; locale: string }>;
 	searchParams: Promise<{
 		sort?: FilesSortDefinition;
 		view?: ViewState;
@@ -99,7 +99,7 @@ export async function generateMetadata(props: {
 			images: [
 				{
 					alt: "Echomori",
-					url: `${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folderId}/og?share=${searchParams.share}&h=${searchParams.h}`,
+					url: `${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.slug}/og?share=${searchParams.share}&h=${searchParams.h}`,
 					type: "image/png",
 					width: 1200,
 					height: 630,
@@ -131,7 +131,7 @@ export async function generateMetadata(props: {
  * @returns The React element for the folder page, or a redirect response when access is denied, a share link is invalid, or the folder is not found.
  */
 export default async function FolderPage(props: {
-	readonly params: Promise<{ readonly folderId: string; readonly locale: string }>;
+	readonly params: Promise<{ readonly slug: string; readonly locale: string }>;
 	readonly searchParams: Promise<{
 		readonly sort?: FilesSortDefinition;
 		readonly view?: ViewState;
@@ -142,11 +142,11 @@ export default async function FolderPage(props: {
 		readonly wrongPin?: boolean;
 	}>;
 }) {
-	const { locale, folderId } = await props.params;
+	const { locale, slug } = await props.params;
 	const { share, h, sort, view } = await props.searchParams;
 
 	const folder = await FolderService.get({
-		where: { id: folderId },
+		where: { slug },
 		include: {
 			files: {
 				include: {
@@ -168,14 +168,14 @@ export default async function FolderPage(props: {
 	});
 
 	if (!folder) {
-		return redirect({ href: "/folders", locale: locale });
+		return redirect({ href: "/app/folders", locale: locale });
 	}
 
 	const auth = await SecureService.folder.enforce(folder, share, h);
 
 	if (!auth.allowed && auth.reason === "invalid-pin") {
 		return redirect({
-			href: `/app/folders/${folderId}/unlock?share=${share}`,
+			href: `/app/folders/${slug}/unlock?share=${share}`,
 			locale,
 		});
 	}
@@ -188,7 +188,7 @@ export default async function FolderPage(props: {
 			});
 		}
 
-		return redirect({ href: "/folders", locale: locale });
+		return redirect({ href: "/app/folders", locale: locale });
 	}
 
 	let accessToken = null;

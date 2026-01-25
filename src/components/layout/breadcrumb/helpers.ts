@@ -22,7 +22,7 @@ export type BreadcrumbType =
 
 export type BreadcrumbPath = {
 	type: BreadcrumbType;
-	folderId?: string;
+	folderSlug?: string;
 	folderName?: string;
 	userId?: string;
 };
@@ -89,9 +89,9 @@ export function parsePathname(pathname: string, folderName?: string): ParseResul
 		return { path: pathMap[tokens[1]] || null };
 	}
 
-	// app/folders/<id>
+	// app/folders/<slug>
 	if (tokens[1] === "folders" && tokens[2]) {
-		return { path: { type: "folder", folderId: tokens[2], folderName } };
+		return { path: { type: "folder", folderSlug: tokens[2], folderName } };
 	}
 
 	// app/administration/users/<id>
@@ -152,8 +152,8 @@ export function buildBreadcrumbTrail(
 					itemHiddenClass: "hidden lg:block",
 				},
 				{
-					key: `folder-${currentPath.folderId ?? "unknown"}`,
-					label: folderName ?? currentPath.folderId,
+					key: `folder-${currentPath.folderSlug ?? "unknown"}`,
+					label: folderName ?? currentPath.folderSlug,
 					isCurrent: true,
 				}
 			);

@@ -62,7 +62,7 @@ export async function createNewAccessToken(
 				expires: expiryDate,
 				email: email,
 			},
-			{ folder: { select: { name: true } } }
+			{ folder: { select: { name: true, slug: true } } }
 		);
 
 		if (email) {
@@ -70,7 +70,7 @@ export async function createNewAccessToken(
 				[
 					{
 						email: email,
-						link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${accessToken.folderId}?share=${token}&t=p`,
+						link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${accessToken.folder.slug}?share=${token}&t=p`,
 						locked: accessToken.locked,
 					},
 				],
@@ -80,7 +80,7 @@ export async function createNewAccessToken(
 		}
 
 		revalidatePath("/app/links");
-		revalidatePath("/app/folders/[folderId]");
+		revalidatePath("/app/folders/[slug]");
 		revalidatePath("/app/folders");
 		return { error: null, accessToken: accessToken };
 	} catch (e) {
@@ -190,7 +190,7 @@ export async function lockAccessToken(
 		});
 
 		revalidatePath("/app/links");
-		revalidatePath("/app/folders/[folderId]");
+		revalidatePath("/app/folders/[slug]");
 		return { error: null };
 	} catch {
 		return { error: "An unknown error happened when trying to lock this token" };
@@ -221,7 +221,6 @@ export async function unlockAccessToken(tokenId: string): Promise<{
 		});
 
 		if (!token) {
-			console.log("Token not found");
 			return { error: "Token not found" };
 		}
 
@@ -230,7 +229,6 @@ export async function unlockAccessToken(tokenId: string): Promise<{
 			pinCode: null,
 		});
 
-		console.log("Unlocked");
 		revalidatePath("/app/links");
 		return { error: null };
 	} catch (e) {
@@ -288,6 +286,7 @@ export async function sendAgainAccessToken(token: string) {
 			folder: {
 				select: {
 					name: true,
+					slug: true,
 				},
 			},
 		},
@@ -301,7 +300,7 @@ export async function sendAgainAccessToken(token: string) {
 		[
 			{
 				email: accessToken.email,
-				link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${accessToken.folderId}?share=${token}&t=p`,
+				link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${accessToken.folder.slug}?share=${token}&t=p`,
 				locked: accessToken.locked,
 			},
 		],
@@ -332,7 +331,7 @@ export async function notifyAboutUpload(folderId: string, count: number) {
 		.filter(p => p.email)
 		.map(p => ({
 			email: p.email!,
-			link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folderId}?share=${p.token}&t=p`,
+			link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folder.slug}?share=${p.token}&t=p`,
 			locked: p.locked,
 		}));
 

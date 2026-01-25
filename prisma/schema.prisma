@@ -51,6 +51,7 @@ enum NotificationType {
 model Folder {
   id           String        @id @default(cuid())
   name         String
+  slug		   String		 @unique
   description  String?
   key          String        @default("")
   iv           String        @default("")

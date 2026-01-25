@@ -66,6 +66,10 @@ export default function ShareContactView({
 		() =>
 			folder.accessTokens
 				.filter(token => token.expires > new Date() && token.isActive && !token.email)
+				.map(token => ({
+					...token,
+					folder: folder,
+				}))
 				.sort((a, b) => a.permission.localeCompare(b.permission)),
 		[folder]
 	);
@@ -128,7 +132,7 @@ export default function ShareContactView({
 				}
 			>
 				{folderTokens.length > 0 ? (
-					<ShareTokenList tokenList={folderTokens} folderId={folder.id} />
+					<ShareTokenList tokenList={folderTokens} />
 				) : (
 					<p className="col-span-1 sm:col-span-3 text-sm">{t("links.empty")}</p>
 				)}
