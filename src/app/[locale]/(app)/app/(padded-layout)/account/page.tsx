@@ -4,7 +4,7 @@ import ReviewFolders from "@/components/account/ReviewFolders";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { Metadata } from "next";
-import { getCurrentSession } from "@/lib/session";
+import { getCurrentSession } from "@/data/session";
 import { FolderService } from "@/data/folder-service";
 
 export async function generateMetadata(): Promise<Metadata> {

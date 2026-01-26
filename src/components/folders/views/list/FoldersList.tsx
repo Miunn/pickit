@@ -16,7 +16,7 @@ import { ChevronDownIcon, ChevronUpIcon, Trash2, X } from "lucide-react";
 import { cn, formatBytes } from "@/lib/utils";
 import { useFormatter, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { foldersListViewColumns } from "./columns";
+import { foldersListViewColumns } from "@/components/folders/views/list/columns";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export default function FoldersList({

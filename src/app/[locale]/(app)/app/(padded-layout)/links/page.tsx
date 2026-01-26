@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { getCurrentSession } from "@/lib/session";
+import { getCurrentSession } from "@/data/session";
 import { redirect } from "@/i18n/navigation";
 import LinksContent from "@/components/accessTokens/LinksContent";
 import { Metadata } from "next";

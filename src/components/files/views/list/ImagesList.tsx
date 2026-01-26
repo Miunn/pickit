@@ -1,6 +1,6 @@
 "use client";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
     flexRender,
     getCoreRowModel,
@@ -9,15 +9,15 @@ import {
     useReactTable,
     getPaginationRowModel,
 } from "@tanstack/react-table";
-import { imagesListViewColumns } from "./columns";
+import { imagesListViewColumns } from "@/components/files/views/list/columns";
 import React, { useEffect, useRef, useState } from "react";
 import { ChevronDownIcon, ChevronLeft, ChevronRight, ChevronUpIcon, Loader2, Trash2, X } from "lucide-react";
 import { cn, formatBytes } from "@/lib/utils";
-import { CarouselDialog } from "../../carousel/CarouselDialog";
-import { Button } from "../../../ui/button";
+import { CarouselDialog } from "@/components/files/carousel/CarouselDialog";
+import { Button } from "@/components/ui/button";
 import { useFormatter, useTranslations } from "next-intl";
-import { DeleteMultipleImagesDialog } from "../../dialogs/DeleteMultipleImagesDialog";
-import { Select, SelectItem, SelectContent, SelectValue, SelectTrigger } from "../../../ui/select";
+import { DeleteMultipleImagesDialog } from "@/components/files/dialogs/DeleteMultipleImagesDialog";
+import { Select, SelectItem, SelectContent, SelectValue, SelectTrigger } from "@/components/ui/select";
 import { useFolderContext } from "@/context/FolderContext";
 import { useFilesContext } from "@/context/FilesContext";
 

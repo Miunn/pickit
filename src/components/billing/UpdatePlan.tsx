@@ -1,22 +1,22 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Card, CardHeader, CardContent, CardDescription, CardTitle } from "../ui/card";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Card, CardHeader, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { usePricingContext } from "@/context/PricingContext";
-import { Label } from "../ui/label";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Plan } from "@prisma/client";
 import { useState } from "react";
-import { Badge } from "../ui/badge";
-import { Switch } from "../ui/switch";
-import { Button } from "../ui/button";
-import CheckoutDialog from "./CheckoutDialog";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import CheckoutDialog from "@/components/billing/CheckoutDialog";
 import { getPreviewInvoiceBeforeUpdate } from "@/actions/subscriptions";
 import { Loader2 } from "lucide-react";
 import { cancelStripeSubscription } from "@/actions/create";
 import { toast } from "sonner";
-import ChangePlanDialog from "./ChangePlanDialog";
+import ChangePlanDialog from "@/components/billing/ChangePlanDialog";
 
 const PlanCard = ({
 	selected,

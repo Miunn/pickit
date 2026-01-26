@@ -1,7 +1,7 @@
 import React from "react";
 import { X } from "lucide-react";
 import { FolderWithLastSlug } from "@/lib/definitions";
-import LoadingImage from "../files/LoadingImage";
+import LoadingImage from "@/components/files/LoadingImage";
 import { Link } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { File } from "@prisma/client";

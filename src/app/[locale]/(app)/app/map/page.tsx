@@ -1,8 +1,8 @@
 import FilesMap from "@/components/map/FilesMap";
 import { redirect } from "@/i18n/navigation";
-import { getCurrentSession } from "@/lib/session";
+import { getCurrentSession } from "@/data/session";
 import { generateV4DownloadUrl } from "@/lib/bucket";
-import { canAccessMap } from "@/lib/dal";
+import { canAccessMap } from "@/data/dal";
 import { FilesProvider } from "@/context/FilesContext";
 import { TokenProvider } from "@/context/TokenContext";
 import { ViewState } from "@/components/folders/ViewSelector";

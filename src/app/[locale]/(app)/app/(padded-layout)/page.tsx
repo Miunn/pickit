@@ -1,5 +1,5 @@
 import DashboardContent from "@/components/pages/dashboard/DashboardContent";
-import { getCurrentSession } from "@/lib/session";
+import { getCurrentSession } from "@/data/session";
 import { redirect } from "@/i18n/navigation";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";

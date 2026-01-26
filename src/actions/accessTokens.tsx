@@ -4,7 +4,7 @@ import { CreateAccessTokenFormSchema } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { AccessToken, FolderTokenPermission } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { getCurrentSession } from "@/lib/session";
+import { getCurrentSession } from "@/data/session";
 import { transporter } from "@/lib/mailing";
 import { render } from "@react-email/components";
 import ShareFolderTemplate from "@/components/emails/ShareFolderTemplate";

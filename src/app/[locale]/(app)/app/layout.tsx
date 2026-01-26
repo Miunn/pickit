@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import "../../../globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { getTranslations } from "next-intl/server";
 import { AppSidebar } from "@/components/ui/app-sidebar";
@@ -11,7 +10,7 @@ import UnverifiedEmail from "@/components/layout/UnverifiedEmail";
 import { addDays } from "date-fns";
 import SwitchLocale from "@/components/generic/SwitchLocale";
 import { Notification, Role } from "@prisma/client";
-import { getCurrentSession } from "@/lib/session";
+import { getCurrentSession } from "@/data/session";
 import { CommandSearch } from "@/components/generic/CommandSearch";
 import { NuqsAdapter } from "nuqs/adapters/react";
 import { SwitchTheme } from "@/components/generic/SwitchTheme";

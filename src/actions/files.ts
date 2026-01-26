@@ -10,12 +10,12 @@ import {
 	RenameImageFormSchema,
 	RequestFileUploadFormSchema,
 } from "@/lib/definitions";
-import { getCurrentSession } from "@/lib/session";
+import { getCurrentSession } from "@/data/session";
 import { z } from "zod";
 import { generateV4DownloadUrl, GoogleBucket } from "@/lib/bucket";
 import crypto from "node:crypto";
 import { FileType, FileLike } from "@prisma/client";
-import { canLikeFile, isAllowedToAccessFile } from "@/lib/dal";
+import { canLikeFile, isAllowedToAccessFile } from "@/data/dal";
 import { AccessTokenService } from "@/data/access-token-service";
 import { FolderService } from "@/data/folder-service";
 import { FileService } from "@/data/file-service";

@@ -1,13 +1,13 @@
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { Fragment, useMemo, useState } from "react";
-import { ImagePreviewGrid } from "./ImagePreviewGrid";
+import { ImagePreviewGrid } from "@/components/files/views/grid/ImagePreviewGrid";
 import { cn, groupFiles } from "@/lib/utils";
-import { CarouselDialog } from "../../carousel/CarouselDialog";
-import { DeleteMultipleImagesDialog } from "../../dialogs/DeleteMultipleImagesDialog";
+import { CarouselDialog } from "@/components/files/carousel/CarouselDialog";
+import { DeleteMultipleImagesDialog } from "@/components/files/dialogs/DeleteMultipleImagesDialog";
 import { useFolderContext } from "@/context/FolderContext";
 import { FolderTag } from "@prisma/client";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import SelectingBar from "./SelectingBar";
+import SelectingBar from "@/components/files/views/grid/SelectingBar";
 
 export default function TagGroupedGrid() {
 	const { folder } = useFolderContext();

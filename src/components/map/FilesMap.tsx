@@ -3,14 +3,14 @@
 import { AdvancedMarker, APIProvider, Map, AdvancedMarkerAnchorPoint } from "@vis.gl/react-google-maps";
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { FolderWithLastSlug } from "@/lib/definitions";
-import ClusteredMarkers from "./ClusteredMarkers";
+import ClusteredMarkers from "@/components/map/ClusteredMarkers";
 import { Point, FeatureCollection } from "geojson";
-import ClusterWindowContent from "./ClusterWindowContent";
-import { PoiWindowContent } from "./PoiWindowContent";
-import MapFileCarousel from "./MapFileCarousel";
+import ClusterWindowContent from "@/components/map/ClusterWindowContent";
+import { PoiWindowContent } from "@/components/map/PoiWindowContent";
+import MapFileCarousel from "@/components/map/MapFileCarousel";
 import { PointFeature } from "supercluster";
 import { useFilesContext } from "@/context/FilesContext";
-import FoldersList from "./FoldersList";
+import FoldersList from "@/components/map/FoldersList";
 import { useTheme } from "next-themes";
 import { File } from "@prisma/client";
 

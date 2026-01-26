@@ -9,7 +9,7 @@ import {
 	type CarouselApi,
 } from "@/components/ui/carousel";
 import { useMap } from "@vis.gl/react-google-maps";
-import LoadingImage from "../files/LoadingImage";
+import LoadingImage from "@/components/files/LoadingImage";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useSearchParams } from "next/navigation";

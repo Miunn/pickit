@@ -13,7 +13,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { z } from "zod";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { ToastAction } from "../ui/toast";
+import { ToastAction } from "@/components/ui/toast";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 

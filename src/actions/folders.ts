@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getCurrentSession } from "@/lib/session";
+import { getCurrentSession } from "@/data/session";
 import { GoogleBucket } from "@/lib/bucket";
-import { hasFolderOwnerAccess } from "@/lib/dal";
+import { hasFolderOwnerAccess } from "@/data/dal";
 import { FolderService } from "@/data/folder-service";
 
 export async function createFolder(name: string): Promise<{

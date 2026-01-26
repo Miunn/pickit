@@ -1,12 +1,12 @@
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useTranslations, useFormatter } from "next-intl";
 import { usePricingContext } from "@/context/PricingContext";
 import { useSession } from "@/providers/SessionProvider";
 import { Plan } from "@prisma/client";
 import { updateSubscription } from "@/actions/subscriptions";
 import { Gift, Loader2 } from "lucide-react";
-import { Label } from "../ui/label";
-import { Button } from "../ui/button";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 export default function ChangePlanDialog({

@@ -1,7 +1,7 @@
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { useTranslations } from "next-intl";
 import { Fragment, useMemo, useState } from "react";
-import { ImagePreviewGrid } from "./ImagePreviewGrid";
+import { ImagePreviewGrid } from "@/components/files/views/grid/ImagePreviewGrid";
 import { X } from "lucide-react";
 
 /**

@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueryState } from "nuqs";
-import ViewSelector, { ViewState } from "./ViewSelector";
+import ViewSelector, { ViewState } from "@/components/folders/ViewSelector";
 import {
 	FileWithComments,
 	FileWithTags,
@@ -14,10 +14,10 @@ import {
 } from "@/lib/definitions";
 import { useTranslations } from "next-intl";
 import { FolderX } from "lucide-react";
-import FolderPreviewGrid from "./views/grid/FolderPreviewGrid";
-import FoldersList from "./views/list/FoldersList";
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
-import CreateFolderDialog from "./dialogs/CreateFolderDialog";
+import FolderPreviewGrid from "@/components/folders/views/grid/FolderPreviewGrid";
+import FoldersList from "@/components/folders/views/list/FoldersList";
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
+import CreateFolderDialog from "@/components/folders/dialogs/CreateFolderDialog";
 import { useState } from "react";
 
 export default function FoldersContent({

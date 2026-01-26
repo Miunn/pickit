@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { getCurrentSession } from "@/lib/session";
+import { getCurrentSession } from "@/data/session";
 import { Prisma } from "@prisma/client";
 import { SlugService } from "@/data/slug-service";
 

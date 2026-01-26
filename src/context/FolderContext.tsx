@@ -11,7 +11,7 @@ import {
 import { createVault, loadVault } from "@/lib/e2ee/vault";
 import { AccessToken } from "@prisma/client";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { useE2EEncryptionContext } from "./E2EEncryptionContext";
+import { useE2EEncryptionContext } from "@/context/E2EEncryptionContext";
 import { updateFolderKey } from "@/actions/folders";
 
 type FolderContextType = {

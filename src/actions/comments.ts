@@ -3,7 +3,7 @@
 import { CommentWithCreatedBy, CreateCommentFormSchema, EditCommentFormSchema } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { isAllowedToDeleteComment } from "@/lib/dal";
+import { isAllowedToDeleteComment } from "@/data/dal";
 import { FileService } from "@/data/file-service";
 import { CommentService } from "@/data/comment-service";
 import { SecureService } from "@/data/secure/secure-service";

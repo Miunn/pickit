@@ -1,4 +1,4 @@
-import { getCurrentSession } from "@/lib/session";
+import { getCurrentSession } from "@/data/session";
 import { redirect } from "@/i18n/navigation";
 import { ViewState } from "@/components/folders/ViewSelector";
 import FoldersContent from "@/components/folders/FoldersContent";

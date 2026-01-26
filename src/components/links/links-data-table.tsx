@@ -9,7 +9,7 @@ import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessToken
 import { FolderWithLastSlug, LightFolder } from "@/lib/definitions";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { linksColumns } from "./columns";
+import { linksColumns } from "@/components/links/columns";
 import { AccessToken } from "@prisma/client";
 
 export default function LinksDataTable({

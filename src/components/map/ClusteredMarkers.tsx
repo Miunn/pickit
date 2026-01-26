@@ -2,8 +2,8 @@ import { useSupercluster } from "@/hooks/use-supercluster";
 import Supercluster, { PointFeature, ClusterProperties } from "supercluster";
 import { Feature, FeatureCollection, GeoJsonProperties, Point } from "geojson";
 import { useCallback } from "react";
-import { ClusterMarker } from "./ClusterMarker";
-import { PoiMarker } from "./PoiMarker";
+import { ClusterMarker } from "@/components/map/ClusterMarker";
+import { PoiMarker } from "@/components/map/PoiMarker";
 import { FolderWithLastSlug } from "@/lib/definitions";
 import { File } from "@prisma/client";
 

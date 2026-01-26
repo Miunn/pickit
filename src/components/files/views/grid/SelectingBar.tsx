@@ -3,11 +3,11 @@ import { cn, filterObjectOut, formatBytes } from "@/lib/utils";
 import { FolderTag } from "@prisma/client";
 import { Tag, Trash2, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import ManageTagsDialog from "../../dialogs/ManageTagsDialog";
+import ManageTagsDialog from "@/components/files/dialogs/ManageTagsDialog";
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { addTagsToFiles, removeTagsFromFiles } from "@/actions/tags";
 import { toast } from "sonner";
-import { DeleteMultipleImagesDialog } from "../../dialogs/DeleteMultipleImagesDialog";
+import { DeleteMultipleImagesDialog } from "@/components/files/dialogs/DeleteMultipleImagesDialog";
 import { useEffect, useRef, useState } from "react";
 
 /**

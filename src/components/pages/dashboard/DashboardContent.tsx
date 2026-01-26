@@ -12,9 +12,9 @@ import {
 	FolderWithLastSlug,
 	FolderWithTags,
 } from "@/lib/definitions";
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../../ui/context-menu";
-import CreateFolderDialog from "../../folders/dialogs/CreateFolderDialog";
-import LastUpdatedFolders from "./LastUpdatedFolders";
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
+import CreateFolderDialog from "@/components/folders/dialogs/CreateFolderDialog";
+import LastUpdatedFolders from "@/components/pages/dashboard/LastUpdatedFolders";
 
 export default function DashboardContent({
 	lastFolders,

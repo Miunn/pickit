@@ -4,7 +4,7 @@ import { useFolderContext } from "@/context/FolderContext";
 import { cn } from "@/lib/utils";
 import { useSession } from "@/providers/SessionProvider";
 import { Pencil, Trash2 } from "lucide-react";
-import DeleteDescriptionDialog from "../../dialogs/DeleteDescriptionDialog";
+import DeleteDescriptionDialog from "@/components/folders/dialogs/DeleteDescriptionDialog";
 
 /**
  * Renders a folder's description and, if the current user is the folder creator, action buttons to edit or delete the description.

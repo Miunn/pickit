@@ -1,15 +1,15 @@
 import { useTranslations } from "next-intl";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../../ui/dialog";
-import { Label } from "../../ui/label";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { BrushCleaning, Loader2 } from "lucide-react";
-import { PopoverContent, PopoverNonPortal, PopoverTrigger } from "../../ui/popover-non-portal";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
+import { PopoverContent, PopoverNonPortal, PopoverTrigger } from "@/components/ui/popover-non-portal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { createTag } from "@/actions/tags";
 import { toast } from "sonner";
 import { FolderTag } from "@prisma/client";
-import TagChip from "../../tags/TagChip";
+import TagChip from "@/components/tags/TagChip";
 import { cn } from "@/lib/utils";
 import { useFolderContext } from "@/context/FolderContext";
 

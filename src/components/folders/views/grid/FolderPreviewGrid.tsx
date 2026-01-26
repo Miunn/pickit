@@ -17,18 +17,18 @@ import {
 	ContextMenuItem,
 	ContextMenuSeparator,
 	ContextMenuTrigger,
-} from "../../../ui/context-menu";
+} from "@/components/ui/context-menu";
 import Image from "next/image";
 import { Images } from "lucide-react";
-import { Separator } from "../../../ui/separator";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../../ui/tooltip";
-import RenameFolderDialog from "../../dialogs/RenameFolderDialog";
-import ChangeCoverFolderDialog from "../../dialogs/ChangeCoverFolderDialog";
-import { ShareFolderDialog } from "../../dialogs/ShareFolderDialog";
-import DeleteFolderDialog from "../../dialogs/DeleteFolderDialog";
+import { Separator } from "@/components/ui/separator";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import RenameFolderDialog from "@/components/folders/dialogs/RenameFolderDialog";
+import ChangeCoverFolderDialog from "@/components/folders/dialogs/ChangeCoverFolderDialog";
+import { ShareFolderDialog } from "@/components/folders/dialogs/ShareFolderDialog";
+import DeleteFolderDialog from "@/components/folders/dialogs/DeleteFolderDialog";
 import { FileType } from "@prisma/client";
 import { Link } from "@/i18n/navigation";
-import FolderPropertiesDialog from "../../dialogs/FolderPropertiesDialogs";
+import FolderPropertiesDialog from "@/components/folders/dialogs/FolderPropertiesDialogs";
 
 /**
  * Render a clickable folder card showing cover (or placeholder), name, file count, and creation date, with a context menu for folder actions and dialogs for rename, change cover, share, properties, and delete.

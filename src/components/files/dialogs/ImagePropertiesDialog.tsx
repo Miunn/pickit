@@ -6,17 +6,17 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../ui/dialog";
+} from "@/components/ui/dialog";
 import { useTranslations } from "next-intl";
-import { Button } from "../../ui/button";
-import { Label } from "../../ui/label";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { copyImageToClipboard, formatBytes } from "@/lib/utils";
 import { useFormatter } from "use-intl";
 import React from "react";
 import { toast } from "@/hooks/use-toast";
 import { Check, Loader2 } from "lucide-react";
 import saveAs from "file-saver";
-import { DeleteImageDialog } from "./DeleteImageDialog";
+import { DeleteImageDialog } from "@/components/files/dialogs/DeleteImageDialog";
 import { FileType } from "@prisma/client";
 
 export default function ImagePropertiesDialog({
