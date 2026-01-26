@@ -1,13 +1,3 @@
--- This is an empty migration.
--- Backfill slugs for existing rows to satisfy NOT NULL + UNIQUE
--- UPDATE "Folder"
--- SET "slug" =
--- 	COALESCE(
--- 		NULLIF(regexp_replace(lower("name"), '[^a-z0-9]+', '-', 'g'), ''),
--- 		'folder'
--- 	) || '-' || substring("id"::text, 1, 6)
--- WHERE "slug" IS NULL;
-
 -- 1) Constraint function: ensure a folder has at least one slug at commit
 CREATE OR REPLACE FUNCTION folder_must_have_slug()
 RETURNS trigger AS $$

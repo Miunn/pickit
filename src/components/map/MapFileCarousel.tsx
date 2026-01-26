@@ -1,4 +1,4 @@
-import { FileWithFolder, FolderWithLastSlug } from "@/lib/definitions";
+import { FolderWithLastSlug } from "@/lib/definitions";
 import { useEffect, useState } from "react";
 import {
 	Carousel,

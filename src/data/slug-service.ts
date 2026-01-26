@@ -1,5 +1,5 @@
 import slugify from "slugify";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 export class SlugService {
 	static generateSlug(text: string, unique: boolean = false): string {
