@@ -11,8 +11,9 @@ import { FilesProvider } from "@/context/FilesContext";
 import { TokenProvider } from "@/context/TokenContext";
 import { generateV4DownloadUrl } from "@/lib/bucket";
 import { AccessTokenService } from "@/data/access-token-service";
-import { FolderService } from "@/data/folder-service";
 import { SecureService } from "@/data/secure/secure-service";
+import { FolderSlugsService } from "@/data/folder-slugs-service";
+import { permanentRedirect } from "next/navigation";
 
 function getSortOrderBy(sort: FilesSortDefinition) {
 	switch (sort) {
@@ -145,27 +146,70 @@ export default async function FolderPage(props: {
 	const { locale, slug } = await props.params;
 	const { share, h, sort, view } = await props.searchParams;
 
-	const folder = await FolderService.get({
+	const lightSlug = await FolderSlugsService.get({
+		where: { slug },
+		select: { folderId: true },
+	});
+
+	if (!lightSlug) {
+		return redirect({ href: "/app/folders", locale: locale });
+	}
+
+	const orderedFolderSlugs = await FolderSlugsService.getMultiple({
+		where: { folderId: lightSlug.folderId },
+		select: { slug: true },
+		orderBy: { createdAt: "desc" },
+	});
+
+	console.log(orderedFolderSlugs);
+
+	// Permanent redirect to the latest slug if the current slug is outdated
+	if (orderedFolderSlugs.length > 0 && orderedFolderSlugs[0].slug !== slug) {
+		return permanentRedirect(`/${locale}/app/folders/${orderedFolderSlugs[0].slug}`);
+	}
+
+	const folderSlug = await FolderSlugsService.get({
 		where: { slug },
 		include: {
-			files: {
+			folder: {
 				include: {
-					folder: {
-						include: { _count: { select: { files: true } }, tags: true },
+					files: {
+						include: {
+							folder: {
+								include: {
+									_count: { select: { files: true } },
+									tags: true,
+									slugs: {
+										orderBy: { createdAt: "desc" },
+										take: 1,
+									},
+								},
+							},
+							comments: { include: { createdBy: true } },
+							likes: true,
+							tags: true,
+						},
+						orderBy: getSortOrderBy(sort || FilesSort.Position),
 					},
-					comments: { include: { createdBy: true } },
-					likes: true,
+					createdBy: true,
+					accessTokens: true,
 					tags: true,
+					_count: { select: { files: true } },
+					cover: true,
+					slugs: {
+						orderBy: { createdAt: "desc" },
+						take: 1,
+					},
 				},
-				orderBy: getSortOrderBy(sort || FilesSort.Position),
 			},
-			createdBy: true,
-			accessTokens: true,
-			tags: true,
-			_count: { select: { files: true } },
-			cover: true,
 		},
 	});
+
+	if (!folderSlug) {
+		return redirect({ href: "/app/folders", locale: locale });
+	}
+
+	const folder = folderSlug.folder;
 
 	if (!folder) {
 		return redirect({ href: "/app/folders", locale: locale });

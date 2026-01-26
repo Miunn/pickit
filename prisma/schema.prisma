@@ -51,7 +51,6 @@ enum NotificationType {
 model Folder {
   id           String        @id @default(cuid())
   name         String
-  slug		   String		 @unique
   description  String?
   key          String        @default("")
   iv           String        @default("")
@@ -65,6 +64,15 @@ model Folder {
   updatedAt    DateTime      @updatedAt
   accessTokens AccessToken[]
   tags         FolderTag[]
+  slugs		   FolderSlug[]
+}
+
+model FolderSlug {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId  String
+  createdAt DateTime @default(now())
 }
 
 model FolderTag {

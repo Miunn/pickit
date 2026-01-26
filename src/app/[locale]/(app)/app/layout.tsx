@@ -51,7 +51,7 @@ export default async function LocaleLayout(
 	const folders = user
 		? await FolderService.getMultiple({
 				where: { createdBy: { id: user.id } },
-				select: { id: true, name: true, slug: true },
+				select: { id: true, name: true, slugs: { orderBy: { createdAt: "desc" }, take: 1 } },
 			})
 		: [];
 	const files = user
@@ -64,7 +64,7 @@ export default async function LocaleLayout(
 						select: {
 							id: true,
 							name: true,
-							slug: true,
+							slugs: { orderBy: { createdAt: "desc" }, take: 1 },
 						},
 					},
 				},
@@ -81,7 +81,14 @@ export default async function LocaleLayout(
 	const sharedWithMeFolders = user
 		? await AccessTokenService.getMultiple({
 				where: { email: user.email },
-				include: { folder: { include: { createdBy: true } } },
+				include: {
+					folder: {
+						include: {
+							createdBy: true,
+							slugs: { orderBy: { createdAt: "desc" }, take: 1 },
+						},
+					},
+				},
 			})
 		: [];
 
@@ -104,7 +111,7 @@ export default async function LocaleLayout(
 									items: folders.map(folder => ({
 										key: folder.id,
 										title: folder.name,
-										url: `/${locale}/app/folders/${folder.slug}`,
+										url: `/${locale}/app/folders/${folder.slugs[0].slug}`,
 									})),
 								},
 								{
@@ -115,7 +122,7 @@ export default async function LocaleLayout(
 									items: files.map(file => ({
 										key: file.id,
 										title: `${file.folder.name} - ${file.name}`,
-										url: `/${locale}/app/folders/${file.folder.slug}#${file.id}`,
+										url: `/${locale}/app/folders/${file.folder.slugs[0].slug}#${file.id}`,
 									})),
 								},
 								{
@@ -150,7 +157,7 @@ export default async function LocaleLayout(
 									items: sharedWithMeFolders.map(accessToken => ({
 										key: accessToken.folder.id,
 										title: `${accessToken.folder.createdBy.name} - ${accessToken.folder.name}`,
-										url: `/${locale}/app/folders/${accessToken.folder.slug}?share=${accessToken.token}&t=p`,
+										url: `/${locale}/app/folders/${accessToken.folder.slugs[0].slug}?share=${accessToken.token}&t=p`,
 									})),
 								},
 							],

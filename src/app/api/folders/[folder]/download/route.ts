@@ -19,7 +19,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
 
 	const folder = await FolderService.get({
 		where: { id: params.folder },
-		include: { files: true, accessTokens: true },
+		include: { files: true, accessTokens: true, slugs: true },
 	});
 
 	if (!folder) {

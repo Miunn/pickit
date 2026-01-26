@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@/components/ui/input-otp";
-import { CreatePersonAccessTokenFormSchema, FolderWithAccessToken } from "@/lib/definitions";
+import { CreatePersonAccessTokenFormSchema, FolderWithAccessToken, FolderWithLastSlug } from "@/lib/definitions";
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
@@ -49,7 +49,7 @@ interface ShareContactViewProps {
 		allowMap?: boolean;
 	}) => void;
 	readonly handleRemoveToken: (email: string) => void;
-	readonly folder: FolderWithAccessToken;
+	readonly folder: FolderWithAccessToken & FolderWithLastSlug;
 }
 
 export default function ShareContactView({

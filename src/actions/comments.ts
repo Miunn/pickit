@@ -1,12 +1,6 @@
 "use server";
 
-import {
-	CommentWithCreatedBy,
-	CreateCommentFormSchema,
-	FolderWithAccessToken,
-	FolderWithFilesWithFolderAndCommentsAndCreatedBy,
-	EditCommentFormSchema,
-} from "@/lib/definitions";
+import { CommentWithCreatedBy, CreateCommentFormSchema, EditCommentFormSchema } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { isAllowedToDeleteComment } from "@/lib/dal";
@@ -32,6 +26,7 @@ export async function createComment(
 					},
 					createdBy: true,
 					accessTokens: { omit: { pinCode: false } },
+					slugs: { orderBy: { createdAt: "desc" }, take: 1 },
 				},
 			},
 		},
@@ -41,7 +36,7 @@ export async function createComment(
 		return null;
 	}
 
-	const folder: FolderWithFilesWithFolderAndCommentsAndCreatedBy & FolderWithAccessToken = file.folder;
+	const folder = file.folder;
 
 	const auth = await SecureService.folder.enforce(
 		folder,
@@ -95,7 +90,7 @@ export async function createComment(
 			return null;
 		}
 
-		revalidatePath(`/app/folders/${folder.slug}`);
+		revalidatePath(`/app/folders/${folder.slugs[0].slug}`);
 		return comment;
 	} catch (e) {
 		console.error("Error creating comment", e);
@@ -113,14 +108,22 @@ export async function deleteComment(commentId: string, shareToken?: string | nul
 	try {
 		const comment = await CommentService.delete({
 			commentId,
-			include: { file: { select: { folder: { select: { slug: true } } } } },
+			include: {
+				file: {
+					select: {
+						folder: {
+							select: { slugs: { orderBy: { createdAt: "desc" }, take: 1 } },
+						},
+					},
+				},
+			},
 		});
 
 		if (!comment) {
 			return false;
 		}
 
-		revalidatePath(`/app/folders/${comment.file.folder.slug}`);
+		revalidatePath(`/app/folders/${comment.file.folder.slugs[0].slug}`);
 		return true;
 	} catch (e) {
 		console.log("Error deleting comment", e);

@@ -118,7 +118,7 @@ export function CommandSearch({
 								onSelect={() =>
 									runCommand(() =>
 										router.push(
-											`/app/folders/${folder.slug}`
+											`/app/folders/${folder.slugs[0].slug}`
 										)
 									)
 								}
@@ -139,7 +139,7 @@ export function CommandSearch({
 										onSelect={() =>
 											runCommand(() =>
 												router.push(
-													`/app/folders/${file.folder.slug}`
+													`/app/folders/${file.folder.slugs[0].slug}`
 												)
 											)
 										}

@@ -1,12 +1,13 @@
 import React from "react";
 import { X } from "lucide-react";
-import { FileWithFolder } from "@/lib/definitions";
+import { FolderWithLastSlug } from "@/lib/definitions";
 import LoadingImage from "../files/LoadingImage";
 import { Link } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
+import { File } from "@prisma/client";
 
 type ClusterWindowContentProps = {
-	readonly file: FileWithFolder;
+	readonly file: File & { folder: FolderWithLastSlug };
 	readonly onClose: () => void;
 };
 
@@ -41,7 +42,7 @@ export const PoiWindowContent = ({ file, onClose }: ClusterWindowContentProps) =
 				<div className="p-2">
 					<h2 className="w-fit hover:underline text-sm text-gray-500 font-normal flex justify-between items-center gap-2">
 						<Link
-							href={`/app/folders/${file.folder.slug}?${searchParams.toString()}`}
+							href={`/app/folders/${file.folder.slugs[0].slug}?${searchParams.toString()}`}
 						>
 							{file.folder.name}
 						</Link>

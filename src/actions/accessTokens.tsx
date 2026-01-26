@@ -320,7 +320,7 @@ export async function notifyAboutUpload(folderId: string, count: number) {
 
 	const folder = await FolderService.get({
 		where: { id: folderId, createdBy: { id: user.id } },
-		include: { accessTokens: true },
+		include: { accessTokens: true, slugs: { orderBy: { createdAt: "desc" }, take: 1 } },
 	});
 
 	if (!folder) {
@@ -331,7 +331,7 @@ export async function notifyAboutUpload(folderId: string, count: number) {
 		.filter(p => p.email)
 		.map(p => ({
 			email: p.email!,
-			link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folder.slug}?share=${p.token}&t=p`,
+			link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folder.slugs[0].slug}?share=${p.token}&t=p`,
 			locked: p.locked,
 		}));
 

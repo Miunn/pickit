@@ -123,7 +123,10 @@ export async function finalizeFileUpload(
 				})
 		| null;
 }> {
-	const folder = await FolderService.get({ where: { id: parentFolderId }, include: { accessTokens: true } });
+	const folder = await FolderService.get({
+		where: { id: parentFolderId },
+		include: { accessTokens: true, slugs: { orderBy: { createdAt: "desc" }, take: 1 } },
+	});
 
 	if (!folder) {
 		return { error: "folder-not-found", file: null };
@@ -184,7 +187,7 @@ export async function finalizeFileUpload(
 			return { error: "invalid-file-type", file: null };
 		}
 
-		revalidatePath(`/app/folders/${folder.slug}`);
+		revalidatePath(`/app/folders/${folder.slugs[0].slug}`);
 		revalidatePath(`/app/folders`);
 		revalidatePath(`/app`);
 
@@ -252,9 +255,9 @@ export async function renameFile(
 		const image = await FileService.update(
 			fileId,
 			{ name: parsedData.data.name },
-			{ folder: { select: { slug: true } } }
+			{ folder: { select: { slugs: { orderBy: { createdAt: "desc" }, take: 1 } } } }
 		);
-		revalidatePath(`/app/folders/${image.folder.slug}`);
+		revalidatePath(`/app/folders/${image.folder.slugs[0].slug}`);
 	} catch (err) {
 		console.error("Error renaming image:", err);
 		return { error: "Image not found" };
@@ -271,9 +274,13 @@ export async function updateFileDescription(fileId: string, description: string)
 		return { error: "You must be logged in to update file description" };
 	}
 
-	const image = await FileService.update(fileId, { description }, { folder: { select: { slug: true } } });
+	const image = await FileService.update(
+		fileId,
+		{ description },
+		{ folder: { select: { slugs: { orderBy: { createdAt: "desc" }, take: 1 } } } }
+	);
 
-	revalidatePath(`/app/folders/${image.folder.slug}`);
+	revalidatePath(`/app/folders/${image.folder.slugs[0].slug}`);
 	return { error: null };
 }
 
@@ -446,7 +453,7 @@ export async function deleteFile(fileId: string, shareToken?: string, hashPin?: 
 
 	const file = await FileService.get({
 		where: { id: fileId },
-		include: { folder: { select: { slug: true } } },
+		include: { folder: { select: { slugs: { orderBy: { createdAt: "desc" }, take: 1 } } } },
 	});
 
 	if (!file) {
@@ -469,7 +476,7 @@ export async function deleteFile(fileId: string, shareToken?: string, hashPin?: 
 
 	await FileService.delete(fileId);
 
-	revalidatePath(`/app/folders/${file.folder.slug}`);
+	revalidatePath(`/app/folders/${file.folder.slugs[0].slug}`);
 	revalidatePath(`/app/folders`);
 	return { error: null };
 }

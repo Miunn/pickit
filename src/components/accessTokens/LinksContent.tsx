@@ -2,14 +2,15 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from "next-intl";
-import { AccessTokenWithFolder, LightFolder } from "@/lib/definitions";
+import { FolderWithLastSlug, LightFolder } from "@/lib/definitions";
 import { useQueryState } from "nuqs";
 import PersonDataTable from "../links/person-data-table";
 import LinksDataTable from "../links/links-data-table";
+import { AccessToken } from "@prisma/client";
 
 export interface LinksContentProps {
 	readonly side: "links" | "contacts";
-	readonly accessTokens: AccessTokenWithFolder[];
+	readonly accessTokens: (AccessToken & { folder: FolderWithLastSlug })[];
 	readonly lightFolders: LightFolder[];
 	readonly defaultSelectedAccessTokenIndex: number;
 }

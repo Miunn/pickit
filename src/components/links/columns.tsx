@@ -18,13 +18,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
 import { select } from "@/lib/columns-common";
-import { AccessTokenWithFolder } from "@/lib/definitions";
+import { FolderWithLastSlug } from "@/lib/definitions";
+import { AccessToken } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Eye, MapPin, MapPinOff, MoreHorizontal, Pencil, PencilOff } from "lucide-react";
 import Link from "next/link";
 
-export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
-	select as ColumnDef<AccessTokenWithFolder>,
+export const linksColumns: ColumnDef<AccessToken & { folder: FolderWithLastSlug }>[] = [
+	select as ColumnDef<AccessToken & { folder: FolderWithLastSlug }>,
 	{
 		id: "folder_name",
 		accessorKey: "folder.name",
@@ -232,7 +233,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
 			const deleteOpen = (states?.deleteOpen as boolean) || false;
 			const setDeleteOpen = states?.setDeleteOpen as React.Dispatch<React.SetStateAction<boolean>>;
 
-			const link = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/app/folders/${accessToken.folder.slug}?share=${accessToken.token}`;
+			const link = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/app/folders/${accessToken.folder.slugs[0].slug}?share=${accessToken.token}`;
 
 			return (
 				<>
@@ -249,7 +250,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
 							</DropdownMenuLabel>
 							<DropdownMenuItem asChild>
 								<Link
-									href={`/${locale}/app/folders/${accessToken.folder.slug}`}
+									href={`/${locale}/app/folders/${accessToken.folder.slugs[0].slug}`}
 									className="cursor-default"
 								>
 									{t?.("columns.actions.open")}

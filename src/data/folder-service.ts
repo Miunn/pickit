@@ -1,20 +1,17 @@
 import { prisma } from "@/lib/prisma";
 import { getCurrentSession } from "@/lib/session";
 import { Prisma } from "@prisma/client";
-import slugify from "slugify";
+import { SlugService } from "@/data/slug-service";
 
 async function create(data: Omit<Prisma.FolderCreateInput, "slug">) {
 	const { user } = await getCurrentSession();
 
 	const { name, ...rest } = data;
 
-	const slug = slugify(name, { lower: true, strict: true });
+	const slug = SlugService.generateSlug(name.toString(), true);
 
-	const suffixRandomChars = Math.random().toString(36).substring(2, 7);
-	const uniqueSlug = `${slug}-${suffixRandomChars}`;
-
-	const isSlugTaken = await prisma.folder.findUnique({
-		where: { slug: uniqueSlug },
+	const isSlugTaken = await prisma.folderSlug.findUnique({
+		where: { slug },
 	});
 
 	if (isSlugTaken) {
@@ -24,10 +21,12 @@ async function create(data: Omit<Prisma.FolderCreateInput, "slug">) {
 	const folder = await prisma.folder.create({
 		data: {
 			name,
-			slug: uniqueSlug,
 			...rest,
 			createdBy: {
 				connect: { id: user?.id },
+			},
+			slugs: {
+				create: { slug },
 			},
 		},
 	});
@@ -100,9 +99,19 @@ function getMultiple<
 }
 
 async function update(folderId: string, data: Prisma.FolderUpdateInput) {
+	const { name, ...rest } = data;
+
+	const slug = name ? SlugService.generateSlug(name.toString(), true) : undefined;
+
 	const folder = await prisma.folder.update({
 		where: { id: folderId },
-		data,
+		data: {
+			name,
+			...rest,
+			slugs: {
+				create: slug ? { slug } : undefined,
+			},
+		},
 	});
 
 	return folder;

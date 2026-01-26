@@ -1,6 +1,13 @@
 "use client";
 
-import { FileWithComments, FileWithLikes, FolderWithFilesCount, FileWithTags, FolderWithTags } from "@/lib/definitions";
+import {
+	FileWithComments,
+	FileWithLikes,
+	FolderWithFilesCount,
+	FileWithTags,
+	FolderWithTags,
+	FolderWithLastSlug,
+} from "@/lib/definitions";
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import { useSession } from "@/providers/SessionProvider";
 import { useTokenContext } from "./TokenContext";
@@ -12,7 +19,7 @@ import { FilesSort, FilesSortDefinition } from "@/types/imagesSort";
 
 export type ContextFile = PrismaFile &
 	FileWithTags & {
-		folder: FolderWithFilesCount & FolderWithTags;
+		folder: FolderWithFilesCount & FolderWithTags & FolderWithLastSlug;
 	} & FileWithComments &
 	FileWithLikes;
 

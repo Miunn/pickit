@@ -6,6 +6,7 @@ import {
 	FolderWithAccessToken,
 	FolderWithCover,
 	FolderWithFilesCount,
+	FolderWithLastSlug,
 	FolderWithTags,
 } from "@/lib/definitions";
 import { useFormatter, useTranslations } from "next-intl";
@@ -38,7 +39,8 @@ import FolderPropertiesDialog from "../../dialogs/FolderPropertiesDialogs";
 export default function FolderPreviewGrid({
 	folder,
 }: {
-	readonly folder: FolderWithAccessToken &
+	readonly folder: FolderWithLastSlug &
+		FolderWithAccessToken &
 		FolderWithFilesCount &
 		FolderWithCover & { files: ({ folder: FolderWithTags } & FileWithTags & FileWithComments)[] };
 }) {
@@ -56,7 +58,10 @@ export default function FolderPreviewGrid({
 		<>
 			<ContextMenu modal={false}>
 				<ContextMenuTrigger asChild>
-					<Link href={`/app/folders/${folder.slug}`} className={"inline-block w-full"}>
+					<Link
+						href={`/app/folders/${folder.slugs[0].slug}`}
+						className={"inline-block w-full"}
+					>
 						{folder.cover ? (
 							<div
 								className={`relative h-36 mb-4 flex justify-center items-center border border-primary rounded-xl`}
@@ -124,7 +129,9 @@ export default function FolderPreviewGrid({
 				</ContextMenuTrigger>
 				<ContextMenuContent className="w-48">
 					<ContextMenuItem asChild>
-						<Link href={`/app/folders/${folder.slug}`}>{t("actions.open")}</Link>
+						<Link href={`/app/folders/${folder.slugs[0].slug}`}>
+							{t("actions.open")}
+						</Link>
 					</ContextMenuItem>
 					<ContextMenuItem onClick={() => setOpenRename(true)}>
 						{dialogsTranslations("rename.trigger")}
