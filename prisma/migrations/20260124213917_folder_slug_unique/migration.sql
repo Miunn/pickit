@@ -6,15 +6,6 @@
 
 */
 -- AlterTable
--- Backfill slugs for existing rows to satisfy NOT NULL + UNIQUE
-UPDATE "Folder"
-SET "slug" =
-	COALESCE(
-		NULLIF(regexp_replace(lower("name"), '[^a-z0-9]+', '-', 'g'), ''),
-		'folder'
-	) || '-' || substring("id"::text, 1, 6)
-WHERE "slug" IS NULL;
-
 ALTER TABLE "Folder" ALTER COLUMN "slug" SET NOT NULL;
 
 -- CreateIndex

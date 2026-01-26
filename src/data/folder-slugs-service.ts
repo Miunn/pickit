@@ -37,7 +37,7 @@ type GetMultipleOptions<
 	I extends Prisma.FolderSlugInclude | undefined = undefined,
 > = {
 	where: Prisma.FolderSlugWhereInput;
-	orderBy?: Prisma.Enumerable<Prisma.FolderOrderByWithRelationInput>;
+	orderBy?: Prisma.Enumerable<Prisma.FolderSlugOrderByWithRelationInput>;
 	take?: number;
 } & (S extends Prisma.FolderSlugSelect ? { select: S } : object) &
 	(I extends Prisma.FolderSlugInclude ? { include: I } : object);

@@ -26,7 +26,7 @@ export const LastUploadedImages = () => {
 					files.map(file => (
 						<Link
 							key={file.id}
-							href={`/app/folders/${file.folder.slugs[0].slug}#${file.id}`}
+							href={`/app/folders/${file.folder.slugs?.[0]?.slug}#${file.id}`}
 						>
 							<FileThumbnail file={file} />
 						</Link>

@@ -35,9 +35,10 @@ export default function ShareTokenList({
 	return (
 		<>
 			{tokenList.map(token => {
-				const lastSlug = token.folder.slugs.sort(
-					(a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-				)[0];
+				const lastSlug = token.folder.slugs[0].slug;
+
+				if (!lastSlug) return null;
+
 				return (
 					<Fragment key={token.token}>
 						<Label className="capitalize text-sm">

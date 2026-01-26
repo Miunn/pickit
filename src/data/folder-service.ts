@@ -101,7 +101,9 @@ function getMultiple<
 async function update(folderId: string, data: Prisma.FolderUpdateInput) {
 	const { name, ...rest } = data;
 
-	const slug = name ? SlugService.generateSlug(name.toString(), true) : undefined;
+	const nameValue = typeof name === "string" ? name : name?.set;
+
+	const slug = nameValue ? SlugService.generateSlug(nameValue, true) : undefined;
 
 	const folder = await prisma.folder.update({
 		where: { id: folderId },
