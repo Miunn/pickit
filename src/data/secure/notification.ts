@@ -8,7 +8,7 @@ export async function enforceNotification(
 
 	const session = await getCurrentSession();
 
-	if (!session || !session.user) {
+	if (!session?.user) {
 		return { allowed: false };
 	}
 

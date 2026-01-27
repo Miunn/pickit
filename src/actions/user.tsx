@@ -29,13 +29,12 @@ export async function updateUser(id: string, name?: string, email?: string) {
 	await UserService.update(id, {
 		name,
 		email,
-		emailVerified: email && email !== user?.email ? false : user.emailVerified,
-		emailVerificationDeadline:
-			email && email !== user?.email ? addDays(new Date(), 7) : user.emailVerificationDeadline,
+		emailVerified: email && email !== user?.email ? false : undefined,
+		emailVerificationDeadline: email && email !== user?.email ? addDays(new Date(), 7) : undefined,
 	});
 
 	if (email && email !== user?.email) {
-		await sendVerificationEmail(email);
+		await sendVerificationEmail();
 	}
 
 	revalidatePath("/app/account");
@@ -64,7 +63,7 @@ export async function setupE2EE(
 	return { error: null };
 }
 
-export async function sendVerificationEmail(email: string): Promise<{
+export async function sendVerificationEmail(): Promise<{
 	error: string | null;
 	user: {
 		id: string;
@@ -120,7 +119,7 @@ export async function sendVerificationEmail(email: string): Promise<{
 
 	await transporter.sendMail({
 		from: `"The Echomori Team" <${process.env.MAIL_SENDER}>`,
-		to: email,
+		to: currentUser.email,
 		subject: "Verify your email",
 		html: emailHtml,
 	});
@@ -257,7 +256,7 @@ export async function resetPassword(
 		return { error: "invalid-token" };
 	}
 
-	if (resetRequest.status !== PasswordResetRequestStatus.PENDING) {
+	if (resetRequest.status !== PasswordResetRequestStatus.PENDING || resetRequest.expires < new Date()) {
 		if (resetRequest.status === PasswordResetRequestStatus.SUCCESS) {
 			return { error: "already-reset" };
 		}

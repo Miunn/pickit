@@ -135,6 +135,7 @@ export const cancelStripeSubscription = async (): Promise<void> => {
 		});
 	} catch (e) {
 		console.error(e);
+		throw new Error("Failed to cancel subscription");
 	}
 
 	const limits = getLimitsFromPlan(Plan.FREE);

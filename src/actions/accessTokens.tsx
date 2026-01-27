@@ -70,7 +70,7 @@ export async function createNewAccessToken(
 				[
 					{
 						email: email,
-						link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${accessToken.folder.slug}?share=${token}&t=p`,
+						link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${accessToken.folder.slugs[0].slug}?share=${token}&t=p`,
 						locked: accessToken.locked,
 					},
 				],
