@@ -64,7 +64,7 @@ export default function AccountForm({ user }: { readonly user: UserLight }) {
 
 	async function requestNewVerificationEmail() {
 		setNewVerificationLoading(true);
-		const r = await sendVerificationEmail(user.email);
+		const r = await sendVerificationEmail();
 		setNewVerificationLoading(false);
 
 		if (r.error) {
