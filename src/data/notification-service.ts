@@ -6,7 +6,7 @@ async function create(data: Prisma.NotificationCreateInput) {
 	const { user } = await getCurrentSession();
 
 	if (!user) {
-		throw new Error("Acces denied");
+		throw new Error("Access denied");
 	}
 
 	const folder = await prisma.notification.create({

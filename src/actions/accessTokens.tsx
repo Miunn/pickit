@@ -62,7 +62,7 @@ export async function createNewAccessToken(
 				expires: expiryDate,
 				email: email,
 			},
-			{ folder: { select: { name: true, slug: true } } }
+			{ folder: { select: { name: true, slugs: { orderBy: { createdAt: "desc" }, take: 1 } } } }
 		);
 
 		if (email) {
@@ -80,7 +80,7 @@ export async function createNewAccessToken(
 		}
 
 		revalidatePath("/app/links");
-		revalidatePath("/app/folders/[slug]");
+		revalidatePath(`/app/folders/${accessToken.folder.slugs[0].slug}`);
 		revalidatePath("/app/folders");
 		return { error: null, accessToken: accessToken };
 	} catch (e) {

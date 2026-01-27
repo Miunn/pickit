@@ -76,9 +76,6 @@ const eslintConfig = [
 			// Internal data layer files that intentionally use relative imports
 			"src/data/**/*.{js,ts,jsx,tsx}",
 
-			// Prisma client file itself (allowed to import prisma)
-			"src/lib/prisma.ts",
-
 			// The internal slug service is allowed to import slugify if necessary
 			"src/data/slug-service.ts",
 

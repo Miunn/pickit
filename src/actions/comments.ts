@@ -152,14 +152,26 @@ export async function updateComment(
 		const comment = await CommentService.update(
 			commentId,
 			{ text: result.data.content },
-			{ file: { include: { folder: { select: { id: true, slug: true } } } }, createdBy: true }
+			{
+				file: {
+					include: {
+						folder: {
+							select: {
+								id: true,
+								slugs: { orderBy: { createdAt: "desc" }, take: 1 },
+							},
+						},
+					},
+				},
+				createdBy: true,
+			}
 		);
 
 		if (!comment) {
 			return null;
 		}
 
-		revalidatePath(`/app/folders/${comment.file.folder.slug}`);
+		revalidatePath(`/app/folders/${comment.file.folder.slugs[0].slug}`);
 		return comment;
 	} catch (e) {
 		console.log("Error updating comment", e);

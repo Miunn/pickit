@@ -19,10 +19,12 @@ export default function PersonDataTable({
 	readonly defaultTokenIndex: number;
 }) {
 	const t = useTranslations("dataTables.links");
-	const [selectedTokensIndexes, setSelectedTokensIndexes] = useState<{ [index: number]: boolean }>({
-		[defaultTokenIndex]: true,
-	});
-	const [selectedTokens, setSelectedTokens] = useState<string[]>([accessTokens[defaultTokenIndex]?.token]);
+	const [selectedTokensIndexes, setSelectedTokensIndexes] = useState<{ [index: number]: boolean }>(
+		defaultTokenIndex === -1 ? {} : { [defaultTokenIndex]: true }
+	);
+	const [selectedTokens, setSelectedTokens] = useState<string[]>(
+		defaultTokenIndex === -1 ? [] : [accessTokens[defaultTokenIndex].token]
+	);
 	const [lockOpen, setLockOpen] = useState<boolean>(false);
 	const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
 	const [deleteSelectionOpen, setDeleteSelectionOpen] = useState<boolean>(false);

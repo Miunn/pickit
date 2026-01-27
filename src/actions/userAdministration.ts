@@ -14,7 +14,7 @@ export async function deleteUser(userId: string) {
 
 	await UserService.delete(userId);
 
-	invalidateAllSessions(userId);
+	await invalidateAllSessions(userId);
 
 	revalidatePath("/app/administration");
 	return { error: null };

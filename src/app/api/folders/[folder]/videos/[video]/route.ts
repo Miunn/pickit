@@ -20,7 +20,7 @@ export async function GET(req: NextRequest, props: { params: Promise<{ video: st
 	});
 
 	if (!video) {
-		return NextResponse.json({ error: "Image not found" });
+		return NextResponse.json({ error: "Video not found" });
 	}
 
 	const url = await generateV4DownloadUrl(`${video.createdById}/${video.folderId}/${video.id}`);

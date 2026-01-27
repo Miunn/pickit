@@ -18,9 +18,9 @@ export async function createUserHandler({
 	password,
 	passwordConfirmation,
 }: z.infer<typeof SignupFormSchema>): Promise<ActionResult> {
-	try {
-		SignupFormSchema.safeParse({ email, password, passwordConfirmation: password });
-	} catch {
+	const parsed = SignupFormSchema.safeParse({ email, password, passwordConfirmation: password });
+
+	if (!parsed.success) {
 		return {
 			status: "error",
 			message: "invalid-data",
@@ -50,8 +50,6 @@ export async function createUserHandler({
 				},
 			},
 		});
-
-		await createStripeCustomer();
 
 		return {
 			status: "ok",

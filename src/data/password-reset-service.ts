@@ -1,19 +1,17 @@
 import { prisma } from "@/lib/prisma";
-import { getCurrentSession } from "@/data/session";
 import { Prisma } from "@prisma/client";
+import { addHours } from "date-fns";
 
-async function create(data: Prisma.PasswordResetRequestCreateInput) {
-	const { user } = await getCurrentSession();
-
-	const folder = await prisma.passwordResetRequest.create({
+async function create(email: string) {
+	const request = await prisma.passwordResetRequest.create({
 		data: {
-			...data,
-			userId: undefined,
-			user: { connect: { id: user?.id } },
+			user: { connect: { email } },
+			expires: addHours(new Date(), 2),
+			token: crypto.randomUUID(),
 		},
 	});
 
-	return folder;
+	return request;
 }
 
 // Define types for better overload handling
@@ -52,7 +50,7 @@ type GetMultipleOptions<
 	I extends Prisma.PasswordResetRequestInclude | undefined = undefined,
 > = {
 	where: Prisma.PasswordResetRequestWhereInput;
-	orderBy?: Prisma.Enumerable<Prisma.FolderOrderByWithRelationInput>;
+	orderBy?: Prisma.Enumerable<Prisma.PasswordResetRequestOrderByWithRelationInput>;
 	take?: number;
 } & (S extends Prisma.PasswordResetRequestSelect ? { select: S } : object) &
 	(I extends Prisma.PasswordResetRequestInclude ? { include: I } : object);

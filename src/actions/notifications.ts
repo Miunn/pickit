@@ -1,6 +1,7 @@
 "use server";
 
 import { NotificationService } from "@/data/notification-service";
+import { SecureService } from "@/data/secure/secure-service";
 import { getCurrentSession } from "@/data/session";
 
 export async function markAllNotificationsAsRead() {
@@ -16,9 +17,13 @@ export async function markAllNotificationsAsRead() {
 }
 
 export async function markNotificationAsRead(notificationId: string) {
-	const { user } = await getCurrentSession();
+	const notification = await NotificationService.get({
+		where: { id: notificationId },
+	});
 
-	if (!user) {
+	const auth = await SecureService.notification.enforce(notification);
+
+	if (!auth.allowed) {
 		return { error: "Unauthorized" };
 	}
 

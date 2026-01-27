@@ -317,7 +317,7 @@ export async function removeTagsFromFiles(
 		include: { tags: true },
 	});
 
-	if (!files) {
+	if (files.length !== filesId.length) {
 		return {
 			success: false,
 			error: "file not found",

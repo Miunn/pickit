@@ -216,7 +216,7 @@ export async function requestPasswordReset(data: z.infer<typeof RequestPasswordR
 		select: { id: true, email: true, name: true, password: true },
 	});
 
-	if (!user?.password) {
+	if (!user) {
 		return { error: null }; // Don't leak if the email is registered or not
 	}
 
@@ -228,14 +228,9 @@ export async function requestPasswordReset(data: z.infer<typeof RequestPasswordR
 		console.error("Error deleting previous password reset requests", e);
 	}
 
-	const token = crypto.randomUUID();
-	await PasswordResetRequestService.create({
-		token: token,
-		expires: addDays(new Date(), 7),
-		user: { connect: { id: user.id } },
-	});
+	const request = await PasswordResetRequestService.create(user.email);
 
-	const emailHtml = await render(<ResetPasswordTemplate name={user.name} token={token} />);
+	const emailHtml = await render(<ResetPasswordTemplate name={user.name} token={request.token} />);
 
 	await transporter.sendMail({
 		from: `"The Echomori Team" <${process.env.MAIL_SENDER}>`,
