@@ -18,14 +18,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
 import { select } from "@/lib/columns-common";
-import { FolderWithLastSlug } from "@/lib/definitions";
-import { AccessToken } from "@prisma/client";
+import { AccessTokenWithFolder } from "@/lib/definitions";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Eye, MapPin, MapPinOff, MoreHorizontal, Pencil, PencilOff } from "lucide-react";
 import Link from "next/link";
 
-export const linksColumns: ColumnDef<AccessToken & { folder: FolderWithLastSlug }>[] = [
-	select as ColumnDef<AccessToken & { folder: FolderWithLastSlug }>,
+export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
+	select as ColumnDef<AccessTokenWithFolder>,
 	{
 		id: "folder_name",
 		accessorKey: "folder.name",

@@ -6,18 +6,17 @@ import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Link, Trash2 } from "lucide-react";
 import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessTokenDialog";
-import { FolderWithLastSlug, LightFolder } from "@/lib/definitions";
+import { AccessTokenWithFolder, LightFolder } from "@/lib/definitions";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { linksColumns } from "@/components/links/columns";
-import { AccessToken } from "@prisma/client";
 
 export default function LinksDataTable({
 	accessTokens,
 	defaultTokenIndex,
 	lightFolders,
 }: {
-	readonly accessTokens: (AccessToken & { folder: FolderWithLastSlug })[];
+	readonly accessTokens: AccessTokenWithFolder[];
 	readonly defaultTokenIndex: number;
 	readonly lightFolders: LightFolder[];
 }) {

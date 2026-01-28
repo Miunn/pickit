@@ -28,7 +28,7 @@ export default async function LinksPage(props: {
 
 	const accessTokens = await AccessTokenService.getMultiple({
 		where: { folder: { createdBy: { id: user.id } } },
-		include: { folder: { include: { slugs: { orderBy: { createdAt: "desc" }, take: 1 } } } },
+		include: { folder: true },
 		orderBy: [{ folder: { name: "asc" } }],
 	});
 
@@ -37,7 +37,7 @@ export default async function LinksPage(props: {
 		select: {
 			id: true,
 			name: true,
-			slugs: { orderBy: { createdAt: "desc" }, take: 1 },
+			slug: true,
 		},
 	});
 

@@ -227,14 +227,14 @@ export default async function FolderPage(props: {
 
 	const auth = await SecureService.folder.enforce(folder, share, h);
 
-	if (!auth.allowed && auth.reason === "invalid-pin") {
-		return redirect({
-			href: `/app/folders/${slug}/unlock?share=${share}`,
-			locale,
-		});
-	}
-
 	if (!auth.allowed) {
+		if (auth.reason === "invalid-pin") {
+			return redirect({
+				href: `/app/folders/${slug}/unlock?share=${share}`,
+				locale,
+			});
+		}
+
 		if (share) {
 			return redirect({
 				href: `/links/invalid/${share}`,
@@ -252,9 +252,7 @@ export default async function FolderPage(props: {
 			where: { token: share },
 			include: { folder: true },
 		});
-	}
 
-	if (share) {
 		fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/tokens/increment?token=${share}`);
 	}
 

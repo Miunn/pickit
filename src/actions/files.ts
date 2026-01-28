@@ -255,7 +255,7 @@ export async function renameFile(
 		const image = await FileService.update(
 			fileId,
 			{ name: parsedData.data.name },
-			{ folder: { select: { slugs: { orderBy: { createdAt: "desc" }, take: 1 } } } }
+			{ folder: { select: { slug: true } } }
 		);
 		revalidatePath(`/app/folders/${image.folder.slug}`);
 	} catch (err) {
@@ -274,11 +274,7 @@ export async function updateFileDescription(fileId: string, description: string)
 		return { error: "You must be logged in to update file description" };
 	}
 
-	const image = await FileService.update(
-		fileId,
-		{ description },
-		{ folder: { select: { slugs: { orderBy: { createdAt: "desc" }, take: 1 } } } }
-	);
+	const image = await FileService.update(fileId, { description }, { folder: { select: { slug: true } } });
 
 	revalidatePath(`/app/folders/${image.folder.slug}`);
 	return { error: null };
@@ -453,7 +449,7 @@ export async function deleteFile(fileId: string, shareToken?: string, hashPin?: 
 
 	const file = await FileService.get({
 		where: { id: fileId },
-		include: { folder: { select: { slugs: { orderBy: { createdAt: "desc" }, take: 1 } } } },
+		include: { folder: { select: { slug: true } } },
 	});
 
 	if (!file) {

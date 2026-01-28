@@ -62,7 +62,7 @@ export async function createNewAccessToken(
 				expires: expiryDate,
 				email: email,
 			},
-			{ folder: { select: { name: true, slugs: { orderBy: { createdAt: "desc" }, take: 1 } } } }
+			{ folder: { select: { name: true, slug: true } } }
 		);
 
 		if (email) {

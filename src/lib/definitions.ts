@@ -310,7 +310,7 @@ const userWithCounts = Prisma.validator<Prisma.UserDefaultArgs>()({
 export type UserWithCounts = Prisma.UserGetPayload<typeof userWithCounts>;
 
 const lightFolders = Prisma.validator<Prisma.FolderDefaultArgs>()({
-	select: { id: true, name: true, slugs: { take: 1, orderBy: { createdAt: "desc" } } },
+	select: { id: true, name: true, slug: true },
 });
 
 export type LightFolder = Prisma.FolderGetPayload<typeof lightFolders>;
@@ -390,7 +390,7 @@ const folderWithCover = Prisma.validator<Prisma.FolderDefaultArgs>()({
 export type FolderWithCover = Prisma.FolderGetPayload<typeof folderWithCover>;
 
 const fileLight = Prisma.validator<Prisma.FileDefaultArgs>()({
-	select: { id: true, name: true, folder: { select: { id: true, name: true, slugs: true } } },
+	select: { id: true, name: true, folder: { select: { id: true, name: true, slug: true } } },
 });
 
 export type FileLightWithFolderName = Prisma.FileGetPayload<typeof fileLight>;

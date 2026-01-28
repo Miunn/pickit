@@ -50,7 +50,7 @@ export default async function LocaleLayout(
 	const folders = user
 		? await FolderService.getMultiple({
 				where: { createdBy: { id: user.id } },
-				select: { id: true, name: true, slugs: { orderBy: { createdAt: "desc" }, take: 1 } },
+				select: { id: true, name: true, slug: true },
 			})
 		: [];
 	const files = user
@@ -63,7 +63,7 @@ export default async function LocaleLayout(
 						select: {
 							id: true,
 							name: true,
-							slugs: { orderBy: { createdAt: "desc" }, take: 1 },
+							slug: true,
 						},
 					},
 				},
@@ -84,7 +84,6 @@ export default async function LocaleLayout(
 					folder: {
 						include: {
 							createdBy: true,
-							slugs: { orderBy: { createdAt: "desc" }, take: 1 },
 						},
 					},
 				},

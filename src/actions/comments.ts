@@ -112,7 +112,7 @@ export async function deleteComment(commentId: string, shareToken?: string | nul
 				file: {
 					select: {
 						folder: {
-							select: { slugs: { orderBy: { createdAt: "desc" }, take: 1 } },
+							select: { slug: true },
 						},
 					},
 				},
@@ -158,7 +158,7 @@ export async function updateComment(
 						folder: {
 							select: {
 								id: true,
-								slugs: { orderBy: { createdAt: "desc" }, take: 1 },
+								slug: true,
 							},
 						},
 					},
