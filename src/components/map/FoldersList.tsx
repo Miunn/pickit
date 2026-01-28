@@ -1,11 +1,11 @@
 import { MoreHorizontal } from "lucide-react";
 import { useFormatter } from "next-intl";
-import { Checkbox } from "../ui/checkbox";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
 import { FolderWithFilesCount } from "@/lib/definitions";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { FolderCard } from "./FolderCard";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { FolderCard } from "@/components/map/FolderCard";
 
 /**
  * Renders a responsive folder list that allows selecting and deselecting folders and notifies the caller of selection changes.

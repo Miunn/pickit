@@ -1,5 +1,5 @@
 import { FileWithFolder } from "@/lib/definitions";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogClose,
@@ -9,11 +9,11 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "../ui/dialog";
+} from "@/components/ui/dialog";
 import React from "react";
-import { Label } from "../ui/label";
+import { Label } from "@/components/ui/label";
 import { useTranslations } from "next-intl";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { getCoordinatesString } from "@/lib/utils";

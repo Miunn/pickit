@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import "../../../globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { getTranslations } from "next-intl/server";
 import { AppSidebar } from "@/components/ui/app-sidebar";
@@ -11,7 +10,7 @@ import UnverifiedEmail from "@/components/layout/UnverifiedEmail";
 import { addDays } from "date-fns";
 import SwitchLocale from "@/components/generic/SwitchLocale";
 import { Notification, Role } from "@prisma/client";
-import { getCurrentSession } from "@/lib/session";
+import { getCurrentSession } from "@/data/session";
 import { CommandSearch } from "@/components/generic/CommandSearch";
 import { NuqsAdapter } from "nuqs/adapters/react";
 import { SwitchTheme } from "@/components/generic/SwitchTheme";
@@ -51,7 +50,7 @@ export default async function LocaleLayout(
 	const folders = user
 		? await FolderService.getMultiple({
 				where: { createdBy: { id: user.id } },
-				select: { id: true, name: true },
+				select: { id: true, name: true, slug: true },
 			})
 		: [];
 	const files = user
@@ -64,6 +63,7 @@ export default async function LocaleLayout(
 						select: {
 							id: true,
 							name: true,
+							slug: true,
 						},
 					},
 				},
@@ -80,7 +80,13 @@ export default async function LocaleLayout(
 	const sharedWithMeFolders = user
 		? await AccessTokenService.getMultiple({
 				where: { email: user.email },
-				include: { folder: { include: { createdBy: true } } },
+				include: {
+					folder: {
+						include: {
+							createdBy: true,
+						},
+					},
+				},
 			})
 		: [];
 
@@ -103,7 +109,7 @@ export default async function LocaleLayout(
 									items: folders.map(folder => ({
 										key: folder.id,
 										title: folder.name,
-										url: `/${locale}/app/folders/${folder.id}`,
+										url: `/${locale}/app/folders/${folder.slug}`,
 									})),
 								},
 								{
@@ -114,7 +120,7 @@ export default async function LocaleLayout(
 									items: files.map(file => ({
 										key: file.id,
 										title: `${file.folder.name} - ${file.name}`,
-										url: `/${locale}/app/folders/${file.folder.id}#${file.id}`,
+										url: `/${locale}/app/folders/${file.folder.slug}#${file.id}`,
 									})),
 								},
 								{
@@ -149,7 +155,7 @@ export default async function LocaleLayout(
 									items: sharedWithMeFolders.map(accessToken => ({
 										key: accessToken.folder.id,
 										title: `${accessToken.folder.createdBy.name} - ${accessToken.folder.name}`,
-										url: `/${locale}/app/folders/${accessToken.folder.id}?share=${accessToken.token}&t=p`,
+										url: `/${locale}/app/folders/${accessToken.folder.slug}?share=${accessToken.token}&t=p`,
 									})),
 								},
 							],

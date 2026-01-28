@@ -12,13 +12,13 @@ import { useFilesContext } from "@/context/FilesContext";
 import { useFolderContext } from "@/context/FolderContext";
 import { Check, LayoutGrid, List, MoreHorizontal, Tag } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { ViewState } from "../ViewSelector";
+import { ViewState } from "@/components/folders/ViewSelector";
 import { FilesSort, parseFilesSort, SortAttribute } from "@/types/imagesSort";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useSession } from "@/providers/SessionProvider";
 import { UploadImagesDialog } from "@/components/files/upload/UploadImagesDialog";
-import { ShareFolderDialog } from "../dialogs/ShareFolderDialog";
+import { ShareFolderDialog } from "@/components/folders/dialogs/ShareFolderDialog";
 import { useMemo, useState } from "react";
 import SortArrow from "@/components/generic/SortArrow";
 

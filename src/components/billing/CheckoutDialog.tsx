@@ -2,9 +2,9 @@
 
 import { CheckoutProvider } from "@stripe/react-stripe-js";
 import { useMemo } from "react";
-import CheckoutForm from "../CheckoutForm";
+import CheckoutForm from "@/components/CheckoutForm";
 import { loadStripe } from "@stripe/stripe-js";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { usePricingContext } from "@/context/PricingContext";
 import { Plan } from "@prisma/client";
 import { useTranslations } from "next-intl";

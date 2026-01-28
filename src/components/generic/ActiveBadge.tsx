@@ -1,5 +1,5 @@
 import { BadgeCheck, BadgeMinus } from "lucide-react";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { useTranslations } from "next-intl";
 
 export default function ActiveBadge({

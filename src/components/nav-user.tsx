@@ -19,7 +19,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { UserLight } from "@/lib/definitions";
 import { Notification as NotificationData } from "@prisma/client";
-import NotificationsDialog from "./notifications/NotificationDialog";
+import NotificationsDialog from "@/components/notifications/NotificationDialog";
 import { useMemo, useState } from "react";
 
 export function NavUser({ user, initialNotifications }: { readonly user: UserLight; readonly initialNotifications: NotificationData[] }) {

@@ -17,15 +17,15 @@ import { useSession } from "@/providers/SessionProvider";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { FileType, FolderTag } from "@prisma/client";
-import RenameImageDialog from "../../dialogs/RenameImageDialog";
-import { DeleteImageDialog } from "../../dialogs/DeleteImageDialog";
-import ImagePropertiesDialog from "../../dialogs/ImagePropertiesDialog";
-import ManageTagsDialog from "../../dialogs/ManageTagsDialog";
+import RenameImageDialog from "@/components/files/dialogs/RenameImageDialog";
+import { DeleteImageDialog } from "@/components/files/dialogs/DeleteImageDialog";
+import ImagePropertiesDialog from "@/components/files/dialogs/ImagePropertiesDialog";
+import ManageTagsDialog from "@/components/files/dialogs/ManageTagsDialog";
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { addTagsToFile, removeTagsFromFile } from "@/actions/tags";
 import { toast as sonnerToast } from "sonner";
 import { useSearchParams } from "next/navigation";
-import FileThumbnail from "./FileThumbnail";
+import FileThumbnail from "@/components/files/views/grid/FileThumbnail";
 
 export type ImagePreviewProps = {
 	readonly file: { folder: FolderWithTags } & FileWithTags;

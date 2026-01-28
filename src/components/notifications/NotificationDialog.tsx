@@ -7,7 +7,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Notification as NotificationData } from "@prisma/client";
-import Notification from "./Notification";
+import Notification from "@/components/notifications/Notification";
 import { markNotificationAsRead } from "@/actions/notifications";
 
 export default function NotificationsDialog({

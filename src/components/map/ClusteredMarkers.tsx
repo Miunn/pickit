@@ -2,25 +2,26 @@ import { useSupercluster } from "@/hooks/use-supercluster";
 import Supercluster, { PointFeature, ClusterProperties } from "supercluster";
 import { Feature, FeatureCollection, GeoJsonProperties, Point } from "geojson";
 import { useCallback } from "react";
-import { ClusterMarker } from "./ClusterMarker";
-import { PoiMarker } from "./PoiMarker";
-import { FileWithFolder } from "@/lib/definitions";
+import { ClusterMarker } from "@/components/map/ClusterMarker";
+import { PoiMarker } from "@/components/map/PoiMarker";
+import { FolderWithLastSlug } from "@/lib/definitions";
+import { File } from "@prisma/client";
 
 type ClusteredMarkersProps = {
-	readonly markers: FeatureCollection<Point, FileWithFolder>;
+	readonly markers: FeatureCollection<Point, File & { folder: FolderWithLastSlug }>;
 	readonly setClusterInfoData: (
 		data: {
 			anchor: google.maps.marker.AdvancedMarkerElement;
-			features: PointFeature<FileWithFolder>[];
+			features: PointFeature<File & { folder: FolderWithLastSlug }>[];
 		} | null
 	) => void;
 	readonly setPoiInfoData: (
 		data: {
 			anchor: google.maps.marker.AdvancedMarkerElement;
-			feature: PointFeature<FileWithFolder>;
+			feature: PointFeature<File & { folder: FolderWithLastSlug }>;
 		} | null
 	) => void;
-	readonly onPoiClick: (feature: PointFeature<FileWithFolder>) => void;
+	readonly onPoiClick: (feature: PointFeature<File & { folder: FolderWithLastSlug }>) => void;
 };
 
 const superclusterOptions: Supercluster.Options<GeoJsonProperties, ClusterProperties> = {
@@ -35,7 +36,10 @@ export default function ClusteredMarkers({
 	setPoiInfoData,
 	onPoiClick,
 }: ClusteredMarkersProps) {
-	const { clusters, getLeaves } = useSupercluster<FileWithFolder>(markers, superclusterOptions);
+	const { clusters, getLeaves } = useSupercluster<File & { folder: FolderWithLastSlug }>(
+		markers,
+		superclusterOptions
+	);
 
 	const handleClusterClick = useCallback(
 		(marker: google.maps.marker.AdvancedMarkerElement | null, clusterId: number) => {

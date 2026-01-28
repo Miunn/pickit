@@ -6,20 +6,20 @@ import {
     CarouselItem,
     CarouselNext,
     CarouselPrevious,
-} from "../../ui/carousel";
-import { Button } from "../../ui/button";
+} from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
 import { MessageCircle, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn, formatBytes } from "@/lib/utils";
-import ImageCommentSection from "./ImageCommentSection";
+import ImageCommentSection from "@/components/files/carousel/ImageCommentSection";
 import { useSearchParams } from "next/navigation";
-import EditDescriptionDialog from "../dialogs/EditDescriptionDialog";
+import EditDescriptionDialog from "@/components/files/dialogs/EditDescriptionDialog";
 import { Role, FileType } from "@prisma/client";
 import { useSession } from "@/providers/SessionProvider";
-import LoadingImage from "../LoadingImage";
-import FileOptions from "./FileOptions";
+import LoadingImage from "@/components/files/LoadingImage";
+import FileOptions from "@/components/files/carousel/FileOptions";
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
-import FileLikeButton from "../FileLikeButton";
+import FileLikeButton from "@/components/files/FileLikeButton";
 import TagChip from "@/components/tags/TagChip";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 

@@ -1,8 +1,8 @@
 import { FolderTokenPermission } from "@prisma/client";
-import { prisma } from "./prisma";
-import { getCurrentSession } from "./session";
+import { getCurrentSession } from "@/data/session";
 import * as bcrypt from "bcryptjs";
-import { stripe } from "./stripe";
+import { stripe } from "@/lib/stripe";
+import { prisma } from "@/lib/prisma";
 
 export async function hasFolderOwnerAccess(folderId: string): Promise<boolean> {
 	const { user } = await getCurrentSession();

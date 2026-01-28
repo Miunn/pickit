@@ -7,10 +7,10 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from "../../ui/dialog";
+} from "@/components/ui/dialog";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { Button } from "../../ui/button";
+import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { changeFolderCover } from "@/actions/folders";
 import { toast } from "@/hooks/use-toast";
@@ -21,8 +21,8 @@ import {
     CarouselPrevious,
     CarouselApi,
     CarouselContent,
-} from "../../ui/carousel";
-import LoadingImage from "../../files/LoadingImage";
+} from "@/components/ui/carousel";
+import LoadingImage from "@/components/files/LoadingImage";
 import { formatBytes } from "@/lib/utils";
 
 /**

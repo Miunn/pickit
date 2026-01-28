@@ -1,28 +1,33 @@
 "use server";
 
 import { NotificationService } from "@/data/notification-service";
-import { getCurrentSession } from "@/lib/session";
+import { SecureService } from "@/data/secure/secure-service";
+import { getCurrentSession } from "@/data/session";
 
 export async function markAllNotificationsAsRead() {
-    const { user } = await getCurrentSession();
+	const { user } = await getCurrentSession();
 
-    if (!user) {
-        return { error: "Unauthorized" };
-    }
+	if (!user) {
+		return { error: "Unauthorized" };
+	}
 
-    await NotificationService.updateMany({ userId: user.id, isRead: false }, { isRead: true });
+	await NotificationService.updateMany({ userId: user.id, isRead: false }, { isRead: true });
 
-    return { success: true };
+	return { success: true };
 }
 
 export async function markNotificationAsRead(notificationId: string) {
-    const { user } = await getCurrentSession();
+	const notification = await NotificationService.get({
+		where: { id: notificationId },
+	});
 
-    if (!user) {
-        return { error: "Unauthorized" };
-    }
+	const auth = await SecureService.notification.enforce(notification);
 
-    await NotificationService.update(notificationId, { isRead: true });
+	if (!auth.allowed) {
+		return { error: "Unauthorized" };
+	}
 
-    return { success: true };
+	await NotificationService.update(notificationId, { isRead: true });
+
+	return { success: true };
 }

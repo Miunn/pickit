@@ -1,14 +1,14 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Progress } from "../ui/progress";
+import { Progress } from "@/components/ui/progress";
 import { useSession } from "@/providers/SessionProvider";
 import { formatBytes } from "@/lib/utils";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import UpdatePlan from "./UpdatePlan";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import UpdatePlan from "@/components/billing/UpdatePlan";
 import { Plan } from "@prisma/client";
-import { DataTable } from "../ui/data-table";
-import { historyColumns } from "./history-columns";
+import { DataTable } from "@/components/ui/data-table";
+import { historyColumns } from "@/components/billing/history-columns";
 import useBillingHistorySWR from "@/hooks/useBillingHistory";
 
 export default function BillingDashboard() {

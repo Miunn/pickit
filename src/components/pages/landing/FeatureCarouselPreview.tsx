@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import Feature1 from "./features-cards/Feature1";
-import Feature2 from "./features-cards/Feature2";
-import Feature3 from "./features-cards/Feature3";
-import Feature4 from "./features-cards/Feature4";
+import Feature1 from "@/components/pages/landing/features-cards/Feature1";
+import Feature2 from "@/components/pages/landing/features-cards/Feature2";
+import Feature3 from "@/components/pages/landing/features-cards/Feature3";
+import Feature4 from "@/components/pages/landing/features-cards/Feature4";
 
 export default function FeatureCarouselPreview() {
 	const [expandedIndex, setExpandedIndex] = React.useState<number>(0);

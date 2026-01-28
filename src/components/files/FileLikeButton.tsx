@@ -1,5 +1,5 @@
 import { useFilesContext } from "@/context/FilesContext";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { FileWithLikes } from "@/lib/definitions";
 import { toast } from "sonner";
 import { Heart } from "lucide-react";
@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { likeFile } from "@/actions/files";
 import { cn } from "@/lib/utils";
 import { useMemo } from "react";
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { useTranslations } from "next-intl";
 
 /**

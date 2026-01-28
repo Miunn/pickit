@@ -15,7 +15,7 @@ import { useTranslations } from "next-intl";
 import { ChevronLeft, Loader2, Share2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import React, { useState } from "react";
-import { FolderWithAccessToken } from "@/lib/definitions";
+import { FolderWithAccessToken, FolderWithLastSlug } from "@/lib/definitions";
 import { FolderTokenPermission } from "@prisma/client";
 import { createMultipleAccessTokens } from "@/actions/accessTokens";
 import { motion, AnimatePresence } from "motion/react";
@@ -27,7 +27,7 @@ export const ShareFolderDialog = ({
 	open,
 	setOpen,
 }: {
-	readonly folder: FolderWithAccessToken;
+	readonly folder: FolderWithLastSlug & FolderWithAccessToken;
 	readonly open?: boolean;
 	readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {

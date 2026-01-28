@@ -14,6 +14,7 @@ import {
 	FolderWithFilesWithFolderAndComments,
 	FolderWithTags,
 	FileWithTags,
+	FolderWithLastSlug,
 } from "@/lib/definitions";
 import { formatBytes } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
@@ -29,9 +30,11 @@ import { getImagesWithFolderAndCommentsFromFolder } from "@/actions/files";
 import { select } from "@/lib/columns-common";
 
 export const foldersListViewColumns: ColumnDef<
-	FolderWithAccessToken & FolderWithFilesCount & FolderWithFilesWithFolderAndComments
+	FolderWithLastSlug & FolderWithAccessToken & FolderWithFilesCount & FolderWithFilesWithFolderAndComments
 >[] = [
-	select as ColumnDef<FolderWithAccessToken & FolderWithFilesCount & FolderWithFilesWithFolderAndComments>,
+	select as ColumnDef<
+		FolderWithLastSlug & FolderWithAccessToken & FolderWithFilesCount & FolderWithFilesWithFolderAndComments
+	>,
 	{
 		header: "Name",
 		accessorKey: "name",
@@ -55,7 +58,7 @@ export const foldersListViewColumns: ColumnDef<
 					</div>
 				)}
 
-				<Link href={`/app/folders/${row.original.id}`} className="hover:underline">
+				<Link href={`/app/folders/${row.original.slug}`} className="hover:underline">
 					{row.getValue("name")}
 				</Link>
 			</div>
@@ -169,7 +172,7 @@ export const foldersListViewColumns: ColumnDef<
 							</DropdownMenuLabel>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem asChild>
-								<Link href={`/app/folders/${row.original.id}`}>
+								<Link href={`/app/folders/${row.original.slug}`}>
 									{t?.("columns.actions.open")}
 								</Link>
 							</DropdownMenuItem>

@@ -1,5 +1,5 @@
 import { FolderWithAccessToken } from "@/lib/definitions";
-import { getCurrentSession, SessionValidationResult } from "@/lib/session";
+import { getCurrentSession, SessionValidationResult } from "@/data/session";
 import { FolderTokenPermission } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { AccessTokenService } from "@/data/access-token-service";

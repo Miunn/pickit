@@ -1,15 +1,9 @@
 "use server";
 
-import {
-	CommentWithCreatedBy,
-	CreateCommentFormSchema,
-	FolderWithAccessToken,
-	FolderWithFilesWithFolderAndCommentsAndCreatedBy,
-	EditCommentFormSchema,
-} from "@/lib/definitions";
+import { CommentWithCreatedBy, CreateCommentFormSchema, EditCommentFormSchema } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { isAllowedToDeleteComment } from "@/lib/dal";
+import { isAllowedToDeleteComment } from "@/data/dal";
 import { FileService } from "@/data/file-service";
 import { CommentService } from "@/data/comment-service";
 import { SecureService } from "@/data/secure/secure-service";
@@ -32,6 +26,7 @@ export async function createComment(
 					},
 					createdBy: true,
 					accessTokens: { omit: { pinCode: false } },
+					slugs: { orderBy: { createdAt: "desc" }, take: 1 },
 				},
 			},
 		},
@@ -41,7 +36,7 @@ export async function createComment(
 		return null;
 	}
 
-	const folder: FolderWithFilesWithFolderAndCommentsAndCreatedBy & FolderWithAccessToken = file.folder;
+	const folder = file.folder;
 
 	const auth = await SecureService.folder.enforce(
 		folder,
@@ -95,7 +90,7 @@ export async function createComment(
 			return null;
 		}
 
-		revalidatePath(`/app/folders/${folder.id}`);
+		revalidatePath(`/app/folders/${folder.slug}`);
 		return comment;
 	} catch (e) {
 		console.error("Error creating comment", e);
@@ -113,14 +108,22 @@ export async function deleteComment(commentId: string, shareToken?: string | nul
 	try {
 		const comment = await CommentService.delete({
 			commentId,
-			include: { file: { select: { folderId: true } } },
+			include: {
+				file: {
+					select: {
+						folder: {
+							select: { slug: true },
+						},
+					},
+				},
+			},
 		});
 
 		if (!comment) {
 			return false;
 		}
 
-		revalidatePath(`/app/folders/${comment.file.folderId}`);
+		revalidatePath(`/app/folders/${comment.file.folder.slug}`);
 		return true;
 	} catch (e) {
 		console.log("Error deleting comment", e);
@@ -149,14 +152,26 @@ export async function updateComment(
 		const comment = await CommentService.update(
 			commentId,
 			{ text: result.data.content },
-			{ file: { include: { folder: { select: { id: true } } } }, createdBy: true }
+			{
+				file: {
+					include: {
+						folder: {
+							select: {
+								id: true,
+								slug: true,
+							},
+						},
+					},
+				},
+				createdBy: true,
+			}
 		);
 
 		if (!comment) {
 			return null;
 		}
 
-		revalidatePath(`/app/folders/${comment.file.folder.id}`);
+		revalidatePath(`/app/folders/${comment.file.folder.slug}`);
 		return comment;
 	} catch (e) {
 		console.log("Error updating comment", e);

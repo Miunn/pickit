@@ -1,15 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import React, { useCallback } from "react";
-import SwitchLocale from "../generic/SwitchLocale";
+import SwitchLocale from "@/components/generic/SwitchLocale";
 import { useLocale, useTranslations } from "next-intl";
-import { SwitchTheme } from "../generic/SwitchTheme";
+import { SwitchTheme } from "@/components/generic/SwitchTheme";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import LogoImage from "../generic/LogoImage";
+import LogoImage from "@/components/generic/LogoImage";
 
 const TOP_THRESHOLD = 10;
 

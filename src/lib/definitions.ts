@@ -310,7 +310,7 @@ const userWithCounts = Prisma.validator<Prisma.UserDefaultArgs>()({
 export type UserWithCounts = Prisma.UserGetPayload<typeof userWithCounts>;
 
 const lightFolders = Prisma.validator<Prisma.FolderDefaultArgs>()({
-	select: { id: true, name: true },
+	select: { id: true, name: true, slug: true },
 });
 
 export type LightFolder = Prisma.FolderGetPayload<typeof lightFolders>;
@@ -338,6 +338,18 @@ const folderWithTags = Prisma.validator<Prisma.FolderDefaultArgs>()({
 });
 
 export type FolderWithTags = Prisma.FolderGetPayload<typeof folderWithTags>;
+
+const folderWithSlugs = Prisma.validator<Prisma.FolderDefaultArgs>()({
+	include: { slugs: true },
+});
+
+export type FolderWithSlugs = Prisma.FolderGetPayload<typeof folderWithSlugs>;
+
+const folderWithLastSlug = Prisma.validator<Prisma.FolderDefaultArgs>()({
+	include: { slugs: { take: 1, orderBy: { createdAt: "desc" } } },
+});
+
+export type FolderWithLastSlug = Prisma.FolderGetPayload<typeof folderWithLastSlug>;
 
 const folderWithFilesWithFolder = Prisma.validator<Prisma.FolderDefaultArgs>()({
 	include: { files: { include: { folder: true } } },
@@ -378,7 +390,7 @@ const folderWithCover = Prisma.validator<Prisma.FolderDefaultArgs>()({
 export type FolderWithCover = Prisma.FolderGetPayload<typeof folderWithCover>;
 
 const fileLight = Prisma.validator<Prisma.FileDefaultArgs>()({
-	select: { id: true, name: true, folder: { select: { id: true, name: true } } },
+	select: { id: true, name: true, folder: { select: { id: true, name: true, slug: true } } },
 });
 
 export type FileLightWithFolderName = Prisma.FileGetPayload<typeof fileLight>;
@@ -436,3 +448,9 @@ const accessTokenWithFolder = Prisma.validator<Prisma.AccessTokenDefaultArgs>()(
 });
 
 export type AccessTokenWithFolder = Prisma.AccessTokenGetPayload<typeof accessTokenWithFolder>;
+
+const accessTokenWithFolderFirstSlug = Prisma.validator<Prisma.AccessTokenDefaultArgs>()({
+	include: { folder: { include: { slugs: { take: 1, orderBy: { createdAt: "desc" } } } } },
+});
+
+export type AccessTokenWithFolderFirstSlug = Prisma.AccessTokenGetPayload<typeof accessTokenWithFolderFirstSlug>;

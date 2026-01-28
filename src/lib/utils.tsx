@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Plan } from "@prisma/client";
-import { FileWithFolder, FileWithTags } from "./definitions";
+import { FileWithFolder, FileWithTags } from "@/lib/definitions";
 import { FilesSort, FilesSortDefinition } from "@/types/imagesSort";
 import { File } from "@google-cloud/storage";
 

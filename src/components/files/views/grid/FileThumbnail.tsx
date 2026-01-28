@@ -2,7 +2,7 @@ import TagChip from "@/components/tags/TagChip";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatBytes, isNewFile } from "@/lib/utils";
 import { CirclePlay } from "lucide-react";
-import LoadingImage from "../../LoadingImage";
+import LoadingImage from "@/components/files/LoadingImage";
 import { FileType } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import { FileWithTags } from "@/lib/definitions";

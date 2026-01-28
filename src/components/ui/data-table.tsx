@@ -1,134 +1,162 @@
 "use client";
 
 import {
-    ColumnDef,
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    SortingState,
-    useReactTable,
+	ColumnDef,
+	flexRender,
+	getCoreRowModel,
+	getFilteredRowModel,
+	getPaginationRowModel,
+	getSortedRowModel,
+	SortingState,
+	useReactTable,
 } from "@tanstack/react-table";
-
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useEffect, useState } from "react";
-import { Input } from "./input";
-import { DataTablePagination } from "./data-table-pagination";
+import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { createTranslator, useFormatter, useLocale } from "next-intl";
+import { Input } from "@/components/ui/input";
+import { useEffect, useState } from "react";
 
 interface DataTableProps<TData, TValue> {
-    readonly columns: ColumnDef<TData, TValue>[];
-    readonly data: TData[];
-    readonly selection?: { [index: number]: boolean };
-    readonly setSelection?: React.Dispatch<React.SetStateAction<{ [index: number]: boolean }>>;
-    readonly filterPlaceholder?: string;
-    readonly filterColumn?: string;
-    readonly rightHeadingNodes?: React.ReactNode;
-    readonly hideHeader?: boolean;
-    readonly translations?: ReturnType<typeof createTranslator>;
-    readonly states?: { [key: string]: unknown };
+	readonly columns: ColumnDef<TData, TValue>[];
+	readonly data: TData[];
+	readonly selection?: { [index: number]: boolean };
+	readonly setSelection?: React.Dispatch<React.SetStateAction<{ [index: number]: boolean }>>;
+	readonly filterPlaceholder?: string;
+	readonly filterColumn?: string;
+	readonly rightHeadingNodes?: React.ReactNode;
+	readonly hideHeader?: boolean;
+	readonly translations?: ReturnType<typeof createTranslator>;
+	readonly states?: { [key: string]: unknown };
 }
 
 export function DataTable<TData, TValue>({
-    columns,
-    data,
-    selection,
-    setSelection,
-    filterPlaceholder,
-    filterColumn,
-    rightHeadingNodes,
-    hideHeader,
-    translations,
-    states,
+	columns,
+	data,
+	selection,
+	setSelection,
+	filterPlaceholder,
+	filterColumn,
+	rightHeadingNodes,
+	hideHeader,
+	translations,
+	states,
 }: DataTableProps<TData, TValue>) {
-    const [sorting, setSorting] = useState<SortingState>([]);
-    const formatter = useFormatter();
-    const locale = useLocale();
+	const [sorting, setSorting] = useState<SortingState>([]);
+	const formatter = useFormatter();
+	const locale = useLocale();
 
-    const table = useReactTable({
-        data,
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        onSortingChange: setSorting,
-        onRowSelectionChange: setSelection,
-        state: {
-            sorting,
-            rowSelection: selection,
-        },
-        meta: {
-            locale,
-            intl: {
-                translations,
-                formatter,
-            },
-            states,
-        },
-    });
+	const table = useReactTable({
+		data,
+		columns,
+		getCoreRowModel: getCoreRowModel(),
+		getSortedRowModel: getSortedRowModel(),
+		getPaginationRowModel: getPaginationRowModel(),
+		getFilteredRowModel: getFilteredRowModel(),
+		onSortingChange: setSorting,
+		onRowSelectionChange: setSelection,
+		state: {
+			sorting,
+			rowSelection: selection,
+		},
+		meta: {
+			locale,
+			intl: {
+				translations,
+				formatter,
+			},
+			states,
+		},
+	});
 
-    useEffect(() => {
-        table.setPageSize(12);
-    }, [table]);
+	useEffect(() => {
+		table.setPageSize(12);
+	}, [table]);
 
-    return (
-        <div className="w-full">
-            <div className={`flex items-center justify-between py-4 ${hideHeader ? "hidden" : ""}`}>
-                {filterColumn ? (
-                    <Input
-                        placeholder={filterPlaceholder}
-                        value={(table.getColumn(filterColumn)?.getFilterValue() as string) ?? ""}
-                        onChange={event => table.getColumn(filterColumn)?.setFilterValue(event.target.value)}
-                        className="max-w-sm"
-                    />
-                ) : null}
+	return (
+		<div className="w-full">
+			<div className={`flex items-center justify-between py-4 ${hideHeader ? "hidden" : ""}`}>
+				{filterColumn ? (
+					<Input
+						placeholder={filterPlaceholder}
+						value={
+							(table.getColumn(filterColumn)?.getFilterValue() as string) ??
+							""
+						}
+						onChange={event =>
+							table
+								.getColumn(filterColumn)
+								?.setFilterValue(event.target.value)
+						}
+						className="max-w-sm"
+					/>
+				) : null}
 
-                <div>{rightHeadingNodes}</div>
-            </div>
-            <div className="rounded-md border">
-                <Table>
-                    <TableHeader>
-                        {table.getHeaderGroups().map(headerGroup => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map(header => {
-                                    return (
-                                        <TableHead
-                                            key={header.id}
-                                            style={{ width: header.getSize() === 150 ? undefined : header.getSize() }}
-                                        >
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(header.column.columnDef.header, header.getContext())}
-                                        </TableHead>
-                                    );
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map(row => (
-                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                                    {row.getVisibleCells().map(cell => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
-            <DataTablePagination table={table} />
-        </div>
-    );
+				<div>{rightHeadingNodes}</div>
+			</div>
+			<div className="rounded-md border">
+				<Table>
+					<TableHeader>
+						{table.getHeaderGroups().map(headerGroup => (
+							<TableRow key={headerGroup.id}>
+								{headerGroup.headers.map(header => {
+									return (
+										<TableHead
+											key={header.id}
+											style={{
+												width:
+													header.getSize() ===
+													150
+														? undefined
+														: header.getSize(),
+											}}
+										>
+											{header.isPlaceholder
+												? null
+												: flexRender(
+														header
+															.column
+															.columnDef
+															.header,
+														header.getContext()
+													)}
+										</TableHead>
+									);
+								})}
+							</TableRow>
+						))}
+					</TableHeader>
+					<TableBody>
+						{table.getRowModel().rows?.length ? (
+							table.getRowModel().rows.map(row => (
+								<TableRow
+									key={row.id}
+									data-state={row.getIsSelected() && "selected"}
+								>
+									{row.getVisibleCells().map(cell => (
+										<TableCell key={cell.id}>
+											{flexRender(
+												cell.column.columnDef
+													.cell,
+												cell.getContext()
+											)}
+										</TableCell>
+									))}
+								</TableRow>
+							))
+						) : (
+							<TableRow>
+								<TableCell
+									colSpan={columns.length}
+									className="h-24 text-center"
+								>
+									No results.
+								</TableCell>
+							</TableRow>
+						)}
+					</TableBody>
+				</Table>
+			</div>
+			<DataTablePagination table={table} />
+		</div>
+	);
 }

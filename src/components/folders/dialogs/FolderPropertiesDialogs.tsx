@@ -1,11 +1,11 @@
 'use client'
 
 import { FolderWithFilesCount } from "@/lib/definitions";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useFormatter, useTranslations } from "next-intl";
-import { Label } from "../../ui/label";
+import { Label } from "@/components/ui/label";
 import { formatBytes } from "@/lib/utils";
-import { Button } from "../../ui/button";
+import { Button } from "@/components/ui/button";
 
 export default function FolderPropertiesDialog({ folder, open, setOpen }: { readonly folder: FolderWithFilesCount, readonly open?: boolean, readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
     const t = useTranslations("dialogs.folders.properties");

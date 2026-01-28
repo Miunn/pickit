@@ -7,8 +7,8 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 
 export default function ChangeEmailConfirmationDialog({

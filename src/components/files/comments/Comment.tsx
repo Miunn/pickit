@@ -10,10 +10,10 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
-import DeleteCommentDialog from "./DeleteCommentDialog";
+import DeleteCommentDialog from "@/components/files/comments/DeleteCommentDialog";
 import { useSession } from "@/providers/SessionProvider";
 import { useFolderContext } from "@/context/FolderContext";
-import EditCommentDialog from "./EditCommentDialog";
+import EditCommentDialog from "@/components/files/comments/EditCommentDialog";
 import { useFilesContext } from "@/context/FilesContext";
 
 export function Comment({ comment }: { readonly comment: CommentType }) {

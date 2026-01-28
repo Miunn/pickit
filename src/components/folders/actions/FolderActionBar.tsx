@@ -1,12 +1,12 @@
-import { UploadImagesDialog } from "../../files/upload/UploadImagesDialog";
-import SortImages from "../SortImages";
-import ViewSelector, { ViewState } from "../ViewSelector";
+import { UploadImagesDialog } from "@/components/files/upload/UploadImagesDialog";
+import SortImages from "@/components/folders/SortImages";
+import ViewSelector, { ViewState } from "@/components/folders/ViewSelector";
 import { useFolderContext } from "@/context/FolderContext";
 import { useFilesContext } from "@/context/FilesContext";
 import { useSession } from "@/providers/SessionProvider";
 import { FolderTokenPermission } from "@prisma/client";
-import FolderActionDropdown from "./FolderActionDropdown";
-import FolderActionDropdownMobile from "./FolderActionDropdownMobile";
+import FolderActionDropdown from "@/components/folders/actions/FolderActionDropdown";
+import FolderActionDropdownMobile from "@/components/folders/actions/FolderActionDropdownMobile";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 /**
