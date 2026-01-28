@@ -18,125 +18,142 @@ import { FcGoogle } from "react-icons/fc";
 import { useE2EEncryptionContext } from "@/context/E2EEncryptionContext";
 
 export default function SignInForm() {
-    const locale = useLocale();
-    const t = useTranslations("components.auth.signIn");
-    const searchParams = useSearchParams();
-    const [loading, setLoading] = useState<boolean>(false);
-    const router = useRouter();
-    const { loadKeys } = useE2EEncryptionContext();
+	const locale = useLocale();
+	const t = useTranslations("components.auth.signIn");
+	const searchParams = useSearchParams();
+	const [loading, setLoading] = useState<boolean>(false);
+	const router = useRouter();
+	const { loadKeys } = useE2EEncryptionContext();
 
-    const form = useForm({
-        resolver: zodResolver(SignInFormSchema),
-        defaultValues: {
-            email: "",
-            password: "",
-        },
-    });
+	const form = useForm({
+		resolver: zodResolver(SignInFormSchema),
+		defaultValues: {
+			email: "",
+			password: "",
+		},
+	});
 
-    const onSubmit = async (data: { email: string; password: string }) => {
-        setLoading(true);
+	const onSubmit = async (data: { email: string; password: string }) => {
+		setLoading(true);
 
-        const r = await SignIn(data.email, data.password);
+		const r = await SignIn(data.email, data.password);
 
-        setLoading(false);
+		setLoading(false);
 
-        if (r?.error) {
-            toast({
-                title: t("form.error.title"),
-                description: t("form.error.message"),
-                variant: "destructive",
-            });
-            return;
-        }
+		if (r?.error) {
+			toast({
+				title: t("form.error.title"),
+				description: t("form.error.message"),
+				variant: "destructive",
+			});
+			return;
+		}
 
-        await loadKeys(data.password);
+		await loadKeys(data.password);
 
-        router.push(`/${locale}/app`);
-    };
+		router.push(`/${locale}/app`);
+	};
 
-    const displayParamsErrorToast = useCallback(() => {
-        if (searchParams.get("error")) {
-            toast({
-                title: t(`errors.${searchParams.get("error")}.title`),
-                description: t(`errors.${searchParams.get("error")}.description`),
-                variant: "destructive",
-            });
-        }
-    }, [searchParams, t]);
+	const displayParamsErrorToast = useCallback(() => {
+		if (searchParams.get("error")) {
+			toast({
+				title: t(`errors.${searchParams.get("error")}.title`),
+				description: t(`errors.${searchParams.get("error")}.description`),
+				variant: "destructive",
+			});
+		}
+	}, [searchParams, t]);
 
-    useEffect(() => {
-        displayParamsErrorToast();
-    }, [displayParamsErrorToast]);
+	useEffect(() => {
+		displayParamsErrorToast();
+	}, [displayParamsErrorToast]);
 
-    return (
-        <Card className={"w-96"}>
-            <CardHeader>
-                <CardTitle>{t("title")}</CardTitle>
-                <CardDescription>{t("description")}</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className={"space-y-4"}>
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t("form.email")}</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="exemple@mail.com" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+	return (
+		<Card className={"w-96"}>
+			<CardHeader>
+				<CardTitle>{t("title")}</CardTitle>
+				<CardDescription>{t("description")}</CardDescription>
+			</CardHeader>
+			<CardContent>
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(onSubmit)} className={"space-y-4"}>
+						<FormField
+							control={form.control}
+							name="email"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>{t("form.email")}</FormLabel>
+									<FormControl>
+										<Input
+											placeholder="exemple@mail.com"
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-                        <FormField
-                            control={form.control}
-                            name="password"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <div className="flex justify-between">
-                                        <FormLabel>{t("form.password")}</FormLabel>
-                                        <Button
-                                            variant={"link"}
-                                            className="ml-auto p-0 h-fit focus-visible:ring-offset-2"
-                                            asChild
-                                        >
-                                            <Link href={`/${locale}/account/forgot-password`} className="">
-                                                {t("form.forgotPassword")}
-                                            </Link>
-                                        </Button>
-                                    </div>
-                                    <FormControl>
-                                        <Input placeholder={"••••••••••"} type={"password"} {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+						<FormField
+							control={form.control}
+							name="password"
+							render={({ field }) => (
+								<FormItem>
+									<div className="flex justify-between">
+										<FormLabel>
+											{t("form.password")}
+										</FormLabel>
+										<Button
+											variant={"link"}
+											className="ml-auto p-0 h-fit focus-visible:ring-offset-2"
+											asChild
+										>
+											<Link
+												href={`/${locale}/account/forgot-password`}
+												className=""
+											>
+												{t(
+													"form.forgotPassword"
+												)}
+											</Link>
+										</Button>
+									</div>
+									<FormControl>
+										<Input
+											placeholder={"••••••••••"}
+											type={"password"}
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-                        {loading ? (
-                            <Button className={"w-full flex"} type="submit" disabled>
-                                <Loader2 className="animate-spin mr-2" /> {t("form.submitting")}
-                            </Button>
-                        ) : (
-                            <Button className={"w-full block"} type="submit">
-                                {" "}
-                                {t("form.submit")}
-                            </Button>
-                        )}
-                    </form>
-                </Form>
-                <div className="relative text-center text-sm my-4 after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                    <span className="relative z-10 bg-background px-2 text-muted-foreground">{t("or")}</span>
-                </div>
-                <Button variant={"outline"} className="w-full" asChild>
-                    <Link href={`/api/oauth/login/google`}>
-                        <FcGoogle className={"mr-2"} /> {t("google")}
-                    </Link>
-                </Button>
-            </CardContent>
-        </Card>
-    );
+						{loading ? (
+							<Button className={"w-full flex"} type="submit" disabled>
+								<Loader2 className="animate-spin mr-2 size-4" />{" "}
+								{t("form.submitting")}
+							</Button>
+						) : (
+							<Button className={"w-full block"} type="submit">
+								{" "}
+								{t("form.submit")}
+							</Button>
+						)}
+					</form>
+				</Form>
+				<div className="relative text-center text-sm my-4 after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+					<span className="relative z-10 bg-background px-2 text-muted-foreground">
+						{t("or")}
+					</span>
+				</div>
+				<Button variant={"outline"} className="w-full" asChild>
+					<Link href={`/api/oauth/login/google`}>
+						<FcGoogle className={"mr-2"} /> {t("google")}
+					</Link>
+				</Button>
+			</CardContent>
+		</Card>
+	);
 }

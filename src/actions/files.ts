@@ -187,7 +187,7 @@ export async function finalizeFileUpload(
 			return { error: "invalid-file-type", file: null };
 		}
 
-		revalidatePath(`/app/folders/${folder.slugs[0].slug}`);
+		revalidatePath(`/app/folders/${folder.slug}`);
 		revalidatePath(`/app/folders`);
 		revalidatePath(`/app`);
 
@@ -257,7 +257,7 @@ export async function renameFile(
 			{ name: parsedData.data.name },
 			{ folder: { select: { slugs: { orderBy: { createdAt: "desc" }, take: 1 } } } }
 		);
-		revalidatePath(`/app/folders/${image.folder.slugs[0].slug}`);
+		revalidatePath(`/app/folders/${image.folder.slug}`);
 	} catch (err) {
 		console.error("Error renaming image:", err);
 		return { error: "Image not found" };
@@ -280,7 +280,7 @@ export async function updateFileDescription(fileId: string, description: string)
 		{ folder: { select: { slugs: { orderBy: { createdAt: "desc" }, take: 1 } } } }
 	);
 
-	revalidatePath(`/app/folders/${image.folder.slugs[0].slug}`);
+	revalidatePath(`/app/folders/${image.folder.slug}`);
 	return { error: null };
 }
 
@@ -476,7 +476,7 @@ export async function deleteFile(fileId: string, shareToken?: string, hashPin?: 
 
 	await FileService.delete(fileId);
 
-	revalidatePath(`/app/folders/${file.folder.slugs[0].slug}`);
+	revalidatePath(`/app/folders/${file.folder.slug}`);
 	revalidatePath(`/app/folders`);
 	return { error: null };
 }

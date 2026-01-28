@@ -35,7 +35,7 @@ export default function ShareTokenList({
 	return (
 		<>
 			{tokenList.map(token => {
-				const lastSlug = token.folder.slugs[0].slug;
+				const lastSlug = token.folder.slug;
 
 				if (!lastSlug) return null;
 

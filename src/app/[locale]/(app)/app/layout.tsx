@@ -110,7 +110,7 @@ export default async function LocaleLayout(
 									items: folders.map(folder => ({
 										key: folder.id,
 										title: folder.name,
-										url: `/${locale}/app/folders/${folder.slugs[0].slug}`,
+										url: `/${locale}/app/folders/${folder.slug}`,
 									})),
 								},
 								{
@@ -121,7 +121,7 @@ export default async function LocaleLayout(
 									items: files.map(file => ({
 										key: file.id,
 										title: `${file.folder.name} - ${file.name}`,
-										url: `/${locale}/app/folders/${file.folder.slugs[0].slug}#${file.id}`,
+										url: `/${locale}/app/folders/${file.folder.slug}#${file.id}`,
 									})),
 								},
 								{
@@ -156,7 +156,7 @@ export default async function LocaleLayout(
 									items: sharedWithMeFolders.map(accessToken => ({
 										key: accessToken.folder.id,
 										title: `${accessToken.folder.createdBy.name} - ${accessToken.folder.name}`,
-										url: `/${locale}/app/folders/${accessToken.folder.slugs[0].slug}?share=${accessToken.token}&t=p`,
+										url: `/${locale}/app/folders/${accessToken.folder.slug}?share=${accessToken.token}&t=p`,
 									})),
 								},
 							],

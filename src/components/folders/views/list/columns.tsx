@@ -58,7 +58,7 @@ export const foldersListViewColumns: ColumnDef<
 					</div>
 				)}
 
-				<Link href={`/app/folders/${row.original.slugs[0].slug}`} className="hover:underline">
+				<Link href={`/app/folders/${row.original.slug}`} className="hover:underline">
 					{row.getValue("name")}
 				</Link>
 			</div>
@@ -172,9 +172,7 @@ export const foldersListViewColumns: ColumnDef<
 							</DropdownMenuLabel>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem asChild>
-								<Link
-									href={`/app/folders/${row.original.slugs[0].slug}`}
-								>
+								<Link href={`/app/folders/${row.original.slug}`}>
 									{t?.("columns.actions.open")}
 								</Link>
 							</DropdownMenuItem>

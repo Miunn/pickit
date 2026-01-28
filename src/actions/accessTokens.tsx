@@ -70,7 +70,7 @@ export async function createNewAccessToken(
 				[
 					{
 						email: email,
-						link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${accessToken.folder.slugs[0].slug}?share=${token}&t=p`,
+						link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${accessToken.folder.slug}?share=${token}&t=p`,
 						locked: accessToken.locked,
 					},
 				],
@@ -80,7 +80,7 @@ export async function createNewAccessToken(
 		}
 
 		revalidatePath("/app/links");
-		revalidatePath(`/app/folders/${accessToken.folder.slugs[0].slug}`);
+		revalidatePath(`/app/folders/${accessToken.folder.slug}`);
 		revalidatePath("/app/folders");
 		return { error: null, accessToken: accessToken };
 	} catch (e) {
@@ -331,7 +331,7 @@ export async function notifyAboutUpload(folderId: string, count: number) {
 		.filter(p => p.email)
 		.map(p => ({
 			email: p.email!,
-			link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folder.slugs[0].slug}?share=${p.token}&t=p`,
+			link: `${process.env.NEXT_PUBLIC_APP_URL}/app/folders/${folder.slug}?share=${p.token}&t=p`,
 			locked: p.locked,
 		}));
 

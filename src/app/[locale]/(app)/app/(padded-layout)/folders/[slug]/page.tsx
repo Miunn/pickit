@@ -14,6 +14,7 @@ import { AccessTokenService } from "@/data/access-token-service";
 import { SecureService } from "@/data/secure/secure-service";
 import { FolderSlugsService } from "@/data/folder-slugs-service";
 import { permanentRedirect } from "next/navigation";
+import { FolderService } from "@/data/folder-service";
 
 function getSortOrderBy(sort: FilesSortDefinition) {
 	switch (sort) {
@@ -151,65 +152,74 @@ export default async function FolderPage(props: {
 		select: { folderId: true },
 	});
 
-	if (!lightSlug) {
+	// Id fallback
+	const folderId = await FolderService.get({
+		where: { id: slug },
+		select: { id: true },
+	});
+
+	if (!lightSlug && !folderId) {
 		return redirect({ href: "/app/folders", locale: locale });
 	}
 
-	const orderedFolderSlugs = await FolderSlugsService.getMultiple({
-		where: { folderId: lightSlug.folderId },
+	const currentFolderSlug = await FolderService.get({
+		where: { id: lightSlug?.folderId ?? folderId?.id },
 		select: { slug: true },
-		orderBy: { createdAt: "desc" },
 	});
 
-	console.log(orderedFolderSlugs);
-
 	// Permanent redirect to the latest slug if the current slug is outdated
-	if (orderedFolderSlugs.length > 0 && orderedFolderSlugs[0].slug !== slug) {
-		return permanentRedirect(`/${locale}/app/folders/${orderedFolderSlugs[0].slug}`);
+	if (currentFolderSlug?.slug !== slug) {
+		const url = new URL(
+			`${process.env.NEXT_PUBLIC_APP_URL}/${locale}/app/folders/${currentFolderSlug?.slug}`
+		);
+		if (share) {
+			url.searchParams.append("share", share);
+		}
+		if (sort) {
+			url.searchParams.append("sort", sort);
+		}
+		if (view) {
+			url.searchParams.append("view", view);
+		}
+		if (h) {
+			url.searchParams.append("h", h);
+		}
+
+		return permanentRedirect(url.toString());
 	}
 
-	const folderSlug = await FolderSlugsService.get({
+	const folder = await FolderService.get({
 		where: { slug },
 		include: {
-			folder: {
+			files: {
 				include: {
-					files: {
+					folder: {
 						include: {
-							folder: {
-								include: {
-									_count: { select: { files: true } },
-									tags: true,
-									slugs: {
-										orderBy: { createdAt: "desc" },
-										take: 1,
-									},
-								},
-							},
-							comments: { include: { createdBy: true } },
-							likes: true,
+							_count: { select: { files: true } },
 							tags: true,
+							slugs: {
+								orderBy: { createdAt: "desc" },
+								take: 1,
+							},
 						},
-						orderBy: getSortOrderBy(sort || FilesSort.Position),
 					},
-					createdBy: true,
-					accessTokens: true,
+					comments: { include: { createdBy: true } },
+					likes: true,
 					tags: true,
-					_count: { select: { files: true } },
-					cover: true,
-					slugs: {
-						orderBy: { createdAt: "desc" },
-						take: 1,
-					},
 				},
+				orderBy: getSortOrderBy(sort || FilesSort.Position),
+			},
+			createdBy: true,
+			accessTokens: true,
+			tags: true,
+			_count: { select: { files: true } },
+			cover: true,
+			slugs: {
+				orderBy: { createdAt: "desc" },
+				take: 1,
 			},
 		},
 	});
-
-	if (!folderSlug) {
-		return redirect({ href: "/app/folders", locale: locale });
-	}
-
-	const folder = folderSlug.folder;
 
 	if (!folder) {
 		return redirect({ href: "/app/folders", locale: locale });

@@ -42,7 +42,7 @@ export const PoiWindowContent = ({ file, onClose }: ClusterWindowContentProps) =
 				<div className="p-2">
 					<h2 className="w-fit hover:underline text-sm text-gray-500 font-normal flex justify-between items-center gap-2">
 						<Link
-							href={`/app/folders/${file.folder.slugs[0].slug}?${searchParams.toString()}`}
+							href={`/app/folders/${file.folder.slug}?${searchParams.toString()}`}
 						>
 							{file.folder.name}
 						</Link>

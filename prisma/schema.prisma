@@ -52,6 +52,7 @@ model Folder {
   id           String        @id @default(cuid())
   name         String
   description  String?
+  slug         String        @unique
   key          String        @default("")
   iv           String        @default("")
   files        File[]        @relation("FolderFiles")

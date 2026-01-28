@@ -12,27 +12,18 @@ import { revalidatePath } from "next/cache";
 import { UserService } from "@/data/user-service";
 import { stripe } from "@/lib/stripe";
 
-export async function createUserHandler({
-	name,
-	email,
-	password,
-	passwordConfirmation,
-}: z.infer<typeof SignupFormSchema>): Promise<ActionResult> {
-	const parsed = SignupFormSchema.safeParse({ email, password, passwordConfirmation: password });
+export async function createUserHandler(data: z.infer<typeof SignupFormSchema>): Promise<ActionResult> {
+	const parsed = SignupFormSchema.safeParse(data);
 
 	if (!parsed.success) {
+		console.log("Parsed", parsed.error);
 		return {
 			status: "error",
 			message: "invalid-data",
 		};
 	}
 
-	if (password !== passwordConfirmation) {
-		return {
-			status: "error",
-			message: "Passwords don't match",
-		};
-	}
+	const { name, email, password } = parsed.data;
 
 	try {
 		const salt = bcrypt.genSaltSync(10);

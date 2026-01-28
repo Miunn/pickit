@@ -90,7 +90,7 @@ export async function createComment(
 			return null;
 		}
 
-		revalidatePath(`/app/folders/${folder.slugs[0].slug}`);
+		revalidatePath(`/app/folders/${folder.slug}`);
 		return comment;
 	} catch (e) {
 		console.error("Error creating comment", e);
@@ -123,7 +123,7 @@ export async function deleteComment(commentId: string, shareToken?: string | nul
 			return false;
 		}
 
-		revalidatePath(`/app/folders/${comment.file.folder.slugs[0].slug}`);
+		revalidatePath(`/app/folders/${comment.file.folder.slug}`);
 		return true;
 	} catch (e) {
 		console.log("Error deleting comment", e);
@@ -171,7 +171,7 @@ export async function updateComment(
 			return null;
 		}
 
-		revalidatePath(`/app/folders/${comment.file.folder.slugs[0].slug}`);
+		revalidatePath(`/app/folders/${comment.file.folder.slug}`);
 		return comment;
 	} catch (e) {
 		console.log("Error updating comment", e);

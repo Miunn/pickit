@@ -233,7 +233,7 @@ export const linksColumns: ColumnDef<AccessToken & { folder: FolderWithLastSlug 
 			const deleteOpen = (states?.deleteOpen as boolean) || false;
 			const setDeleteOpen = states?.setDeleteOpen as React.Dispatch<React.SetStateAction<boolean>>;
 
-			const link = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/app/folders/${accessToken.folder.slugs[0].slug}?share=${accessToken.token}`;
+			const link = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/app/folders/${accessToken.folder.slug}?share=${accessToken.token}`;
 
 			return (
 				<>
@@ -250,7 +250,7 @@ export const linksColumns: ColumnDef<AccessToken & { folder: FolderWithLastSlug 
 							</DropdownMenuLabel>
 							<DropdownMenuItem asChild>
 								<Link
-									href={`/${locale}/app/folders/${accessToken.folder.slugs[0].slug}`}
+									href={`/${locale}/app/folders/${accessToken.folder.slug}`}
 									className="cursor-default"
 								>
 									{t?.("columns.actions.open")}

@@ -21,6 +21,7 @@ async function create(data: Omit<Prisma.FolderCreateInput, "slug">) {
 	const folder = await prisma.folder.create({
 		data: {
 			name,
+			slug,
 			...rest,
 			createdBy: {
 				connect: { id: user?.id },
@@ -109,6 +110,7 @@ async function update(folderId: string, data: Prisma.FolderUpdateInput) {
 		where: { id: folderId },
 		data: {
 			name,
+			slug,
 			...rest,
 			slugs: {
 				create: slug ? { slug } : undefined,
