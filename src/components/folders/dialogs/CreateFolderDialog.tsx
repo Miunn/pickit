@@ -31,8 +31,8 @@ type CreateFolderDialogProps =
 	  }
 	| {
 			readonly children: React.ReactNode;
-			readonly open?: undefined;
-			readonly setOpen?: undefined;
+			readonly open: undefined;
+			readonly setOpen: undefined;
 	  };
 
 export default function CreateFolderDialog({ children, open, setOpen }: CreateFolderDialogProps) {
