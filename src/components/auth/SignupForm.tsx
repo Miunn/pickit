@@ -96,7 +96,7 @@ export default function SignupForm() {
 									<FormLabel>{t("form.email")}</FormLabel>
 									<FormControl>
 										<Input
-											placeholder="exemple@mail.com"
+											placeholder="example@mail.com"
 											{...field}
 										/>
 									</FormControl>

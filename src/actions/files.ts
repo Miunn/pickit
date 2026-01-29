@@ -125,7 +125,7 @@ export async function finalizeFileUpload(
 }> {
 	const folder = await FolderService.get({
 		where: { id: parentFolderId },
-		include: { accessTokens: true, slugs: { orderBy: { createdAt: "desc" }, take: 1 } },
+		include: { accessTokens: true },
 	});
 
 	if (!folder) {
@@ -143,12 +143,9 @@ export async function finalizeFileUpload(
 		return { error: "verification-not-found", file: null };
 	}
 
-	console.log("Verifying with metadata", fileVerification);
-
 	try {
 		// Get verification data
 		const [fileMetadata] = await GoogleBucket.file(fileVerification.objectPath).getMetadata();
-		console.log("Google metadata", fileMetadata);
 
 		if (fileMetadata.size?.toString() !== fileVerification.expectedSize.toString()) {
 			await GoogleBucket.file(fileVerification.objectPath).delete();

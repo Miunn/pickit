@@ -10,29 +10,29 @@ async function create(data: Omit<Prisma.FolderCreateInput, "slug">) {
 
 	const slug = SlugService.generateSlug(name.toString(), true);
 
-	const isSlugTaken = await prisma.folderSlug.findUnique({
-		where: { slug },
-	});
-
-	if (isSlugTaken) {
-		throw new Error("Folder with this slug already exists. Please try again.");
+	try {
+		const folder = await prisma.folder.create({
+			data: {
+				name,
+				slug,
+				...rest,
+				createdBy: {
+					connect: { id: user?.id },
+				},
+				slugs: {
+					create: { slug },
+				},
+			},
+		});
+		return folder;
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			if (error.code === "P2002") {
+				throw new Error("slug-taken");
+			}
+		}
+		throw new Error("unknown-error");
 	}
-
-	const folder = await prisma.folder.create({
-		data: {
-			name,
-			slug,
-			...rest,
-			createdBy: {
-				connect: { id: user?.id },
-			},
-			slugs: {
-				create: { slug },
-			},
-		},
-	});
-
-	return folder;
 }
 
 // Define types for better overload handling

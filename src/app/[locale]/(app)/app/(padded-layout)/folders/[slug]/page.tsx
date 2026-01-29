@@ -15,6 +15,7 @@ import { SecureService } from "@/data/secure/secure-service";
 import { FolderSlugsService } from "@/data/folder-slugs-service";
 import { permanentRedirect } from "next/navigation";
 import { FolderService } from "@/data/folder-service";
+import { buildUrl } from "@/lib/utils";
 
 function getSortOrderBy(sort: FilesSortDefinition) {
 	switch (sort) {
@@ -158,32 +159,26 @@ export default async function FolderPage(props: {
 		select: { id: true },
 	});
 
-	if (!lightSlug && !folderId) {
-		return redirect({ href: "/app/folders", locale: locale });
-	}
-
 	const currentFolderSlug = await FolderService.get({
 		where: { id: lightSlug?.folderId ?? folderId?.id },
 		select: { slug: true },
 	});
 
+	if (!currentFolderSlug) {
+		return redirect({ href: "/app/folders", locale: locale });
+	}
+
 	// Permanent redirect to the latest slug if the current slug is outdated
-	if (currentFolderSlug?.slug !== slug) {
-		const url = new URL(
-			`${process.env.NEXT_PUBLIC_APP_URL}/${locale}/app/folders/${currentFolderSlug?.slug}`
+	if (currentFolderSlug.slug !== slug) {
+		const url = buildUrl(
+			`${process.env.NEXT_PUBLIC_APP_URL}/${locale}/app/folders/${currentFolderSlug.slug}`,
+			{
+				share,
+				sort,
+				view,
+				h,
+			}
 		);
-		if (share) {
-			url.searchParams.append("share", share);
-		}
-		if (sort) {
-			url.searchParams.append("sort", sort);
-		}
-		if (view) {
-			url.searchParams.append("view", view);
-		}
-		if (h) {
-			url.searchParams.append("h", h);
-		}
 
 		return permanentRedirect(url.toString());
 	}

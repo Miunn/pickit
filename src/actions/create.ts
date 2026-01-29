@@ -49,13 +49,13 @@ export async function createUserHandler(data: z.infer<typeof SignupFormSchema>):
 		if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
 			return {
 				status: "error",
-				message: "An account with the same email already exists",
+				message: "email-exists",
 			};
 		}
 
 		return {
 			status: "error",
-			message: "An unknown error happened while creating your account",
+			message: "unknown-error",
 		};
 	}
 }

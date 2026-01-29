@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { X } from "lucide-react";
 import { FolderWithLastSlug } from "@/lib/definitions";

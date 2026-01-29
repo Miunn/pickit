@@ -34,7 +34,6 @@ export default function CreateFolderDialog({
 }) {
 	const t = useTranslations("dialogs.folders.create");
 
-	const [loading, setLoading] = useState(false);
 	const [internalOpen, setInternalOpen] = useState(false);
 	const openState = open ?? internalOpen;
 	const setOpenState = setOpen ?? setInternalOpen;
@@ -46,12 +45,10 @@ export default function CreateFolderDialog({
 		},
 	});
 
-	function onSubmit(data: z.infer<typeof CreateFolderFormSchema>) {
-		setLoading(true);
-		createFolder(data.name).then(d => {
-			setLoading(false);
-
-			if (d.error) {
+	async function onSubmit(data: z.infer<typeof CreateFolderFormSchema>) {
+		try {
+			const r = await createFolder(data.name);
+			if (r.error) {
 				toast({
 					title: t("errors.unknown.title"),
 					description: t("errors.unknown.description"),
@@ -65,9 +62,14 @@ export default function CreateFolderDialog({
 				title: t("success.title"),
 				description: t("success.description"),
 			});
-
 			setOpenState(false);
-		});
+		} catch {
+			toast({
+				title: t("errors.unknown.title"),
+				description: t("errors.unknown.description"),
+				variant: "destructive",
+			});
+		}
 	}
 
 	return (
@@ -114,7 +116,7 @@ export default function CreateFolderDialog({
 									{t("actions.cancel")}
 								</Button>
 							</DialogClose>
-							{loading ? (
+							{form.formState.isSubmitting ? (
 								<Button disabled={true}>
 									<Loader2
 										className={"size-4 mr-2 animate-spin"}

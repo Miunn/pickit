@@ -242,6 +242,18 @@ export function webStreamFromFile(file: File): ReadableStream {
 	});
 }
 
+export function buildUrl(base: string, params: Record<string, string | number | boolean | undefined>): string {
+	const url = new URL(base);
+
+	Object.entries(params).forEach(([key, value]) => {
+		if (value !== undefined) {
+			url.searchParams.append(key, String(value));
+		}
+	});
+
+	return url.toString();
+}
+
 /**
  * Combine and normalize CSS class names into a single string, resolving Tailwind-specific conflicts.
  *
