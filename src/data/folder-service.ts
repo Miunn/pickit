@@ -1,11 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import { getCurrentSession } from "@/data/session";
 import { Prisma } from "@prisma/client";
 import { SlugService } from "@/data/slug-service";
 
 async function create(data: Omit<Prisma.FolderCreateInput, "slug">) {
-	const { user } = await getCurrentSession();
-
 	const { name, ...rest } = data;
 
 	const slug = SlugService.generateSlug(name.toString(), true);
@@ -16,9 +13,6 @@ async function create(data: Omit<Prisma.FolderCreateInput, "slug">) {
 				name,
 				slug,
 				...rest,
-				createdBy: {
-					connect: { id: user?.id },
-				},
 				slugs: {
 					create: { slug },
 				},

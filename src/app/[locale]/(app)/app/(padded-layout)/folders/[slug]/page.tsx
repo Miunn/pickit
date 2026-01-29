@@ -159,8 +159,14 @@ export default async function FolderPage(props: {
 		select: { id: true },
 	});
 
+	const resolvedFolderId = lightSlug?.folderId ?? folderId?.id;
+
+	if (!resolvedFolderId) {
+		return redirect({ href: "/app/folders", locale: locale });
+	}
+
 	const currentFolderSlug = await FolderService.get({
-		where: { id: lightSlug?.folderId ?? folderId?.id },
+		where: { id: resolvedFolderId },
 		select: { slug: true },
 	});
 

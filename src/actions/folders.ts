@@ -27,11 +27,7 @@ export async function createFolder(name: string): Promise<{
 	const writeToken = crypto.randomUUID();
 	const folder = await FolderService.create({
 		name: name,
-		createdBy: {
-			connect: {
-				id: user.id as string,
-			},
-		},
+		createdBy: { connect: { id: user.id } },
 		accessTokens: {
 			create: [
 				{
