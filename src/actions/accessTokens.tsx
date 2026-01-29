@@ -320,7 +320,7 @@ export async function notifyAboutUpload(folderId: string, count: number) {
 
 	const folder = await FolderService.get({
 		where: { id: folderId, createdBy: { id: user.id } },
-		include: { accessTokens: true, slugs: { orderBy: { createdAt: "desc" }, take: 1 } },
+		include: { accessTokens: true },
 	});
 
 	if (!folder) {

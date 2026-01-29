@@ -5,7 +5,7 @@ import {
 	Folder,
 	FolderPlus,
 	Folders,
-	Image,
+	ImageIcon,
 	Images,
 	LayoutDashboard,
 	Link,
@@ -144,7 +144,7 @@ export function CommandSearch({
 											)
 										}
 									>
-										<Image />
+										<ImageIcon />
 										<span>
 											{file.folder.name} - {file.name}
 										</span>
