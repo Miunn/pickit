@@ -1,12 +1,12 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Button } from "../ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ArrowDownWideNarrow, Check, ChevronDown } from "lucide-react";
 import React, { useMemo } from "react";
 import { FilesSort, FilesSortDefinition, parseFilesSort, SortAttribute } from "@/types/imagesSort";
-import SortArrow from "../generic/SortArrow";
+import SortArrow from "@/components/generic/SortArrow";
 
 export interface SortImagesProps {
 	readonly sortState: FilesSortDefinition;

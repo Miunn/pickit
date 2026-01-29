@@ -4,8 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from "next-intl";
 import { AccessTokenWithFolder, LightFolder } from "@/lib/definitions";
 import { useQueryState } from "nuqs";
-import PersonDataTable from "../links/person-data-table";
-import LinksDataTable from "../links/links-data-table";
+import PersonDataTable from "@/components/links/person-data-table";
+import LinksDataTable from "@/components/links/links-data-table";
 
 export interface LinksContentProps {
 	readonly side: "links" | "contacts";

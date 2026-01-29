@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { Folder } from "@prisma/client";
 import { Images, X } from "lucide-react";
-import LoadingImage from "../files/LoadingImage";
+import LoadingImage from "@/components/files/LoadingImage";
 import { useSearchParams } from "next/navigation";
 
 type ClusterWindowContentProps = {

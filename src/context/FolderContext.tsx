@@ -5,19 +5,26 @@ import {
 	FolderWithCover,
 	FolderWithCreatedBy,
 	FolderWithFilesCount,
+	FolderWithLastSlug,
 	FolderWithTags,
 } from "@/lib/definitions";
 import { createVault, loadVault } from "@/lib/e2ee/vault";
 import { AccessToken } from "@prisma/client";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { useE2EEncryptionContext } from "./E2EEncryptionContext";
+import { useE2EEncryptionContext } from "@/context/E2EEncryptionContext";
 import { updateFolderKey } from "@/actions/folders";
 
 type FolderContextType = {
-	folder: FolderWithTags & FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover;
+	folder: FolderWithLastSlug &
+		FolderWithTags &
+		FolderWithCreatedBy &
+		FolderWithAccessToken &
+		FolderWithFilesCount &
+		FolderWithCover;
 	setFolder: React.Dispatch<
 		React.SetStateAction<
-			FolderWithTags &
+			FolderWithLastSlug &
+				FolderWithTags &
 				FolderWithCreatedBy &
 				FolderWithAccessToken &
 				FolderWithFilesCount &
@@ -50,7 +57,8 @@ export function FolderProvider({
 	isShared,
 }: {
 	readonly children: React.ReactNode;
-	readonly folderData: FolderWithTags &
+	readonly folderData: FolderWithLastSlug &
+		FolderWithTags &
 		FolderWithCreatedBy &
 		FolderWithAccessToken &
 		FolderWithFilesCount &
@@ -60,7 +68,12 @@ export function FolderProvider({
 	readonly isShared: boolean;
 }) {
 	const [folder, setFolder] = useState<
-		FolderWithTags & FolderWithCreatedBy & FolderWithAccessToken & FolderWithFilesCount & FolderWithCover
+		FolderWithLastSlug &
+			FolderWithTags &
+			FolderWithCreatedBy &
+			FolderWithAccessToken &
+			FolderWithFilesCount &
+			FolderWithCover
 	>(folderData);
 	const [token, setToken] = useState<AccessToken | null>(tokenData);
 

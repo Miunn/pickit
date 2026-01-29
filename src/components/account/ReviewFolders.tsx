@@ -23,6 +23,7 @@ export default function ReviewFolders({
 	readonly folders: {
 		id: string;
 		name: string;
+		slug: string;
 		size: number;
 		createdAt: Date;
 		_count: { files: number };
@@ -87,7 +88,7 @@ export default function ReviewFolders({
 									</DropdownMenuLabel>
 									<DropdownMenuItem asChild>
 										<Link
-											href={`/${locale}/app/folders/${folder.id}`}
+											href={`/${locale}/app/folders/${folder.slug}`}
 											className="cursor-default"
 										>
 											{t(

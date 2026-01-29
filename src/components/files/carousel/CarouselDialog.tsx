@@ -2,7 +2,7 @@
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import React from "react";
-import ImagesCarousel from "./ImagesCarousel";
+import ImagesCarousel from "@/components/files/carousel/ImagesCarousel";
 import { useTranslations } from "next-intl";
 
 export const CarouselDialog = ({

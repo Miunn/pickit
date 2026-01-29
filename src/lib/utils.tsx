@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Plan } from "@prisma/client";
-import { FileWithFolder, FileWithTags } from "./definitions";
+import { FileWithFolder, FileWithTags } from "@/lib/definitions";
 import { FilesSort, FilesSortDefinition } from "@/types/imagesSort";
 import { File } from "@google-cloud/storage";
 
@@ -240,6 +240,18 @@ export function webStreamFromFile(file: File): ReadableStream {
 			stream.destroy();
 		},
 	});
+}
+
+export function buildUrl(base: string, params: Record<string, string | number | boolean | undefined>): string {
+	const url = new URL(base);
+
+	Object.entries(params).forEach(([key, value]) => {
+		if (value !== undefined) {
+			url.searchParams.append(key, String(value));
+		}
+	});
+
+	return url.toString();
 }
 
 /**

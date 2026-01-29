@@ -3,11 +3,11 @@
 import { LockFolderFormSchema } from "@/lib/definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "../ui/input-otp";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { z } from "zod";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React from "react";
@@ -15,13 +15,7 @@ import { useRouter } from "@/i18n/navigation";
 import bcrypt from "bcryptjs";
 import { useSearchParams } from "next/navigation";
 
-export default function UnlockTokenPrompt({
-	folderId,
-	wrongPin,
-}: {
-	readonly folderId: string;
-	readonly wrongPin?: boolean;
-}) {
+export default function UnlockTokenPrompt({ slug, wrongPin }: { readonly slug: string; readonly wrongPin?: boolean }) {
 	const searchParams = useSearchParams();
 	const shareToken = searchParams.get("share");
 
@@ -42,7 +36,7 @@ export default function UnlockTokenPrompt({
 			hashedPin = await bcrypt.hash(data.pin, salt);
 		}
 
-		router.push(`/app/folders/${folderId}?share=${shareToken}&h=${hashedPin}`);
+		router.push(`/app/folders/${slug}?share=${shareToken}&h=${hashedPin}`);
 	};
 
 	return (

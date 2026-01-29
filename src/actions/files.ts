@@ -10,12 +10,12 @@ import {
 	RenameImageFormSchema,
 	RequestFileUploadFormSchema,
 } from "@/lib/definitions";
-import { getCurrentSession } from "@/lib/session";
+import { getCurrentSession } from "@/data/session";
 import { z } from "zod";
 import { generateV4DownloadUrl, GoogleBucket } from "@/lib/bucket";
 import crypto from "node:crypto";
 import { FileType, FileLike } from "@prisma/client";
-import { canLikeFile, isAllowedToAccessFile } from "@/lib/dal";
+import { canLikeFile, isAllowedToAccessFile } from "@/data/dal";
 import { AccessTokenService } from "@/data/access-token-service";
 import { FolderService } from "@/data/folder-service";
 import { FileService } from "@/data/file-service";
@@ -123,7 +123,10 @@ export async function finalizeFileUpload(
 				})
 		| null;
 }> {
-	const folder = await FolderService.get({ where: { id: parentFolderId }, include: { accessTokens: true } });
+	const folder = await FolderService.get({
+		where: { id: parentFolderId },
+		include: { accessTokens: true },
+	});
 
 	if (!folder) {
 		return { error: "folder-not-found", file: null };
@@ -140,12 +143,9 @@ export async function finalizeFileUpload(
 		return { error: "verification-not-found", file: null };
 	}
 
-	console.log("Verifying with metadata", fileVerification);
-
 	try {
 		// Get verification data
 		const [fileMetadata] = await GoogleBucket.file(fileVerification.objectPath).getMetadata();
-		console.log("Google metadata", fileMetadata);
 
 		if (fileMetadata.size?.toString() !== fileVerification.expectedSize.toString()) {
 			await GoogleBucket.file(fileVerification.objectPath).delete();
@@ -184,12 +184,12 @@ export async function finalizeFileUpload(
 			return { error: "invalid-file-type", file: null };
 		}
 
-		revalidatePath(`/app/folders/${parentFolderId}`);
+		revalidatePath(`/app/folders/${folder.slug}`);
 		revalidatePath(`/app/folders`);
 		revalidatePath(`/app`);
 
 		const signedUrl = await generateV4DownloadUrl(
-			`${folder.createdById}/${parentFolderId}/${fileVerification.fileId}`
+			`${folder.createdById}/${folder.id}/${fileVerification.fileId}`
 		);
 		return { error: null, file: { ...updatedFile, signedUrl } };
 	} catch (err) {
@@ -249,8 +249,12 @@ export async function renameFile(
 	}
 
 	try {
-		const image = await FileService.update(fileId, { name: parsedData.data.name });
-		revalidatePath(`/app/folders/${image.folderId}`);
+		const image = await FileService.update(
+			fileId,
+			{ name: parsedData.data.name },
+			{ folder: { select: { slug: true } } }
+		);
+		revalidatePath(`/app/folders/${image.folder.slug}`);
 	} catch (err) {
 		console.error("Error renaming image:", err);
 		return { error: "Image not found" };
@@ -267,9 +271,9 @@ export async function updateFileDescription(fileId: string, description: string)
 		return { error: "You must be logged in to update file description" };
 	}
 
-	const image = await FileService.update(fileId, { description });
+	const image = await FileService.update(fileId, { description }, { folder: { select: { slug: true } } });
 
-	revalidatePath(`/app/folders/${image.folderId}`);
+	revalidatePath(`/app/folders/${image.folder.slug}`);
 	return { error: null };
 }
 
@@ -442,6 +446,7 @@ export async function deleteFile(fileId: string, shareToken?: string, hashPin?: 
 
 	const file = await FileService.get({
 		where: { id: fileId },
+		include: { folder: { select: { slug: true } } },
 	});
 
 	if (!file) {
@@ -464,7 +469,7 @@ export async function deleteFile(fileId: string, shareToken?: string, hashPin?: 
 
 	await FileService.delete(fileId);
 
-	revalidatePath(`/app/folders/${file.folderId}`);
+	revalidatePath(`/app/folders/${file.folder.slug}`);
 	revalidatePath(`/app/folders`);
 	return { error: null };
 }

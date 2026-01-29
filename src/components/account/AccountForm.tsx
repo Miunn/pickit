@@ -13,7 +13,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import ChangeEmailConfirmationDialog from "./ChangeEmailConfirmationDialog";
+import ChangeEmailConfirmationDialog from "@/components/account/ChangeEmailConfirmationDialog";
 import { useSearchParams } from "next/navigation";
 
 export default function AccountForm({ user }: { readonly user: UserLight }) {
@@ -64,7 +64,7 @@ export default function AccountForm({ user }: { readonly user: UserLight }) {
 
 	async function requestNewVerificationEmail() {
 		setNewVerificationLoading(true);
-		const r = await sendVerificationEmail(user.email);
+		const r = await sendVerificationEmail();
 		setNewVerificationLoading(false);
 
 		if (r.error) {

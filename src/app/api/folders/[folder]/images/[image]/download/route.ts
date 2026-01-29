@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleBucket } from "@/lib/bucket";
-import { isAllowedToAccessFile } from "@/lib/dal";
+import { isAllowedToAccessFile } from "@/data/dal";
 import { FileService } from "@/data/file-service";
 import { webStreamFromFile } from "@/lib/utils";
 

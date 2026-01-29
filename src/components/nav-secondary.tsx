@@ -8,7 +8,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Progress } from "./ui/progress";
+import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 import { formatBytes } from "@/lib/utils";
 import { useTranslations } from "next-intl";

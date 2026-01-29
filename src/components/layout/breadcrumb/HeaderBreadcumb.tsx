@@ -9,10 +9,10 @@ import {
 	BreadcrumbList,
 	BreadcrumbPage,
 	BreadcrumbSeparator,
-} from "../../ui/breadcrumb";
+} from "@/components/ui/breadcrumb";
 import { UserAdministration } from "@/lib/definitions";
 import { useLocale, useTranslations } from "next-intl";
-import { parsePathname, buildBreadcrumbTrail } from "./helpers";
+import { parsePathname, buildBreadcrumbTrail } from "@/components/layout/breadcrumb/helpers";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function HeaderBreadcumb({

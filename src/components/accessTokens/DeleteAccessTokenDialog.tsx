@@ -1,4 +1,4 @@
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogClose,
@@ -7,7 +7,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from "../ui/dialog";
+} from "@/components/ui/dialog";
 import { useState } from "react";
 import { deleteAccessToken } from "@/actions/accessTokens";
 import { toast } from "@/hooks/use-toast";

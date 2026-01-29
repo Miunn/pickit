@@ -35,6 +35,7 @@ type GetOptions<
 > = {
 	method?: "unique";
 	where: Prisma.FileWhereUniqueInput;
+	include?: I;
 } & (S extends Prisma.FileSelect ? { select: S } : object) &
 	(I extends Prisma.FileInclude ? { include: I } : object);
 
@@ -45,6 +46,7 @@ type GetFirstOptions<
 	where: Prisma.FileWhereInput;
 	method?: "first";
 	orderBy?: Prisma.Enumerable<Prisma.FileOrderByWithRelationInput>;
+	include?: I;
 } & (S extends Prisma.FileSelect ? { select: S } : object) &
 	(I extends Prisma.FileInclude ? { include: I } : object);
 

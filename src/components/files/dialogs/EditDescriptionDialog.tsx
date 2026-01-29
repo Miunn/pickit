@@ -25,7 +25,7 @@ import { useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { FileWithFolder, EditDescriptionFormSchema } from "@/lib/definitions";
-import { Textarea } from "../../ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 import { updateFileDescription } from "@/actions/files";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

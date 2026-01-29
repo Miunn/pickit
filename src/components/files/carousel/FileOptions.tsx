@@ -1,14 +1,13 @@
 import { Braces, Check, Copy, Download, Ellipsis, Expand, ExternalLink, Tags } from "lucide-react";
 import { toast as sonnerToast } from "sonner";
 import { Button } from "@/components/ui/button";
-import FullScreenImageCarousel from "./FullScrenImageCarousel";
 import Link from "next/link";
 import { copyImageToClipboard, filterObjectOut } from "@/lib/utils";
 import { FileWithTags, FolderWithTags } from "@/lib/definitions";
 import { toast } from "@/hooks/use-toast";
 import { FileType, FolderTag } from "@prisma/client";
 import { useState } from "react";
-import ImageExif from "../ImageExif";
+import ImageExif from "@/components/files/ImageExif";
 import { CarouselApi } from "@/components/ui/carousel";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
@@ -18,11 +17,12 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import ManageTagsDialog from "../dialogs/ManageTagsDialog";
+import ManageTagsDialog from "@/components/files/dialogs/ManageTagsDialog";
 import { useSession } from "@/providers/SessionProvider";
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { addTagsToFile, removeTagsFromFile } from "@/actions/tags";
 import { useTopLoader } from "nextjs-toploader";
+import FullScreenImageCarousel from "@/components/files/carousel/FullScreenImageCarousel";
 
 /**
  * Render action controls for a file including tag management, fullscreen carousel, open-in-new-tab, download, copy-to-clipboard, and metadata actions.

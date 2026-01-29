@@ -1,5 +1,5 @@
 import { Body, Button, Column, Font, Head, Html, Img, Row, Section, Tailwind, Text } from "@react-email/components";
-import EmailFooter from "./EmailFooter";
+import EmailFooter from "@/components/emails/EmailFooter";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL ? process.env.NEXT_PUBLIC_APP_URL : "http://localhost:3000";
 

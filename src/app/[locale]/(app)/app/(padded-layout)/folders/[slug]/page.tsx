@@ -11,8 +11,11 @@ import { FilesProvider } from "@/context/FilesContext";
 import { TokenProvider } from "@/context/TokenContext";
 import { generateV4DownloadUrl } from "@/lib/bucket";
 import { AccessTokenService } from "@/data/access-token-service";
-import { FolderService } from "@/data/folder-service";
 import { SecureService } from "@/data/secure/secure-service";
+import { FolderSlugsService } from "@/data/folder-slugs-service";
+import { permanentRedirect } from "next/navigation";
+import { FolderService } from "@/data/folder-service";
+import { buildUrl } from "@/lib/utils";
 
 function getSortOrderBy(sort: FilesSortDefinition) {
 	switch (sort) {
@@ -40,7 +43,7 @@ function getSortOrderBy(sort: FilesSortDefinition) {
 }
 
 export async function generateMetadata(props: {
-	params: Promise<{ folderId: string; locale: string }>;
+	params: Promise<{ slug: string; locale: string }>;
 	searchParams: Promise<{
 		sort?: FilesSortDefinition;
 		view?: ViewState;
@@ -99,7 +102,7 @@ export async function generateMetadata(props: {
 			images: [
 				{
 					alt: "Echomori",
-					url: `${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folderId}/og?share=${searchParams.share}&h=${searchParams.h}`,
+					url: `${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.slug}/og?share=${searchParams.share}&h=${searchParams.h}`,
 					type: "image/png",
 					width: 1200,
 					height: 630,
@@ -131,7 +134,7 @@ export async function generateMetadata(props: {
  * @returns The React element for the folder page, or a redirect response when access is denied, a share link is invalid, or the folder is not found.
  */
 export default async function FolderPage(props: {
-	readonly params: Promise<{ readonly folderId: string; readonly locale: string }>;
+	readonly params: Promise<{ readonly slug: string; readonly locale: string }>;
 	readonly searchParams: Promise<{
 		readonly sort?: FilesSortDefinition;
 		readonly view?: ViewState;
@@ -142,16 +145,64 @@ export default async function FolderPage(props: {
 		readonly wrongPin?: boolean;
 	}>;
 }) {
-	const { locale, folderId } = await props.params;
+	const { locale, slug } = await props.params;
 	const { share, h, sort, view } = await props.searchParams;
 
+	const lightSlug = await FolderSlugsService.get({
+		where: { slug },
+		select: { folderId: true },
+	});
+
+	// Id fallback
+	const folderId = await FolderService.get({
+		where: { id: slug },
+		select: { id: true },
+	});
+
+	const resolvedFolderId = lightSlug?.folderId ?? folderId?.id;
+
+	if (!resolvedFolderId) {
+		return redirect({ href: "/app/folders", locale: locale });
+	}
+
+	const currentFolderSlug = await FolderService.get({
+		where: { id: resolvedFolderId },
+		select: { slug: true },
+	});
+
+	if (!currentFolderSlug) {
+		return redirect({ href: "/app/folders", locale: locale });
+	}
+
+	// Permanent redirect to the latest slug if the current slug is outdated
+	if (currentFolderSlug.slug !== slug) {
+		const url = buildUrl(
+			`${process.env.NEXT_PUBLIC_APP_URL}/${locale}/app/folders/${currentFolderSlug.slug}`,
+			{
+				share,
+				sort,
+				view,
+				h,
+			}
+		);
+
+		return permanentRedirect(url.toString());
+	}
+
 	const folder = await FolderService.get({
-		where: { id: folderId },
+		where: { slug },
 		include: {
 			files: {
 				include: {
 					folder: {
-						include: { _count: { select: { files: true } }, tags: true },
+						include: {
+							_count: { select: { files: true } },
+							tags: true,
+							slugs: {
+								orderBy: { createdAt: "desc" },
+								take: 1,
+							},
+						},
 					},
 					comments: { include: { createdBy: true } },
 					likes: true,
@@ -164,23 +215,27 @@ export default async function FolderPage(props: {
 			tags: true,
 			_count: { select: { files: true } },
 			cover: true,
+			slugs: {
+				orderBy: { createdAt: "desc" },
+				take: 1,
+			},
 		},
 	});
 
 	if (!folder) {
-		return redirect({ href: "/folders", locale: locale });
+		return redirect({ href: "/app/folders", locale: locale });
 	}
 
 	const auth = await SecureService.folder.enforce(folder, share, h);
 
-	if (!auth.allowed && auth.reason === "invalid-pin") {
-		return redirect({
-			href: `/app/folders/${folderId}/unlock?share=${share}`,
-			locale,
-		});
-	}
-
 	if (!auth.allowed) {
+		if (auth.reason === "invalid-pin") {
+			return redirect({
+				href: `/app/folders/${slug}/unlock?share=${share}`,
+				locale,
+			});
+		}
+
 		if (share) {
 			return redirect({
 				href: `/links/invalid/${share}`,
@@ -188,7 +243,7 @@ export default async function FolderPage(props: {
 			});
 		}
 
-		return redirect({ href: "/folders", locale: locale });
+		return redirect({ href: "/app/folders", locale: locale });
 	}
 
 	let accessToken = null;
@@ -198,9 +253,7 @@ export default async function FolderPage(props: {
 			where: { token: share },
 			include: { folder: true },
 		});
-	}
 
-	if (share) {
 		fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/tokens/increment?token=${share}`);
 	}
 

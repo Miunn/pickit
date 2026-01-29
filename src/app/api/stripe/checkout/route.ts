@@ -1,4 +1,4 @@
-import { getCurrentSession } from "@/lib/session";
+import { getCurrentSession } from "@/data/session";
 import { stripe } from "@/lib/stripe";
 import { getPlanFromPriceId } from "@/lib/utils";
 import { Plan } from "@prisma/client";

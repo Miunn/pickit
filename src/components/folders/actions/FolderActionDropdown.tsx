@@ -15,7 +15,7 @@ import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTopLoader } from "nextjs-toploader";
 import { useState } from "react";
-import { ShareFolderDialog } from "../dialogs/ShareFolderDialog";
+import { ShareFolderDialog } from "@/components/folders/dialogs/ShareFolderDialog";
 import { useFilesContext } from "@/context/FilesContext";
 import Link from "next/link";
 

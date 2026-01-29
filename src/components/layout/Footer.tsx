@@ -1,5 +1,5 @@
 import { useLocale, useTranslations } from "next-intl";
-import { Label } from "../ui/label";
+import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
 export default function Footer() {

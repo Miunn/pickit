@@ -9,7 +9,7 @@ import DeleteAccessTokenDialog from "@/components/accessTokens/DeleteAccessToken
 import { AccessTokenWithFolder, LightFolder } from "@/lib/definitions";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { linksColumns } from "./columns";
+import { linksColumns } from "@/components/links/columns";
 
 export default function LinksDataTable({
 	accessTokens,

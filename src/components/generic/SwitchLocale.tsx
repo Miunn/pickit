@@ -3,7 +3,7 @@
 import { cn, switchLocaleUrl } from "@/lib/utils";
 import { Languages } from "lucide-react";
 import Link from "next/link";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { usePathname, useSearchParams } from "next/navigation";
 
 export default function SwitchLocale({ locale, className }: { readonly locale: string, readonly className?: string }) {

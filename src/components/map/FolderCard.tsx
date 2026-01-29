@@ -2,12 +2,12 @@ import { FolderWithFilesCount } from "@/lib/definitions";
 import { useFormatter, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useRef, useState } from "react";
-import { Ripple } from "../ui/ripple";
-import { Checkbox } from "../ui/checkbox";
+import { Ripple } from "@/components/ui/ripple";
+import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
 import { FileWarning, Images } from "lucide-react";
-import { Separator } from "../ui/separator";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { Separator } from "@/components/ui/separator";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 interface FolderCardProps {

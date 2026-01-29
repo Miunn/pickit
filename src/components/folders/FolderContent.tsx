@@ -1,14 +1,14 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { ViewState } from "./ViewSelector";
-import ImagesList from "../files/views/list/ImagesList";
+import { ViewState } from "@/components/folders/ViewSelector";
+import ImagesList from "@/components/files/views/list/ImagesList";
 import { useFolderContext } from "@/context/FolderContext";
 import { useFilesContext } from "@/context/FilesContext";
 import dynamic from "next/dynamic";
-import FolderActionBar from "./actions/FolderActionBar";
+import FolderActionBar from "@/components/folders/actions/FolderActionBar";
 import { useSession } from "@/providers/SessionProvider";
-import TagGroupedGrid from "../files/views/grid/TagGroupedGrid";
+import TagGroupedGrid from "@/components/files/views/grid/TagGroupedGrid";
 
 const ImagesGrid = dynamic(() => import("@/components/files/views/grid/ImagesGrid").then(mod => mod.ImagesGrid), {
 	ssr: false,

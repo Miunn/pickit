@@ -3,7 +3,7 @@
 import { DataTable } from "@/components/ui/data-table";
 import { UserAdministration } from "@/lib/definitions";
 import { useState } from "react";
-import { usersColumns } from "./columns-users";
+import { usersColumns } from "@/components/admin/table/columns-users";
 import { useTranslations } from "next-intl";
 
 export default function UsersDataTable({
