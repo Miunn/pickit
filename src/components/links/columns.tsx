@@ -342,7 +342,7 @@ export const linksColumns: ColumnDef<AccessTokenWithFolder>[] = [
 									onClick={async () => {
 										const r =
 											await changeAccessTokenAllowMap(
-												accessToken.id,
+												accessToken.token,
 												false
 											);
 										if (r.error) {
