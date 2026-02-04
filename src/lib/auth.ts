@@ -13,7 +13,7 @@ export const auth = betterAuth({
 	plugins: [
 		adminPlugin({
 			ac,
-			foles: { admin, user },
+			roles: { admin, user },
 		}),
 	],
 	emailAndPassword: {
@@ -57,7 +57,7 @@ export const auth = betterAuth({
 			maxStorage: {
 				type: "number",
 				bigint: true,
-				defaultValue: 5000000000,
+				defaultValue: 5000,
 			},
 		},
 	},

@@ -61,7 +61,7 @@ export default function VerifyEmail({ name, url }: { readonly name: string; read
 									<strong>
 										{process.env.NEXT_PUBLIC_APP_NAME}
 									</strong>
-									.
+									{/* */}.
 								</Text>
 
 								<Text>

@@ -13,7 +13,6 @@ export async function createComment(
 	fileId: string,
 	data: z.infer<typeof CreateCommentFormSchema>,
 	shareToken?: string | null,
-	type?: "accessToken" | "personAccessToken" | null,
 	h?: string | null
 ): Promise<CommentWithCreatedBy | null> {
 	const file = await FileService.get({
@@ -45,11 +44,11 @@ export async function createComment(
 		FolderPermission.READ
 	);
 
-	if (!allowed || !session) {
+	if (!allowed) {
 		return null;
 	}
 
-	const user = session.user;
+	const user = session?.user;
 
 	let commentName = "Anonymous";
 	let createdByEmail = null;

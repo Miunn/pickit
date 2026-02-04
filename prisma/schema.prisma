@@ -214,8 +214,8 @@ model User {
   email                String    @unique
   emailVerified        Boolean   @default(false)
   image                String?
-  usedStorage          BigInt    @default(0)
-  maxStorage           BigInt    @default(5000000000)
+  usedStorage          Float     @default(0)
+  maxStorage           Float	 @default(5000)
   maxAlbums            Int       @default(10)
   maxSharingLinks      Int       @default(50)
   password             String?

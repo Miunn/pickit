@@ -31,7 +31,6 @@ export default function SignupForm() {
 	});
 
 	const onSubmit = async ({ email, password, name }: z.infer<typeof SignupFormSchema>) => {
-		// const r = await createUserHandler(data);
 		const { error } = await authClient.signUp.email(
 			{
 				email, // user email address

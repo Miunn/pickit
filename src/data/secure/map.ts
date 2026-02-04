@@ -19,7 +19,7 @@ export async function enforceMapAccess(
 		return { isAllowed: false, reason: "not-authenticated" };
 	}
 
-	const isValidToken = SecureService.validateToken(shareToken, hash);
+	const isValidToken = await SecureService.validateToken(shareToken, hash);
 
 	if (!isValidToken) {
 		return { isAllowed: false, reason: "invalid-token" };
