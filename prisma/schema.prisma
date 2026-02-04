@@ -25,19 +25,6 @@ enum FolderTokenPermission {
   ADMIN
 }
 
-enum Role {
-  USER
-  ADMIN
-}
-
-enum PasswordResetRequestStatus {
-  PENDING
-  USED
-  EXPIRED
-  SUCCESS
-  ERROR
-}
-
 enum FileType {
   IMAGE
   VIDEO
@@ -65,7 +52,7 @@ model Folder {
   updatedAt    DateTime      @updatedAt
   accessTokens AccessToken[]
   tags         FolderTag[]
-  slugs		   FolderSlug[]
+  slugs        FolderSlug[]
 }
 
 model FolderSlug {
@@ -130,22 +117,22 @@ model File {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  comments Comment[]
-  likes    FileLike[]
-  tags     FolderTag[]
+  comments         Comment[]
+  likes            FileLike[]
+  tags             FolderTag[]
   fileVerification FileVerificationMetadata?
 }
 
 model FileVerificationMetadata {
-  id         String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  objectPath		String
-  expectedMime		String
-  expectedSize		Int
-  expectedMd5		String
+  objectPath   String
+  expectedMime String
+  expectedSize Int
+  expectedMd5  String
 
-  file       File		@relation(fields: [fileId], references: [id], onDelete: Cascade)
-  fileId     String		@unique
+  file   File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  fileId String @unique
 
   verifiedAt DateTime @default(now())
   createdAt  DateTime @default(now())
@@ -220,22 +207,20 @@ model Notification {
 }
 
 model User {
-  id                        String    @id @default(cuid())
-  stripeCustomerId          String?   @unique
-  stripeSubscriptionId      String?   @unique
-  name                      String
-  email                     String    @unique
-  emailVerified             Boolean   @default(false)
-  emailVerificationDeadline DateTime?
-  image                     String?
-  usedStorage               BigInt    @default(0)
-  maxStorage                BigInt    @default(5000000000)
-  maxAlbums                 Int       @default(10)
-  maxSharingLinks           Int       @default(50)
-  role                      Role[]    @default([USER])
-  password                  String?
-  sessions                  Session[]
-  plan                      Plan      @default(FREE)
+  id                   String    @id @default(cuid())
+  stripeCustomerId     String?   @unique
+  stripeSubscriptionId String?   @unique
+  name                 String
+  email                String    @unique
+  emailVerified        Boolean   @default(false)
+  image                String?
+  usedStorage          BigInt    @default(0)
+  maxStorage           BigInt    @default(5000000000)
+  maxAlbums            Int       @default(10)
+  maxSharingLinks      Int       @default(50)
+  password             String?
+  sessions             Session[]
+  plan                 Plan      @default(FREE)
 
   publicKey  String?
   privateKey String? // Encrypted, for device switching
@@ -247,9 +232,6 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  verifiedEmailRequest VerifyEmailRequest?
-  passwordResetRequest PasswordResetRequest?
-
   folders       Folder[]       @relation("UserFolders")
   files         File[]         @relation("UserFiles")
   comments      Comment[]
@@ -257,32 +239,33 @@ model User {
   commentLikes  CommentLike[]
   tags          FolderTag[]
   notifications Notification[]
-}
+  accounts      Account[]
 
-model VerifyEmailRequest {
-  id      String   @id @default(cuid())
-  token   String   @unique @default(uuid(4))
-  expires DateTime
+  banned     Boolean?  @default(false)
+  banReason  String?
+  banExpires DateTime?
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String @unique
-}
+  role String?
 
-model PasswordResetRequest {
-  id      String                     @id @default(cuid())
-  token   String                     @unique @default(uuid(4))
-  expires DateTime
-  status  PasswordResetRequestStatus @default(PENDING)
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String @unique
+  @@map("user")
 }
 
 model Session {
-  sessionToken String   @unique
-  userId       String
-  expiresAt    DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+
+  impersonatedBy String?
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
 }
 
 model Contact {
@@ -291,4 +274,37 @@ model Contact {
   email     String
   message   String
   createdAt DateTime @default(now())
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  hasNewPassword        Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
 }

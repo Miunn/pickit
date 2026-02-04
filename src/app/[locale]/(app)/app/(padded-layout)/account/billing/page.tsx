@@ -1,7 +1,6 @@
 import BillingDashboard from "@/components/billing/BillingDashboard";
 import { Separator } from "@/components/ui/separator";
 import { redirect } from "@/i18n/navigation";
-import { getCurrentSession } from "@/data/session";
 import { getTranslations } from "next-intl/server";
 
 export default async function BillingPage(props: { readonly params: Promise<{ locale: string }> }) {

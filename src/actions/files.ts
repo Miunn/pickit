@@ -10,12 +10,10 @@ import {
 	RenameImageFormSchema,
 	RequestFileUploadFormSchema,
 } from "@/lib/definitions";
-import { getCurrentSession } from "@/data/session";
 import { z } from "zod";
 import { generateV4DownloadUrl, GoogleBucket } from "@/lib/bucket";
 import crypto from "node:crypto";
 import { FileType, FileLike } from "@prisma/client";
-import { canLikeFile, isAllowedToAccessFile } from "@/data/dal";
 import { AccessTokenService } from "@/data/access-token-service";
 import { FolderService } from "@/data/folder-service";
 import { FileService } from "@/data/file-service";
@@ -44,17 +42,13 @@ export async function initiateFileUpload(
 
 	const folder = await FolderService.get({ where: { id: parentFolderId }, include: { accessTokens: true } });
 
-	if (!folder) {
-		return { error: "folder-not-found", uploadUrl: null };
-	}
-
 	const auth = await SecureService.folder.enforce(folder, token, key, FolderPermission.WRITE);
 
-	if (!auth.allowed) {
-		return { error: "not-authenticated", uploadUrl: null };
+	if (!auth.allowed || !folder) {
+		return { error: "forbidden", uploadUrl: null };
 	}
 
-	const { user } = auth.session;
+	const session = auth.session;
 
 	const { name, size, type, md5 } = parsed.data;
 
@@ -75,7 +69,7 @@ export async function initiateFileUpload(
 			type: type.startsWith("image/") ? FileType.IMAGE : FileType.VIDEO,
 			size: size,
 			folder: { connect: { id: parentFolderId } },
-			createdBy: { connect: { id: user ? user.id : folder.createdById } },
+			createdBy: { connect: { id: session ? session.user.id : folder.createdById } },
 		});
 
 		const fileVerification = await FileVerificationService.create({
@@ -207,11 +201,16 @@ export async function getImagesWithFolderAndCommentsFromFolder(folderId: string)
 	images: (FileWithTags & FileWithComments & { folder: FolderWithTags })[];
 	error: string | null;
 }> {
-	const { user } = await getCurrentSession();
+	const folder = await FolderService.get({
+		where: { id: folderId },
+		include: { accessTokens: true },
+	});
 
-	if (!user) {
+	const auth = await SecureService.folder.enforce(folder, undefined, undefined, FolderPermission.READ);
+
+	if (!auth.allowed) {
 		return {
-			error: "You must be logged in to load files from folder",
+			error: "You do not have permission to access files from this folder",
 			images: [],
 		};
 	}
@@ -219,7 +218,6 @@ export async function getImagesWithFolderAndCommentsFromFolder(folderId: string)
 	const files = await FileService.getMultiple({
 		where: {
 			folder: { id: folderId },
-			createdBy: { id: user.id },
 			type: FileType.IMAGE,
 		},
 		include: {
@@ -236,10 +234,15 @@ export async function renameFile(
 	fileId: string,
 	data: z.infer<typeof RenameImageFormSchema>
 ): Promise<{ error: string | null }> {
-	const { user } = await getCurrentSession();
+	const file = await FileService.get({
+		where: { id: fileId },
+		include: { folder: { include: { accessTokens: true } } },
+	});
 
-	if (!user) {
-		return { error: "You must be logged in to rename files" };
+	const isAllowed = await SecureService.file.enforce(file, FilePermission.UPDATE);
+
+	if (!isAllowed) {
+		return { error: "You do not have permission to rename this file" };
 	}
 
 	const parsedData = RenameImageFormSchema.safeParse(data);
@@ -265,10 +268,15 @@ export async function renameFile(
 }
 
 export async function updateFileDescription(fileId: string, description: string): Promise<{ error: string | null }> {
-	const { user } = await getCurrentSession();
+	const file = await FileService.get({
+		where: { id: fileId },
+		include: { folder: { include: { accessTokens: true } } },
+	});
 
-	if (!user) {
-		return { error: "You must be logged in to update file description" };
+	const isAllowed = await SecureService.file.enforce(file, FilePermission.UPDATE);
+
+	if (!isAllowed) {
+		return { error: "You do not have permission to update this file" };
 	}
 
 	const image = await FileService.update(fileId, { description }, { folder: { select: { slug: true } } });
@@ -282,25 +290,27 @@ export async function likeFile(
 	shareToken?: string | null,
 	accessKey?: string | null
 ): Promise<{ error: string | null; like?: FileLike; liked?: boolean }> {
-	const canLike = await canLikeFile(fileId, shareToken, accessKey);
-	if (!canLike) {
+	const file = await FileService.get({
+		where: { id: fileId },
+		include: { folder: { include: { accessTokens: true } } },
+	});
+
+	const isAllowed = await SecureService.file.enforce(
+		file,
+		FilePermission.READ,
+		shareToken || undefined,
+		accessKey || undefined
+	);
+	const session = await SecureService.getSession();
+
+	if (!isAllowed) {
 		return { error: "You do not have permission to like this file" };
 	}
 
-	const file = await FileService.get({
-		where: { id: fileId },
-	});
-
-	if (!file) {
-		return { error: "File not found" };
-	}
-
-	const { user } = await getCurrentSession();
-
-	if (user) {
+	if (session?.user) {
 		const existingLike = await FileLikeService.get({
 			method: "first",
-			where: { fileId, createdById: user.id },
+			where: { fileId, createdById: session.user.id },
 		});
 
 		if (existingLike) {
@@ -311,7 +321,7 @@ export async function likeFile(
 		const file = await FileService.update(
 			fileId,
 			{
-				likes: { create: { createdById: user.id, createdByEmail: user.email } },
+				likes: { create: { createdById: session.user.id, createdByEmail: session.user.email } },
 			},
 			{ likes: true }
 		);
@@ -374,9 +384,9 @@ export async function updateFilePosition(
 		return { error: "file-not-found" };
 	}
 
-	const auth = await SecureService.file.enforce(file, FilePermission.UPDATE);
+	const isAllowed = await SecureService.file.enforce(file, FilePermission.UPDATE);
 
-	if (!auth.isAllowed) {
+	if (!isAllowed) {
 		return { error: "unauthorized" };
 	}
 
@@ -435,22 +445,14 @@ export async function updateFilePosition(
 }
 
 export async function deleteFile(fileId: string, shareToken?: string, hashPin?: string) {
-	const isAllowed = await isAllowedToAccessFile(fileId, shareToken, hashPin);
-
-	if (!isAllowed) {
-		return { error: "You do not have permission to delete this file" };
-	}
-
-	// Check if user is authorized to delete this image
-	// (User was the creator of the folder containing the image)
-
 	const file = await FileService.get({
 		where: { id: fileId },
-		include: { folder: { select: { slug: true } } },
+		include: { folder: { include: { accessTokens: true } } },
 	});
+	const isAllowed = await SecureService.file.enforce(file, FilePermission.DELETE, shareToken, hashPin);
 
-	if (!file) {
-		return { error: "File not found" };
+	if (!isAllowed || !file) {
+		return { error: "forbidden" };
 	}
 
 	if (file.type === FileType.VIDEO) {

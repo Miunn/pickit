@@ -1,143 +1,94 @@
 "use server";
 
-import { ActionResult, SignupFormSchema } from "@/lib/definitions";
-import * as bcrypt from "bcryptjs";
-import { z } from "zod";
-import { Plan, Prisma } from "@prisma/client";
-import { addDays } from "date-fns";
-import Stripe from "stripe";
-import { getCurrentSession } from "@/data/session";
-import { getLimitsFromPlan } from "@/lib/utils";
-import { revalidatePath } from "next/cache";
-import { UserService } from "@/data/user-service";
-import { stripe } from "@/lib/stripe";
+// import { ActionResult, SignupFormSchema } from "@/lib/definitions";
+// import * as bcrypt from "bcryptjs";
+// import { z } from "zod";
+// import { Plan, Prisma } from "@prisma/client";
+// import { addDays } from "date-fns";
+// import Stripe from "stripe";
+// import { getLimitsFromPlan } from "@/lib/utils";
+// import { revalidatePath } from "next/cache";
+// import { UserService } from "@/data/user-service";
+// import { stripe } from "@/lib/stripe";
 
-export async function createUserHandler(data: z.infer<typeof SignupFormSchema>): Promise<ActionResult> {
-	const parsed = SignupFormSchema.safeParse(data);
+// export const createStripeCustomer = async (): Promise<string> => {
+// 	const { user } = await getCurrentSession();
 
-	if (!parsed.success) {
-		console.log("Parsed", parsed.error);
-		return {
-			status: "error",
-			message: "invalid-data",
-		};
-	}
+// 	if (!user) {
+// 		throw new Error("Unauthorized");
+// 	}
 
-	const { name, email, password } = parsed.data;
+// 	const customer = await stripe.customers.create({
+// 		email: user.email,
+// 		name: user.name,
+// 	});
 
-	try {
-		const salt = bcrypt.genSaltSync(10);
-		const hashedPassword = bcrypt.hashSync(password, salt);
-		const verificationToken = crypto.randomUUID();
-		await UserService.create({
-			name: name,
-			email: email,
-			emailVerificationDeadline: addDays(new Date(), 7),
-			password: hashedPassword,
-			verifiedEmailRequest: {
-				create: {
-					token: verificationToken,
-					expires: addDays(new Date(), 7),
-				},
-			},
-		});
+// 	await UserService.update(user.id, { stripeCustomerId: customer.id });
 
-		return {
-			status: "ok",
-		};
-	} catch (e) {
-		if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
-			return {
-				status: "error",
-				message: "email-exists",
-			};
-		}
+// 	return customer.id;
+// };
 
-		return {
-			status: "error",
-			message: "unknown-error",
-		};
-	}
-}
+// export const createStripeSubscription = async (priceId: string): Promise<Stripe.Subscription> => {
+// 	const { user } = await getCurrentSession();
 
-export const createStripeCustomer = async (): Promise<string> => {
-	const { user } = await getCurrentSession();
+// 	if (!user) {
+// 		throw new Error("Unauthorized");
+// 	}
 
-	if (!user) {
-		throw new Error("Unauthorized");
-	}
+// 	let customerId = user.stripeCustomerId;
 
-	const customer = await stripe.customers.create({
-		email: user.email,
-		name: user.name,
-	});
+// 	if (!customerId) {
+// 		customerId = await createStripeCustomer();
+// 	}
 
-	await UserService.update(user.id, { stripeCustomerId: customer.id });
+// 	if (user.stripeSubscriptionId) {
+// 		await cancelStripeSubscription();
+// 	}
 
-	return customer.id;
-};
+// 	const subscription = await stripe.subscriptions.create({
+// 		customer: customerId,
+// 		items: [{ price: priceId }],
+// 		payment_behavior: "default_incomplete",
+// 		payment_settings: { save_default_payment_method: "on_subscription" },
+// 		expand: ["latest_invoice.confirmation_secret"],
+// 		automatic_tax: { enabled: true },
+// 		metadata: { userId: user.id },
+// 	});
 
-export const createStripeSubscription = async (priceId: string): Promise<Stripe.Subscription> => {
-	const { user } = await getCurrentSession();
+// 	await UserService.update(user.id, { stripeSubscriptionId: subscription.id });
 
-	if (!user) {
-		throw new Error("Unauthorized");
-	}
+// 	return subscription;
+// };
 
-	let customerId = user.stripeCustomerId;
+// export const cancelStripeSubscription = async (): Promise<void> => {
+// 	const { user } = await getCurrentSession();
 
-	if (!customerId) {
-		customerId = await createStripeCustomer();
-	}
+// 	if (!user) {
+// 		throw new Error("Unauthorized");
+// 	}
 
-	if (user.stripeSubscriptionId) {
-		await cancelStripeSubscription();
-	}
+// 	if (!user.stripeSubscriptionId) {
+// 		throw new Error("No subscription found");
+// 	}
 
-	const subscription = await stripe.subscriptions.create({
-		customer: customerId,
-		items: [{ price: priceId }],
-		payment_behavior: "default_incomplete",
-		payment_settings: { save_default_payment_method: "on_subscription" },
-		expand: ["latest_invoice.confirmation_secret"],
-		automatic_tax: { enabled: true },
-		metadata: { userId: user.id },
-	});
+// 	try {
+// 		await stripe.subscriptions.update(user.stripeSubscriptionId, {
+// 			cancel_at_period_end: true,
+// 		});
+// 	} catch (e) {
+// 		console.error(e);
+// 		throw new Error("Failed to cancel subscription");
+// 	}
 
-	await UserService.update(user.id, { stripeSubscriptionId: subscription.id });
+// 	const limits = getLimitsFromPlan(Plan.FREE);
 
-	return subscription;
-};
+// 	await UserService.update(user.id, {
+// 		stripeSubscriptionId: null,
+// 		plan: Plan.FREE,
+// 		maxStorage: limits.storage,
+// 		maxAlbums: limits.albums,
+// 		maxSharingLinks: limits.sharingLinks,
+// 	});
 
-export const cancelStripeSubscription = async (): Promise<void> => {
-	const { user } = await getCurrentSession();
-
-	if (!user) {
-		throw new Error("Unauthorized");
-	}
-
-	if (!user.stripeSubscriptionId) {
-		throw new Error("No subscription found");
-	}
-
-	try {
-		await stripe.subscriptions.update(user.stripeSubscriptionId, {
-			cancel_at_period_end: true,
-		});
-	} catch (e) {
-		console.error(e);
-		throw new Error("Failed to cancel subscription");
-	}
-
-	const limits = getLimitsFromPlan(Plan.FREE);
-
-	await UserService.update(user.id, {
-		stripeSubscriptionId: null,
-		plan: Plan.FREE,
-		maxStorage: limits.storage,
-		maxAlbums: limits.albums,
-		maxSharingLinks: limits.sharingLinks,
-	});
-
-	revalidatePath("/app/account/billing");
-};
+// 	revalidatePath("/app/account/billing");
+// };

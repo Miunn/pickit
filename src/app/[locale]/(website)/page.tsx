@@ -1,23 +1,30 @@
-import LandingHead from "@/components/pages/landing/LandingHead";
+"use client";
+
 import FaqAccordion from "@/components/pages/landing/FaqAccordion";
-import { getTranslations } from "next-intl/server";
 import FeatureCarouselPreview from "@/components/pages/landing/FeatureCarouselPreview";
+import Hero from "@/components/pages/landing/Hero";
+import { useTranslations } from "next-intl";
+import { useRef } from "react";
 
-export default async function RootPage() {
-    const t = await getTranslations("pages.landing");
+export default function RootPage() {
+	const t = useTranslations("pages.landing");
+	const seeMoreRef = useRef<HTMLDivElement>(null);
 
-    return (
-        <div className="mt-11 mb-32">
-            <LandingHead />
+	return (
+		<div className="mt-11 mb-32">
+			<Hero seeMoreRef={seeMoreRef} />
 
-            <div className="mt-32 lg:mt-64 max-w-2xl xl:max-w-7xl mx-auto px-4">
-                <h2 className="text-2xl font-semibold mb-2" dangerouslySetInnerHTML={{ __html: t('featuresTitle') }} />
-                <FeatureCarouselPreview />
-            </div>
+			<div ref={seeMoreRef} className="pt-32 max-w-2xl xl:max-w-7xl mx-auto px-4">
+				<h2
+					className="text-2xl font-semibold mb-2"
+					dangerouslySetInnerHTML={{ __html: t("featuresTitle") }}
+				/>
+				<FeatureCarouselPreview />
+			</div>
 
-            <div id="faq" className="mx-4">
-                <FaqAccordion />
-            </div>
-        </div>
-    )
+			<div id="faq" className="mx-4">
+				<FaqAccordion />
+			</div>
+		</div>
+	);
 }

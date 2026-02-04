@@ -221,7 +221,7 @@ export const AccountFormSchema = z.object({
 
 export const ChangePasswordSchema = z
 	.object({
-		oldPassword: z.string(),
+		currentPassword: z.string(),
 		newPassword: z
 			.string()
 			.min(8, { message: "Must be at least 8 characters long" })
@@ -266,7 +266,6 @@ const userAdministration = Prisma.validator<Prisma.UserDefaultArgs>()({
 		name: true,
 		email: true,
 		emailVerified: true,
-		emailVerificationDeadline: true,
 		role: true,
 		image: true,
 		usedStorage: true,
@@ -278,24 +277,6 @@ const userAdministration = Prisma.validator<Prisma.UserDefaultArgs>()({
 });
 
 export type UserAdministration = Prisma.UserGetPayload<typeof userAdministration>;
-
-const userLight = Prisma.validator<Prisma.UserDefaultArgs>()({
-	select: {
-		id: true,
-		name: true,
-		email: true,
-		emailVerified: true,
-		emailVerificationDeadline: true,
-		role: true,
-		image: true,
-		usedStorage: true,
-		maxStorage: true,
-		createdAt: true,
-		updatedAt: true,
-	},
-});
-
-export type UserLight = Prisma.UserGetPayload<typeof userLight>;
 
 const userWithNotifications = Prisma.validator<Prisma.UserDefaultArgs>()({
 	include: { notifications: true },

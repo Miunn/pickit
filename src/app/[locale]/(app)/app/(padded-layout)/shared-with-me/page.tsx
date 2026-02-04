@@ -1,5 +1,4 @@
 import { redirect } from "@/i18n/navigation";
-import { getCurrentSession } from "@/data/session";
 
 export default async function SharedWithMePage(props: { readonly params: Promise<{ readonly locale: string }> }) {
 	const params = await props.params;

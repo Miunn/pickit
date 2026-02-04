@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAllowedToAccessFile } from "@/data/dal";
 import { GoogleBucket } from "@/lib/bucket";
 import { FileService } from "@/data/file-service";
 import { webStreamFromFile } from "@/lib/utils";
+import { SecureService } from "@/data/secure/secure-service";
+import { FilePermission } from "@/data/secure/file";
 
 /**
  * Streams a video file from Google Cloud Storage and returns it as an HTTP response.
@@ -16,7 +17,25 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
 	const shareToken = req.nextUrl.searchParams.get("share");
 	const accessKey = req.nextUrl.searchParams.get("h");
 
-	const isAllowed = await isAllowedToAccessFile(params.video, shareToken, accessKey);
+	const file = await FileService.get({
+		where: {
+			id: params.video,
+			folderId: params.folder,
+		},
+		include: { folder: { include: { accessTokens: true } } },
+	});
+
+	if (!file) {
+		return Response.json({ error: "Video not found" }, { status: 404 });
+	}
+
+	const isAllowed = await SecureService.file.enforce(
+		file,
+		FilePermission.READ,
+		shareToken || undefined,
+		accessKey || undefined
+	);
+
 	if (!isAllowed) {
 		return Response.json(
 			{ error: "You need to be authenticated or have a magic link to access this resource" },
@@ -24,26 +43,15 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
 		);
 	}
 
-	const video = await FileService.get({
-		where: {
-			id: params.video,
-			folderId: params.folder,
-		},
-	});
+	const bucketFile = GoogleBucket.file(`${file.createdById}/${file.folderId}/${file.id}`);
 
-	if (!video) {
-		return Response.json({ error: "Video not found" }, { status: 404 });
-	}
-
-	const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.id}`);
-
-	const webStream = webStreamFromFile(file);
+	const webStream = webStreamFromFile(bucketFile);
 
 	const res = new NextResponse(webStream, {
 		headers: {
-			"Content-Type": "video/" + video.extension,
-			"Content-Length": video.size.toString(),
-			"Content-Disposition": `attachment; filename=${encodeURIComponent(video.name)}.${encodeURIComponent(video.extension)}`,
+			"Content-Type": "video/" + file.extension,
+			"Content-Length": file.size.toString(),
+			"Content-Disposition": `attachment; filename=${encodeURIComponent(file.name)}.${encodeURIComponent(file.extension)}`,
 		},
 	});
 

@@ -1,10 +1,10 @@
 import SignInForm from "@/components/auth/SignInForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SignupForm from "@/components/auth/SignupForm";
-import { getCurrentSession } from "@/data/session";
 import { redirect } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
+import { AuthService } from "@/data/secure/auth";
 
 export async function generateMetadata(props: {
 	params: Promise<{ locale: string }>;
@@ -33,8 +33,8 @@ export default async function LoginPage(props: {
 	const searchParams = await props.searchParams;
 	const params = await props.params;
 
-	const { user } = await getCurrentSession();
-	if (user) {
+	const { isAuthenticated } = await AuthService.isAuthenticated();
+	if (isAuthenticated) {
 		return redirect({ href: `/app`, locale: params.locale });
 	}
 

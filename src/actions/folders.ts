@@ -1,10 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getCurrentSession } from "@/data/session";
 import { GoogleBucket } from "@/lib/bucket";
-import { hasFolderOwnerAccess } from "@/data/dal";
 import { FolderService } from "@/data/folder-service";
+import { AuthService } from "@/data/secure/auth";
+import { SecureService } from "@/data/secure/secure-service";
+import { FolderPermission } from "@/data/secure/folder";
 
 export async function createFolder(name: string): Promise<{
 	folder: {
@@ -17,9 +18,9 @@ export async function createFolder(name: string): Promise<{
 	} | null;
 	error: string | null;
 }> {
-	const { user } = await getCurrentSession();
+	const { isAuthenticated, session } = await AuthService.isAuthenticated();
 
-	if (!user) {
+	if (!isAuthenticated) {
 		return { folder: null, error: "You must be logged in to create a folders" };
 	}
 
@@ -27,7 +28,7 @@ export async function createFolder(name: string): Promise<{
 	const writeToken = crypto.randomUUID();
 	const folder = await FolderService.create({
 		name: name,
-		createdBy: { connect: { id: user.id } },
+		createdBy: { connect: { id: session.user.id } },
 		accessTokens: {
 			create: [
 				{
@@ -56,13 +57,15 @@ export async function updateFolderKey(
 ): Promise<{
 	error: string | null;
 }> {
-	if (!(await hasFolderOwnerAccess(folderId))) {
-		return { error: "You must be the owner of the folder to update its key" };
-	}
+	const folder = await FolderService.get({
+		where: { id: folderId },
+		include: { accessTokens: true },
+	});
 
-	const { user } = await getCurrentSession();
-	if (!user) {
-		return { error: "You must be logged in to update a folder's key" };
+	const auth = await SecureService.folder.enforce(folder, undefined, undefined, FolderPermission.WRITE);
+
+	if (!auth.allowed) {
+		return { error: "Forbidden" };
 	}
 
 	await FolderService.update(folderId, { key, iv });
@@ -84,17 +87,22 @@ export async function renameFolder(
 	} | null;
 	error: string | null;
 }> {
-	const { user } = await getCurrentSession();
+	const folder = await FolderService.get({
+		where: { id: folderId },
+		include: { accessTokens: true },
+	});
 
-	if (!user) {
-		return { folder: null, error: "You must be logged in to rename a folders" };
+	const auth = await SecureService.folder.enforce(folder, undefined, undefined, FolderPermission.WRITE);
+
+	if (!auth.allowed) {
+		return { folder: null, error: "Forbidden" };
 	}
 
-	const folder = await FolderService.update(folderId, { name: name });
+	const updatedFolder = await FolderService.update(folderId, { name: name });
 
 	revalidatePath("/app/folders");
 	revalidatePath("/app");
-	return { folder: folder, error: null };
+	return { folder: updatedFolder, error: null };
 }
 
 export async function changeFolderCover(
@@ -103,10 +111,15 @@ export async function changeFolderCover(
 ): Promise<{
 	error: string | null;
 }> {
-	const { user } = await getCurrentSession();
+	const folder = await FolderService.get({
+		where: { id: folderId },
+		include: { accessTokens: true },
+	});
 
-	if (!user) {
-		return { error: "You must be logged in to change a folder's cover" };
+	const auth = await SecureService.folder.enforce(folder, undefined, undefined, FolderPermission.WRITE);
+
+	if (!auth.allowed) {
+		return { error: "Forbidden" };
 	}
 
 	await FolderService.update(folderId, {
@@ -128,10 +141,15 @@ export async function changeFolderDescription(
 ): Promise<{
 	error: string | null;
 }> {
-	const { user } = await getCurrentSession();
+	const folder = await FolderService.get({
+		where: { id: folderId },
+		include: { accessTokens: true },
+	});
 
-	if (!user) {
-		return { error: "You must be logged in to change a folder's description" };
+	const auth = await SecureService.folder.enforce(folder, undefined, undefined, FolderPermission.WRITE);
+
+	if (!auth.allowed) {
+		return { error: "Forbidden" };
 	}
 
 	await FolderService.update(folderId, { description: description });
@@ -141,10 +159,15 @@ export async function changeFolderDescription(
 }
 
 export async function deleteFolderDescription(folderId: string): Promise<{ error: string | null }> {
-	const { user } = await getCurrentSession();
+	const folder = await FolderService.get({
+		where: { id: folderId },
+		include: { accessTokens: true },
+	});
 
-	if (!user) {
-		return { error: "You must be logged in to delete a folder's description" };
+	const auth = await SecureService.folder.enforce(folder, undefined, undefined, FolderPermission.WRITE);
+
+	if (!auth.allowed) {
+		return { error: "Forbidden" };
 	}
 
 	await FolderService.update(folderId, { description: null });
@@ -154,30 +177,19 @@ export async function deleteFolderDescription(folderId: string): Promise<{ error
 }
 
 export async function deleteFolder(folderId: string): Promise<{ error: string | null }> {
-	const { user } = await getCurrentSession();
-
-	if (!user) {
-		return { error: "You must be logged in to delete a folders" };
-	}
-
 	const folder = await FolderService.get({
-		where: {
-			id: folderId,
-			createdBy: { id: user.id as string },
-		},
-		select: {
-			createdBy: {
-				select: { id: true },
-			},
-		},
+		where: { id: folderId },
+		include: { accessTokens: true },
 	});
 
-	if (!folder) {
-		return { error: "folder-not-found" };
+	const auth = await SecureService.folder.enforce(folder, undefined, undefined, FolderPermission.WRITE);
+
+	if (!auth.allowed) {
+		return { error: "Forbidden" };
 	}
 
 	try {
-		await GoogleBucket.deleteFiles({ prefix: `${user.id}/${folderId}/` });
+		await GoogleBucket.deleteFiles({ prefix: `${folder?.createdById}/${folderId}/` });
 	} catch (e) {
 		console.error("Error deleting folder from bucket", e);
 	}

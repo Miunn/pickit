@@ -1,8 +1,9 @@
 import { FolderWithAccessToken } from "@/lib/definitions";
-import { getCurrentSession, SessionValidationResult } from "@/data/session";
 import { FolderTokenPermission } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { AccessTokenService } from "@/data/access-token-service";
+import { AuthService } from "./auth";
+import { Session } from "@/lib/auth";
 
 export enum FolderPermission {
 	READ = "read",
@@ -12,15 +13,19 @@ export enum FolderPermission {
 }
 
 export async function enforceFolder(
-	folder: FolderWithAccessToken,
+	folder?: FolderWithAccessToken | null,
 	token?: string,
 	hash?: string,
 	permission: FolderPermission = FolderPermission.READ
-): Promise<{ allowed: true; session: SessionValidationResult } | { allowed: false; reason?: string }> {
-	const session = await getCurrentSession();
+): Promise<{ allowed: true; session?: Session | null } | { allowed: false; reason?: string; session?: undefined }> {
+	if (!folder) {
+		return { allowed: false };
+	}
+
+	const { session } = await AuthService.isAuthenticated();
 
 	if (folder.createdById === session?.user?.id) {
-		return { allowed: true, session: session };
+		return { allowed: true, session };
 	}
 
 	if (!token) {

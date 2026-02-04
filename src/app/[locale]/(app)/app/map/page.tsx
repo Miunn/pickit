@@ -1,13 +1,12 @@
 import FilesMap from "@/components/map/FilesMap";
 import { redirect } from "@/i18n/navigation";
-import { getCurrentSession } from "@/data/session";
 import { generateV4DownloadUrl } from "@/lib/bucket";
-import { canAccessMap } from "@/data/dal";
 import { FilesProvider } from "@/context/FilesContext";
 import { TokenProvider } from "@/context/TokenContext";
 import { ViewState } from "@/components/folders/ViewSelector";
 import { FileService } from "@/data/file-service";
 import { AccessTokenService } from "@/data/access-token-service";
+import { SecureService } from "@/data/secure/secure-service";
 
 export default async function MapPage(props: {
 	readonly params: Promise<{ readonly locale: string }>;
@@ -16,14 +15,9 @@ export default async function MapPage(props: {
 	const searchParams = await props.searchParams;
 	const params = await props.params;
 
-	const { user } = await getCurrentSession();
+	const { isAllowed, session } = await SecureService.map.enforce(searchParams.share, searchParams.h);
 
-	if (!(await canAccessMap(searchParams.share, searchParams.h))) {
-		if (user) {
-			// Surely have a residual access token in URL, this clears it
-			return redirect({ href: "/app/map", locale: params.locale });
-		}
-
+	if (!isAllowed) {
 		return redirect({ href: "/signin", locale: params.locale });
 	}
 
@@ -54,9 +48,9 @@ export default async function MapPage(props: {
 				tags: true,
 			},
 		});
-	} else if (user) {
+	} else if (session?.user) {
 		files = await FileService.getMultiple({
-			where: { createdBy: { id: user.id } },
+			where: { createdBy: { id: session.user.id } },
 			include: {
 				comments: { include: { createdBy: true } },
 				likes: true,

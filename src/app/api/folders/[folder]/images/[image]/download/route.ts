@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleBucket } from "@/lib/bucket";
-import { isAllowedToAccessFile } from "@/data/dal";
 import { FileService } from "@/data/file-service";
 import { webStreamFromFile } from "@/lib/utils";
+import { SecureService } from "@/data/secure/secure-service";
+import { FilePermission } from "@/data/secure/file";
 
 /**
  * Serves an image file from Google Cloud Storage after validating request access.
@@ -17,7 +18,24 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
 	const shareToken = req.nextUrl.searchParams.get("share");
 	const accessKey = req.nextUrl.searchParams.get("h");
 
-	const isAllowed = await isAllowedToAccessFile(params.image, shareToken, accessKey);
+	const file = await FileService.get({
+		where: {
+			id: params.image,
+			folderId: params.folder,
+		},
+		include: { folder: { include: { accessTokens: true } } },
+	});
+
+	if (!file) {
+		return Response.json({ error: "Image not found" }, { status: 404 });
+	}
+
+	const isAllowed = await SecureService.file.enforce(
+		file,
+		FilePermission.READ,
+		shareToken || undefined,
+		accessKey || undefined
+	);
 
 	if (!isAllowed) {
 		return Response.json(
@@ -26,26 +44,15 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
 		);
 	}
 
-	const image = await FileService.get({
-		where: {
-			id: params.image,
-			folderId: params.folder,
-		},
-	});
+	const bucketFile = GoogleBucket.file(`${file.createdById}/${file.folderId}/${file.id}`);
 
-	if (!image) {
-		return Response.json({ error: "Image not found" }, { status: 404 });
-	}
-
-	const file = GoogleBucket.file(`${image.createdById}/${image.folderId}/${image.id}`);
-
-	const webStream = webStreamFromFile(file);
+	const webStream = webStreamFromFile(bucketFile);
 
 	const res = new NextResponse(webStream, {
 		headers: {
-			"Content-Type": "image/" + image.extension,
-			"Content-Length": image.size.toString(),
-			"Content-Disposition": `attachment; filename=${encodeURIComponent(image.name)}.${encodeURIComponent(image.extension)}`,
+			"Content-Type": "image/" + file.extension,
+			"Content-Length": file.size.toString(),
+			"Content-Disposition": `attachment; filename=${encodeURIComponent(file.name)}.${encodeURIComponent(file.extension)}`,
 		},
 	});
 	return res;

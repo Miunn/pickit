@@ -81,6 +81,8 @@ const eslintConfig = [
 
 			// Styles layout
 			"src/app/layout.tsx",
+
+			"src/lib/auth.ts",
 		],
 		rules: {
 			"no-restricted-imports": "off",

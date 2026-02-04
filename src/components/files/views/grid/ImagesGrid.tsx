@@ -6,7 +6,6 @@ import { DeleteMultipleImagesDialog } from "@/components/files/dialogs/DeleteMul
 import { CarouselDialog } from "@/components/files/carousel/CarouselDialog";
 import { cn } from "@/lib/utils";
 import { UploadImagesForm } from "@/components/files/upload/UploadImagesForm";
-import { useSession } from "@/providers/SessionProvider";
 import {
 	closestCenter,
 	DndContext,
@@ -30,13 +29,15 @@ import RecentlyAdded from "@/components/files/views/grid/RecentlyAdded";
 import { usePathname } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { FilesSort } from "@/types/imagesSort";
+import { useSession } from "@/lib/auth-client";
 
 export const ImagesGrid = () => {
-	const { user } = useSession();
+	const { data: session } = useSession();
 	const { folder, isShared /*token, tokenHash*/ } = useFolderContext();
 	const { files, setFiles, sortedFiles, sortState } = useFilesContext();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
+	console.log("Sorted files", sortedFiles.length);
 
 	const [carouselOpen, setCarouselOpen] = useState<boolean>(false);
 	const [openDeleteMultiple, setOpenDeleteMultiple] = useState<boolean>(false);
@@ -252,7 +253,7 @@ export const ImagesGrid = () => {
 	};
 
 	const renderGrid = (): React.ReactNode => {
-		if (user?.id === folder.createdById && sortState === FilesSort.Position) {
+		if (session?.user?.id === folder.createdById && sortState === FilesSort.Position) {
 			return (
 				<DndContext
 					sensors={sensors}

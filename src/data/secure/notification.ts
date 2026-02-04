@@ -1,20 +1,18 @@
 import { Notification } from "@prisma/client";
-import { getCurrentSession, SessionValidationResult } from "../session";
+import { AuthService } from "./auth";
 
-export async function enforceNotification(
-	notification?: Notification | null
-): Promise<{ allowed: true; session: SessionValidationResult } | { allowed: false }> {
-	if (!notification) return { allowed: false };
+export async function enforceNotification(notification?: Notification | null): Promise<boolean> {
+	if (!notification) return false;
 
-	const session = await getCurrentSession();
+	const { session } = await AuthService.isAuthenticated();
 
 	if (!session?.user) {
-		return { allowed: false };
+		return false;
 	}
 
 	if (notification.userId === session.user.id) {
-		return { allowed: true, session };
+		return true;
 	}
 
-	return { allowed: false };
+	return false;
 }
