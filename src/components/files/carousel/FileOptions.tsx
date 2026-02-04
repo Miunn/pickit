@@ -18,11 +18,11 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ManageTagsDialog from "@/components/files/dialogs/ManageTagsDialog";
-import { useSession } from "@/providers/SessionProvider";
 import { ContextFile, useFilesContext } from "@/context/FilesContext";
 import { addTagsToFile, removeTagsFromFile } from "@/actions/tags";
 import { useTopLoader } from "nextjs-toploader";
 import FullScreenImageCarousel from "@/components/files/carousel/FullScreenImageCarousel";
+import { useSession } from "@/lib/auth-client";
 
 /**
  * Render action controls for a file including tag management, fullscreen carousel, open-in-new-tab, download, copy-to-clipboard, and metadata actions.
@@ -41,7 +41,7 @@ export default function FileOptions({
 	readonly currentIndex: number;
 	readonly carouselApi: CarouselApi;
 }) {
-	const { user } = useSession();
+	const { data: session } = useSession();
 	const { setFiles } = useFilesContext();
 	const { done } = useTopLoader();
 	const searchParams = useSearchParams();
@@ -106,7 +106,7 @@ export default function FileOptions({
 	return (
 		<>
 			<div className="hidden sm:flex gap-2">
-				{user?.id === file.createdById && (
+				{session?.user?.id === file.createdById && (
 					<ManageTagsDialog
 						selectedTags={file.tags}
 						onTagSelected={handleTagSelected}
@@ -207,7 +207,7 @@ export default function FileOptions({
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent>
-					{user?.id === file.createdById && (
+					{session?.user?.id === file.createdById && (
 						<DropdownMenuItem
 							onClick={e => {
 								e.stopPropagation();

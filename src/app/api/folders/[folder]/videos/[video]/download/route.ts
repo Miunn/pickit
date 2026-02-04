@@ -1,51 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAllowedToAccessFile } from "@/data/dal";
-import { GoogleBucket } from "@/lib/bucket";
-import { FileService } from "@/data/file-service";
-import { webStreamFromFile } from "@/lib/utils";
 
 /**
- * Streams a video file from Google Cloud Storage and returns it as an HTTP response.
+ * Serves an image file from Google Cloud Storage after validating request access.
  *
- * @param req - The incoming Next.js request; query may include `share` (magic link token) and `h` (access key).
- * @param props - An object whose `params` promise resolves to route parameters `{ folder, video }` identifying the requested file.
- * @returns A NextResponse whose body is the video's readable stream and which includes `Content-Type`, `Content-Length`, and `Content-Disposition` headers. If access is denied, returns a JSON error with status 400. If the video is not found, returns a JSON error with status 404.
+ * @param req - The incoming Next.js request (may include query parameters `share` and `h` for access).
+ * @param props - An object whose `params` promise resolves to route params.
+ * @param props.params - Resolved route parameters: `folder` is the folder ID and `image` is the image ID.
+ * @returns A NextResponse that either contains the image stream with Content-Type, Content-Length, and Content-Disposition headers, or a JSON error response with HTTP status 400 (access denied) or 404 (image not found).
  */
 export async function GET(req: NextRequest, props: { params: Promise<{ folder: string; video: string }> }) {
 	const params = await props.params;
 	const shareToken = req.nextUrl.searchParams.get("share");
 	const accessKey = req.nextUrl.searchParams.get("h");
 
-	const isAllowed = await isAllowedToAccessFile(params.video, shareToken, accessKey);
-	if (!isAllowed) {
-		return Response.json(
-			{ error: "You need to be authenticated or have a magic link to access this resource" },
-			{ status: 400 }
-		);
-	}
-
-	const video = await FileService.get({
-		where: {
-			id: params.video,
-			folderId: params.folder,
-		},
-	});
-
-	if (!video) {
-		return Response.json({ error: "Video not found" }, { status: 404 });
-	}
-
-	const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.id}`);
-
-	const webStream = webStreamFromFile(file);
-
-	const res = new NextResponse(webStream, {
-		headers: {
-			"Content-Type": "video/" + video.extension,
-			"Content-Length": video.size.toString(),
-			"Content-Disposition": `attachment; filename=${encodeURIComponent(video.name)}.${encodeURIComponent(video.extension)}`,
-		},
-	});
-
-	return res;
+	return NextResponse.redirect(
+		`/api/folders/${params.folder}/${params.video}?share=${shareToken || ""}&h=${accessKey || ""}&download=true`
+	);
 }

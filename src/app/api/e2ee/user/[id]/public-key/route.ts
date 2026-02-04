@@ -1,10 +1,11 @@
+import { AuthService } from "@/data/secure/auth";
 import { UserService } from "@/data/user-service";
-import { getCurrentSession } from "@/data/session";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest, { params }: { readonly params: Promise<{ readonly id: string }> }) {
-	const session = await getCurrentSession();
-	if (!session?.user) {
+	const { isAuthenticated } = await AuthService.isAuthenticated();
+
+	if (!isAuthenticated) {
 		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}
 

@@ -1,10 +1,10 @@
-import { getCurrentSession } from "@/data/session";
 import { redirect } from "@/i18n/navigation";
 import { ViewState } from "@/components/folders/ViewSelector";
 import FoldersContent from "@/components/folders/FoldersContent";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { FolderService } from "@/data/folder-service";
+import { AuthService } from "@/data/secure/auth";
 
 export async function generateMetadata(): Promise<Metadata> {
 	const t = await getTranslations("metadata.folders");
@@ -21,16 +21,14 @@ export default async function FoldersPage(props: {
 	const searchParams = await props.searchParams;
 	const params = await props.params;
 
-	const { user } = await getCurrentSession();
+	const { session } = await AuthService.isAuthenticated();
 
-	if (!user) {
+	if (!session?.user) {
 		return redirect({ href: "/signin", locale: params.locale });
 	}
 
 	const folders = await FolderService.getMultiple({
-		where: {
-			createdBy: { id: user.id },
-		},
+		where: { createdBy: { id: session.user.id } },
 		include: {
 			cover: true,
 			accessTokens: true,

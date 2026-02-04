@@ -10,7 +10,6 @@ import {
 import { useFolderContext } from "@/context/FolderContext";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { useSession } from "@/providers/SessionProvider";
 import { MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTopLoader } from "nextjs-toploader";
@@ -18,12 +17,13 @@ import { useState } from "react";
 import { ShareFolderDialog } from "@/components/folders/dialogs/ShareFolderDialog";
 import { useFilesContext } from "@/context/FilesContext";
 import Link from "next/link";
+import { useSession } from "@/lib/auth-client";
 
 export default function FolderActionDropdown() {
 	const t = useTranslations("folders");
 	const { folder, token, tokenHash, isShared } = useFolderContext();
 	const { files, setFiles } = useFilesContext();
-	const { isGuest } = useSession();
+	const { data: session } = useSession();
 	const { done } = useTopLoader();
 
 	const [openUpload, setOpenUpload] = useState(false);
@@ -50,13 +50,13 @@ export default function FolderActionDropdown() {
 				</DropdownMenuTrigger>
 				<DropdownMenuContent>
 					<DropdownMenuItem
-						className={cn((folder.description || isGuest) && "hidden")}
+						className={cn((folder.description || !session) && "hidden")}
 						onClick={() => setOpenEditDescription(true)}
 					>
 						{t("addDescription")}
 					</DropdownMenuItem>
 					<DropdownMenuItem
-						className={cn(isGuest && !token?.allowMap && "hidden")}
+						className={cn(!session && !token?.allowMap && "hidden")}
 						asChild
 					>
 						<Link href={`/app/map?share=${token?.token}&h=${tokenHash}`}>
@@ -64,7 +64,7 @@ export default function FolderActionDropdown() {
 						</Link>
 					</DropdownMenuItem>
 					<DropdownMenuItem
-						className={cn(isGuest && "hidden")}
+						className={cn(!session && "hidden")}
 						onClick={() => setOpenShare(true)}
 					>
 						{t("share.label")}

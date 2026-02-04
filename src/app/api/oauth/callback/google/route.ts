@@ -1,4 +1,3 @@
-import { generateSessionToken, createSession, setSessionTokenCookie } from "@/data/session";
 import { GoogleClaims, googleProvider } from "@/lib/oauth";
 import { cookies } from "next/headers";
 import { decodeIdToken } from "arctic";

@@ -1,12 +1,11 @@
 "use client";
 
-import { changePassword, sendVerificationEmail, updateUser } from "@/actions/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
-import { AccountFormSchema, ChangePasswordSchema, UserLight } from "@/lib/definitions";
+import { AccountFormSchema, ChangePasswordSchema } from "@/lib/definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleAlert, CircleCheck, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -15,15 +14,14 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import ChangeEmailConfirmationDialog from "@/components/account/ChangeEmailConfirmationDialog";
 import { useSearchParams } from "next/navigation";
+import { User } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
 
-export default function AccountForm({ user }: { readonly user: UserLight }) {
+export default function AccountForm({ user }: { readonly user: User }) {
 	const searchParams = useSearchParams();
 	const t = useTranslations("components.account.accountForm");
-	const [loadingInfos, setLoadingInfos] = useState<boolean>(false);
-	const [newVerficiationLoading, setNewVerificationLoading] = useState<boolean>(false);
-	const [loadingPassword, setLoadingPassword] = useState<boolean>(false);
-
 	const [openEmailDialog, setOpenEmailDialog] = useState<boolean>(false);
+	const [newVerficiationLoading, setNewVerficiationLoading] = useState<boolean>(false);
 
 	const accountFormSchema = useForm<z.infer<typeof AccountFormSchema>>({
 		resolver: zodResolver(AccountFormSchema),
@@ -36,117 +34,79 @@ export default function AccountForm({ user }: { readonly user: UserLight }) {
 	const passwordFormSchema = useForm<z.infer<typeof ChangePasswordSchema>>({
 		resolver: zodResolver(ChangePasswordSchema),
 		defaultValues: {
-			oldPassword: "",
+			currentPassword: "",
 			newPassword: "",
 			passwordConfirmation: "",
 		},
 	});
 
-	async function submitAccount(data: z.infer<typeof AccountFormSchema>) {
-		setLoadingInfos(true);
-
-		const r = await updateUser(user.id, data.name, data.email);
-
-		setLoadingInfos(false);
-		if (!r) {
-			toast({
-				title: "Error",
-				description: "An error occured while updating your account",
-				variant: "destructive",
+	async function submitAccount({ name, email }: z.infer<typeof AccountFormSchema>) {
+		if (name && name !== user.name) {
+			await authClient.updateUser({
+				name,
+				fetchOptions: {
+					onError: () => {
+						toast({
+							title: "Error",
+							description: "An error occured while updating your account",
+							variant: "destructive",
+						});
+					},
+					onSuccess: () => {
+						toast({
+							title: "Account updated",
+							description: "Your account has been updated successfully",
+						});
+					},
+				},
 			});
 		}
 
-		toast({
-			title: "Account updated",
-			description: "Your account has been updated successfully",
-		});
+		if (email && email !== user.email) {
+			await authClient.changeEmail({
+				newEmail: email,
+				callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/app`,
+				fetchOptions: {
+					onError: () => {
+						toast({
+							title: "Error",
+							description: "An error occured while updating your email",
+							variant: "destructive",
+						});
+					},
+					onSuccess: () => {
+						toast({
+							title: "Email change requested",
+							description:
+								"An email has been sent to your new address to confirm the change",
+						});
+					},
+				},
+			});
+		}
 	}
 
-	async function requestNewVerificationEmail() {
-		setNewVerificationLoading(true);
-		const r = await sendVerificationEmail();
-		setNewVerificationLoading(false);
+	async function submitPassword({ currentPassword, newPassword }: z.infer<typeof ChangePasswordSchema>) {
+		await authClient.changePassword({
+			currentPassword,
+			newPassword,
+			fetchOptions: {
+				onError: () => {
+					toast({
+						title: "Error",
+						description: "An error occured while updating your password",
+						variant: "destructive",
+					});
+				},
+				onSuccess: () => {
+					toast({
+						title: "Password updated",
+						description: "Your password has been updated successfully",
+					});
 
-		if (r.error) {
-			if (r.error === "user-not-found") {
-				toast({
-					title: "Error",
-					description: "User not found",
-					variant: "destructive",
-				});
-				return;
-			}
-
-			if (r.error === "already-verified") {
-				toast({
-					title: "Error",
-					description:
-						"Your email is already verified. Refresh the page if status isn't updated",
-					variant: "destructive",
-				});
-				return;
-			}
-
-			toast({
-				title: "Error",
-				description: "An error occured while requesting a new verification email",
-				variant: "destructive",
-			});
-			return;
-		}
-
-		toast({
-			title: "Email sent",
-			description: "A new verification email has been sent to your email address",
-		});
-	}
-
-	async function submitPassword(data: z.infer<typeof ChangePasswordSchema>) {
-		setLoadingPassword(true);
-
-		const r = await changePassword(user!.id, data.oldPassword, data.newPassword);
-
-		setLoadingPassword(false);
-
-		if (!r) {
-			toast({
-				title: "Error",
-				description: "An error occured while updating your password",
-				variant: "destructive",
-			});
-			return;
-		}
-
-		if (r.error === "invalid-old") {
-			toast({
-				title: "Error",
-				description: "Your old password is invalid",
-				variant: "destructive",
-			});
-			return;
-		}
-
-		if (r.error === "user-not-found") {
-			toast({
-				title: "Error",
-				description: "User not found",
-				variant: "destructive",
-			});
-			return;
-		}
-
-		if (r.error) {
-			toast({
-				title: "Error",
-				description: "An error occured while updating your password",
-				variant: "destructive",
-			});
-			return;
-		}
-
-		toast({
-			title: "Password updated",
-			description: "Your password has been updated successfully",
+					passwordFormSchema.reset();
+				},
+			},
 		});
 	}
 
@@ -156,7 +116,7 @@ export default function AccountForm({ user }: { readonly user: UserLight }) {
 			if (focus === "email") {
 				accountFormSchema.setFocus("email", { shouldSelect: true });
 			} else if (focus === "password") {
-				passwordFormSchema.setFocus("oldPassword");
+				passwordFormSchema.setFocus("currentPassword");
 			}
 		}
 	});
@@ -273,9 +233,25 @@ export default function AccountForm({ user }: { readonly user: UserLight }) {
 													type="button"
 													variant="link"
 													className="text-muted-foreground p-0 h-fit text-[0.8rem] font-normal"
-													onClick={
-														requestNewVerificationEmail
-													}
+													onClick={() => {
+														setNewVerficiationLoading(
+															true
+														);
+														setTimeout(
+															() => {
+																setNewVerficiationLoading(
+																	false
+																);
+															},
+															2500
+														);
+														authClient.sendVerificationEmail(
+															{
+																email: user.email,
+																callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/app`, // The redirect URL after verification
+															}
+														);
+													}}
 												>
 													{t(
 														"form.email.requestVerification"
@@ -290,7 +266,7 @@ export default function AccountForm({ user }: { readonly user: UserLight }) {
 						)}
 					/>
 
-					{loadingInfos ? (
+					{accountFormSchema.formState.isSubmitting ? (
 						<Button type="button" disabled={true}>
 							<Loader2 className={"mr-2 animate-spin"} />{" "}
 							{t("form.actions.submitting")}
@@ -322,7 +298,7 @@ export default function AccountForm({ user }: { readonly user: UserLight }) {
 				<form onSubmit={passwordFormSchema.handleSubmit(submitPassword)} className="space-y-6">
 					<FormField
 						control={passwordFormSchema.control}
-						name="oldPassword"
+						name="currentPassword"
 						render={({ field }) => (
 							<FormItem className="space-y-1">
 								<FormLabel>
@@ -390,7 +366,7 @@ export default function AccountForm({ user }: { readonly user: UserLight }) {
 						)}
 					/>
 
-					{loadingPassword ? (
+					{passwordFormSchema.formState.isSubmitting ? (
 						<Button type="button" disabled={true}>
 							<Loader2 className={"mr-2 animate-spin"} />{" "}
 							{t("passwordForm.actions.submitting")}

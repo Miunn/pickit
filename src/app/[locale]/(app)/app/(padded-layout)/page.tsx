@@ -1,5 +1,4 @@
 import DashboardContent from "@/components/pages/dashboard/DashboardContent";
-import { getCurrentSession } from "@/data/session";
 import { redirect } from "@/i18n/navigation";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -9,6 +8,7 @@ import { TokenProvider } from "@/context/TokenContext";
 import { ViewState } from "@/components/folders/ViewSelector";
 import { FolderService } from "@/data/folder-service";
 import { FileService } from "@/data/file-service";
+import { AuthService } from "@/data/secure/auth";
 
 export async function generateMetadata(): Promise<Metadata> {
 	const t = await getTranslations("metadata.dashboard");
@@ -21,15 +21,15 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home(props: { readonly params: Promise<{ readonly locale: string }> }) {
 	const params = await props.params;
 
-	const { user } = await getCurrentSession();
+	const { session } = await AuthService.isAuthenticated();
 
-	if (!user) {
+	if (!session?.user) {
 		return redirect({ href: "/signin", locale: params.locale });
 	}
 
 	const lastFolders = await FolderService.getMultiple({
 		where: {
-			createdBy: { id: user.id },
+			createdBy: { id: session.user.id },
 		},
 		include: {
 			cover: true,
@@ -52,7 +52,7 @@ export default async function Home(props: { readonly params: Promise<{ readonly 
 	const lastFiles = (
 		await FileService.getMultiple({
 			where: {
-				createdBy: { id: user.id },
+				createdBy: { id: session.user.id },
 			},
 			orderBy: [{ updatedAt: "desc" }],
 			include: {

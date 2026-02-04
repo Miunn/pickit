@@ -1,11 +1,12 @@
 "use server";
 
-import { hasFolderOwnerAccess } from "@/data/dal";
-import { getCurrentSession } from "@/data/session";
 import { FolderTag } from "@prisma/client";
 import { FileWithTags } from "@/lib/definitions";
 import { FolderTagService } from "@/data/folder-tag-service";
 import { FileService } from "@/data/file-service";
+import { FolderService } from "@/data/folder-service";
+import { SecureService } from "@/data/secure/secure-service";
+import { FilePermission } from "@/data/secure/file";
 
 /**
  * Create a folder tag and optionally attach it to a file.
@@ -26,22 +27,14 @@ export async function createTag(
 	folderId: string,
 	fileId?: string
 ): Promise<{ success: true; tag: FolderTag } | { success: false; error: string }> {
-	if (name.length === 0) {
-		return {
-			success: false,
-			error: "name is required",
-		};
-	}
+	const folder = await FolderService.get({
+		where: { id: folderId },
+		include: { accessTokens: true },
+	});
 
-	if (!(await hasFolderOwnerAccess(folderId))) {
-		return {
-			success: false,
-			error: "unauthorized",
-		};
-	}
+	const { allowed, session } = await SecureService.folder.enforce(folder);
 
-	const session = await getCurrentSession();
-	if (!session?.user) {
+	if (!allowed || !session?.user) {
 		return {
 			success: false,
 			error: "unauthorized",
@@ -82,44 +75,23 @@ export async function addTagsToFile(
 	fileId: string,
 	tagIds: string[]
 ): Promise<{ success: true; tags: FolderTag[]; file: FileWithTags } | { success: false; error: string }> {
-	if (tagIds.length === 0) {
-		return {
-			success: false,
-			error: "no tags to add",
-		};
-	}
-
-	const session = await getCurrentSession();
-	if (!session?.user) {
-		return {
-			success: false,
-			error: "unauthorized",
-		};
-	}
-
 	const file = await FileService.get({
 		where: { id: fileId },
-		include: { tags: true },
+		include: { tags: true, folder: { include: { accessTokens: true } } },
 	});
 
-	if (!file) {
-		return {
-			success: false,
-			error: "file not found",
-		};
-	}
+	const isAllowed = await SecureService.file.enforce(file, FilePermission.UPDATE);
 
-	if (!(await hasFolderOwnerAccess(file.folderId))) {
+	if (!isAllowed || !file) {
 		return {
 			success: false,
-			error: "unauthorized",
+			error: "forbidden",
 		};
 	}
 
 	const tags = await FolderTagService.getMultiple({
 		where: {
 			id: { in: tagIds },
-			userId: session.user.id,
 			folderId: file.folderId,
 		},
 	});
@@ -152,24 +124,9 @@ export async function addTagsToFiles(
 	filesId: string[],
 	tagIds: string[]
 ): Promise<{ success: true; tags: FolderTag[]; files: FileWithTags[] } | { success: false; error: string }> {
-	if (tagIds.length === 0 || filesId.length === 0) {
-		return {
-			success: false,
-			error: "no tags or files to add",
-		};
-	}
-
-	const session = await getCurrentSession();
-	if (!session?.user) {
-		return {
-			success: false,
-			error: "unauthorized",
-		};
-	}
-
 	const files = await FileService.getMultiple({
 		where: { id: { in: filesId } },
-		include: { tags: true },
+		include: { tags: true, folder: { include: { accessTokens: true } } },
 	});
 
 	if (files.length !== filesId.length) {
@@ -179,10 +136,13 @@ export async function addTagsToFiles(
 		};
 	}
 
-	const folderIds = files.map(f => f.folderId);
-	const areUniqueFolder = folderIds.every(f => folderIds[0] === f);
+	const allowedChecks = await Promise.all(
+		files.map(file => SecureService.file.enforce(file, FilePermission.UPDATE))
+	);
 
-	if (!areUniqueFolder || !(await hasFolderOwnerAccess(folderIds[0]))) {
+	const allAllowed = allowedChecks.every(allowed => allowed);
+
+	if (!allAllowed) {
 		return {
 			success: false,
 			error: "unauthorized",
@@ -190,11 +150,7 @@ export async function addTagsToFiles(
 	}
 
 	const tags = await FolderTagService.getMultiple({
-		where: {
-			id: { in: tagIds },
-			userId: session.user.id,
-			folderId: folderIds[0],
-		},
+		where: { id: { in: tagIds } },
 	});
 
 	if (tags.length !== tagIds.length) {
@@ -227,44 +183,23 @@ export async function removeTagsFromFile(
 	fileId: string,
 	tagIds: string[]
 ): Promise<{ success: true; tags: FolderTag[]; file: FileWithTags } | { success: false; error: string }> {
-	if (tagIds.length === 0) {
-		return {
-			success: false,
-			error: "no tags to remove",
-		};
-	}
-
-	const session = await getCurrentSession();
-	if (!session?.user) {
-		return {
-			success: false,
-			error: "unauthorized",
-		};
-	}
-
 	const file = await FileService.get({
 		where: { id: fileId },
-		include: { tags: true },
+		include: { tags: true, folder: { include: { accessTokens: true } } },
 	});
 
-	if (!file) {
+	const isAllowed = await SecureService.file.enforce(file, FilePermission.UPDATE);
+
+	if (!isAllowed || !file) {
 		return {
 			success: false,
 			error: "file not found",
 		};
 	}
 
-	if (!(await hasFolderOwnerAccess(file.folderId))) {
-		return {
-			success: false,
-			error: "unauthorized",
-		};
-	}
-
 	const tags = await FolderTagService.getMultiple({
 		where: {
 			id: { in: tagIds },
-			userId: session.user.id,
 			folderId: file.folderId,
 		},
 	});
@@ -297,24 +232,9 @@ export async function removeTagsFromFiles(
 	fileIds: string[],
 	tagIds: string[]
 ): Promise<{ success: true; tags: FolderTag[]; files: FileWithTags[] } | { success: false; error: string }> {
-	if (tagIds.length === 0 || fileIds.length === 0) {
-		return {
-			success: false,
-			error: "no tags to remove",
-		};
-	}
-
-	const session = await getCurrentSession();
-	if (!session?.user) {
-		return {
-			success: false,
-			error: "unauthorized",
-		};
-	}
-
 	const files = await FileService.getMultiple({
 		where: { id: { in: fileIds } },
-		include: { tags: true },
+		include: { tags: true, folder: { include: { accessTokens: true } } },
 	});
 
 	if (files.length !== fileIds.length) {
@@ -324,10 +244,13 @@ export async function removeTagsFromFiles(
 		};
 	}
 
-	const folderIds = files.map(f => f.folderId);
-	const areUniqueFolder = folderIds.every(f => folderIds[0] === f);
+	const allAccessChecks = await Promise.all(
+		files.map(file => SecureService.file.enforce(file, FilePermission.UPDATE))
+	);
 
-	if (!areUniqueFolder || !(await hasFolderOwnerAccess(folderIds[0]))) {
+	const allAllowed = allAccessChecks.every(allowed => allowed);
+
+	if (!allAllowed) {
 		return {
 			success: false,
 			error: "unauthorized",
@@ -335,11 +258,7 @@ export async function removeTagsFromFiles(
 	}
 
 	const tags = await FolderTagService.getMultiple({
-		where: {
-			id: { in: tagIds },
-			userId: session.user.id,
-			folderId: folderIds[0],
-		},
+		where: { id: { in: tagIds } },
 	});
 
 	if (tags.length !== tagIds.length) {

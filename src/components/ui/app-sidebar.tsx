@@ -15,11 +15,11 @@ import {
 import { Button } from "@/components/ui/button";
 import CreateFolderDialog from "@/components/folders/dialogs/CreateFolderDialog";
 import { DialogTrigger } from "@/components/ui/dialog";
-import { UserLight } from "@/lib/definitions";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import LogoImage from "@/components/generic/LogoImage";
 import { Notification as NotificationData } from "@prisma/client";
+import { User } from "@/lib/auth";
 
 export interface AppSidebarProps {
 	navMainItems: NavMainItems;
@@ -34,7 +34,7 @@ export function AppSidebar({
 	...props
 }: {
 	readonly locale: string;
-	readonly user?: UserLight | null;
+	readonly user?: User | null;
 	readonly notifications: NotificationData[];
 	readonly items: AppSidebarProps & React.ComponentProps<typeof Sidebar>;
 }) {

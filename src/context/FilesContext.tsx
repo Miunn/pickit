@@ -9,13 +9,13 @@ import {
 	FolderWithLastSlug,
 } from "@/lib/definitions";
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import { useSession } from "@/providers/SessionProvider";
 import { useTokenContext } from "@/context/TokenContext";
 import { File as PrismaFile } from "@prisma/client";
 import { getSortedContent } from "@/lib/utils";
 import { ViewState } from "@/components/folders/ViewSelector";
 import { useQueryState } from "nuqs";
 import { FilesSort, FilesSortDefinition } from "@/types/imagesSort";
+import { useSession } from "@/lib/auth-client";
 
 export type ContextFile = PrismaFile &
 	FileWithTags & {
@@ -59,7 +59,7 @@ export const FilesProvider = ({
 	readonly filesData: ContextFile[];
 	readonly defaultView: ViewState;
 }) => {
-	const { user } = useSession();
+	const { data: session } = useSession();
 	const { token } = useTokenContext();
 	const [files, setFiles] = useState<ContextFile[]>(filesData);
 	const [viewState, setViewState] = useQueryState<ViewState>("view", {
@@ -111,7 +111,7 @@ export const FilesProvider = ({
 
 	const hasUserLikedFile = useCallback(
 		(fileId: string) => {
-			if (!user && !token) {
+			if (!session?.user && !token) {
 				return false;
 			}
 
@@ -121,7 +121,7 @@ export const FilesProvider = ({
 				return false;
 			}
 
-			const userAuthorized = file.likes.some(like => like.createdByEmail === user?.email);
+			const userAuthorized = file.likes.some(like => like.createdByEmail === session?.user?.email);
 
 			if (!token || !("email" in token)) {
 				return userAuthorized;
@@ -131,16 +131,16 @@ export const FilesProvider = ({
 
 			return userAuthorized || tokenAuthorized;
 		},
-		[user, token, files]
+		[session, token, files]
 	);
 
 	const canUserLikeFile = useCallback(
 		(file: FileWithLikes) => {
-			if (user?.id === file.createdById) {
+			if (session?.user?.id === file.createdById) {
 				return true;
 			}
 
-			if (!user && !token) {
+			if (!session?.user && !token) {
 				return false;
 			}
 
@@ -150,7 +150,7 @@ export const FilesProvider = ({
 
 			return true;
 		},
-		[user, token]
+		[session, token]
 	);
 
 	const getSortedFiles = useCallback(

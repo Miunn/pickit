@@ -1,7 +1,6 @@
 "use server";
 
 import { UserService } from "@/data/user-service";
-import { getCurrentSession, invalidateAllSessions } from "@/data/session";
 import { Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 

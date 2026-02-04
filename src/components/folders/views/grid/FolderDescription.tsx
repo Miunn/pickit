@@ -2,9 +2,9 @@ import EditDescriptionDialog from "@/components/folders/dialogs/EditDescriptionD
 import { Button } from "@/components/ui/button";
 import { useFolderContext } from "@/context/FolderContext";
 import { cn } from "@/lib/utils";
-import { useSession } from "@/providers/SessionProvider";
 import { Pencil, Trash2 } from "lucide-react";
 import DeleteDescriptionDialog from "@/components/folders/dialogs/DeleteDescriptionDialog";
+import { useSession } from "@/lib/auth-client";
 
 /**
  * Renders a folder's description and, if the current user is the folder creator, action buttons to edit or delete the description.
@@ -14,32 +14,32 @@ import DeleteDescriptionDialog from "@/components/folders/dialogs/DeleteDescript
  * @returns A React element showing the folder description and, when permitted, edit and delete action buttons.
  */
 export default function FolderDescription({ className }: { readonly className?: string }) {
-    const { user } = useSession();
-    const { folder } = useFolderContext();
+	const { data: session } = useSession();
+	const { folder } = useFolderContext();
 
-    if (!folder.description) return null;
+	if (!folder.description) return null;
 
-    return (
-        <div className={cn("relative group overflow-auto", "border border-primary rounded-lg p-4", className)}>
-            <p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>{folder.description}</p>
-            {folder.createdById === user?.id ? (
-                <div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 transition-opacity duration-300">
-                    <EditDescriptionDialog folder={folder}>
-                        <Button variant="ghost" size="icon">
-                            <Pencil className={"w-4 h-4"} />
-                        </Button>
-                    </EditDescriptionDialog>
-                    <DeleteDescriptionDialog folder={folder}>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="focus:bg-destructive/20 focus:text-destructive hover:bg-destructive/20 hover:text-destructive"
-                        >
-                            <Trash2 className={"w-4 h-4"} />
-                        </Button>
-                    </DeleteDescriptionDialog>
-                </div>
-            ) : null}
-        </div>
-    );
+	return (
+		<div className={cn("relative group overflow-auto", "border border-primary rounded-lg p-4", className)}>
+			<p className={"text-sm text-muted-foreground whitespace-pre-wrap"}>{folder.description}</p>
+			{folder.createdById === session?.user?.id ? (
+				<div className="flex sm:flex-col gap-2 absolute top-2 right-2 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 transition-opacity duration-300">
+					<EditDescriptionDialog folder={folder}>
+						<Button variant="ghost" size="icon">
+							<Pencil className={"w-4 h-4"} />
+						</Button>
+					</EditDescriptionDialog>
+					<DeleteDescriptionDialog folder={folder}>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="focus:bg-destructive/20 focus:text-destructive hover:bg-destructive/20 hover:text-destructive"
+						>
+							<Trash2 className={"w-4 h-4"} />
+						</Button>
+					</DeleteDescriptionDialog>
+				</div>
+			) : null}
+		</div>
+	);
 }

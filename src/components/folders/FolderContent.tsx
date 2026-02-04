@@ -7,15 +7,15 @@ import { useFolderContext } from "@/context/FolderContext";
 import { useFilesContext } from "@/context/FilesContext";
 import dynamic from "next/dynamic";
 import FolderActionBar from "@/components/folders/actions/FolderActionBar";
-import { useSession } from "@/providers/SessionProvider";
 import TagGroupedGrid from "@/components/files/views/grid/TagGroupedGrid";
+import { useSession } from "@/lib/auth-client";
 
 const ImagesGrid = dynamic(() => import("@/components/files/views/grid/ImagesGrid").then(mod => mod.ImagesGrid), {
 	ssr: false,
 });
 
 export const FolderContent = () => {
-	const { isGuest } = useSession();
+	const { data: session } = useSession();
 	const { folder } = useFolderContext();
 	const { viewState } = useFilesContext();
 
@@ -37,7 +37,7 @@ export const FolderContent = () => {
 			<h3 className={"mb-2 flex justify-between items-center"}>
 				<p className="font-semibold">
 					{folder.name}{" "}
-					{isGuest ? (
+					{!session ? (
 						<span className="font-normal text-sm">
 							- {t("sharedBy", { name: folder.createdBy.name })}
 						</span>

@@ -4,13 +4,14 @@ import { CreateAccessTokenFormSchema } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { AccessToken, FolderTokenPermission } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { getCurrentSession } from "@/data/session";
 import { transporter } from "@/lib/mailing";
 import { render } from "@react-email/components";
 import ShareFolderTemplate from "@/components/emails/ShareFolderTemplate";
 import NotifyAboutUploadTemplate from "@/components/emails/NotifyAboutUpload";
 import { FolderService } from "@/data/folder-service";
 import { AccessTokenService } from "@/data/access-token-service";
+import { SecureService } from "@/data/secure/secure-service";
+import { FolderPermission } from "@/data/secure/folder";
 
 export async function createNewAccessToken(
 	folderId: string,
@@ -21,10 +22,15 @@ export async function createNewAccessToken(
 	error: string | null;
 	accessToken?: AccessToken;
 }> {
-	const { user } = await getCurrentSession();
+	const folder = await FolderService.get({
+		where: { id: folderId },
+		include: { accessTokens: true, createdBy: true },
+	});
 
-	if (!user) {
-		return { error: "You must be logged in to create a new access token" };
+	const auth = await SecureService.folder.enforce(folder, undefined, undefined, FolderPermission.WRITE);
+
+	if (!auth.allowed) {
+		return { error: "Forbidden" };
 	}
 
 	try {
@@ -36,15 +42,6 @@ export async function createNewAccessToken(
 	} catch {
 		return { error: "invalid-data" };
 	}
-
-	const folder = await FolderService.get({
-		where: {
-			id: folderId,
-			createdBy: {
-				id: user.id,
-			},
-		},
-	});
 
 	if (!folder) {
 		return {
@@ -74,7 +71,7 @@ export async function createNewAccessToken(
 						locked: accessToken.locked,
 					},
 				],
-				user.name,
+				folder.createdBy.name,
 				accessToken.folder.name
 			);
 		}
@@ -125,10 +122,20 @@ export async function changeAccessTokenActiveState(
 ): Promise<{
 	error: string | null;
 }> {
-	const { user } = await getCurrentSession();
+	const accessToken = await AccessTokenService.get({
+		where: { token },
+		include: { folder: { include: { accessTokens: true } } },
+	});
 
-	if (!user) {
-		return { error: "You must be logged in to change token state" };
+	const auth = await SecureService.folder.enforce(
+		accessToken?.folder,
+		undefined,
+		undefined,
+		FolderPermission.WRITE
+	);
+
+	if (!auth.allowed) {
+		return { error: "Forbidden" };
 	}
 
 	await AccessTokenService.update(token, { isActive: isActive });
@@ -138,10 +145,20 @@ export async function changeAccessTokenActiveState(
 }
 
 export async function changeAccessTokenAllowMap(token: string, allowMap: boolean): Promise<{ error: string | null }> {
-	const { user } = await getCurrentSession();
+	const accessToken = await AccessTokenService.get({
+		where: { token },
+		include: { folder: { include: { accessTokens: true } } },
+	});
 
-	if (!user) {
-		return { error: "You must be logged in to change the allow map state of an access token" };
+	const auth = await SecureService.folder.enforce(
+		accessToken?.folder,
+		undefined,
+		undefined,
+		FolderPermission.WRITE
+	);
+
+	if (!auth.allowed) {
+		return { error: "Forbidden" };
 	}
 
 	try {
@@ -161,23 +178,26 @@ export async function lockAccessToken(
 ): Promise<{
 	error: string | null;
 }> {
-	const { user } = await getCurrentSession();
+	const accessToken = await AccessTokenService.get({
+		where: { id: tokenId },
+		include: { folder: { include: { accessTokens: true } } },
+	});
 
-	if (!user) {
-		return { error: "You must be logged in to lock an access token" };
+	const auth = await SecureService.folder.enforce(
+		accessToken?.folder,
+		undefined,
+		undefined,
+		FolderPermission.WRITE
+	);
+
+	if (!auth.allowed) {
+		return { error: "Forbidden" };
 	}
 
 	try {
 		const token = await AccessTokenService.get({
 			method: "first",
-			where: {
-				id: tokenId,
-				folder: {
-					createdBy: {
-						id: user.id,
-					},
-				},
-			},
+			where: { id: tokenId },
 		});
 
 		if (!token) {
@@ -200,24 +220,26 @@ export async function lockAccessToken(
 export async function unlockAccessToken(tokenId: string): Promise<{
 	error: string | null;
 }> {
-	console.log("Ask for unlock");
-	const { user } = await getCurrentSession();
+	const accessToken = await AccessTokenService.get({
+		where: { id: tokenId },
+		include: { folder: { include: { accessTokens: true } } },
+	});
 
-	if (!user) {
-		return { error: "You must be logged in to unlock an access token" };
+	const auth = await SecureService.folder.enforce(
+		accessToken?.folder,
+		undefined,
+		undefined,
+		FolderPermission.WRITE
+	);
+
+	if (!auth.allowed) {
+		return { error: "Forbidden" };
 	}
 
 	try {
 		const token = await AccessTokenService.get({
 			method: "first",
-			where: {
-				id: tokenId,
-				folder: {
-					createdBy: {
-						id: user.id,
-					},
-				},
-			},
+			where: { id: tokenId },
 		});
 
 		if (!token) {
@@ -238,24 +260,24 @@ export async function unlockAccessToken(tokenId: string): Promise<{
 }
 
 export async function deleteAccessToken(tokens: string[]): Promise<{ error: string | null }> {
-	const { user } = await getCurrentSession();
+	const accessTokens = await AccessTokenService.getMultiple({
+		where: { token: { in: tokens } },
+		include: { folder: { include: { accessTokens: true } } },
+	});
 
-	if (!user) {
-		return { error: "You must be logged in to delete an access token" };
+	const auth = await Promise.all(
+		accessTokens.map(async at =>
+			SecureService.folder.enforce(at.folder, undefined, undefined, FolderPermission.WRITE)
+		)
+	).then(results => results.every(r => r.allowed));
+
+	if (!auth) {
+		return { error: "Forbidden" };
 	}
 
 	try {
 		await AccessTokenService.deleteMany({
-			where: {
-				token: {
-					in: tokens,
-				},
-				folder: {
-					createdBy: {
-						id: user.id,
-					},
-				},
-			},
+			where: { token: { in: tokens } },
 		});
 	} catch {
 		return { error: "An unknown error happened when trying to delete this access token" };
@@ -266,31 +288,30 @@ export async function deleteAccessToken(tokens: string[]): Promise<{ error: stri
 }
 
 export async function sendAgainAccessToken(token: string) {
-	const { user } = await getCurrentSession();
-
-	if (!user) {
-		return { error: "You must be logged in to send an access token again" };
-	}
-
 	const accessToken = await AccessTokenService.get({
 		method: "first",
-		where: {
-			token: token,
-			folder: {
-				createdBy: {
-					id: user.id,
-				},
-			},
-		},
+		where: { token },
 		include: {
 			folder: {
 				select: {
 					name: true,
 					slug: true,
 				},
+				include: { accessTokens: true, createdBy: true },
 			},
 		},
 	});
+
+	const auth = await SecureService.folder.enforce(
+		accessToken?.folder,
+		undefined,
+		undefined,
+		FolderPermission.WRITE
+	);
+
+	if (!auth.allowed) {
+		return { error: "Forbidden" };
+	}
 
 	if (!accessToken?.email) {
 		return { error: "Token not found" };
@@ -304,7 +325,7 @@ export async function sendAgainAccessToken(token: string) {
 				locked: accessToken.locked,
 			},
 		],
-		user.name,
+		accessToken.folder.createdBy.name,
 		accessToken.folder.name
 	);
 
@@ -312,19 +333,15 @@ export async function sendAgainAccessToken(token: string) {
 }
 
 export async function notifyAboutUpload(folderId: string, count: number) {
-	const { user } = await getCurrentSession();
-
-	if (!user) {
-		return { error: "You must be logged in to notify about an upload" };
-	}
-
 	const folder = await FolderService.get({
-		where: { id: folderId, createdBy: { id: user.id } },
-		include: { accessTokens: true },
+		where: { id: folderId },
+		include: { accessTokens: true, createdBy: true },
 	});
 
-	if (!folder) {
-		return { error: "Folder not found" };
+	const auth = await SecureService.folder.enforce(folder, undefined, undefined, FolderPermission.READ);
+
+	if (!auth.allowed || !folder) {
+		return;
 	}
 
 	const personAccessTokens = folder.accessTokens
@@ -335,7 +352,7 @@ export async function notifyAboutUpload(folderId: string, count: number) {
 			locked: p.locked,
 		}));
 
-	await sendNotifyAboutUploadEmail(personAccessTokens, user.name, folder.name, count);
+	await sendNotifyAboutUploadEmail(personAccessTokens, folder.createdBy.name, folder.name, count);
 }
 
 async function sendShareFolderEmail(

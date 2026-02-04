@@ -3,17 +3,16 @@
 import { CommentWithCreatedBy, CreateCommentFormSchema, EditCommentFormSchema } from "@/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { isAllowedToDeleteComment } from "@/data/dal";
 import { FileService } from "@/data/file-service";
 import { CommentService } from "@/data/comment-service";
 import { SecureService } from "@/data/secure/secure-service";
 import { FolderPermission } from "@/data/secure/folder";
+import { CommentPermission } from "@/data/secure/comment";
 
 export async function createComment(
 	fileId: string,
 	data: z.infer<typeof CreateCommentFormSchema>,
 	shareToken?: string | null,
-	type?: "accessToken" | "personAccessToken" | null,
 	h?: string | null
 ): Promise<CommentWithCreatedBy | null> {
 	const file = await FileService.get({
@@ -38,20 +37,21 @@ export async function createComment(
 
 	const folder = file.folder;
 
-	const auth = await SecureService.folder.enforce(
+	const { allowed, session } = await SecureService.folder.enforce(
 		folder,
 		shareToken || undefined,
 		h || undefined,
 		FolderPermission.READ
 	);
 
-	if (!auth.allowed) {
+	if (!allowed) {
 		return null;
 	}
+
+	const user = session?.user;
+
 	let commentName = "Anonymous";
 	let createdByEmail = null;
-
-	const { user } = auth.session;
 
 	if (!user || folder.createdById !== user.id) {
 		const accessToken = folder.accessTokens.find(a => a.token === shareToken && a.expires >= new Date());
@@ -99,14 +99,34 @@ export async function createComment(
 }
 
 export async function deleteComment(commentId: string, shareToken?: string | null, accessKey?: string | null) {
-	const isAllowed = await isAllowedToDeleteComment(commentId, shareToken, accessKey);
+	const comment = await CommentService.get({
+		where: { id: commentId },
+		include: {
+			file: {
+				include: {
+					folder: {
+						include: {
+							accessTokens: true,
+						},
+					},
+				},
+			},
+		},
+	});
 
-	if (!isAllowed) {
+	const isAllowed = await SecureService.comment.enforce(
+		comment,
+		CommentPermission.DELETE,
+		shareToken || undefined,
+		accessKey || undefined
+	);
+
+	if (!isAllowed || !comment) {
 		return false;
 	}
 
 	try {
-		const comment = await CommentService.delete({
+		await CommentService.delete({
 			commentId,
 			include: {
 				file: {
@@ -118,10 +138,6 @@ export async function deleteComment(commentId: string, shareToken?: string | nul
 				},
 			},
 		});
-
-		if (!comment) {
-			return false;
-		}
 
 		revalidatePath(`/app/folders/${comment.file.folder.slug}`);
 		return true;
@@ -137,9 +153,29 @@ export async function updateComment(
 	shareToken?: string | null,
 	accessKey?: string | null
 ): Promise<CommentWithCreatedBy | null> {
-	const isAllowed = await isAllowedToDeleteComment(commentId, shareToken, accessKey);
+	const comment = await CommentService.get({
+		where: { id: commentId },
+		include: {
+			file: {
+				include: {
+					folder: {
+						include: {
+							accessTokens: true,
+						},
+					},
+				},
+			},
+		},
+	});
 
-	if (!isAllowed) {
+	const isAllowed = await SecureService.comment.enforce(
+		comment,
+		CommentPermission.UPDATE,
+		shareToken || undefined,
+		accessKey || undefined
+	);
+
+	if (!isAllowed || !comment) {
 		return null;
 	}
 

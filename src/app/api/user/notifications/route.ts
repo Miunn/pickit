@@ -1,5 +1,4 @@
 import { NotificationService } from "@/data/notification-service";
-import { getCurrentSession } from "@/data/session";
 import { NextResponse } from "next/server";
 
 export async function GET() {

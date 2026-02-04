@@ -13,7 +13,6 @@ import {
 import { cn, filterObjectOut } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { changeFolderCover } from "@/actions/folders";
-import { useSession } from "@/providers/SessionProvider";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { FileType, FolderTag } from "@prisma/client";
@@ -26,6 +25,7 @@ import { addTagsToFile, removeTagsFromFile } from "@/actions/tags";
 import { toast as sonnerToast } from "sonner";
 import { useSearchParams } from "next/navigation";
 import FileThumbnail from "@/components/files/views/grid/FileThumbnail";
+import { useSession } from "@/lib/auth-client";
 
 export type ImagePreviewProps = {
 	readonly file: { folder: FolderWithTags } & FileWithTags;
@@ -47,13 +47,13 @@ export function ImagePreviewGrid({ file, selected, onClick, onSelect, className,
 	const [openProperties, setOpenProperties] = React.useState(false);
 	const [openDelete, setOpenDelete] = React.useState(false);
 
-	const { user } = useSession();
+	const { data: session } = useSession();
 	const { setFiles } = useFilesContext();
 
 	const { attributes, listeners, setNodeRef, transition, transform } = useSortable({ id: file.id });
 
 	const style =
-		file.createdById === user?.id && transform
+		file.createdById === session?.user?.id && transform
 			? {
 					transform: CSS.Translate.toString(transform),
 					transition,
@@ -148,7 +148,7 @@ export function ImagePreviewGrid({ file, selected, onClick, onSelect, className,
 				</ContextMenuTrigger>
 				<ContextMenuContent>
 					<ContextMenuItem onClick={onClick}>{t("actions.view")}</ContextMenuItem>
-					{file.createdById === user?.id ? (
+					{file.createdById === session?.user?.id ? (
 						<ContextMenuItem onClick={onSelect}>
 							{t("actions.select")}
 						</ContextMenuItem>
@@ -170,7 +170,7 @@ export function ImagePreviewGrid({ file, selected, onClick, onSelect, className,
 							{t("actions.download")}
 						</a>
 					</ContextMenuItem>
-					{file.createdById === user?.id ? (
+					{file.createdById === session?.user?.id ? (
 						<ContextMenuItem onClick={e => e.preventDefault()}>
 							<ManageTagsDialog
 								selectedTags={file.tags}
@@ -182,12 +182,12 @@ export function ImagePreviewGrid({ file, selected, onClick, onSelect, className,
 							</ManageTagsDialog>
 						</ContextMenuItem>
 					) : null}
-					{file.createdById === user?.id ? (
+					{file.createdById === session?.user?.id ? (
 						<ContextMenuItem onClick={() => setOpenRename(true)}>
 							{t("actions.rename")}
 						</ContextMenuItem>
 					) : null}
-					{file.type === FileType.IMAGE && file.createdById === user?.id ? (
+					{file.type === FileType.IMAGE && file.createdById === session?.user?.id ? (
 						<ContextMenuItem
 							onClick={async () => {
 								const r = await changeFolderCover(
@@ -222,7 +222,7 @@ export function ImagePreviewGrid({ file, selected, onClick, onSelect, className,
 					<ContextMenuItem onClick={() => setOpenProperties(true)}>
 						{t("actions.properties")}
 					</ContextMenuItem>
-					{file.createdById === user?.id ? (
+					{file.createdById === session?.user?.id ? (
 						<>
 							<ContextMenuSeparator />
 							<ContextMenuItem
