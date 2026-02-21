@@ -12,8 +12,8 @@ export enum FilePermission {
 export async function enforceFile(
 	file?: (File & { folder: FolderWithAccessToken }) | null,
 	permission: FilePermission = FilePermission.READ,
-	token?: string,
-	key?: string
+	token?: string | null,
+	key?: string | null
 ): Promise<boolean> {
 	if (!file) return false;
 	const { isAuthenticated, session } = await AuthService.isAuthenticated();

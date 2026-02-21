@@ -1,12 +1,13 @@
+import { AuthService } from "@/data/secure/auth";
 import { stripe } from "@/lib/stripe";
 import { getPlanFromPriceId } from "@/lib/utils";
 import { Plan } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-	const { user } = await getCurrentSession();
+	const { isAuthenticated, session: userSession } = await AuthService.isAuthenticated();
 
-	if (!user) {
+	if (!isAuthenticated || !userSession) {
 		console.log("No user, unauthorized");
 		return new Response("Unauthorized", { status: 401 });
 	}
@@ -22,9 +23,9 @@ export async function POST(request: NextRequest) {
 			},
 		],
 		mode: "subscription",
-		customer_email: user.email,
+		customer_email: userSession.user.email,
 		return_url: `${process.env.NEXT_PUBLIC_APP_URL}/app/account/billing?session_id={CHECKOUT_SESSION_ID}`,
-		metadata: { userId: user.id, plan: getPlanFromPriceId(priceId) ?? Plan.FREE },
+		metadata: { userId: userSession.user.id, plan: getPlanFromPriceId(priceId) ?? Plan.FREE },
 		automatic_tax: { enabled: true },
 	});
 

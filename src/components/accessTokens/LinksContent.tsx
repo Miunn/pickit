@@ -11,15 +11,9 @@ export interface LinksContentProps {
 	readonly side: "links" | "contacts";
 	readonly accessTokens: AccessTokenWithFolder[];
 	readonly lightFolders: LightFolder[];
-	readonly defaultSelectedAccessTokenIndex: number;
 }
 
-export default function LinksContent({
-	side,
-	accessTokens,
-	lightFolders,
-	defaultSelectedAccessTokenIndex,
-}: LinksContentProps) {
+export default function LinksContent({ side, accessTokens, lightFolders }: LinksContentProps) {
 	const t = useTranslations("pages.links");
 
 	const [sideState, setSideState] = useQueryState<"links" | "contacts">("s", {
@@ -37,15 +31,11 @@ export default function LinksContent({
 				<TabsTrigger value="links">{t("links.title")}</TabsTrigger>
 			</TabsList>
 			<TabsContent value="contacts">
-				<PersonDataTable
-					accessTokens={accessTokens.filter(token => token.email)}
-					defaultTokenIndex={defaultSelectedAccessTokenIndex}
-				/>
+				<PersonDataTable accessTokens={accessTokens.filter(token => token.email)} />
 			</TabsContent>
 			<TabsContent value="links">
 				<LinksDataTable
 					accessTokens={accessTokens.filter(token => !token.email)}
-					defaultTokenIndex={defaultSelectedAccessTokenIndex}
 					lightFolders={lightFolders}
 				/>
 			</TabsContent>

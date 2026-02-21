@@ -5,10 +5,10 @@ import { z } from "zod";
 
 const passwordValidation = z
 	.string()
-	.min(8, { message: "Be at least 8 characters long" })
-	.regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
-	.regex(/\d/, { message: "Contain at least one number." })
-	.regex(/[^a-zA-Z0-9]/, { message: "Contain at least one special character." })
+	.min(8, { error: "Be at least 8 characters long" })
+	.regex(/[a-zA-Z]/, { error: "Contain at least one letter." })
+	.regex(/\d/, { error: "Contain at least one number." })
+	.regex(/[^a-zA-Z0-9]/, { error: "Contain at least one special character." })
 	.trim();
 
 export type ActionResult = {
@@ -17,15 +17,15 @@ export type ActionResult = {
 };
 
 export const ContactFormSchema = z.object({
-	name: z.string().min(3, { message: "Be at least 3 characters long" }).trim(),
-	email: z.string().email({ message: "Please enter a valid email." }).trim(),
-	message: z.string().min(1, { message: "Be at least 1 character long" }).trim(),
+	name: z.string().min(3, { error: "Be at least 3 characters long" }).trim(),
+	email: z.email({ error: "Please enter a valid email." }).trim(),
+	message: z.string().min(1, { error: "Be at least 1 character long" }).trim(),
 });
 
 export const SignupFormSchema = z
 	.object({
-		name: z.string().min(3, { message: "Be at least 3 characters long" }).trim(),
-		email: z.string().email({ message: "Please enter a valid email." }).trim(),
+		name: z.string().min(3, { error: "Be at least 3 characters long" }).trim(),
+		email: z.email({ error: "Please enter a valid email." }).trim(),
 		password: passwordValidation,
 		passwordConfirmation: z.string(),
 	})
@@ -40,7 +40,7 @@ export const SignupFormSchema = z
 	});
 
 export const SignInFormSchema = z.object({
-	email: z.string().email({ message: "Please enter a valid email." }).trim(),
+	email: z.email({ error: "Please enter a valid email." }).trim(),
 	password: z.string().trim(),
 });
 
@@ -48,7 +48,7 @@ export const CreateFolderFormSchema = z.object({
 	name: z
 		.string()
 		.min(2, {
-			message: "The folders name must be at least 2 characters",
+			error: "The folders name must be at least 2 characters",
 		})
 		.max(255),
 });
@@ -57,7 +57,7 @@ export const RenameFolderFormSchema = z.object({
 	name: z
 		.string()
 		.min(2, {
-			message: "The folders name must be at least 2 characters",
+			error: "The folders name must be at least 2 characters",
 		})
 		.max(255),
 });
@@ -84,7 +84,7 @@ export const UploadImagesFormSchema = z.object({
 							);
 						},
 						{
-							message: "File must be an image or a video",
+							error: "File must be an image or a video",
 						}
 					)
 					.refine(
@@ -93,12 +93,12 @@ export const UploadImagesFormSchema = z.object({
 								f => f instanceof File && f.size < 1024 * 1024 * 1000
 							),
 						{
-							message: "Max size is 1GB.",
+							error: "Max size is 1GB.",
 						}
 					)
 			: z
 					.array(z.instanceof(File))
-					.nonempty({ message: "Please select at least one file" })
+					.nonempty({ error: "Please select at least one file" })
 					.refine(
 						file => {
 							return Array.from(file).every(
@@ -108,19 +108,19 @@ export const UploadImagesFormSchema = z.object({
 							);
 						},
 						{
-							message: "File must be an image or a video",
+							error: "File must be an image or a video",
 						}
 					),
 	shouldNotify: z.boolean().optional(),
 });
 
 export const RequestFileUploadFormSchema = z.object({
-	name: z.string().min(1, { message: "File name must be at least 1 character long" }).max(255),
+	name: z.string().min(1, { error: "File name must be at least 1 character long" }).max(255),
 	size: z
 		.number()
-		.min(1, { message: "File size must be at least 1 byte" })
-		.max(1024 * 1024 * 1000, { message: "File size must be at most 1GB" }),
-	type: z.string().min(1, { message: "File type must be specified" }).max(255),
+		.min(1, { error: "File size must be at least 1 byte" })
+		.max(1024 * 1024 * 1000, { error: "File size must be at most 1GB" }),
+	type: z.string().min(1, { error: "File type must be specified" }).max(255),
 	md5: z.string(),
 });
 
@@ -128,7 +128,7 @@ export const RenameImageFormSchema = z.object({
 	name: z
 		.string()
 		.min(2, {
-			message: "The image name must be at least 2 characters",
+			error: "The image name must be at least 2 characters",
 		})
 		.max(255),
 });
@@ -137,10 +137,10 @@ export const EditDescriptionFormSchema = z.object({
 	description: z
 		.string()
 		.min(1, {
-			message: "Description must be at least 1 character long",
+			error: "Description must be at least 1 character long",
 		})
 		.max(255, {
-			message: "Description must be at most 255 characters long",
+			error: "Description must be at most 255 characters long",
 		}),
 });
 
@@ -148,10 +148,10 @@ export const CreateCommentFormSchema = z.object({
 	content: z
 		.string()
 		.min(1, {
-			message: "Comment must be at least 1 character long",
+			error: "Comment must be at least 1 character long",
 		})
 		.max(255, {
-			message: "Comment must be at most 255 characters long",
+			error: "Comment must be at most 255 characters long",
 		}),
 });
 
@@ -159,10 +159,10 @@ export const EditCommentFormSchema = z.object({
 	content: z
 		.string()
 		.min(1, {
-			message: "Comment must be at least 1 character long",
+			error: "Comment must be at least 1 character long",
 		})
 		.max(255, {
-			message: "Comment must be at most 255 characters long",
+			error: "Comment must be at most 255 characters long",
 		}),
 });
 
@@ -170,41 +170,41 @@ export const LockFolderFormSchema = z.object({
 	pin: z
 		.string()
 		.min(8, {
-			message: "PIN must be 6 characters long",
+			error: "PIN must be 6 characters long",
 		})
 		.max(8, {
-			message: "PIN must be 6 characters long",
+			error: "PIN must be 6 characters long",
 		}),
 });
 
 export const CreateAccessTokenFormSchema = z.object({
 	folder: z.string().max(255, {
-		message: "Choosen folder is invalid",
+		error: "Choosen folder is invalid",
 	}),
-	permission: z.nativeEnum(FolderTokenPermission),
+	permission: z.enum(FolderTokenPermission),
 	expiresAt: z
 		.date({
-			required_error: "Please select an expiry date",
-			invalid_type_error: "Selected date is invalid",
+			error: issue =>
+				issue.input === undefined ? "Please select an expiry date" : "Selected date is invalid",
 		})
 		.min(new Date(), {
-			message: "Expiry date should be in the future",
+			error: "Expiry date should be in the future",
 		}),
 	allowMap: z.boolean().optional(),
 });
 
 export const CreatePersonAccessTokenFormSchema = z.object({
-	email: z.string().email({ message: "Please enter a valid email." }).trim(),
-	permission: z.nativeEnum(FolderTokenPermission),
+	email: z.email({ error: "Please enter a valid email." }).trim(),
+	permission: z.enum(FolderTokenPermission),
 	pinCode: z.string().length(8).optional(),
 	message: z.string().optional(),
 	expiresAt: z
 		.date({
-			required_error: "Please select an expiry date",
-			invalid_type_error: "Selected date is invalid",
+			error: issue =>
+				issue.input === undefined ? "Please select an expiry date" : "Selected date is invalid",
 		})
 		.min(new Date(), {
-			message: "Expiry date should be in the future",
+			error: "Expiry date should be in the future",
 		}),
 	allowMap: z.boolean().optional(),
 });
@@ -212,11 +212,11 @@ export const CreatePersonAccessTokenFormSchema = z.object({
 export const AccountFormSchema = z.object({
 	profilePicture: z
 		.any()
-		.refine(file => file.size < 5000000, { message: "Max size is 5MB." })
-		.refine(file => file.type.startsWith("image/"), { message: "File must be an image" })
+		.refine(file => file.size < 5000000, { error: "Max size is 5MB." })
+		.refine(file => file.type.startsWith("image/"), { error: "File must be an image" })
 		.optional(),
-	name: z.string().min(3, { message: "Be at least 3 characters long" }).trim().optional().or(z.literal("")),
-	email: z.string().email({ message: "Please enter a valid email." }).trim().optional().or(z.literal("")),
+	name: z.string().min(3, { error: "Be at least 3 characters long" }).trim().optional().or(z.literal("")),
+	email: z.email({ error: "Please enter a valid email." }).trim().optional().or(z.literal("")),
 });
 
 export const ChangePasswordSchema = z
@@ -224,10 +224,10 @@ export const ChangePasswordSchema = z
 		currentPassword: z.string(),
 		newPassword: z
 			.string()
-			.min(8, { message: "Must be at least 8 characters long" })
-			.regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
-			.regex(/\d/, { message: "Contain at least one number." })
-			.regex(/[^a-zA-Z0-9]/, { message: "Contain at least one special character." })
+			.min(8, { error: "Must be at least 8 characters long" })
+			.regex(/[a-zA-Z]/, { error: "Contain at least one letter." })
+			.regex(/\d/, { error: "Contain at least one number." })
+			.regex(/[^a-zA-Z0-9]/, { error: "Contain at least one special character." })
 			.trim(),
 		passwordConfirmation: z.string(),
 	})
@@ -242,7 +242,7 @@ export const ChangePasswordSchema = z
 	});
 
 export const RequestPasswordResetFormSchema = z.object({
-	email: z.string().email({ message: "Please enter a valid email." }).trim(),
+	email: z.email({ error: "Please enter a valid email." }).trim(),
 });
 
 export const ResetPasswordFormSchema = z

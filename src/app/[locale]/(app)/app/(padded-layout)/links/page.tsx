@@ -41,14 +41,11 @@ export default async function LinksPage(props: {
 		},
 	});
 
-	const defaultSelectedAccessTokenIndex = accessTokens.map(act => act.id).indexOf(searchParams.l || "");
-
 	return (
 		<LinksContent
 			side={searchParams.s || "contacts"}
 			accessTokens={accessTokens}
 			lightFolders={lightFolders}
-			defaultSelectedAccessTokenIndex={defaultSelectedAccessTokenIndex}
 		/>
 	);
 }

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SignupFormSchema } from "@/lib/definitions";
 import { toast } from "@/hooks/use-toast";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -18,7 +18,6 @@ import { useRouter } from "@/i18n/navigation";
 
 export default function SignupForm() {
 	const router = useRouter();
-	const locale = useLocale();
 	const t = useTranslations("components.auth.signUp");
 	const form = useForm<z.infer<typeof SignupFormSchema>>({
 		resolver: zodResolver(SignupFormSchema),
@@ -41,7 +40,7 @@ export default function SignupForm() {
 			{
 				onSuccess: () => {
 					//redirect to the dashboard or sign in page
-					router.push(`/${locale}/app`);
+					router.push(`/app`);
 				},
 				onError: ctx => {
 					// display the error message
