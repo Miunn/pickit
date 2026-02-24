@@ -3,97 +3,109 @@ import EmailFooter from "@/components/emails/EmailFooter";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL ? process.env.NEXT_PUBLIC_APP_URL : "http://localhost:3000";
 
-export default function ResetPasswordTemplate({ name, token }: { readonly name: string; readonly token: string }) {
-    return (
-        <Html>
-            <Head>
-                <title>Folder shared</title>
+export default function ResetPasswordTemplate({ name, url }: { readonly name: string; readonly url: string }) {
+	return (
+		<Html>
+			<Head>
+				<title>Folder shared</title>
 
-                <Font
-                    fontFamily="Inter"
-                    fallbackFontFamily="Helvetica"
-                    webFont={{
-                        url: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiA.woff2",
-                        format: "woff2",
-                    }}
-                    fontWeight={400}
-                    fontStyle="normal"
-                />
-            </Head>
+				<Font
+					fontFamily="Inter"
+					fallbackFontFamily="Helvetica"
+					webFont={{
+						url: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiA.woff2",
+						format: "woff2",
+					}}
+					fontWeight={400}
+					fontStyle="normal"
+				/>
+			</Head>
 
-            <Tailwind>
-                <Body className="m-0 p-0 max-w-[600px] mx-auto mt-[30px]">
-                    <Section
-                        style={{
-                            border: "1px solid #e0e0e0",
-                            borderRadius: "5px",
-                        }}
-                    >
-                        <Row>
-                            <Column className="text-center bg-[#f4f4f4] p-4" align="center">
-                                <Section width="100%">
-                                    <tr>
-                                        <td align="center" valign="middle">
-                                            <Img
-                                                src={`${baseUrl}/static/logo-full-primary.png`}
-                                                alt={process.env.NEXT_PUBLIC_APP_NAME}
-                                                className="inline-block max-w-[200px] max-h-[32px]"
-                                            />
-                                        </td>
-                                    </tr>
-                                </Section>
-                            </Column>
-                        </Row>
-                        <Row>
-                            <Column
-                                style={{
-                                    padding: "20px",
-                                }}
-                            >
-                                <Text className="text-center text-xl tracking-wide">
-                                    Réinitialisation de votre mot de passe
-                                </Text>
+			<Tailwind>
+				<Body className="m-0 p-0 max-w-[600px] mx-auto mt-[30px]">
+					<Section
+						style={{
+							border: "1px solid #e0e0e0",
+							borderRadius: "5px",
+						}}
+					>
+						<Row>
+							<Column className="text-center bg-[#f4f4f4] p-4" align="center">
+								<Section width="100%">
+									<tr>
+										<td align="center" valign="middle">
+											<Img
+												src={`${baseUrl}/static/logo-full-primary.png`}
+												alt={
+													process.env
+														.NEXT_PUBLIC_APP_NAME
+												}
+												className="inline-block max-w-[200px] max-h-[32px]"
+											/>
+										</td>
+									</tr>
+								</Section>
+							</Column>
+						</Row>
+						<Row>
+							<Column
+								style={{
+									padding: "20px",
+								}}
+							>
+								<Text className="text-center text-xl tracking-wide">
+									Réinitialisation de votre mot de passe
+								</Text>
 
-                                <Text>Bonjour {name},</Text>
+								<Text>Bonjour {name},</Text>
 
-                                <Text>
-                                    Vous avez récemment demandé une réinitialisation de votre mot de passe associé à
-                                    votre compte {process.env.NEXT_PUBLIC_APP_NAME}.
-                                </Text>
+								<Text>
+									Vous avez récemment demandé une réinitialisation
+									de votre mot de passe associé à votre compte{" "}
+									{process.env.NEXT_PUBLIC_APP_NAME}.
+								</Text>
 
-                                <Text>
-                                    Afin de créer un nouveau mot de passe et de récupérer l&lsquo;accès à votre compte,
-                                    cliquez sur le bouton ci-dessous :
-                                </Text>
+								<Text>
+									Afin de créer un nouveau mot de passe et de
+									récupérer l&lsquo;accès à votre compte, cliquez
+									sur le bouton ci-dessous :
+								</Text>
 
-                                <div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
-                                    <Button
-                                        href={`${process.env.NEXT_PUBLIC_APP_URL}/en/account/reset/${token}`}
-                                        className="box-border w-full rounded-[8px] bg-[#1F7551] px-[12px] py-[12px] text-center font-semibold text-white"
-                                    >
-                                        Réinitialiser votre mot de passe
-                                    </Button>
-                                </div>
+								<div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
+									<Button
+										href={url}
+										className="box-border w-full rounded-[8px] bg-[#1F7551] px-[12px] py-[12px] text-center font-semibold text-white"
+									>
+										Réinitialiser votre mot de passe
+									</Button>
+								</div>
 
-                                <Text>Ce lien de réinitialisation expirera après 15 minutes.</Text>
+								<Text>
+									Ce lien de réinitialisation expirera après 15
+									minutes.
+								</Text>
 
-                                <Text>
-                                    Si vous n&lsquo;avez pas soumis de demande de réinitialisation de mot de passe, vous
-                                    pouvez simplement ignorer ce message.
-                                </Text>
+								<Text>
+									Si vous n&lsquo;avez pas soumis de demande de
+									réinitialisation de mot de passe, vous pouvez
+									simplement ignorer ce message.
+								</Text>
 
-                                <Text>
-                                    Cordialement,
-                                    <br />
-                                    L&lsquo;équipe <strong>{process.env.NEXT_PUBLIC_APP_NAME}</strong>
-                                </Text>
-                            </Column>
-                        </Row>
+								<Text>
+									Cordialement,
+									<br />
+									L&lsquo;équipe{" "}
+									<strong>
+										{process.env.NEXT_PUBLIC_APP_NAME}
+									</strong>
+								</Text>
+							</Column>
+						</Row>
 
-                        <EmailFooter />
-                    </Section>
-                </Body>
-            </Tailwind>
-        </Html>
-    );
+						<EmailFooter />
+					</Section>
+				</Body>
+			</Tailwind>
+		</Html>
+	);
 }

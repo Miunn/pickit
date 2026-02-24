@@ -11,18 +11,7 @@ export default async function AdminUser(props: {
 
 	const user = await UserService.get({
 		where: { id: params.userId },
-		select: {
-			id: true,
-			name: true,
-			email: true,
-			emailVerified: true,
-			emailVerificationDeadline: true,
-			image: true,
-			role: true,
-			usedStorage: true,
-			maxStorage: true,
-			createdAt: true,
-			updatedAt: true,
+		include: {
 			_count: {
 				select: {
 					folders: true,

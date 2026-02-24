@@ -1,10 +1,10 @@
 import { getTranslations } from "next-intl/server";
-import { getCurrentSession } from "@/data/session";
 import { redirect } from "@/i18n/navigation";
 import LinksContent from "@/components/accessTokens/LinksContent";
 import { Metadata } from "next";
 import { AccessTokenService } from "@/data/access-token-service";
 import { FolderService } from "@/data/folder-service";
+import { AuthService } from "@/data/secure/auth";
 
 export async function generateMetadata(): Promise<Metadata> {
 	const t = await getTranslations("metadata.links");
@@ -21,19 +21,19 @@ export default async function LinksPage(props: {
 	const searchParams = await props.searchParams;
 	const params = await props.params;
 
-	const { user } = await getCurrentSession();
-	if (!user) {
+	const { isAuthenticated, session } = await AuthService.isAuthenticated();
+	if (!isAuthenticated) {
 		return redirect({ href: `/signin`, locale: params.locale });
 	}
 
 	const accessTokens = await AccessTokenService.getMultiple({
-		where: { folder: { createdBy: { id: user.id } } },
+		where: { folder: { createdBy: { id: session.user.id } } },
 		include: { folder: true },
 		orderBy: [{ folder: { name: "asc" } }],
 	});
 
 	const lightFolders = await FolderService.getMultiple({
-		where: { createdBy: { id: user.id } },
+		where: { createdBy: { id: session.user.id } },
 		select: {
 			id: true,
 			name: true,
@@ -41,14 +41,11 @@ export default async function LinksPage(props: {
 		},
 	});
 
-	const defaultSelectedAccessTokenIndex = accessTokens.map(act => act.id).indexOf(searchParams.l || "");
-
 	return (
 		<LinksContent
 			side={searchParams.s || "contacts"}
 			accessTokens={accessTokens}
 			lightFolders={lightFolders}
-			defaultSelectedAccessTokenIndex={defaultSelectedAccessTokenIndex}
 		/>
 	);
 }

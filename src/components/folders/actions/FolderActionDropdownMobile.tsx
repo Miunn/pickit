@@ -16,17 +16,17 @@ import { ViewState } from "@/components/folders/ViewSelector";
 import { FilesSort, parseFilesSort, SortAttribute } from "@/types/imagesSort";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useSession } from "@/providers/SessionProvider";
 import { UploadImagesDialog } from "@/components/files/upload/UploadImagesDialog";
 import { ShareFolderDialog } from "@/components/folders/dialogs/ShareFolderDialog";
 import { useMemo, useState } from "react";
 import SortArrow from "@/components/generic/SortArrow";
+import { useSession } from "@/lib/auth-client";
 
 export default function FolderActionDropdownMobile() {
 	const t = useTranslations("folders");
 	const { files, viewState, sortState, setViewState, setSortState, setFiles } = useFilesContext();
 	const { folder, token, tokenHash, isShared } = useFolderContext();
-	const { isGuest } = useSession();
+	const { data: session } = useSession();
 	const { attribute: sortAttribute, direction: sortDirection } = useMemo(
 		() => parseFilesSort(sortState),
 		[sortState]
@@ -180,7 +180,7 @@ export default function FolderActionDropdownMobile() {
 						</DropdownMenuSub>
 					) : null}
 					<DropdownMenuItem
-						className={cn(isGuest && !token?.allowMap && "hidden")}
+						className={cn(!session && !token?.allowMap && "hidden")}
 						asChild
 					>
 						<Link href={`/app/map?share=${token?.token}&h=${tokenHash}`}>
@@ -188,13 +188,13 @@ export default function FolderActionDropdownMobile() {
 						</Link>
 					</DropdownMenuItem>
 					<DropdownMenuItem
-						className={cn(isGuest && "hidden")}
+						className={cn(!session && "hidden")}
 						onClick={() => setOpenUpload(true)}
 					>
 						{t("upload.label")}
 					</DropdownMenuItem>
 					<DropdownMenuItem
-						className={cn(isGuest && "hidden")}
+						className={cn(!session && "hidden")}
 						onClick={() => setOpenShare(true)}
 					>
 						{t("share.label")}

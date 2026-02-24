@@ -9,15 +9,14 @@ import { AccessTokenWithFolder } from "@/lib/definitions";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { linksColumns } from "@/components/links/columns";
+import { useSearchParams } from "next/navigation";
 
-export default function PersonDataTable({
-	accessTokens,
-	defaultTokenIndex,
-}: {
-	readonly accessTokens: AccessTokenWithFolder[];
-	readonly defaultTokenIndex: number;
-}) {
+export default function PersonDataTable({ accessTokens }: { readonly accessTokens: AccessTokenWithFolder[] }) {
 	const t = useTranslations("dataTables.links");
+	const searchParams = useSearchParams();
+	const defaultTokenIndex = searchParams.get("l")
+		? accessTokens.findIndex(token => token.id === searchParams.get("l"))
+		: -1;
 	const [selectedTokensIndexes, setSelectedTokensIndexes] = useState<{ [index: number]: boolean }>(
 		defaultTokenIndex === -1 ? {} : { [defaultTokenIndex]: true }
 	);

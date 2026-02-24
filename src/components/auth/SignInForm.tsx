@@ -7,22 +7,21 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SignInFormSchema } from "@/lib/definitions";
-import { SignIn } from "@/actions/authActions";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { useE2EEncryptionContext } from "@/context/E2EEncryptionContext";
+import { authClient } from "@/lib/auth-client";
+import { z } from "zod";
 
 export default function SignInForm() {
 	const locale = useLocale();
 	const t = useTranslations("components.auth.signIn");
 	const searchParams = useSearchParams();
-	const [loading, setLoading] = useState<boolean>(false);
-	const router = useRouter();
 	const { loadKeys } = useE2EEncryptionContext();
 
 	const form = useForm({
@@ -33,25 +32,24 @@ export default function SignInForm() {
 		},
 	});
 
-	const onSubmit = async (data: { email: string; password: string }) => {
-		setLoading(true);
+	const onSubmit = async ({ email, password }: z.infer<typeof SignInFormSchema>) => {
+		await authClient.signIn.email({
+			email,
+			password,
+			rememberMe: true,
+			callbackURL: `/${locale}/app`,
+			fetchOptions: {
+				onError: () => {
+					toast({
+						title: t("form.error.title"),
+						description: t("form.error.message"),
+						variant: "destructive",
+					});
+				},
+			},
+		});
 
-		const r = await SignIn(data.email, data.password);
-
-		setLoading(false);
-
-		if (r?.error) {
-			toast({
-				title: t("form.error.title"),
-				description: t("form.error.message"),
-				variant: "destructive",
-			});
-			return;
-		}
-
-		await loadKeys(data.password);
-
-		router.push(`/${locale}/app`);
+		await loadKeys(password);
 	};
 
 	const displayParamsErrorToast = useCallback(() => {
@@ -130,7 +128,7 @@ export default function SignInForm() {
 							)}
 						/>
 
-						{loading ? (
+						{form.formState.isSubmitting ? (
 							<Button className={"w-full flex"} type="submit" disabled>
 								<Loader2 className="animate-spin mr-2 size-4" />{" "}
 								{t("form.submitting")}
@@ -148,10 +146,17 @@ export default function SignInForm() {
 						{t("or")}
 					</span>
 				</div>
-				<Button variant={"outline"} className="w-full" asChild>
-					<Link href={`/api/oauth/login/google`}>
-						<FcGoogle className={"mr-2"} /> {t("google")}
-					</Link>
+				<Button
+					variant={"outline"}
+					className="w-full"
+					onClick={() => {
+						authClient.signIn.social({
+							provider: "google",
+							callbackURL: `/${locale}/app`,
+						});
+					}}
+				>
+					<FcGoogle className={"mr-2"} /> {t("google")}
 				</Button>
 			</CardContent>
 		</Card>

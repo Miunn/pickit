@@ -1,10 +1,11 @@
 import { FolderTagService } from "@/data/folder-tag-service";
-import { getCurrentSession } from "@/data/session";
+import { AuthService } from "@/data/secure/auth";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-	const session = await getCurrentSession();
-	if (!session?.user) {
+	const { isAuthenticated, session } = await AuthService.isAuthenticated();
+
+	if (!isAuthenticated) {
 		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}
 

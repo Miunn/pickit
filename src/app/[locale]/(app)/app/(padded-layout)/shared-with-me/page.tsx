@@ -1,11 +1,11 @@
+import { AuthService } from "@/data/secure/auth";
 import { redirect } from "@/i18n/navigation";
-import { getCurrentSession } from "@/data/session";
 
 export default async function SharedWithMePage(props: { readonly params: Promise<{ readonly locale: string }> }) {
 	const params = await props.params;
 
-	const { user } = await getCurrentSession();
-	if (!user) {
+	const { isAuthenticated } = await AuthService.isAuthenticated();
+	if (!isAuthenticated) {
 		return redirect({ href: `/signin`, locale: params.locale });
 	}
 

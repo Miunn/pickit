@@ -4,8 +4,8 @@ import ReviewFolders from "@/components/account/ReviewFolders";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { Metadata } from "next";
-import { getCurrentSession } from "@/data/session";
 import { FolderService } from "@/data/folder-service";
+import { AuthService } from "@/data/secure/auth";
 
 export async function generateMetadata(): Promise<Metadata> {
 	const t = await getTranslations("metadata.account");
@@ -18,16 +18,16 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function AccountPage(props: { readonly params: Promise<{ readonly locale: string }> }) {
 	const params = await props.params;
 
-	const { user } = await getCurrentSession();
+	const { isAuthenticated, session } = await AuthService.isAuthenticated();
 
-	if (!user) {
+	if (!isAuthenticated) {
 		return redirect({ href: "/signin", locale: params.locale });
 	}
 
 	const t = await getTranslations("pages.account");
 
 	const folders = await FolderService.getMultiple({
-		where: { createdBy: { id: user.id } },
+		where: { createdBy: { id: session.user.id } },
 		select: {
 			id: true,
 			name: true,
@@ -48,7 +48,7 @@ export default async function AccountPage(props: { readonly params: Promise<{ re
 			<Separator orientation="horizontal" className="my-6" />
 
 			<div className="flex-1 grid grid-cols-1 lg:grid-cols-[0.7fr_1fr] gap-24">
-				<AccountForm user={user} />
+				<AccountForm user={session.user} />
 				<ReviewFolders folders={folders || []} />
 			</div>
 		</div>
