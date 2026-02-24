@@ -33,21 +33,21 @@ export default function SignInForm() {
 	});
 
 	const onSubmit = async ({ email, password }: z.infer<typeof SignInFormSchema>) => {
-		const { error } = await authClient.signIn.email({
+		await authClient.signIn.email({
 			email,
 			password,
 			rememberMe: true,
 			callbackURL: `/${locale}/app`,
+			fetchOptions: {
+				onError: () => {
+					toast({
+						title: t("form.error.title"),
+						description: t("form.error.message"),
+						variant: "destructive",
+					});
+				},
+			},
 		});
-
-		if (error?.code) {
-			toast({
-				title: t("form.error.title"),
-				description: t("form.error.message"),
-				variant: "destructive",
-			});
-			return;
-		}
 
 		await loadKeys(password);
 	};
