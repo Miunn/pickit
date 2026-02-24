@@ -1,11 +1,11 @@
 import { prisma } from "@/lib/prisma";
-import { getCurrentSession } from "@/data/session";
 import { Prisma } from "@prisma/client";
+import { AuthService } from "./secure/auth";
 
 async function create(data: Prisma.NotificationCreateInput) {
-	const { user } = await getCurrentSession();
+	const { session } = await AuthService.isAuthenticated();
 
-	if (!user) {
+	if (!session) {
 		throw new Error("Access denied");
 	}
 
@@ -13,7 +13,7 @@ async function create(data: Prisma.NotificationCreateInput) {
 		data: {
 			...data,
 			userId: undefined,
-			user: { connect: { id: user.id } },
+			user: { connect: { id: session.user.id } },
 		},
 	});
 

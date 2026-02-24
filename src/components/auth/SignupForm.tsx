@@ -8,16 +8,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SignupFormSchema } from "@/lib/definitions";
 import { toast } from "@/hooks/use-toast";
-import { createUserHandler } from "@/actions/create";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { Loader2 } from "lucide-react";
-import { ToastAction } from "@/components/ui/toast";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "@/i18n/navigation";
 
 export default function SignupForm() {
-	const locale = useLocale();
+	const router = useRouter();
 	const t = useTranslations("components.auth.signUp");
 	const form = useForm<z.infer<typeof SignupFormSchema>>({
 		resolver: zodResolver(SignupFormSchema),
@@ -29,12 +29,31 @@ export default function SignupForm() {
 		},
 	});
 
-	const onSubmit = async (data: z.infer<typeof SignupFormSchema>) => {
-		const r = await createUserHandler(data);
-		console.log("R", r);
+	const onSubmit = async ({ email, password, name }: z.infer<typeof SignupFormSchema>) => {
+		const { error } = await authClient.signUp.email(
+			{
+				email, // user email address
+				password, // user password -> min 8 characters by default
+				name, // user display name
+				callbackURL: "/app", // A URL to redirect to after the user verifies their email (optional)
+			},
+			{
+				onSuccess: () => {
+					//redirect to the dashboard or sign in page
+					router.push(`/app`);
+				},
+				onError: ctx => {
+					// display the error message
+					toast({
+						title: "Error",
+						description: ctx.error.message,
+					});
+				},
+			}
+		);
 
-		if (r.status !== "ok") {
-			if (r.message === "email-exists") {
+		if (error?.code) {
+			if (error?.code === "USER_ALREADY_EXISTS") {
 				toast({
 					title: t("form.error.email.title"),
 					description: t("form.error.email.description"),
@@ -50,16 +69,6 @@ export default function SignupForm() {
 			});
 			return;
 		}
-
-		toast({
-			title: t("form.success.title"),
-			description: t("form.success.description"),
-			action: (
-				<ToastAction altText="Login">
-					<Link href={`/${locale}/signin?side=login`}>{t("form.success.action")}</Link>
-				</ToastAction>
-			),
-		});
 	};
 
 	return (

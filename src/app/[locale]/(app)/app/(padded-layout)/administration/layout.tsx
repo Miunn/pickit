@@ -1,6 +1,6 @@
+import { AuthService } from "@/data/secure/auth";
 import { redirect } from "@/i18n/navigation";
-import { getCurrentSession } from "@/data/session";
-import { Role } from "@prisma/client";
+import { auth } from "@/lib/auth";
 
 export default async function AdminLayout(
 	props: Readonly<{
@@ -11,9 +11,23 @@ export default async function AdminLayout(
 	const { locale } = await props.params;
 	const { children } = props;
 
-	const { user } = await getCurrentSession();
+	const { isAuthenticated, session } = await AuthService.isAuthenticated();
 
-	if (!user?.role.includes(Role.ADMIN)) {
+	if (!isAuthenticated || !session) {
+		return redirect({ href: `/app/login`, locale: locale });
+	}
+
+	const isAdmin = await auth.api.userHasPermission({
+		body: {
+			userId: session.user.id,
+			role: "admin",
+			permissions: {
+				user: ["list"],
+			},
+		},
+	});
+
+	if (!isAdmin) {
 		return redirect({ href: `/app`, locale: locale });
 	}
 

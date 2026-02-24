@@ -1,15 +1,14 @@
-import BillingDashboard from "@/components/billing/BillingDashboard";
 import { Separator } from "@/components/ui/separator";
+import { AuthService } from "@/data/secure/auth";
 import { redirect } from "@/i18n/navigation";
-import { getCurrentSession } from "@/data/session";
 import { getTranslations } from "next-intl/server";
 
 export default async function BillingPage(props: { readonly params: Promise<{ locale: string }> }) {
 	const params = await props.params;
 
-	const { user } = await getCurrentSession();
+	const { isAuthenticated, session } = await AuthService.isAuthenticated();
 
-	if (!user) {
+	if (!isAuthenticated || !session) {
 		return redirect({ href: "/signin", locale: params.locale });
 	}
 
@@ -17,12 +16,12 @@ export default async function BillingPage(props: { readonly params: Promise<{ lo
 
 	return (
 		<div className="flex flex-col gap-1">
-			<h3 className="font-semibold">{t("plan", { plan: user.plan.toString().toLowerCase() })}</h3>
+			{/*<h3 className="font-semibold">{t("plan", { plan: session.user.plan.toString().toLowerCase() })}</h3>*/}
 			<p className="text-sm text-muted-foreground my-0">{t("subtitle")}</p>
 
 			<Separator orientation="horizontal" className="my-6" />
 
-			<BillingDashboard />
+			{/*<BillingDashboard />*/}
 		</div>
 	);
 }

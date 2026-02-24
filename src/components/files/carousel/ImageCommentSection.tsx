@@ -16,170 +16,185 @@ import { useSearchParams } from "next/navigation";
 import { Comment } from "@/components/files/comments/Comment";
 import { useFilesContext } from "@/context/FilesContext";
 import {
-    SheetRounded,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
+	SheetRounded,
+	SheetContent,
+	SheetDescription,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
 } from "@/components/ui/sheet-rounded";
 import TagChip from "@/components/tags/TagChip";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet } from "@/components/ui/sheet";
 
 export default function ImageCommentSection({
-    file,
-    open,
-    setOpen,
-    children,
+	file,
+	open,
+	setOpen,
+	children,
 }: {
-    readonly file: FileWithComments & FileWithTags;
-    readonly open?: boolean;
-    readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-    readonly children: React.ReactNode;
+	readonly file: FileWithComments & FileWithTags;
+	readonly open?: boolean;
+	readonly setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+	readonly children: React.ReactNode;
 }) {
-    const t = useTranslations("components.images.comments");
-    const createCommentForm = useForm<z.infer<typeof CreateCommentFormSchema>>({
-        resolver: zodResolver(CreateCommentFormSchema),
-        defaultValues: {
-            content: "",
-        },
-    });
-    const isMobile = useIsMobile();
+	const t = useTranslations("components.images.comments");
+	const createCommentForm = useForm<z.infer<typeof CreateCommentFormSchema>>({
+		resolver: zodResolver(CreateCommentFormSchema),
+		defaultValues: {
+			content: "",
+		},
+	});
+	const isMobile = useIsMobile();
 
-    const searchParams = useSearchParams();
+	const searchParams = useSearchParams();
 
-    const { files, setFiles } = useFilesContext();
+	const { files, setFiles } = useFilesContext();
 
-    async function submitComment(data: z.infer<typeof CreateCommentFormSchema>) {
-        const r = await createComment(
-            file.id,
-            data,
-            searchParams.get("share"),
-            searchParams.get("t") === "p" ? "personAccessToken" : "accessToken",
-            searchParams.get("h")
-        );
+	async function submitComment(data: z.infer<typeof CreateCommentFormSchema>) {
+		const r = await createComment(file.id, data, searchParams.get("share"), searchParams.get("h"));
 
-        if (!r) {
-            toast({
-                title: t("errors.unknown.title"),
-                description: t("errors.unknown.description"),
-                variant: "destructive",
-            });
-            return;
-        }
+		if (!r) {
+			toast({
+				title: t("errors.unknown.title"),
+				description: t("errors.unknown.description"),
+				variant: "destructive",
+			});
+			return;
+		}
 
-        setFiles(
-            files.map(f => {
-                if (f.id === file.id) {
-                    return {
-                        ...f,
-                        comments: [...f.comments, r],
-                    };
-                }
+		setFiles(
+			files.map(f => {
+				if (f.id === file.id) {
+					return {
+						...f,
+						comments: [...f.comments, r],
+					};
+				}
 
-                return f;
-            })
-        );
+				return f;
+			})
+		);
 
-        toast({
-            title: t("success.title"),
-            description: t("success.description"),
-        });
+		toast({
+			title: t("success.title"),
+			description: t("success.description"),
+		});
 
-        createCommentForm.reset();
-    }
+		createCommentForm.reset();
+	}
 
-    const content = (
-        <>
-            <ScrollArea className="flex-1 flex max-h-full flex-col">
-                <div className="space-y-2">
-                    {file.comments
-                        .sort((a, b) => {
-                            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-                        })
-                        .map(commentData => (
-                            <Fragment key={commentData.id}>
-                                <Comment comment={commentData} />
-                            </Fragment>
-                        ))}
-                </div>
-            </ScrollArea>
-            <Form {...createCommentForm}>
-                <form onSubmit={createCommentForm.handleSubmit(submitComment)} className="space-y-2">
-                    <FormField
-                        name="content"
-                        control={createCommentForm.control}
-                        render={({ field }) => (
-                            <FormItem className="w-full">
-                                <FormLabel>{t("form.text.label", { count: file.comments.length })}</FormLabel>
-                                <FormControl>
-                                    <Textarea
-                                        placeholder={t("form.text.placeholder")}
-                                        className="resize-none"
-                                        rows={4}
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <div className="flex items-center justify-between gap-4">
-                        <HoverCard>
-                            <HoverCardTrigger>
-                                <FormDescription className="hover:underline cursor-pointer">
-                                    {t("privacy.trigger")}
-                                </FormDescription>
-                            </HoverCardTrigger>
-                            <HoverCardContent className="w-96">
-                                <p className="text-xs" dangerouslySetInnerHTML={{ __html: t("privacy.content") }} />
-                            </HoverCardContent>
-                        </HoverCard>
-                        {createCommentForm.formState.isSubmitting ? (
-                            <Button variant="secondary" className="px-6 rounded-full" disabled>
-                                <Loader2 className="animate-spin w-4 h-4 mr-2" /> {t("actions.submitting")}
-                            </Button>
-                        ) : (
-                            <Button variant="secondary" className="px-6 rounded-full">
-                                {t("actions.submit")}
-                            </Button>
-                        )}
-                    </div>
-                </form>
-            </Form>
-        </>
-    );
+	const content = (
+		<>
+			<ScrollArea className="flex-1 flex max-h-full flex-col">
+				<div className="space-y-2">
+					{file.comments
+						.sort((a, b) => {
+							return (
+								new Date(b.createdAt).getTime() -
+								new Date(a.createdAt).getTime()
+							);
+						})
+						.map(commentData => (
+							<Fragment key={commentData.id}>
+								<Comment comment={commentData} />
+							</Fragment>
+						))}
+				</div>
+			</ScrollArea>
+			<Form {...createCommentForm}>
+				<form onSubmit={createCommentForm.handleSubmit(submitComment)} className="space-y-2">
+					<FormField
+						name="content"
+						control={createCommentForm.control}
+						render={({ field }) => (
+							<FormItem className="w-full">
+								<FormLabel>
+									{t("form.text.label", {
+										count: file.comments.length,
+									})}
+								</FormLabel>
+								<FormControl>
+									<Textarea
+										placeholder={t("form.text.placeholder")}
+										className="resize-none"
+										rows={4}
+										{...field}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<div className="flex items-center justify-between gap-4">
+						<HoverCard>
+							<HoverCardTrigger>
+								<FormDescription className="hover:underline cursor-pointer">
+									{t("privacy.trigger")}
+								</FormDescription>
+							</HoverCardTrigger>
+							<HoverCardContent className="w-96">
+								<p
+									className="text-xs"
+									dangerouslySetInnerHTML={{
+										__html: t("privacy.content"),
+									}}
+								/>
+							</HoverCardContent>
+						</HoverCard>
+						{createCommentForm.formState.isSubmitting ? (
+							<Button
+								variant="secondary"
+								className="px-6 rounded-full"
+								disabled
+							>
+								<Loader2 className="animate-spin w-4 h-4 mr-2" />{" "}
+								{t("actions.submitting")}
+							</Button>
+						) : (
+							<Button variant="secondary" className="px-6 rounded-full">
+								{t("actions.submit")}
+							</Button>
+						)}
+					</div>
+				</form>
+			</Form>
+		</>
+	);
 
-    if (isMobile) {
-        return (
-            <Sheet open={open} onOpenChange={setOpen}>
-                <SheetTrigger asChild>{children}</SheetTrigger>
-                <SheetContent className="max-h-[90%] flex flex-col" side={"bottom"}>
-                    <SheetHeader className="flex-none">
-                        <SheetTitle>{file.name}</SheetTitle>
-                    </SheetHeader>
-                    {content}
-                </SheetContent>
-            </Sheet>
-        );
-    }
+	if (isMobile) {
+		return (
+			<Sheet open={open} onOpenChange={setOpen}>
+				<SheetTrigger asChild>{children}</SheetTrigger>
+				<SheetContent className="max-h-[90%] flex flex-col" side={"bottom"}>
+					<SheetHeader className="flex-none">
+						<SheetTitle>{file.name}</SheetTitle>
+					</SheetHeader>
+					{content}
+				</SheetContent>
+			</Sheet>
+		);
+	}
 
-    return (
-        <SheetRounded open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>{children}</SheetTrigger>
-            <SheetContent className="flex flex-col">
-                <SheetHeader className="flex-none">
-                    <SheetTitle>{file.name}</SheetTitle>
-                    <div className="flex items-center justify-between flex-wrap gap-4">
-                        {file.tags.map(tag => (
-                            <TagChip key={tag.id} tag={tag} className="px-2 py-1 rounded-md" />
-                        ))}
-                    </div>
-                    <SheetDescription>{file.description}</SheetDescription>
-                </SheetHeader>
-                {content}
-            </SheetContent>
-        </SheetRounded>
-    );
+	return (
+		<SheetRounded open={open} onOpenChange={setOpen}>
+			<SheetTrigger asChild>{children}</SheetTrigger>
+			<SheetContent className="flex flex-col">
+				<SheetHeader className="flex-none">
+					<SheetTitle>{file.name}</SheetTitle>
+					<div className="flex items-center justify-between flex-wrap gap-4">
+						{file.tags.map(tag => (
+							<TagChip
+								key={tag.id}
+								tag={tag}
+								className="px-2 py-1 rounded-md"
+							/>
+						))}
+					</div>
+					<SheetDescription>{file.description}</SheetDescription>
+				</SheetHeader>
+				{content}
+			</SheetContent>
+		</SheetRounded>
+	);
 }

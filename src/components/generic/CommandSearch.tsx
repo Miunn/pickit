@@ -27,8 +27,8 @@ import {
 import { useTranslations } from "next-intl";
 import { FileLightWithFolderName, LightFolder } from "@/lib/definitions";
 import { useRouter } from "next/navigation";
-import { SignOut } from "@/actions/authActions";
 import CreateFolderDialog from "@/components/folders/dialogs/CreateFolderDialog";
+import { authClient } from "@/lib/auth-client";
 
 export function CommandSearch({
 	folders,
@@ -175,7 +175,7 @@ export function CommandSearch({
 							<RectangleEllipsis />
 							<span>{t("actions.account.changePassword")}</span>
 						</CommandItem>
-						<CommandItem onSelect={() => runCommand(() => SignOut())}>
+						<CommandItem onSelect={() => runCommand(authClient.signOut)}>
 							<LogOut />
 							<span>{t("actions.account.logout")}</span>
 						</CommandItem>

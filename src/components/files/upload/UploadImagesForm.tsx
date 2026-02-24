@@ -69,7 +69,7 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
 						const verificationResult = await initiateFileUpload(
 							{
 								name: file.name,
-								size: file.size,
+								size: file.size / 1000000, // Convert to MB
 								type: file.type,
 								md5: checksum,
 							},

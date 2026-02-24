@@ -11,7 +11,6 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { select } from "@/lib/columns-common";
 import { UserAdministration } from "@/lib/definitions";
 import { formatBytes } from "@/lib/utils";
@@ -61,37 +60,12 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
 						{t?.("emailVerified.verified")}
 					</Badge>
 				);
-			} else {
-				const emailVerifiedDeadline: Date | null = row.original.emailVerificationDeadline;
-				const formatter = table.options.meta?.intl?.formatter;
-
-				return (
-					<Tooltip>
-						<TooltipTrigger>
-							<Badge className="bg-red-600 hover:bg-red-700 font-bold">
-								{t?.("emailVerified.unverified")}
-							</Badge>
-						</TooltipTrigger>
-						<TooltipContent>
-							<p>
-								{emailVerifiedDeadline
-									? t?.("emailVerified.unverifiedDeadline", {
-											date: formatter?.dateTime(
-												emailVerifiedDeadline,
-												{
-													weekday: "long",
-													day: "numeric",
-													year: "numeric",
-													month: "long",
-												}
-											),
-										})
-									: t?.("emailVerified.unverifiedDeadlineNull")}
-							</p>
-						</TooltipContent>
-					</Tooltip>
-				);
 			}
+			return (
+				<Badge className="bg-red-600 hover:bg-red-700 font-bold">
+					{t?.("emailVerified.unverified")}
+				</Badge>
+			);
 		},
 	},
 	{

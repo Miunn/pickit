@@ -3,11 +3,11 @@ import SortImages from "@/components/folders/SortImages";
 import ViewSelector, { ViewState } from "@/components/folders/ViewSelector";
 import { useFolderContext } from "@/context/FolderContext";
 import { useFilesContext } from "@/context/FilesContext";
-import { useSession } from "@/providers/SessionProvider";
 import { FolderTokenPermission } from "@prisma/client";
 import FolderActionDropdown from "@/components/folders/actions/FolderActionDropdown";
 import FolderActionDropdownMobile from "@/components/folders/actions/FolderActionDropdownMobile";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useSession } from "@/lib/auth-client";
 
 /**
  * Renders action controls for a folder including view and sort selectors, upload/share/download actions, map navigation, and description editing.
@@ -18,7 +18,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
  */
 export default function FolderActionBar() {
 	const isMobile = useIsMobile();
-	const { isGuest } = useSession();
+	const { data: session } = useSession();
 	const { folder, token, isShared } = useFolderContext();
 	const { viewState, sortState, setViewState, setSortState, files, setFiles } = useFilesContext();
 
@@ -30,10 +30,10 @@ export default function FolderActionBar() {
 			{viewState === ViewState.Grid ? (
 				<SortImages sortState={sortState} setSortState={setSortState} />
 			) : null}
-			{!isGuest || token?.permission === FolderTokenPermission.WRITE ? (
+			{session !== undefined || token?.permission === FolderTokenPermission.WRITE ? (
 				<UploadImagesDialog
 					folderId={folder.id}
-					shouldDisplayNotify={!isGuest && !isShared}
+					shouldDisplayNotify={session !== undefined && !isShared}
 					onUpload={uploadedFiles => {
 						setFiles([...files, ...uploadedFiles]);
 					}}

@@ -1,8 +1,9 @@
 import { GoogleBucket } from "@/lib/bucket";
 import { NextRequest, NextResponse } from "next/server";
-import { isAllowedToAccessFile } from "@/data/dal";
 import { FileService } from "@/data/file-service";
 import { webStreamFromFile } from "@/lib/utils";
+import { SecureService } from "@/data/secure/secure-service";
+import { FilePermission } from "@/data/secure/file";
 
 /**
  * Serves a video's thumbnail stream or an authentication/error JSON response.
@@ -24,20 +25,21 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
 	const shareToken = req.nextUrl.searchParams.get("share");
 	const accessKey = req.nextUrl.searchParams.get("h");
 
-	const isAllowed = await isAllowedToAccessFile(params.video, shareToken, accessKey);
+	const video = await FileService.get({
+		where: {
+			id: params.video,
+			folderId: params.folder,
+		},
+		include: { folder: { include: { accessTokens: true } } },
+	});
+
+	const isAllowed = await SecureService.file.enforce(video, FilePermission.READ, shareToken, accessKey);
 	if (!isAllowed) {
 		return Response.json(
 			{ error: "You need to be authenticated or have a magic link to access this resource" },
 			{ status: 400 }
 		);
 	}
-
-	const video = await FileService.get({
-		where: {
-			id: params.video,
-			folderId: params.folder,
-		},
-	});
 
 	if (!video) {
 		return Response.json({ error: "No videos found in this folder" }, { status: 404 });

@@ -1,7 +1,7 @@
 import { FolderWithAccessToken } from "@/lib/definitions";
-import { getCurrentSession } from "@/data/session";
-import { File, FolderTokenPermission, Session } from "@prisma/client";
+import { File, FolderTokenPermission } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { AuthService } from "./auth";
 
 export enum FilePermission {
 	READ = "read",
@@ -10,44 +10,45 @@ export enum FilePermission {
 }
 
 export async function enforceFile(
-	file: File & { folder: FolderWithAccessToken },
+	file?: (File & { folder: FolderWithAccessToken }) | null,
 	permission: FilePermission = FilePermission.READ,
-	token?: string,
-	key?: string
-): Promise<{ isAllowed: true; session?: Session | null } | { isAllowed: false }> {
-	const { session } = await getCurrentSession();
+	token?: string | null,
+	key?: string | null
+): Promise<boolean> {
+	if (!file) return false;
+	const { isAuthenticated, session } = await AuthService.isAuthenticated();
 
-	if (session?.userId === file.createdById) {
-		return { isAllowed: true, session };
+	if (isAuthenticated && session.user.id === file.createdById) {
+		return true;
 	}
 
 	if (!token) {
-		return { isAllowed: false };
+		return false;
 	}
 
 	const matchingToken = file.folder.accessTokens.find(t => t.token === token);
 
 	if (!matchingToken?.isActive) {
-		return { isAllowed: false };
+		return false;
 	}
 
 	if (matchingToken.pinCode && !key) {
-		return { isAllowed: false };
+		return false;
 	} else if (matchingToken.pinCode && key) {
 		const matchHash = await bcrypt.compare(matchingToken.pinCode, key);
 
 		if (!matchHash) {
-			return { isAllowed: false };
+			return false;
 		}
 	}
 
 	if (permission === FilePermission.READ) {
-		return { isAllowed: true, session };
+		return true;
 	}
 
 	if (matchingToken.permission === FolderTokenPermission.WRITE) {
-		return { isAllowed: true, session };
+		return true;
 	}
 
-	return { isAllowed: false };
+	return false;
 }
