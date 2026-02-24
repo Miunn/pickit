@@ -61,7 +61,7 @@ export default function ResetPasswordForm() {
 
 					form.reset();
 
-					router.push(`/${locale}/signin`);
+					router.push(`/signin`);
 				},
 			},
 		});
