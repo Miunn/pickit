@@ -90,6 +90,17 @@ export default async function LocaleLayout(
 			})
 		: [];
 
+	const isAdmin = await auth.api.userHasPermission({
+		body: {
+			userId: session?.user?.id,
+			permissions: {
+				user: ["list"],
+			},
+		},
+	});
+
+	console.log("isAdmin", isAdmin);
+
 	return (
 		<NuqsAdapter>
 			<SidebarProvider defaultOpen={!!session?.user}>
@@ -159,15 +170,7 @@ export default async function LocaleLayout(
 							},
 						],
 						navSecondaryItems: [
-							...((await auth.api.userHasPermission({
-								body: {
-									userId: session?.user?.id || "",
-									role: "admin",
-									permissions: {
-										user: ["list"],
-									},
-								},
-							}))
+							...(isAdmin.success
 								? [
 										{
 											title: "Administration",
