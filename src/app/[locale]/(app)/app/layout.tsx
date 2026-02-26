@@ -99,8 +99,6 @@ export default async function LocaleLayout(
 		},
 	});
 
-	console.log("isAdmin", isAdmin);
-
 	return (
 		<NuqsAdapter>
 			<SidebarProvider defaultOpen={!!session?.user}>

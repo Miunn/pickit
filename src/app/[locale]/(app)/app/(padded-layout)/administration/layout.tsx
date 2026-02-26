@@ -26,8 +26,6 @@ export default async function AdminLayout(
 		},
 	});
 
-	console.log("isAdmin", isAdmin);
-
 	if (!isAdmin.success) {
 		return redirect({ href: `/app`, locale: locale });
 	}
