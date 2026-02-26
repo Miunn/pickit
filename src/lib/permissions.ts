@@ -1,5 +1,5 @@
 import { createAccessControl } from "better-auth/plugins";
-import { adminAc, defaultStatements, userAc } from "better-auth/plugins/admin/access";
+import { adminAc, defaultStatements } from "better-auth/plugins/admin/access";
 
 const statements = {
 	...defaultStatements,
@@ -14,12 +14,13 @@ export const user = ac.newRole({
 	folder: ["create", "read", "update", "delete", "share"],
 	file: ["create", "read", "update", "delete", "share"],
 	comment: ["create", "read", "update", "delete"],
-	...userAc.statements,
+	user: ["get", "update"],
+	// ...userAc.statements,
 });
 
 export const admin = ac.newRole({
+	...adminAc.statements,
 	folder: ["create", "read", "update", "delete", "share"],
 	file: ["create", "read", "update", "delete", "share"],
 	comment: ["create", "read", "update", "delete"],
-	...adminAc.statements,
 });

@@ -20,14 +20,15 @@ export default async function AdminLayout(
 	const isAdmin = await auth.api.userHasPermission({
 		body: {
 			userId: session.user.id,
-			role: "admin",
 			permissions: {
 				user: ["list"],
 			},
 		},
 	});
 
-	if (!isAdmin) {
+	console.log("isAdmin", isAdmin);
+
+	if (!isAdmin.success) {
 		return redirect({ href: `/app`, locale: locale });
 	}
 
