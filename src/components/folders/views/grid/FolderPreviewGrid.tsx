@@ -64,7 +64,7 @@ export default function FolderPreviewGrid({
 								className={`relative h-36 mb-4 flex justify-center items-center border border-primary rounded-xl`}
 							>
 								<Image
-									src={`/api/folders/${folder.id}/images/${folder.coverId}`}
+									src={`/api/folders/${folder.id}/${folder.coverId}`}
 									alt={folder.cover.name}
 									className={"relative rounded-xl object-cover"}
 									sizes="33vw"

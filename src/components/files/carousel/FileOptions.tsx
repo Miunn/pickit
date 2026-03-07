@@ -125,7 +125,7 @@ export default function FileOptions({
 				</FullScreenImageCarousel>
 				<Button variant={"outline"} size={"icon"} type="button" asChild>
 					<Link
-						href={`/api/folders/${file.folderId}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
+						href={`/api/folders/${file.folderId}/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
 						target="_blank"
 					>
 						<ExternalLink className="w-4 h-4" />
@@ -248,7 +248,7 @@ export default function FileOptions({
 					</DropdownMenuItem>
 					<DropdownMenuItem asChild>
 						<Link
-							href={`/api/folders/${file.folderId}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
+							href={`/api/folders/${file.folderId}/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
 							target="_blank"
 						>
 							<ExternalLink

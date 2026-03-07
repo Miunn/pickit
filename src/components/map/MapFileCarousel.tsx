@@ -80,7 +80,7 @@ export default function MapFileCarousel({ files, startIndex, onClose, onFileChan
 									>
 										<div className="relative w-full h-[200px] bg-white border border-primary rounded-lg overflow-hidden shadow-lg">
 											<LoadingImage
-												src={`/api/folders/${file.folderId}/images/${file.id}?share=${share}&t=${t}&h=${h}`}
+												src={`/api/folders/${file.folderId}/${file.id}?share=${share}&t=${t}&h=${h}`}
 												alt={file.name}
 												fill
 												className="object-cover"

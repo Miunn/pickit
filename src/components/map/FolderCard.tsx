@@ -77,7 +77,7 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
 						className={`relative w-20 shrink-0 h-full mb-1 flex justify-center items-center rounded-t-xl`}
 					>
 						<Image
-							src={`/api/folders/${folder.id}/images/${folder.coverId}?share=${share}&t=${shareType}&h=${shareHash}`}
+							src={`/api/folders/${folder.id}/${folder.coverId}?share=${share}&t=${shareType}&h=${shareHash}`}
 							alt={folder.name}
 							className={"relative rounded-t-xl object-cover"}
 							sizes="33vw"
