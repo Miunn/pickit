@@ -145,7 +145,7 @@ export default function FullScreenImageCarousel({
 											</video>
 										) : (
 											<LoadingImage
-												src={`/api/folders/${file.folder.id}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
+												src={`/api/folders/${file.folder.id}/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
 												alt={file.name}
 												className="h-full w-full max-h-dvh object-contain"
 												width={1920}
