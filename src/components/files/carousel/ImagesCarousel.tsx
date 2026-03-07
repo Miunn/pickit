@@ -135,7 +135,7 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 									</video>
 								) : (
 									<LoadingImage
-										src={`/api/folders/${file.folder.id}/images/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
+										src={`/api/folders/${file.folder.id}/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
 										alt={file.name}
 										className={
 											"max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out"

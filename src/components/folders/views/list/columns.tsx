@@ -42,7 +42,7 @@ export const foldersListViewColumns: ColumnDef<
 			<div className="truncate font-medium flex items-center gap-2">
 				{row.original.coverId ? (
 					<Image
-						src={`/api/folders/${row.original.id}/images/${row.original.coverId}`}
+						src={`/api/folders/${row.original.id}/${row.original.coverId}`}
 						width={40}
 						height={40}
 						alt={row.getValue("name")}
