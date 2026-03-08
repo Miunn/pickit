@@ -4,22 +4,27 @@ import { Label } from "@/components/ui/label";
 
 const QUESTIONS = [
 	{
+		key: "question1",
 		title: "question1.title",
 		answer: "question1.answer",
 	},
 	{
+		key: "question2",
 		title: "question2.title",
 		answer: "question2.answer",
 	},
 	{
+		key: "question3",
 		title: "question3.title",
 		answer: "question3.answer",
 	},
 	{
+		key: "question4",
 		title: "question4.title",
 		answer: "question4.answer",
 	},
 	{
+		key: "question5",
 		title: "question5.title",
 		answer: "question5.answer",
 	},
@@ -37,7 +42,7 @@ export default function FaqAccordion() {
 			<Accordion type="single" collapsible className="w-full space-y-2" defaultValue="2">
 				{QUESTIONS.map((question, index) => (
 					<AccordionItem
-						key={index}
+						key={question.key}
 						value={(index + 1).toString()}
 						className="bg-background has-focus-visible:border-ring has-focus-visible:ring-ring/50 rounded-md border px-4 py-1 outline-none last:border-b has-focus-visible:ring-[3px]"
 					>

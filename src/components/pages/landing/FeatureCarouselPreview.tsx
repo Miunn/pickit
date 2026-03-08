@@ -5,18 +5,22 @@ import FeatureCard from "@/components/pages/landing/FeatureCard";
 
 const FEATURES = [
 	{
+		key: "section1",
 		title: "section1.title",
 		description: "section1.description",
 	},
 	{
+		key: "section2",
 		title: "section2.title",
 		description: "section2.description",
 	},
 	{
+		key: "section3",
 		title: "section3.title",
 		description: "section3.description",
 	},
 	{
+		key: "section4",
 		title: "section4.title",
 		description: "section4.description",
 	},
@@ -48,7 +52,7 @@ export default function FeatureCarouselPreview() {
 			<div className="flex flex-col gap-3">
 				{FEATURES.map((feature, index) => (
 					<FeatureCard
-						key={index}
+						key={feature.key}
 						step={index + 1}
 						title={feature.title}
 						description={feature.description}
