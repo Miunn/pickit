@@ -1,10 +1,26 @@
 "use client";
 
 import React from "react";
-import Feature1 from "@/components/pages/landing/features-cards/Feature1";
-import Feature2 from "@/components/pages/landing/features-cards/Feature2";
-import Feature3 from "@/components/pages/landing/features-cards/Feature3";
-import Feature4 from "@/components/pages/landing/features-cards/Feature4";
+import FeatureCard from "@/components/pages/landing/FeatureCard";
+
+const FEATURES = [
+	{
+		title: "section1.title",
+		description: "section1.description",
+	},
+	{
+		title: "section2.title",
+		description: "section2.description",
+	},
+	{
+		title: "section3.title",
+		description: "section3.description",
+	},
+	{
+		title: "section4.title",
+		description: "section4.description",
+	},
+];
 
 export default function FeatureCarouselPreview() {
 	const [expandedIndex, setExpandedIndex] = React.useState<number>(0);
@@ -30,35 +46,25 @@ export default function FeatureCarouselPreview() {
 	return (
 		<div className="flex flex-col xl:grid xl:grid-cols-2 gap-6 min-h-[444px]">
 			<div className="flex flex-col gap-3">
-				<Feature1
-					isExpanded={expandedIndex === 0}
-					onClick={() => setExpandedIndex(0)}
-					progressRef={progressRefs.current[0]}
-					onProgressEnd={() => setExpandedIndex(1)}
-				/>
-
-				<Feature2
-					isExpanded={expandedIndex === 1}
-					onClick={() => setExpandedIndex(1)}
-					progressRef={progressRefs.current[1]}
-					onProgressEnd={() => setExpandedIndex(2)}
-				/>
-
-				<Feature3
-					isExpanded={expandedIndex === 2}
-					onClick={() => setExpandedIndex(2)}
-					progressRef={progressRefs.current[2]}
-					onProgressEnd={() => setExpandedIndex(3)}
-				/>
-
-				<Feature4
-					isExpanded={expandedIndex === 3}
-					onClick={() => setExpandedIndex(3)}
-					progressRef={progressRefs.current[3]}
-					onProgressEnd={() => setExpandedIndex(0)}
-				/>
+				{FEATURES.map((feature, index) => (
+					<FeatureCard
+						key={index}
+						step={index + 1}
+						title={feature.title}
+						description={feature.description}
+						isExpanded={expandedIndex === index}
+						onClick={() => setExpandedIndex(index)}
+						progressRef={progressRefs.current[index]}
+						onProgressEnd={() => setExpandedIndex((index + 1) % FEATURES.length)}
+					/>
+				))}
 			</div>
-			<div className="w-full h-96 border border-gray-200 rounded-lg"></div>
+			<div className="w-full h-fit border border-gray-200 rounded-lg">
+				<video className="w-full h-full object-cover rounded-lg" autoPlay loop muted>
+					<source src="/static/videos/features/new-folder-en.mp4" type="video/mp4" />
+					Your browser does not support the video tag.
+				</video>
+			</div>
 		</div>
 	);
 }
