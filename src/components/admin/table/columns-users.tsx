@@ -77,8 +77,8 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
 		},
 		cell: ({ table, row }) => {
 			const t = table.options.meta?.intl?.translations;
-			const folders: string = row.getValue("count_folders");
-			return <p className="truncate">{t?.("folders.count", { count: Number.parseInt(folders) })}</p>;
+			const folders = row.original.folders.length;
+			return <p className="truncate">{t?.("folders.count", { count: folders })}</p>;
 		},
 	},
 	{
@@ -90,8 +90,10 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
 		},
 		cell: ({ table, row }) => {
 			const t = table.options.meta?.intl?.translations;
-			const images: string = row.getValue("count_images");
-			return <p>{t?.("images.count", { count: Number.parseInt(images) })}</p>;
+			const images = row.original.folders.reduce((acc, folder) => acc + folder._count.files, 0);
+
+			console.log("images", images);
+			return <p>{t?.("images.count", { count: images })}</p>;
 		},
 	},
 	{
