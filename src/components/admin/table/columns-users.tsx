@@ -70,7 +70,6 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
 	},
 	{
 		id: "count_folders",
-		accessorKey: "_count.folders",
 		header: ({ table }) => {
 			const t = table.options.meta?.intl?.translations;
 			return <p>{t?.("folders.header")}</p>;
@@ -83,7 +82,6 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
 	},
 	{
 		id: "count_images",
-		accessorKey: "_count.images",
 		header: ({ table }) => {
 			const t = table.options.meta?.intl?.translations;
 			return <p className="truncate">{t?.("images.header")}</p>;

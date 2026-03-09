@@ -53,7 +53,6 @@ export default function FeatureCarouselPreview() {
 	}, [expandedIndex, progressRefs]);
 
 	React.useEffect(() => {
-		console.log("Current expanded index:", expandedIndex);
 		if (sourceRef.current) {
 			sourceRef.current.src = FEATURES[expandedIndex].videoSrc;
 			const videoElement = sourceRef.current.parentElement as HTMLVideoElement;
