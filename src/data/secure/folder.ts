@@ -17,7 +17,7 @@ export async function enforceFolder(
 	token?: string,
 	hash?: string,
 	permission: FolderPermission = FolderPermission.READ
-): Promise<{ allowed: true; session?: Session | null } | { allowed: false; reason?: string; session?: undefined }> {
+): Promise<{ allowed: true; session?: Session | null } | { allowed: false; reason?: string; session: undefined }> {
 	if (!folder) {
 		return { allowed: false };
 	}
@@ -29,13 +29,13 @@ export async function enforceFolder(
 	}
 
 	if (!token) {
-		return { allowed: false };
+		return { allowed: false, session: undefined };
 	}
 
 	const matchingToken = folder.accessTokens.find(t => t.token === token);
 
 	if (!matchingToken?.isActive) {
-		return { allowed: false };
+		return { allowed: false, session: undefined };
 	}
 
 	if (matchingToken.locked) {
@@ -46,13 +46,13 @@ export async function enforceFolder(
 		});
 
 		if (!hash || !tokenPin?.pinCode) {
-			return { allowed: false, reason: "invalid-pin" };
+			return { allowed: false, reason: "invalid-pin", session: undefined };
 		}
 
 		const matchHash = await bcrypt.compare(tokenPin.pinCode, hash);
 
 		if (!matchHash) {
-			return { allowed: false, reason: "invalid-pin" };
+			return { allowed: false, reason: "invalid-pin", session: undefined };
 		}
 	}
 
@@ -68,5 +68,5 @@ export async function enforceFolder(
 		return { allowed: true, session };
 	}
 
-	return { allowed: false };
+	return { allowed: false, session: undefined };
 }

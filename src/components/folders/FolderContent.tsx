@@ -37,11 +37,11 @@ export const FolderContent = () => {
 			<h3 className={"mb-2 flex justify-between items-center"}>
 				<p className="font-semibold">
 					{folder.name}{" "}
-					{!session ? (
+					{session ? null : (
 						<span className="font-normal text-sm">
 							- {t("sharedBy", { name: folder.createdBy.name })}
 						</span>
-					) : null}
+					)}
 				</p>
 
 				<FolderActionBar />
