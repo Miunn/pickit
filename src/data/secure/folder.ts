@@ -19,7 +19,7 @@ export async function enforceFolder(
 	permission: FolderPermission = FolderPermission.READ
 ): Promise<{ allowed: true; session?: Session | null } | { allowed: false; reason?: string; session: undefined }> {
 	if (!folder) {
-		return { allowed: false };
+		return { allowed: false, session: undefined };
 	}
 
 	const { session } = await AuthService.isAuthenticated();
