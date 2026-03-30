@@ -272,7 +272,7 @@ const userAdministration = Prisma.validator<Prisma.UserDefaultArgs>()({
 		maxStorage: true,
 		createdAt: true,
 		updatedAt: true,
-		_count: { select: { folders: true, files: true } },
+		folders: { select: { _count: { select: { files: true } } } },
 	},
 });
 

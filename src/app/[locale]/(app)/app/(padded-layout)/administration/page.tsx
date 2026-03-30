@@ -6,12 +6,7 @@ export default async function AdminHome(props: { readonly searchParams: Promise<
 
 	const users = await UserService.getMultiple({
 		include: {
-			_count: {
-				select: {
-					folders: true,
-					files: true,
-				},
-			},
+			folders: { select: { _count: { select: { files: true } } } },
 		},
 	});
 

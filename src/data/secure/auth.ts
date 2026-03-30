@@ -2,13 +2,13 @@ import { auth, Session } from "@/lib/auth";
 import { headers } from "next/headers";
 
 async function isAuthenticated(): Promise<
-	{ isAuthenticated: false; session?: undefined } | { isAuthenticated: true; session: Session }
+	{ isAuthenticated: false; session: undefined } | { isAuthenticated: true; session: Session }
 > {
 	const session = await auth.api.getSession({
 		headers: await headers(),
 	});
 	if (!session?.user) {
-		return { isAuthenticated: false };
+		return { isAuthenticated: false, session: undefined };
 	}
 	return { isAuthenticated: true, session };
 }

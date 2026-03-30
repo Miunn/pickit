@@ -12,12 +12,7 @@ export default async function AdminUser(props: {
 	const user = await UserService.get({
 		where: { id: params.userId },
 		include: {
-			_count: {
-				select: {
-					folders: true,
-					files: true,
-				},
-			},
+			folders: { select: { _count: { select: { files: true } } } },
 		},
 	});
 

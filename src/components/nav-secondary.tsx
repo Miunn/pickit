@@ -48,7 +48,7 @@ export function NavSecondary({
 					<SidebarMenuItem>
 						<SidebarMenuButton asChild size="sm" className="items-start">
 							<Link
-								href={`/app/account/billing`}
+								href={`/app/account`}
 								className="h-auto flex flex-col items-start gap-1"
 							>
 								<p className="text-start">{t("used")}</p>
