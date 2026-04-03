@@ -90,14 +90,17 @@ export default async function LocaleLayout(
 			})
 		: [];
 
-	const isAdmin = await auth.api.userHasPermission({
-		body: {
-			userId: session?.user?.id,
-			permissions: {
-				user: ["list"],
-			},
-		},
-	});
+	const isAdmin =
+		session?.user?.id === undefined
+			? { success: false }
+			: await auth.api.userHasPermission({
+					body: {
+						userId: session?.user?.id,
+						permissions: {
+							user: ["list"],
+						},
+					},
+				});
 
 	return (
 		<NuqsAdapter>
