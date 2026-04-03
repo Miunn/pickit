@@ -227,7 +227,6 @@ export default async function FolderPage(props: {
 	}
 
 	const auth = await SecureService.folder.enforce(folder, share, h);
-	console.log("Is enforce allowed:", auth);
 
 	if (!auth.allowed) {
 		if (auth.reason === "invalid-pin") {
