@@ -70,28 +70,28 @@ export const usersColumns: ColumnDef<UserAdministration>[] = [
 	},
 	{
 		id: "count_folders",
-		accessorKey: "_count.folders",
 		header: ({ table }) => {
 			const t = table.options.meta?.intl?.translations;
 			return <p>{t?.("folders.header")}</p>;
 		},
 		cell: ({ table, row }) => {
 			const t = table.options.meta?.intl?.translations;
-			const folders: string = row.getValue("count_folders");
-			return <p className="truncate">{t?.("folders.count", { count: Number.parseInt(folders) })}</p>;
+			const folders = row.original.folders.length;
+			return <p className="truncate">{t?.("folders.count", { count: folders })}</p>;
 		},
 	},
 	{
 		id: "count_images",
-		accessorKey: "_count.images",
 		header: ({ table }) => {
 			const t = table.options.meta?.intl?.translations;
 			return <p className="truncate">{t?.("images.header")}</p>;
 		},
 		cell: ({ table, row }) => {
 			const t = table.options.meta?.intl?.translations;
-			const images: string = row.getValue("count_images");
-			return <p>{t?.("images.count", { count: Number.parseInt(images) })}</p>;
+			const images = row.original.folders.reduce((acc, folder) => acc + folder._count.files, 0);
+
+			console.log("images", images);
+			return <p>{t?.("images.count", { count: images })}</p>;
 		},
 	},
 	{

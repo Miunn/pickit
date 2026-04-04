@@ -67,7 +67,6 @@ export default function SignupForm() {
 				description: t("form.error.unknown.description"),
 				variant: "destructive",
 			});
-			return;
 		}
 	};
 

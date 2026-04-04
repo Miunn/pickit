@@ -140,7 +140,7 @@ export async function addTagsToFiles(
 		files.map(file => SecureService.file.enforce(file, FilePermission.UPDATE))
 	);
 
-	const allAllowed = allowedChecks.every(allowed => allowed);
+	const allAllowed = allowedChecks.every(Boolean);
 
 	if (!allAllowed) {
 		return {
@@ -248,7 +248,7 @@ export async function removeTagsFromFiles(
 		files.map(file => SecureService.file.enforce(file, FilePermission.UPDATE))
 	);
 
-	const allAllowed = allAccessChecks.every(allowed => allowed);
+	const allAllowed = allAccessChecks.every(Boolean);
 
 	if (!allAllowed) {
 		return {

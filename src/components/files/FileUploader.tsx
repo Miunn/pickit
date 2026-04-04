@@ -225,7 +225,7 @@ export const FileUploader = (props: FileUploaderProps) => {
 									/>
 								</div>
 								<p className="font-medium text-muted-foreground">
-									{t("dragActiveTitle")}
+									{t("title")}
 								</p>
 							</div>
 						) : (

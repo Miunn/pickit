@@ -12,7 +12,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function VerifyAccountPage(props: {
-	readonly params: Promise<{ readonly locale: string; readonly token: string }>;
 	readonly searchParams: Promise<{ readonly error?: string }>;
 }) {
 	const { error } = await props.searchParams;

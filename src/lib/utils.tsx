@@ -84,7 +84,7 @@ export const copyImageToClipboard = async (
 ): Promise<boolean> => {
 	let image = await (
 		await fetch(
-			`/api/folders/${folderId}/images/${imageId}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`
+			`/api/folders/${folderId}/${imageId}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`
 		)
 	).blob();
 	image = image.slice(0, image.size, "image/png");

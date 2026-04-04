@@ -24,7 +24,7 @@ export const PoiWindowContent = ({ file, onClose }: ClusterWindowContentProps) =
 			<div className="bg-white border border-primary rounded-lg overflow-hidden shadow-lg mb-[23px] max-w-64">
 				<div className="relative h-48 w-full">
 					<LoadingImage
-						src={`/api/folders/${file.folderId}/images/${file.id}?share=${share}&h=${h}&t=${t}`}
+						src={`/api/folders/${file.folderId}/${file.id}?share=${share}&h=${h}&t=${t}`}
 						alt={file.name}
 						sizes="33vw"
 						fill

@@ -7,7 +7,7 @@ export async function enforceMapAccess(
 	hash: string | undefined
 ): Promise<
 	| { isAllowed: true; session?: Session }
-	| { isAllowed: false; reason: "not-authenticated" | "invalid-token"; session?: undefined }
+	| { isAllowed: false; reason: "not-authenticated" | "invalid-token"; session: undefined }
 > {
 	const { isAuthenticated, session } = await AuthService.isAuthenticated();
 
@@ -16,13 +16,13 @@ export async function enforceMapAccess(
 	}
 
 	if (!shareToken) {
-		return { isAllowed: false, reason: "not-authenticated" };
+		return { isAllowed: false, reason: "not-authenticated", session: undefined };
 	}
 
 	const isValidToken = await SecureService.validateToken(shareToken, hash);
 
 	if (!isValidToken) {
-		return { isAllowed: false, reason: "invalid-token" };
+		return { isAllowed: false, reason: "invalid-token", session: undefined };
 	}
 
 	return { isAllowed: true };

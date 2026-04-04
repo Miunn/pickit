@@ -153,7 +153,7 @@ export const imagesListViewColumns: ColumnDef<FileWithFolder & FileWithComments>
 							/>
 						) : (
 							<LoadingImage
-								src={`/api/folders/${row.original.folder.id}/images/${row.original.id}`}
+								src={`/api/folders/${row.original.folder.id}/${row.original.id}`}
 								width={40}
 								height={40}
 								alt={row.getValue("name") || ""}
