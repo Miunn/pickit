@@ -35,7 +35,7 @@ export default function VerifyEmail({ name, url }: { readonly name: string; read
 									<tr>
 										<td align="center" valign="middle">
 											<Img
-												src={`${baseUrl}/static/logo-full-primary.png`}
+												src={`${baseUrl}/static/logo.png`}
 												alt={
 													process.env
 														.NEXT_PUBLIC_APP_NAME
