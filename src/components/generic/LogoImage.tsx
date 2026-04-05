@@ -8,9 +8,9 @@ export default function LogoImage({
 	readonly size?: "small" | "medium" | "large";
 }) {
 	const getSrc = () => {
-		if (color === "primary") return "/static/logo.svg";
+		if (color === "primary") return "/static/logo-icon.svg";
 		if (color === "white") return "/static/logo-icon-white.svg";
-		return "/static/logo.svg";
+		return "/static/logo-icon.svg";
 	};
 
 	const getSize = () => {
