@@ -14,6 +14,6 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
 	const accessKey = req.nextUrl.searchParams.get("h");
 
 	return NextResponse.redirect(
-		`/api/folders/${params.folder}/${params.image}?share=${shareToken || ""}&h=${accessKey || ""}&download=true`
+		`${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folder}/${params.image}?share=${shareToken || ""}&h=${accessKey || ""}&download=true`
 	);
 }
