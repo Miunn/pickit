@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { ArrowRight, ArrowRightIcon } from "lucide-react";
-import Image from "next/image";
+
 import { useLocale, useTranslations } from "next-intl";
 
 /**
@@ -17,16 +17,22 @@ export default function Hero({ seeMoreRef }: { readonly seeMoreRef: React.RefObj
 	const locale = useLocale();
 
 	return (
-		<div className="relative bg-primary h-fit md:h-[600px] rounded-3xl mx-4 text-white py-8 sm:py-16 md:py-0">
-			<div className="max-w-7xl grid lg:grid-cols-2 gap-11 justify-between items-center px-4 sm:px-11 mx-auto h-full">
-				<div className="relative col-span-2 lg:col-span-1">
+		<div className="relative bg-transparent bg-blend-overlay w-screen h-screen text-white py-8 md:py-0 bg-[url(/hero.jpg)] bg-center bg-origin-border bg-no-repeat bg-cover">
+			<div className="max-w-7xl grid lg:grid-cols-2 gap-11 justify-between items-center px-4 sm:px-0 mx-auto h-full">
+				<div className="relative col-span-2 lg:col-span-1 z-10">
 					<div
 						className={cn(
-							"backdrop-filter-[12px] w-fit inline-flex py-2 items-center justify-between rounded-full border border-white/5 bg-white/10 px-3 text-xs sm:text-sm text-white dark:text-black transition-all ease-in hover:bg-white/20 group gap-1",
-							"mb-2"
+							// "backdrop-filter-[12px] w-fit inline-flex py-2 items-center justify-between rounded-full border border-white/5 bg-white/10 px-3 text-xs sm:text-sm text-white dark:text-black transition-all ease-in group gap-1",
+							// "mb-2 cursor-pointer",
+							// "isolate rounded-full bg-white/20 shadow-lg ring-1 ring-black/5 backdrop-blur"
+							"group rounded-full border border-black/5 bg-neutral-100 text-base text-white transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800"
 						)}
 					>
-						<AnimatedShinyText className="inline-flex items-center justify-center transition ease-out text-neutral-200 hover:text-neutral-100 hover:duration-300 dark:text-neutral-300 hover:dark:text-neutral-200 bg-gradient-to-r from-primary to-accent dark:from-primary dark:to-accent">
+						<AnimatedShinyText
+							className={cn(
+								"inline-flex items-center justify-center px-4 py-1 transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400"
+							)}
+						>
 							<span>✨ {t("hero.introduction")}</span>
 							<ArrowRightIcon className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
 						</AnimatedShinyText>
@@ -132,30 +138,6 @@ export default function Hero({ seeMoreRef }: { readonly seeMoreRef: React.RefObj
 							{t("hero.seeMore")}
 						</Button>
 					</div>
-				</div>
-
-				<div className="hidden lg:block relative h-full">
-					<Image
-						className="rounded-xl absolute left-1/3 top-1/3 -translate-x-1/2 -translate-y-1/2 object-cover"
-						src={"/beach.jpg"}
-						alt="Beach"
-						width={320}
-						height={213}
-					/>
-					<Image
-						className="rounded-xl absolute right-1/2 bottom-1/3 translate-x-1/2 translate-y-1/2 object-cover"
-						src={"/bridge.jpg"}
-						alt="Bridge"
-						width={300}
-						height={200}
-					/>
-					<Image
-						className="rounded-xl absolute left-2/3 top-1/3 -translate-y-1/2 object-cover"
-						src={"/parrot.jpg"}
-						alt="Parrot"
-						width={170}
-						height={256}
-					/>
 				</div>
 			</div>
 		</div>

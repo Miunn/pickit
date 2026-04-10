@@ -30,6 +30,7 @@ const NavLinks = ({ locale, t }: { readonly locale: string; readonly t: ReturnTy
 export default function Header({ className }: { readonly className?: string }) {
 	const t = useTranslations("components.header");
 	const locale = useLocale();
+
 	const headerRowRef = React.useRef<HTMLHRElement>(null);
 	const [isOpen, setIsOpen] = React.useState(false);
 	const [top, setTop] = React.useState(true);
@@ -55,68 +56,73 @@ export default function Header({ className }: { readonly className?: string }) {
 	});
 
 	return (
-		<header
-			className={cn(
-				"flex items-center justify-between py-4",
-				"sticky top-0 z-50 bg-background/90 backdrop-blur",
-				className
-			)}
-		>
-			<div className={"w-full grid grid-cols-3 items-center max-w-7xl mx-auto px-4"}>
-				<Link href={`/${locale}`} className="w-fit flex items-center gap-2">
+		<header className={cn("w-full fixed top-6 z-50", className)}>
+			<div className="grid grid-cols-[1fr_5fr] gap-60 w-full max-w-7xl mx-auto">
+				<Link
+					href={`/${locale}`}
+					className={cn(
+						"isolate rounded-full bg-white/30 shadow-lg ring-1 ring-black/5 backdrop-blur",
+						"w-fit flex items-center gap-2 px-4"
+					)}
+				>
 					<LogoImage size="small" />
 					<h1 className="text-xl text-primary font-bold">Echomori</h1>
 				</Link>
 
-				<nav className="opacity-0 md:opacity-100 place-self-center">
-					<ul className="grid grid-cols-3 place-items-center gap-10 font-semibold text-sm">
+				<nav
+					className={cn(
+						"w-fit flex items-center justify-between rounded-full px-6 py-4",
+						"isolate rounded-full bg-white/30 shadow-lg ring-1 ring-black/5 backdrop-blur",
+						"opacity-0 md:opacity-100"
+					)}
+				>
+					<ul className="grid grid-cols-3 justify-items-center gap-10 font-semibold text-sm">
 						<NavLinks locale={locale} t={t} />
 					</ul>
 				</nav>
 
-				<div className="w-fit place-self-end flex gap-2 items-center justify-end">
-					<div className="hidden md:flex gap-2">
-						<Button asChild>
-							<Link href={`/${locale}/signin`}>{t("nav.login")}</Link>
-						</Button>
-						<SwitchLocale locale={locale} />
-						<SwitchTheme />
-					</div>
-
-					<Sheet open={isOpen} onOpenChange={setIsOpen}>
-						<SheetTrigger asChild>
-							<Button variant="ghost" size="icon" className="md:hidden">
-								<Menu className="h-5 w-5" />
-							</Button>
-						</SheetTrigger>
-						<SheetContent side="right" className="w-[300px] sm:w-[400px] z-[100]">
-							<nav className="flex flex-col gap-4 mt-8">
-								<NavLinks locale={locale} t={t} />
-								<div className="flex flex-col gap-4 mt-4">
-									<Button asChild className="w-full">
-										<Link href={`/${locale}/signin`}>
-											{t("nav.login")}
-										</Link>
-									</Button>
-									<div className="flex justify-center gap-4 relative">
-										<div className="relative z-[101]">
-											<SwitchLocale locale={locale} />
-										</div>
-										<div className="relative z-[101]">
-											<SwitchTheme />
-										</div>
-									</div>
-								</div>
-							</nav>
-						</SheetContent>
-					</Sheet>
-				</div>
-			</div>
-
-			<hr
+				{/*<hr
 				ref={headerRowRef}
 				className="absolute w-full bottom-0 transition-opacity duration-300 ease-in-out opacity-0"
-			></hr>
+			></hr>*/}
+				{/*<div className="w-fit place-self-end flex gap-2 items-center justify-end">
+				<div className="hidden md:flex gap-2">
+					<Button asChild>
+						<Link href={`/${locale}/signin`}>{t("nav.login")}</Link>
+					</Button>
+					<SwitchLocale locale={locale} />
+					<SwitchTheme />
+				</div>
+
+				<Sheet open={isOpen} onOpenChange={setIsOpen}>
+					<SheetTrigger asChild>
+						<Button variant="ghost" size="icon" className="md:hidden">
+							<Menu className="h-5 w-5" />
+						</Button>
+					</SheetTrigger>
+					<SheetContent side="right" className="w-[300px] sm:w-[400px] z-[100]">
+						<nav className="flex flex-col gap-4 mt-8">
+							<NavLinks locale={locale} t={t} />
+							<div className="flex flex-col gap-4 mt-4">
+								<Button asChild className="w-full">
+									<Link href={`/${locale}/signin`}>
+										{t("nav.login")}
+									</Link>
+								</Button>
+								<div className="flex justify-center gap-4 relative">
+									<div className="relative z-[101]">
+										<SwitchLocale locale={locale} />
+									</div>
+									<div className="relative z-[101]">
+										<SwitchTheme />
+									</div>
+								</div>
+							</div>
+						</nav>
+					</SheetContent>
+				</Sheet>
+			</div>*/}
+			</div>
 		</header>
 	);
 }

@@ -22,7 +22,13 @@ export default function LogoImage({
 
 	return (
 		<div className="flex aspect-square items-center justify-center rounded-lg text-sidebar-primary-foreground">
-			<Image src={getSrc()} alt="Echomori" width={getSize()} height={getSize()} />
+			<Image
+				src={getSrc()}
+				alt="Echomori"
+				width={getSize()}
+				height={getSize()}
+				className="shrink-0"
+			/>
 		</div>
 	);
 }

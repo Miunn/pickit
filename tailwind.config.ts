@@ -69,6 +69,14 @@ const config: Config = {
 				sm: "calc(var(--radius) - 4px)",
 			},
 			keyframes: {
+				"shiny-text": {
+					"0%, 90%, 100%": {
+						"background-position": "calc(-100% - var(--shiny-width)) 0",
+					},
+					"30%, 60%": {
+						"background-position": "calc(100% + var(--shiny-width)) 0",
+					},
+				},
 				"caret-blink": {
 					"0%,70%,100%": {
 						opacity: "1",
@@ -137,16 +145,9 @@ const config: Config = {
 						transform: "none",
 					},
 				},
-				"shiny-text": {
-					"0%, 90%, 100%": {
-						"background-position": "calc(-100% - var(--shiny-width)) 0",
-					},
-					"30%, 60%": {
-						"background-position": "calc(100% + var(--shiny-width)) 0",
-					},
-				},
 			},
 			animation: {
+				"animate-shiny-text": "shiny-text 8s infinite",
 				"caret-blink": "caret-blink 1.25s ease-out infinite",
 				ripple: "ripple 600ms linear forwards",
 				progress: "progress 20s linear forwards",
