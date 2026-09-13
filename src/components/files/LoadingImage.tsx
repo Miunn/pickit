@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LoadingImageProps extends ImageProps {
-    readonly spinnerClassName?: string;
+	readonly spinnerClassName?: string;
 }
 
 function shouldSkipOptimization(src: ImageProps["src"]): boolean {
@@ -26,19 +26,24 @@ function shouldSkipOptimization(src: ImageProps["src"]): boolean {
 }
 
 export default function LoadingImage({ spinnerClassName, alt, src, ...imageProps }: LoadingImageProps) {
-    const [isLoading, setIsLoading] = useState(true);
-    return (
-        <>
-            <div className={cn("absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2", spinnerClassName)}>
-                {isLoading && <Loader2 className={cn(spinnerClassName, "animate-spin")} />}
-            </div>
-            <Image
+	const [isLoading, setIsLoading] = useState(true);
+	return (
+		<>
+			<div
+				className={cn(
+					"absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
+					spinnerClassName
+				)}
+			>
+				{isLoading && <Loader2 className={cn(spinnerClassName, "animate-spin")} />}
+			</div>
+			<Image
 				alt={alt}
 				src={src}
 				unoptimized={shouldSkipOptimization(src)}
 				{...imageProps}
 				onLoad={() => setIsLoading(false)}
 			/>
-        </>
-    );
+		</>
+	);
 }
