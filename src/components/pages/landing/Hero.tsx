@@ -22,15 +22,19 @@ export default function Hero({ seeMoreRef }: { readonly seeMoreRef: React.RefObj
 				<div className="relative col-span-2 lg:col-span-1 z-10">
 					<div
 						className={cn(
-							// "backdrop-filter-[12px] w-fit inline-flex py-2 items-center justify-between rounded-full border border-white/5 bg-white/10 px-3 text-xs sm:text-sm text-white dark:text-black transition-all ease-in group gap-1",
-							// "mb-2 cursor-pointer",
-							// "isolate rounded-full bg-white/20 shadow-lg ring-1 ring-black/5 backdrop-blur"
-							"group rounded-full border border-black/5 bg-neutral-100 text-base text-white transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800"
+							"w-fit sm:text-sm text-white transition-all ease-in group gap-1",
+							"mb-2 cursor-pointer",
+							"rounded-full bg-white/20 shadow-lg"
+							// "group rounded-full border border-black/5 bg-neutral-100 text-base text-white transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800"
 						)}
 					>
 						<AnimatedShinyText
 							className={cn(
-								"inline-flex items-center justify-center px-4 py-1 transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400"
+								"place-self-end",
+								"w-fit flex items-center justify-between rounded-full px-3 py-2",
+								"isolate rounded-full bg-white/65 shadow-lg ring-1 ring-black/5 backdrop-blur-sm",
+								"opacity-0 md:opacity-100",
+								"inline-flex items-center justify-center transition ease-out hover:text-neutral-600 hover:duration-300 dark:hover:text-neutral-400 text-neutral-200/70"
 							)}
 						>
 							<span>✨ {t("hero.introduction")}</span>

@@ -41,6 +41,8 @@ next-env.d.ts
 
 /dkim/*
 echomori-app-gcp-keyfile.json
+github-deploy-key.json
+cloudrun-env.yaml
 migrations/*
 
 scripts

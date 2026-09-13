@@ -81,7 +81,7 @@ export default function ShareFolderTemplate({
 								</Text>
 
 								{message && (
-									<div className="bg-[#f9f9f9] p-[15px] my-[15px] border-[1px] border-[#cccccc] rounded-[5px]">
+									<div className="bg-[#f9f9f9] p-[15px] my-[15px] border border-[#cccccc] rounded-[5px]">
 										<Text className="whitespace-pre-wrap">
 											{message}
 										</Text>
@@ -94,7 +94,7 @@ export default function ShareFolderTemplate({
 									contient :
 								</Text>
 
-								<div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
+								<div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border border-[#cccccc]">
 									<Button
 										href={link}
 										className="box-border w-full rounded-[8px] bg-[#1F7551] px-[12px] py-[12px] text-center font-semibold text-white"

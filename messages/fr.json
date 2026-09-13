@@ -656,16 +656,16 @@
 				"answer": "Vous pouvez télécharger des images en les glissant-déposant dans votre dossier ou en cliquant sur le bouton de téléchargement."
 			},
 			"question3": {
+				"title": "Comment est-ce que je peux partager un album ?",
+				"answer": "Dans un album vous pouvez créer un lien de partage unique qui peux être utilisé par n'importe qui pour consulter vos photos. Vous pouvez également spécifier une liste d'adresses mail et nous nous chargerons de leur transmettre votre album. Enfin, vous avez à disposition un tableau de bord vous permettant de gérer vos liens actifs et inactifs, d'en créer de nouveaux pour des albums spécifiques et plus encore."
+			},
+			"question4": {
 				"title": "Je ne veux plus partager un album, comment faire ?",
 				"answer": "Vous pouvez gérer tous vos liens de partage depuis la page de gestion des liens où vous trouverez deux tableaux : un pour les liens de partage et un pour les personnes avec qui vous avez partagé votre album. Vous pouvez modifier les propriétés des liens ou les supprimer à tout moment."
 			},
-			"question4": {
-				"title": "Puis-je changer mon adresse mail ?",
-				"answer": "Oui ! Vous pouvez changer votre adresse mail dans les paramètres de votre compte. Vous devrez vérifier votre nouvelle adresse mail."
-			},
 			"question5": {
 				"title": "Comment sont stockées mes photos ?",
-				"answer": "Vos photos sont stockées sur nos serveurs de manière sécurisée. Nous utilisons les dernières technologies pour assurer la sécurité de vos données."
+				"answer": "Vos photos sont stockées en Europe dans le respect du RGPD. Nous utilisons les dernières technologies pour assurer la sécurité de vos données."
 			}
 		},
 		"contactForm": {

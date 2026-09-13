@@ -70,7 +70,7 @@ export default function VerifyEmail({ name, url }: { readonly name: string; read
 									ci-dessous.
 								</Text>
 
-								<div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
+								<div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border border-[#cccccc]">
 									<Button
 										href={url}
 										className="box-border w-full rounded-[8px] bg-[#1F7551] px-[12px] py-[12px] text-center font-semibold text-white"

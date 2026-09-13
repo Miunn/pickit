@@ -93,7 +93,7 @@ export default function NotifyAboutUploadTemplate({
 										accéder :
 									</Text>
 
-									<div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
+									<div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border border-[#cccccc]">
 										<Button
 											href={link}
 											className="box-border w-full rounded-[8px] bg-[#1F7551] px-[12px] py-[12px] text-center font-semibold text-white"
@@ -199,7 +199,7 @@ export default function NotifyAboutUploadTemplate({
 
 								<Text>Click the button below to access it :</Text>
 
-								<div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border-[1px] border-[#cccccc]">
+								<div className="bg-[#f9f9f9] p-[10px] my-[15px] border-dashed border border-[#cccccc]">
 									<Button
 										href={link}
 										className="box-border w-full rounded-[8px] bg-[#1F7551] px-[12px] py-[12px] text-center font-semibold text-white"

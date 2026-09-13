@@ -46,7 +46,7 @@ export default async function FoldersPage(props: {
 	});
 
 	return (
-		<main className="flex flex-col flex-grow">
+		<main className="flex flex-col grow">
 			<FoldersContent folders={folders} defaultView={searchParams.view} />
 		</main>
 	);
