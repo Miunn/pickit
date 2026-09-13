@@ -1,5 +1,5 @@
 import { GoogleBucket } from "@/lib/bucket";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { FileService } from "@/data/file-service";
 import { SecureService } from "@/data/secure/secure-service";
 import { FilePermission } from "@/data/secure/file";
