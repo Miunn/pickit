@@ -9,6 +9,6 @@ jobs:
     uses: ./.github/workflows/deploy-cloud-run.yml
     with:
       service: echomori-staging
-      environment_name: staging
+      environment_name: Staging
       config_file: infra/cloudrun.staging.yaml
     secrets: inherit

@@ -78,7 +78,7 @@ Add this JSON as GitHub secret GCP_SA_KEY (environments production and staging):
 Set GitHub environment variable GCP_RUN_SA to:
   ${RUN_SA}
 
-Then create GitHub Environments "production" and "staging" with the vars/secrets
+Then create GitHub Environments "production" and "Staging" with the vars/secrets
 listed in .github/workflows/deploy-cloud-run.yml.
 
 Map a domain after the first deploy:

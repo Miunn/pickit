@@ -1,5 +1,6 @@
 # Reusable Cloud Run deploy.
 # Public config lives in infra/cloudrun.{staging,production}.yaml
+# GitHub Environments: Staging, production
 #
 # GitHub Environment secrets still required:
 # GCP_SA_KEY, DATABASE_URL, BETTER_AUTH_SECRET, AUTH_SECRET, CSRF_SECRET,
