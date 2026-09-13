@@ -14,17 +14,17 @@ export default function EmailFooter() {
 			</Row>
 			<Row className="w-full">
 				<Column align="center">
-					<Text className="!my-[8px] !text-[16px] !font-semibold !leading-[24px] !text-gray-900">
+					<Text className="my-[8px]! text-[16px]! font-semibold! leading-[24px]! text-gray-900!">
 						{appName}
 					</Text>
-					<Text className="!mb-0 !mt-[4px] !text-[16px] !leading-[24px] !text-gray-500">
+					<Text className="mb-0! mt-[4px]! text-[16px]! leading-[24px]! text-gray-500!">
 						Upload and share your memories easily
 					</Text>
 				</Column>
 			</Row>
 			<Row>
 				<Column align="center">
-					<Text className="!mb-0 !mt-[4px] !text-[16px] !font-semibold !leading-[24px] !text-gray-500">
+					<Text className="mb-0! mt-[4px]! text-[16px]! font-semibold! leading-[24px]! text-gray-500!">
 						{supportMail}
 					</Text>
 				</Column>

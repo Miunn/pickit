@@ -14,7 +14,7 @@ import LoadingImage from "@/components/files/LoadingImage";
 import { FileType } from "@prisma/client";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
+import { cn, getFileSrc } from "@/lib/utils";
 import { useFilesContext } from "@/context/FilesContext";
 
 export default function FullScreenImageCarousel({
@@ -139,13 +139,21 @@ export default function FullScreenImageCarousel({
 											<video
 												className="h-full w-full max-h-dvh object-contain"
 												controls
-												src={`/api/folders/${file.folder.id}/videos/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
+												src={getFileSrc(file, "original", {
+													share: shareToken,
+													h: shareHashPin,
+													t: tokenType === "personAccessToken" ? "p" : "a",
+												})}
 											>
 												<track kind="captions" />
 											</video>
 										) : (
 											<LoadingImage
-												src={`/api/folders/${file.folder.id}/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
+												src={getFileSrc(file, "original", {
+													share: shareToken,
+													h: shareHashPin,
+													t: tokenType === "personAccessToken" ? "p" : "a",
+												})}
 												alt={file.name}
 												className="h-full w-full max-h-dvh object-contain"
 												width={1920}

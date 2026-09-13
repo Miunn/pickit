@@ -1,0 +1,16 @@
+{
+	"hosting": {
+		"target": "staging",
+		"public": "infra/firebase-public",
+		"ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+		"rewrites": [
+			{
+				"source": "**",
+				"run": {
+					"serviceId": "echomori-staging",
+					"region": "europe-west1"
+				}
+			}
+		]
+	}
+}

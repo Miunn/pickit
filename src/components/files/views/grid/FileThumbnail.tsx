@@ -1,6 +1,6 @@
 import TagChip from "@/components/tags/TagChip";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { formatBytes, isNewFile } from "@/lib/utils";
+import { formatBytes, getFileSrc, isNewFile } from "@/lib/utils";
 import { CirclePlay } from "lucide-react";
 import LoadingImage from "@/components/files/LoadingImage";
 import { FileType } from "@prisma/client";
@@ -29,27 +29,18 @@ export default function FileThumbnail({ file }: { readonly file: FileWithTags })
 	return (
 		<>
 			<div className={`relative h-32 sm:h-36 mb-4 flex justify-center items-center group`}>
-				{file.type === FileType.VIDEO ? (
-					<LoadingImage
-						// src={file.signedUrl}
-						src={`/api/folders/${file.folderId}/videos/${file.id}/thumbnail?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`}
-						alt={file.name}
-						className={"relative border border-primary rounded-xl object-cover"}
-						spinnerClassName={"text-primary"}
-						sizes="33vw"
-						fill
-					/>
-				) : (
-					<LoadingImage
-						// src={file.signedUrl}
-						src={`/api/folders/${file.folderId}/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType}`}
-						alt={file.name}
-						className={"relative border border-primary rounded-xl object-cover"}
-						spinnerClassName={"text-primary"}
-						sizes="33vw"
-						fill
-					/>
-				)}
+				<LoadingImage
+					src={getFileSrc(file, "preview", {
+						share: shareToken,
+						h: shareHashPin,
+						t: tokenType,
+					})}
+					alt={file.name}
+					className={"relative border border-primary rounded-xl object-cover"}
+					spinnerClassName={"text-primary"}
+					sizes="33vw"
+					fill
+				/>
 				{file.type === FileType.VIDEO ? (
 					<CirclePlay
 						className="absolute left-2 bottom-2 text-white opacity-80 group-hover:opacity-100 transition-all duration-200 ease-in-out"

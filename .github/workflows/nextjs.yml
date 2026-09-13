@@ -11,24 +11,41 @@ env:
   NEXT_PUBLIC_SUPPORT_MAIL: "hello@echomori.fr"
   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
-  STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-  GCP_BUCKET_NAME: ${{ secrets.GOOGLE_BUCKET_NAME }}
+  DATABASE_URL: "postgresql://build:build@127.0.0.1:5432/build"
+  DIRECT_URL: "postgresql://build:build@127.0.0.1:5432/build"
+  GCP_PROJECT_ID: "echomori-app"
+  GCP_BUCKET_NAME: "echomori-drive-bucket"
+  BETTER_AUTH_SECRET: "ci-build-placeholder-secret-not-used-at-runtime"
+  BETTER_AUTH_URL: "http://localhost:3000"
+  AUTH_SECRET: "ci-build-placeholder-secret-not-used-at-runtime"
+  CSRF_SECRET: "ci-build-placeholder-secret-not-used-at-runtime"
+  STRIPE_SECRET_KEY: "sk_test_build_placeholder_not_used_at_runtime"
+  STRIPE_SUBSCRIBE_WEBHOOK_SECRET: "whsec_build_placeholder_not_used_at_runtime"
+  OAUTH_GOOGLE_CLIENT_ID: "build-placeholder-oauth-client-id"
+  OAUTH_GOOGLE_CLIENT_SECRET: "build-placeholder-oauth-secret"
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3.9.1
         with:
           node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci --ignore-scripts
+          npm rebuild
 
       - name: Run linting
         run: npm run lint

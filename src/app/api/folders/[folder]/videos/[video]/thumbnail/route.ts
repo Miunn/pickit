@@ -1,9 +1,9 @@
 import { GoogleBucket } from "@/lib/bucket";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { FileService } from "@/data/file-service";
-import { webStreamFromFile } from "@/lib/utils";
 import { SecureService } from "@/data/secure/secure-service";
 import { FilePermission } from "@/data/secure/file";
+import { gcsFileResponse } from "@/lib/gcs-response";
 
 /**
  * Serves a video's thumbnail stream or an authentication/error JSON response.
@@ -45,16 +45,8 @@ export async function GET(req: NextRequest, props: { params: Promise<{ folder: s
 		return Response.json({ error: "No videos found in this folder" }, { status: 404 });
 	}
 
-	const file = GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.thumbnail}`);
-
-	const webStream = webStreamFromFile(file);
-
-	const res = new NextResponse(webStream, {
-		headers: {
-			"Content-Type": "image/jpeg",
-			"Cache-Control": "private, max-age=2592000, immutable",
-		},
+	return gcsFileResponse(GoogleBucket.file(`${video.createdById}/${video.folderId}/${video.thumbnail}`), {
+		"Content-Type": "image/jpeg",
+		"Cache-Control": "private, max-age=2592000, immutable",
 	});
-
-	return res;
 }

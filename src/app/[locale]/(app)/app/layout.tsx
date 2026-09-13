@@ -20,6 +20,8 @@ import LinkIcon from "@/components/links/LinkIcon";
 import { AuthService } from "@/data/secure/auth";
 import { auth } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
 	title: "Echomori",
 	description: "Upload and share images with ease.",
@@ -183,7 +185,7 @@ export default async function LocaleLayout(
 						],
 					}}
 				/>
-				<SidebarInset className="flex-1 max-h-[calc(100svh-theme(spacing.4))]">
+				<SidebarInset className="flex-1 max-h-[calc(100svh-(--spacing(4)))]">
 					<header className="flex h-16 shrink-0 items-center gap-2 border-b">
 						<div className="w-full flex justify-between items-center px-4">
 							<div className="flex items-center gap-2">

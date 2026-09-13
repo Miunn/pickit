@@ -294,7 +294,7 @@ function Calendar({ className, showOutsideDays = true, yearRange = 12, numberOfM
 		props.dayButtonClassName
 	);
 	const buttonRangeClassName =
-		"bg-accent [&>button]:bg-primary [&>button]:text-primary-foreground [&>button]:hover:bg-primary [&>button]:hover:text-primary-foreground";
+		"bg-accent [&>button]:bg-primary [&>button]:text-primary-foreground hover:[&>button]:bg-primary hover:[&>button]:text-primary-foreground";
 	const _rangeStartClassName = cn(
 		buttonRangeClassName,
 		"day-range-start rounded-s-md",
@@ -302,11 +302,11 @@ function Calendar({ className, showOutsideDays = true, yearRange = 12, numberOfM
 	);
 	const _rangeEndClassName = cn(buttonRangeClassName, "day-range-end rounded-e-md", props.rangeEndClassName);
 	const _rangeMiddleClassName = cn(
-		"bg-accent !text-foreground [&>button]:bg-transparent [&>button]:!text-foreground [&>button]:hover:bg-transparent [&>button]:hover:!text-foreground",
+		"bg-accent text-foreground! [&>button]:bg-transparent [&>button]:text-foreground! hover:[&>button]:bg-transparent hover:[&>button]:text-foreground!",
 		props.rangeMiddleClassName
 	);
 	const _selectedClassName = cn(
-		"[&>button]:bg-primary [&>button]:text-primary-foreground [&>button]:hover:bg-primary [&>button]:hover:text-primary-foreground",
+		"[&>button]:bg-primary [&>button]:text-primary-foreground hover:[&>button]:bg-primary hover:[&>button]:text-primary-foreground",
 		props.selectedClassName
 	);
 	const _todayClassName = cn("[&>button]:bg-accent [&>button]:text-accent-foreground", props.todayClassName);

@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "echomori-app"
+  },
+  "targets": {
+    "echomori-app": {
+      "hosting": {
+        "staging": [
+          "echomori-staging"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

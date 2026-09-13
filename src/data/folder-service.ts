@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { SlugService } from "@/data/slug-service";
+import { attachSignedUrlsToValue } from "@/lib/bucket";
 
 async function create(data: Omit<Prisma.FolderCreateInput, "slug">) {
 	const { name, ...rest } = data;
@@ -18,7 +19,7 @@ async function create(data: Omit<Prisma.FolderCreateInput, "slug">) {
 				},
 			},
 		});
-		return folder;
+		return attachSignedUrlsToValue(folder);
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			if (error.code === "P2002") {
@@ -48,15 +49,21 @@ type GetResult<
 		: Prisma.FolderGetPayload<object>;
 
 // Overloaded function using generic constraints
-function get<
+async function get<
 	S extends Prisma.FolderSelect | undefined = undefined,
 	I extends Prisma.FolderInclude | undefined = undefined,
 >(options: GetOptions<S, I>): Promise<GetResult<S, I> | null> {
-	return prisma.folder.findUnique({
+	const folder = await prisma.folder.findUnique({
 		where: options.where,
 		select: "select" in options ? options.select : undefined,
 		include: "include" in options ? options.include : undefined,
-	}) as Promise<GetResult<S, I> | null>;
+	});
+
+	if (!folder) {
+		return null;
+	}
+
+	return (await attachSignedUrlsToValue(folder)) as unknown as GetResult<S, I>;
 }
 
 // Define types for getMultiple
@@ -80,17 +87,19 @@ type GetMultipleResult<
 		: Prisma.FolderGetPayload<object>[];
 
 // Overloaded function using generic constraints
-function getMultiple<
+async function getMultiple<
 	S extends Prisma.FolderSelect | undefined = undefined,
 	I extends Prisma.FolderInclude | undefined = undefined,
 >(options: GetMultipleOptions<S, I>): Promise<GetMultipleResult<S, I>> {
-	return prisma.folder.findMany({
+	const folders = await prisma.folder.findMany({
 		where: options.where,
 		select: "select" in options ? options.select : undefined,
 		include: "include" in options ? options.include : undefined,
 		orderBy: options.orderBy,
 		take: options.take,
-	}) as Promise<GetMultipleResult<S, I>>;
+	});
+
+	return (await attachSignedUrlsToValue(folders)) as unknown as GetMultipleResult<S, I>;
 }
 
 async function update(folderId: string, data: Prisma.FolderUpdateInput) {
@@ -112,7 +121,7 @@ async function update(folderId: string, data: Prisma.FolderUpdateInput) {
 		},
 	});
 
-	return folder;
+	return attachSignedUrlsToValue(folder);
 }
 
 async function del(folderId: string) {

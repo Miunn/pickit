@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { Plan } from "@prisma/client";
+import { FileType, Plan } from "@prisma/client";
 import { FileWithFolder, FileWithTags } from "@/lib/definitions";
 import { FilesSort, FilesSortDefinition } from "@/types/imagesSort";
 import { File } from "@google-cloud/storage";
@@ -97,6 +97,98 @@ export const copyImageToClipboard = async (
 
 	return true;
 };
+
+type ShareQuery = {
+	share?: string | null;
+	h?: string | null;
+	t?: string | null;
+};
+
+type FileSrcFields = {
+	id: string;
+	folderId?: string;
+	folder?: { id: string } | null;
+	type?: FileType | string | null;
+	signedUrl?: string | null;
+	signedThumbnailUrl?: string | null;
+	signedMediumUrl?: string | null;
+};
+
+type FolderCoverSrcFields = {
+	id: string;
+	coverId?: string | null;
+	signedCoverUrl?: string | null;
+	cover?: {
+		signedUrl?: string | null;
+		signedThumbnailUrl?: string | null;
+		signedMediumUrl?: string | null;
+	} | null;
+};
+
+function shareQueryString(share?: ShareQuery): string {
+	if (!share) {
+		return "";
+	}
+
+	const params = new URLSearchParams();
+	if (share.share) {
+		params.set("share", share.share);
+	}
+	if (share.h) {
+		params.set("h", share.h);
+	}
+	if (share.t) {
+		params.set("t", share.t);
+	}
+
+	const query = params.toString();
+	return query ? `?${query}` : "";
+}
+
+export function getFileSrc(
+	file: FileSrcFields,
+	variant: "preview" | "medium" | "original" = "original",
+	share?: ShareQuery
+): string {
+	if (variant === "preview" && file.signedThumbnailUrl) {
+		return file.signedThumbnailUrl;
+	}
+
+	if (variant === "medium" && file.signedMediumUrl) {
+		return file.signedMediumUrl;
+	}
+
+	if (file.signedUrl) {
+		return file.signedUrl;
+	}
+
+	const folderId = file.folderId || file.folder?.id;
+	if (variant === "preview" && file.type === FileType.VIDEO) {
+		return `/api/folders/${folderId}/videos/${file.id}/thumbnail${shareQueryString(share)}`;
+	}
+
+	return `/api/folders/${folderId}/${file.id}${shareQueryString(share)}`;
+}
+
+export function getFolderCoverSrc(folder: FolderCoverSrcFields, share?: ShareQuery): string | undefined {
+	if (folder.cover?.signedThumbnailUrl) {
+		return folder.cover.signedThumbnailUrl;
+	}
+
+	if (folder.cover?.signedUrl) {
+		return folder.cover.signedUrl;
+	}
+
+	if (folder.signedCoverUrl) {
+		return folder.signedCoverUrl;
+	}
+
+	if (folder.coverId) {
+		return `/api/folders/${folder.id}/${folder.coverId}${shareQueryString(share)}`;
+	}
+
+	return undefined;
+}
 
 export function groupFiles<T extends FileWithTags>(files: T[]): { [key: string]: T[] } {
 	const groups: { [key: string]: T[] } = {};

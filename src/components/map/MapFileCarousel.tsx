@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/carousel";
 import { useMap } from "@vis.gl/react-google-maps";
 import LoadingImage from "@/components/files/LoadingImage";
+import { getFileSrc } from "@/lib/utils";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useSearchParams } from "next/navigation";
@@ -80,7 +81,7 @@ export default function MapFileCarousel({ files, startIndex, onClose, onFileChan
 									>
 										<div className="relative w-full h-[200px] bg-white border border-primary rounded-lg overflow-hidden shadow-lg">
 											<LoadingImage
-												src={`/api/folders/${file.folderId}/${file.id}?share=${share}&t=${t}&h=${h}`}
+												src={getFileSrc(file, "preview", { share, t, h })}
 												alt={file.name}
 												fill
 												className="object-cover"

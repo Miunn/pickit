@@ -47,7 +47,7 @@ export default function SortImages({ sortState, setSortState }: SortImagesProps)
 					/>
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="min-w-[--radix-dropdown-menu-trigger-width]">
+			<DropdownMenuContent className="min-w-(--radix-dropdown-menu-trigger-width)">
 				<DropdownMenuItem
 					className="flex justify-between items-center"
 					onClick={e => {

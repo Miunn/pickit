@@ -1,4 +1,4 @@
-import { GoogleBucket } from "@/lib/bucket";
+import { attachSignedUrlsToValue, GoogleBucket } from "@/lib/bucket";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import exifr from "exifr";
@@ -9,6 +9,42 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import sharp from "sharp";
 import ffmpeg from "fluent-ffmpeg";
+
+const IMAGE_THUMBNAIL_MAX = 400;
+const IMAGE_MEDIUM_MAX = 1600;
+const DERIVATIVE_CACHE_CONTROL = "public, max-age=31536000, immutable";
+
+async function createImageDerivatives(buffer: Buffer) {
+	const pipeline = sharp(buffer, { failOn: "none" }).rotate();
+
+	const [thumbnail, medium] = await Promise.all([
+		pipeline
+			.clone()
+			.resize(IMAGE_THUMBNAIL_MAX, IMAGE_THUMBNAIL_MAX, {
+				fit: "inside",
+				withoutEnlargement: true,
+			})
+			.webp({ quality: 75 })
+			.toBuffer(),
+		pipeline
+			.clone()
+			.resize(IMAGE_MEDIUM_MAX, IMAGE_MEDIUM_MAX, {
+				fit: "inside",
+				withoutEnlargement: true,
+			})
+			.webp({ quality: 80 })
+			.toBuffer(),
+	]);
+
+	return { thumbnail, medium };
+}
+
+async function saveDerivative(objectPath: string, buffer: Buffer, contentType: string) {
+	await GoogleBucket.file(objectPath).save(buffer, {
+		contentType,
+		metadata: { cacheControl: DERIVATIVE_CACHE_CONTROL },
+	});
+}
 
 // Function overloads for create
 async function create(data: Prisma.FileCreateInput): Promise<Prisma.FileGetPayload<object>>;
@@ -25,7 +61,7 @@ async function create(
 		include,
 	});
 
-	return file;
+	return attachSignedUrlsToValue(file);
 }
 
 // Define types for better overload handling
@@ -60,23 +96,29 @@ type GetResult<
 		: Prisma.FileGetPayload<object>;
 
 // Overloaded function using generic constraints
-function get<S extends Prisma.FileSelect | undefined = undefined, I extends Prisma.FileInclude | undefined = undefined>(
-	options: GetOptions<S, I> | GetFirstOptions<S, I>
-): Promise<GetResult<S, I> | null> {
-	if (options.method === "first") {
-		return prisma.file.findFirst({
-			where: options.where,
-			select: "select" in options ? options.select : undefined,
-			include: "include" in options ? options.include : undefined,
-			orderBy: "orderBy" in options ? options.orderBy : undefined,
-		}) as Promise<GetResult<S, I> | null>;
+async function get<
+	S extends Prisma.FileSelect | undefined = undefined,
+	I extends Prisma.FileInclude | undefined = undefined,
+>(options: GetOptions<S, I> | GetFirstOptions<S, I>): Promise<GetResult<S, I> | null> {
+	const file =
+		options.method === "first"
+			? await prisma.file.findFirst({
+					where: options.where,
+					select: "select" in options ? options.select : undefined,
+					include: "include" in options ? options.include : undefined,
+					orderBy: "orderBy" in options ? options.orderBy : undefined,
+				})
+			: await prisma.file.findUnique({
+					where: options.where as Prisma.FileWhereUniqueInput,
+					select: "select" in options ? options.select : undefined,
+					include: "include" in options ? options.include : undefined,
+				});
+
+	if (!file) {
+		return null;
 	}
 
-	return prisma.file.findUnique({
-		where: options.where as Prisma.FileWhereUniqueInput,
-		select: "select" in options ? options.select : undefined,
-		include: "include" in options ? options.include : undefined,
-	}) as Promise<GetResult<S, I> | null>;
+	return (await attachSignedUrlsToValue(file)) as unknown as GetResult<S, I>;
 }
 
 // Define types for getMultiple
@@ -100,17 +142,19 @@ type GetMultipleResult<
 		: Prisma.FileGetPayload<object>[];
 
 // Overloaded function using generic constraints
-function getMultiple<
+async function getMultiple<
 	S extends Prisma.FileSelect | undefined = undefined,
 	I extends Prisma.FileInclude | undefined = undefined,
 >(options: GetMultipleOptions<S, I>): Promise<GetMultipleResult<S, I>> {
-	return prisma.file.findMany({
+	const files = await prisma.file.findMany({
 		where: options.where,
 		select: "select" in options ? options.select : undefined,
 		include: "include" in options ? options.include : undefined,
 		orderBy: options.orderBy,
 		take: options.take,
-	}) as Promise<GetMultipleResult<S, I>>;
+	});
+
+	return (await attachSignedUrlsToValue(files)) as unknown as GetMultipleResult<S, I>;
 }
 
 // Function overloads for update
@@ -125,11 +169,13 @@ async function update(
 	data: Prisma.FileUpdateInput,
 	include?: Prisma.FileInclude
 ): Promise<Prisma.FileGetPayload<{ include?: Prisma.FileInclude }>> {
-	return await prisma.file.update({
+	const file = await prisma.file.update({
 		where: { id: fileId },
 		data,
 		include,
 	});
+
+	return attachSignedUrlsToValue(file);
 }
 
 async function del(fileId: string) {
@@ -151,12 +197,31 @@ async function extractAndSaveImageMetadata(folderId: string, fileId: string, obj
 	const [rawFile] = await GoogleBucket.file(filePath).download();
 	const uploadedBuffer = Buffer.from(rawFile);
 
+	const thumbnailName = `${fileId}-thumbnail`;
+	const mediumName = `${fileId}-medium`;
+	let savedThumbnail: string | undefined;
+	let savedMedium: string | undefined;
+
+	try {
+		const derivatives = await createImageDerivatives(uploadedBuffer);
+		await Promise.all([
+			saveDerivative(`${filePath}-thumbnail`, derivatives.thumbnail, "image/webp"),
+			saveDerivative(`${filePath}-medium`, derivatives.medium, "image/webp"),
+		]);
+		savedThumbnail = thumbnailName;
+		savedMedium = mediumName;
+	} catch (err) {
+		console.error("Error creating image derivatives:", err);
+	}
+
 	const metadata = await sharp(uploadedBuffer).metadata();
 	const exif = await exifr.parse(uploadedBuffer, true);
 	return FileService.update(
 		fileId,
 		{
 			position: (await getLastPosition(folderId)) + 1000,
+			...(savedThumbnail ? { thumbnail: savedThumbnail } : {}),
+			...(savedMedium ? { medium: savedMedium } : {}),
 			width: metadata.width || 0,
 			height: metadata.height || 0,
 			make: exif.Make,
@@ -208,8 +273,7 @@ async function extractAndSaveVideoMetadata(folderId: string, fileId: string, obj
 	try {
 		const thumbnailBuffer = await extractThumbnailFromBuffer(uploadedBuffer);
 
-		// Save thumbnail
-		await GoogleBucket.file(thumbnailFilePath).save(thumbnailBuffer);
+		await saveDerivative(thumbnailFilePath, thumbnailBuffer, "image/jpeg");
 	} catch (err) {
 		console.error("Error creating thumbnail:", err);
 	}

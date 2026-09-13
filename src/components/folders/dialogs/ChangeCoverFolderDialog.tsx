@@ -23,7 +23,7 @@ import {
 	CarouselContent,
 } from "@/components/ui/carousel";
 import LoadingImage from "@/components/files/LoadingImage";
-import { formatBytes } from "@/lib/utils";
+import { formatBytes, getFileSrc } from "@/lib/utils";
 
 /**
  * Dialog component that lets the user choose an image to set as a folder's cover.
@@ -119,7 +119,7 @@ export default function ChangeCoverFolderDialog({
 										className={`relative flex justify-center items-center p-2 transition-all duration-300 ease-in-out`}
 									>
 										<LoadingImage
-											src={`/api/folders/${file.folder.id}/${file.id}`}
+											src={getFileSrc(file, "medium")}
 											alt={file.name}
 											className={`max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out`}
 											width={900}

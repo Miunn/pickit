@@ -11,7 +11,7 @@ import {
 	RequestFileUploadFormSchema,
 } from "@/lib/definitions";
 import { z } from "zod";
-import { generateV4DownloadUrl, GoogleBucket } from "@/lib/bucket";
+import { GoogleBucket } from "@/lib/bucket";
 import crypto from "node:crypto";
 import { FileType, FileLike } from "@prisma/client";
 import { AccessTokenService } from "@/data/access-token-service";
@@ -110,11 +110,7 @@ export async function finalizeFileUpload(
 ): Promise<{
 	error: string | null;
 	file:
-		| (FileWithTags &
-				FileWithComments &
-				FileWithLikes & { folder: FolderWithFilesCount & FolderWithTags } & {
-					signedUrl: string;
-				})
+		| (FileWithTags & FileWithComments & FileWithLikes & { folder: FolderWithFilesCount & FolderWithTags })
 		| null;
 }> {
 	const folder = await FolderService.get({
@@ -182,10 +178,7 @@ export async function finalizeFileUpload(
 		revalidatePath(`/app/folders`);
 		revalidatePath(`/app`);
 
-		const signedUrl = await generateV4DownloadUrl(
-			`${folder.createdById}/${folder.id}/${fileVerification.fileId}`
-		);
-		return { error: null, file: { ...updatedFile, signedUrl } };
+		return { error: null, file: updatedFile };
 	} catch (err) {
 		console.error("Error finalizing upload:", err);
 		return { error: "upload-finalization-failed", file: null };
@@ -455,19 +448,22 @@ export async function deleteFile(fileId: string, shareToken?: string, hashPin?: 
 		return { error: "forbidden" };
 	}
 
-	if (file.type === FileType.VIDEO) {
-		try {
-			await GoogleBucket.file(`${file.createdById}/${file.folderId}/${file.thumbnail}`).delete();
-		} catch (err) {
-			console.error("Error deleting video thumbnail:", err);
-		}
-	}
+	const objectPrefix = `${file.createdById}/${file.folderId}`;
+	const derivativeNames = new Set(
+		[file.thumbnail, file.medium, `${file.id}-thumbnail`, `${file.id}-medium`].filter(
+			(name): name is string => Boolean(name)
+		)
+	);
 
-	try {
-		await GoogleBucket.file(`${file.createdById}/${file.folderId}/${file.id}`).delete();
-	} catch (err) {
-		console.error("Error deleting file from bucket:", err);
-	}
+	await Promise.all(
+		[...derivativeNames, file.id].map(async name => {
+			try {
+				await GoogleBucket.file(`${objectPrefix}/${name}`).delete({ ignoreNotFound: true });
+			} catch (err) {
+				console.error("Error deleting file from bucket:", err);
+			}
+		})
+	);
 
 	await FileService.delete(fileId);
 

@@ -8,7 +8,7 @@ import Image from "next/image";
 import { FileWarning, Images } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn, getFolderCoverSrc } from "@/lib/utils";
 
 interface FolderCardProps {
 	readonly folder: FolderWithFilesCount;
@@ -24,6 +24,7 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
 	const share = searchParams.get("share");
 	const shareType = searchParams.get("t");
 	const shareHash = searchParams.get("h");
+	const coverSrc = getFolderCoverSrc(folder, { share, t: shareType, h: shareHash });
 
 	const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
 	const nextId = useRef(0);
@@ -72,16 +73,17 @@ export const FolderCard = ({ folder, ignoredFiles, isSelected, onToggle, formatt
 						<Ripple key={ripple.id} x={ripple.x} y={ripple.y} />
 					))}
 				</div>
-				{folder.coverId ? (
+				{coverSrc ? (
 					<div
 						className={`relative w-20 shrink-0 h-full mb-1 flex justify-center items-center rounded-t-xl`}
 					>
 						<Image
-							src={`/api/folders/${folder.id}/${folder.coverId}?share=${share}&t=${shareType}&h=${shareHash}`}
+							src={coverSrc}
 							alt={folder.name}
 							className={"relative rounded-t-xl object-cover"}
 							sizes="33vw"
 							fill
+							unoptimized
 						/>
 					</div>
 				) : (

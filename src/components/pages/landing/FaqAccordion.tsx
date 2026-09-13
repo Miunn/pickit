@@ -44,7 +44,7 @@ export default function FaqAccordion() {
 					<AccordionItem
 						key={question.key}
 						value={(index + 1).toString()}
-						className="bg-background has-focus-visible:border-ring has-focus-visible:ring-ring/50 rounded-md border px-4 py-1 outline-none last:border-b has-focus-visible:ring-[3px]"
+						className="bg-background has-focus-visible:border-ring has-focus-visible:ring-ring/50 rounded-md border px-4 py-1 outline-hidden last:border-b has-focus-visible:ring-[3px]"
 					>
 						<AccordionTrigger className="py-2 text-[15px] leading-6 hover:no-underline focus-visible:ring-0">
 							{t(question.title)}

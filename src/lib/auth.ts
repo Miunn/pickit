@@ -10,6 +10,28 @@ export const auth = betterAuth({
 	database: prismaAdapter(prisma, {
 		provider: "postgresql",
 	}),
+	trustedOrigins: [
+		process.env.NEXT_PUBLIC_APP_URL,
+		"https://*.run.app",
+		"http://localhost:3000",
+	].filter(Boolean) as string[],
+	advanced: {
+		trustedProxyHeaders: true,
+		// Firebase Hosting only forwards a cookie named `__session` to Cloud Run.
+		// Do not use the `__Secure-` name prefix or Hosting will strip it.
+		useSecureCookies: false,
+		defaultCookieAttributes: {
+			httpOnly: true,
+			secure: true,
+			sameSite: "lax",
+			path: "/",
+		},
+		cookies: {
+			session_token: {
+				name: "__session",
+			},
+		},
+	},
 	plugins: [
 		adminPlugin({
 			ac,

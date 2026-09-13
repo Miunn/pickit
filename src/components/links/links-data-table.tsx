@@ -61,7 +61,7 @@ export default function LinksDataTable({
 								disabled={selectedTokens.length === 0}
 								className={
 									selectedTokens.length === 0
-										? "!opacity-0"
+										? "opacity-0!"
 										: "opacity-100"
 								}
 							>

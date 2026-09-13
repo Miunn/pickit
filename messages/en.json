@@ -653,16 +653,16 @@
 				"answer": "You can upload images by dragging and dropping them inside your folder or by clicking on the upload button."
 			},
 			"question3": {
+				"title": "How can I share an album ?",
+				"answer": "In an album you can create a sharing link that can be used by anyone to access your album. You can also specify a list of email adresses and we will share your album to those adresses. You also have a sharing dashboard where you can manage active and inactive links, create new ones for specific albums and so on."
+			},
+			"question4": {
 				"title": "I don't want to share an album anymore, how to do ?",
 				"answer": "You can manage all your sharing links under your links management page where you'll find two tables: one for the sharing links and one for the people you shared your album with. You can edit links properties or delete them at anytime."
 			},
-			"question4": {
-				"title": "Can I change my email address ?",
-				"answer": "Yes ! You can change your email address in the account settings page. You will need to verify your new email address."
-			},
 			"question5": {
-				"title": "Hows are my photos stored ?",
-				"answer": "Your photos are stored on our servers in a secure way. We use the latest technologies to ensure the security of your data."
+				"title": "How are my photos stored ?",
+				"answer": "Your photos are stored in Europe in a manner that comply with RGPD. We use the latest technologies to ensure the security of your data."
 			}
 		},
 		"contactForm": {

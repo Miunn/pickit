@@ -1,11 +1,36 @@
 import { PrismaClient } from "@prisma/client";
 
+function prismaDatabaseUrl() {
+	const url = process.env.DATABASE_URL;
+	if (!url) {
+		return url;
+	}
+
+	const [base, query = ""] = url.split("?");
+	const params = new URLSearchParams(query);
+	// Transaction poolers (Supabase :6543) reuse backends. Prisma prepared
+	// statements then collide with 42P05 unless this flag is set.
+	params.set("pgbouncer", "true");
+	if (!params.has("connection_limit")) {
+		params.set("connection_limit", "5");
+	}
+	if (/supabase\.(co|com)|pooler\.supabase/.test(url) && !params.has("sslmode")) {
+		params.set("sslmode", "require");
+	}
+	return `${base}?${params.toString()}`;
+}
+
 const prismaClientSingleton = () => {
 	// On create image or video, we update the folder size
 	// On delete image or video, we update the folder size
 	// On create image or video, we update user usedStorage
 	// On delete image or video, we update user usedStorage
 	return new PrismaClient({
+		datasources: {
+			db: {
+				url: prismaDatabaseUrl(),
+			},
+		},
 		omit: {
 			user: {
 				password: true,

@@ -25,8 +25,8 @@ services:
         container_name: echomori-migrations
         build:
             context: .
-            dockerfile: Dockerfile
-        command: npx prisma migrate deploy
+            dockerfile: Dockerfile.dev
+        command: ./node_modules/.bin/prisma migrate deploy
         env_file:
             - .env
         depends_on:
@@ -39,7 +39,7 @@ services:
         container_name: echomori-app
         build:
             context: .
-            dockerfile: Dockerfile
+            dockerfile: Dockerfile.dev
         restart: always
         depends_on:
             db:

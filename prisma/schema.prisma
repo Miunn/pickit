@@ -5,12 +5,14 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum Plan {
@@ -106,6 +108,7 @@ model File {
   longitude     Float?
   duration      Int       @default(0)
   thumbnail     String?
+  medium        String?
   type          FileType  @default(IMAGE)
   position      Int       @default(0)
   folder        Folder    @relation("FolderFiles", fields: [folderId], references: [id], onDelete: Cascade)

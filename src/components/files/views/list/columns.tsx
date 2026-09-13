@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
 import { FileWithComments, FileWithFolder } from "@/lib/definitions";
-import { formatBytes } from "@/lib/utils";
+import { formatBytes, getFileSrc } from "@/lib/utils";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import RenameImageDialog from "@/components/files/dialogs/RenameImageDialog";
@@ -138,33 +138,16 @@ export const imagesListViewColumns: ColumnDef<FileWithFolder & FileWithComments>
 			return (
 				<div className="truncate font-medium flex items-center gap-2">
 					<div className="relative w-[40px] h-[40px]">
-						{row.original.type === FileType.VIDEO ? (
-							<LoadingImage
-								src={`/api/folders/${row.original.folder.id}/videos/${row.original.id}/thumbnail`}
-								width={40}
-								height={40}
-								alt={row.getValue("name") || ""}
-								className="w-[40px] h-[40px] object-cover rounded-xl"
-								loading="lazy"
-								// placeholder="blur"
-								quality={50}
-								sizes="40px"
-								// blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZjBmMGYwIi8+PC9zdmc+"
-							/>
-						) : (
-							<LoadingImage
-								src={`/api/folders/${row.original.folder.id}/${row.original.id}`}
-								width={40}
-								height={40}
-								alt={row.getValue("name") || ""}
-								className="w-[40px] h-[40px] object-cover rounded-xl"
-								loading="lazy"
-								// placeholder="blur"
-								sizes="40px"
-								quality={50}
-								// blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZjBmMGYwIi8+PC9zdmc+"
-							/>
-						)}
+						<LoadingImage
+							src={getFileSrc(row.original, "preview")}
+							width={40}
+							height={40}
+							alt={row.getValue("name") || ""}
+							className="w-[40px] h-[40px] object-cover rounded-xl"
+							loading="lazy"
+							quality={50}
+							sizes="40px"
+						/>
 					</div>
 					<p>
 						<button
