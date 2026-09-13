@@ -69,12 +69,24 @@ jobs:
 
       - name: Apply Prisma migrations
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
         run: |
           if [ -z "$DIRECT_URL" ]; then
-            export DIRECT_URL="$DATABASE_URL"
+            echo "Set GitHub secret DIRECT_URL to the Supabase session pooler (port 5432), not db.*.supabase.co"
+            exit 1
           fi
+          if echo "$DIRECT_URL" | grep -q "db\..*\.supabase\.co"; then
+            echo "DIRECT_URL is the IPv6 direct host. GitHub Actions cannot reach it."
+            echo "Use Connect → Session pooler (aws-0-<region>.pooler.supabase.com:5432)."
+            exit 1
+          fi
+          if echo "$DIRECT_URL" | grep -q ":6543"; then
+            echo "DIRECT_URL is the transaction pooler (6543). Prisma migrate will hang."
+            echo "Use session pooler port 5432."
+            exit 1
+          fi
+          # Migrate must use session mode, never DATABASE_URL (6543).
+          export DATABASE_URL="$DIRECT_URL"
           npx prisma migrate deploy && npx prisma generate
 
       - uses: google-github-actions/auth@v2
