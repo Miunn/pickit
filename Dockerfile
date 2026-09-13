@@ -46,6 +46,10 @@ ENV NEXT_PUBLIC_PRICING_BASIC_YEARLY=$NEXT_PUBLIC_PRICING_BASIC_YEARLY
 ENV GCP_PROJECT_ID=$GCP_PROJECT_ID
 ENV GCP_BUCKET_NAME=$GCP_BUCKET_NAME
 ENV DATABASE_URL=postgresql://build:build@127.0.0.1:5432/build
+ENV BETTER_AUTH_SECRET=ci-build-placeholder-secret-not-used-at-runtime
+ENV BETTER_AUTH_URL=http://localhost:3000
+ENV AUTH_SECRET=ci-build-placeholder-secret-not-used-at-runtime
+ENV CSRF_SECRET=ci-build-placeholder-secret-not-used-at-runtime
 
 RUN npm run build
 
