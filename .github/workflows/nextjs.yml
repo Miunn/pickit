@@ -11,6 +11,8 @@ env:
   NEXT_PUBLIC_SUPPORT_MAIL: "hello@echomori.fr"
   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
+  DATABASE_URL: "postgresql://build:build@127.0.0.1:5432/build"
+  DIRECT_URL: "postgresql://build:build@127.0.0.1:5432/build"
   GCP_PROJECT_ID: "echomori-app"
   GCP_BUCKET_NAME: "echomori-drive-bucket"
   BETTER_AUTH_SECRET: "ci-build-placeholder-secret-not-used-at-runtime"

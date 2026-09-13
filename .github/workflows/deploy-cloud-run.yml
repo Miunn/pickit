@@ -3,7 +3,7 @@
 # GitHub Environments: Staging, production
 #
 # GitHub Environment secrets still required:
-# GCP_SA_KEY, DATABASE_URL, BETTER_AUTH_SECRET, AUTH_SECRET, CSRF_SECRET,
+# GCP_SA_KEY, DATABASE_URL, DIRECT_URL, BETTER_AUTH_SECRET, AUTH_SECRET, CSRF_SECRET,
 # MAIL_PASSWORD, MAIL_DKIM_PRIVATE_KEY, OAUTH_GOOGLE_CLIENT_SECRET,
 # STRIPE_SECRET_KEY, STRIPE_SUBSCRIBE_WEBHOOK_SECRET
 
@@ -70,7 +70,12 @@ jobs:
       - name: Apply Prisma migrations
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: npx prisma migrate deploy && npx prisma generate
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+        run: |
+          if [ -z "$DIRECT_URL" ]; then
+            export DIRECT_URL="$DATABASE_URL"
+          fi
+          npx prisma migrate deploy && npx prisma generate
 
       - uses: google-github-actions/auth@v2
         with:
@@ -121,6 +126,7 @@ jobs:
           NODE_ENV: production
           FFMPEG_PATH: /usr/bin/ffmpeg
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
           CSRF_SECRET: ${{ secrets.CSRF_SECRET }}
@@ -150,6 +156,7 @@ jobs:
               "BETTER_AUTH_URL": config.get("NEXT_PUBLIC_APP_URL", ""),
               "FFMPEG_PATH": os.environ.get("FFMPEG_PATH", "/usr/bin/ffmpeg"),
               "DATABASE_URL": os.environ.get("DATABASE_URL", ""),
+              "DIRECT_URL": os.environ.get("DIRECT_URL", ""),
               "BETTER_AUTH_SECRET": os.environ.get("BETTER_AUTH_SECRET", ""),
               "AUTH_SECRET": os.environ.get("AUTH_SECRET", ""),
               "CSRF_SECRET": os.environ.get("CSRF_SECRET", ""),
@@ -160,7 +167,7 @@ jobs:
               "STRIPE_SUBSCRIBE_WEBHOOK_SECRET": os.environ.get("STRIPE_SUBSCRIBE_WEBHOOK_SECRET", ""),
           })
 
-          skip = {"GCP_REGION", "GCP_ARTIFACT_REPO", "GCP_RUN_SA"}
+          skip = {"GCP_REGION", "GCP_ARTIFACT_REPO", "GCP_RUN_SA", "DIRECT_URL"}
 
           def yaml_value(value: str) -> str:
               if "\n" in value:

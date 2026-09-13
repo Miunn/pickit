@@ -37,12 +37,16 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+.firebase
+firebase-debug.log
 .idea
 
 /dkim/*
 echomori-app-gcp-keyfile.json
 github-deploy-key.json
 cloudrun-env.yaml
+tmp-db-migrate/
+infra/migrate-to-supabase.ps1
 migrations/*
 
 scripts
