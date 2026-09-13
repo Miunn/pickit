@@ -57,7 +57,10 @@ export async function GET(request: NextRequest, props: { params: Promise<{ folde
 				}}
 			>
 				<Image
-					src={`${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folder}/${folder.cover.id}?share=${searchParams.get("share")}&t=${searchParams.get("t") === "p" ? "p" : "a"}&h=${searchParams.get("h")}`}
+					src={
+						(folder.cover as { signedUrl?: string }).signedUrl ??
+						`${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.folder}/${folder.cover.id}?share=${searchParams.get("share")}&t=${searchParams.get("t") === "p" ? "p" : "a"}&h=${searchParams.get("h")}`
+					}
 					alt="Echomori"
 					style={{
 						width: `${size.width}px`,

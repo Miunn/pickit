@@ -17,7 +17,10 @@ export default function LoadingImage({ spinnerClassName, alt, src, ...imageProps
             <Image
 				alt={alt}
 				src={src}
-				unoptimized={typeof src === "string" && src.startsWith("/api/")}
+				unoptimized={
+					typeof src === "string" &&
+					(src.startsWith("/api/") || src.includes("storage.googleapis.com"))
+				}
 				{...imageProps}
 				onLoad={() => setIsLoading(false)}
 			/>

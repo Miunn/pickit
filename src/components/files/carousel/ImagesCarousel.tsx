@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { cn, formatBytes } from "@/lib/utils";
+import { cn, formatBytes, getFileSrc } from "@/lib/utils";
 import ImageCommentSection from "@/components/files/carousel/ImageCommentSection";
 import { useSearchParams } from "next/navigation";
 import EditDescriptionDialog from "@/components/files/dialogs/EditDescriptionDialog";
@@ -129,13 +129,21 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 											"max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out"
 										}
 										controls
-										src={`/api/folders/${file.folder.id}/videos/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
+										src={getFileSrc(file, "original", {
+											share: shareToken,
+											h: shareHashPin,
+											t: tokenType === "personAccessToken" ? "p" : "a",
+										})}
 									>
 										<track kind="captions" />
 									</video>
 								) : (
 									<LoadingImage
-										src={`/api/folders/${file.folder.id}/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
+										src={getFileSrc(file, "medium", {
+											share: shareToken,
+											h: shareHashPin,
+											t: tokenType === "personAccessToken" ? "p" : "a",
+										})}
 										alt={file.name}
 										className={
 											"max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out"

@@ -362,13 +362,24 @@ const folderWithFilesCount = Prisma.validator<Prisma.FolderDefaultArgs>()({
 	include: { _count: { select: { files: true } } },
 });
 
-export type FolderWithFilesCount = Prisma.FolderGetPayload<typeof folderWithFilesCount>;
+export type SignedUrls = {
+	signedUrl: string;
+	signedThumbnailUrl?: string;
+	signedMediumUrl?: string;
+};
+
+export type FolderWithFilesCount = Prisma.FolderGetPayload<typeof folderWithFilesCount> & {
+	signedCoverUrl?: string;
+};
 
 const folderWithCover = Prisma.validator<Prisma.FolderDefaultArgs>()({
 	include: { cover: true },
 });
 
-export type FolderWithCover = Prisma.FolderGetPayload<typeof folderWithCover>;
+export type FolderWithCover = Prisma.FolderGetPayload<typeof folderWithCover> & {
+	signedCoverUrl?: string;
+	cover: (NonNullable<Prisma.FolderGetPayload<typeof folderWithCover>["cover"]> & Partial<SignedUrls>) | null;
+};
 
 const fileLight = Prisma.validator<Prisma.FileDefaultArgs>()({
 	select: { id: true, name: true, folder: { select: { id: true, name: true, slug: true } } },
@@ -380,7 +391,7 @@ const fileWithTags = Prisma.validator<Prisma.FileDefaultArgs>()({
 	include: { tags: true },
 });
 
-export type FileWithTags = Prisma.FileGetPayload<typeof fileWithTags>;
+export type FileWithTags = Prisma.FileGetPayload<typeof fileWithTags> & Partial<SignedUrls>;
 
 const fileWithFolder = Prisma.validator<Prisma.FileDefaultArgs>()({
 	include: { folder: true },

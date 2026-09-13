@@ -9,7 +9,6 @@ import HeaderBreadcumb from "@/components/layout/breadcrumb/HeaderBreadcumb";
 import { FolderProvider } from "@/context/FolderContext";
 import { FilesProvider } from "@/context/FilesContext";
 import { TokenProvider } from "@/context/TokenContext";
-import { generateV4DownloadUrl } from "@/lib/bucket";
 import { AccessTokenService } from "@/data/access-token-service";
 import { SecureService } from "@/data/secure/secure-service";
 import { FolderSlugsService } from "@/data/folder-slugs-service";
@@ -257,13 +256,6 @@ export default async function FolderPage(props: {
 		fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/tokens/increment?token=${share}`);
 	}
 
-	const filesWithSignedUrls = await Promise.all(
-		folder.files.map(async file => ({
-			...file,
-			signedUrl: await generateV4DownloadUrl(`${file.createdById}/${file.folderId}/${file.id}`),
-		}))
-	);
-
 	return (
 		<>
 			<BreadcrumbPortal>
@@ -277,7 +269,7 @@ export default async function FolderPage(props: {
 			>
 				<TokenProvider token={accessToken}>
 					<FilesProvider
-						filesData={filesWithSignedUrls}
+						filesData={folder.files}
 						defaultView={view || ViewState.Grid}
 					>
 						<FolderContent />

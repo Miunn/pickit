@@ -16,7 +16,7 @@ import {
 	FileWithTags,
 	FolderWithLastSlug,
 } from "@/lib/definitions";
-import { formatBytes } from "@/lib/utils";
+import { formatBytes, getFolderCoverSrc } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Images, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
@@ -38,31 +38,36 @@ export const foldersListViewColumns: ColumnDef<
 	{
 		header: "Name",
 		accessorKey: "name",
-		cell: ({ row }) => (
-			<div className="truncate font-medium flex items-center gap-2">
-				{row.original.coverId ? (
-					<Image
-						src={`/api/folders/${row.original.id}/${row.original.coverId}`}
-						width={40}
-						height={40}
-						alt={row.getValue("name")}
-						className="w-[40px] h-[40px] object-cover rounded-xl"
-					/>
-				) : (
-					<div
-						className={
-							"w-[40px] h-[40px] bg-gray-100 dark:bg-gray-800 rounded-xl flex justify-center items-center"
-						}
-					>
-						<Images className={"opacity-50 w-[20px] h-[20px]"} />
-					</div>
-				)}
+		cell: ({ row }) => {
+			const coverSrc = getFolderCoverSrc(row.original);
 
-				<Link href={`/app/folders/${row.original.slug}`} className="hover:underline">
-					{row.getValue("name")}
-				</Link>
-			</div>
-		),
+			return (
+				<div className="truncate font-medium flex items-center gap-2">
+					{coverSrc ? (
+						<Image
+							src={coverSrc}
+							width={40}
+							height={40}
+							alt={row.getValue("name")}
+							className="w-[40px] h-[40px] object-cover rounded-xl"
+							unoptimized
+						/>
+					) : (
+						<div
+							className={
+								"w-[40px] h-[40px] bg-gray-100 dark:bg-gray-800 rounded-xl flex justify-center items-center"
+							}
+						>
+							<Images className={"opacity-50 w-[20px] h-[20px]"} />
+						</div>
+					)}
+
+					<Link href={`/app/folders/${row.original.slug}`} className="hover:underline">
+						{row.getValue("name")}
+					</Link>
+				</div>
+			);
+		},
 		sortUndefined: "last",
 		sortDescFirst: false,
 	},

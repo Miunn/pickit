@@ -4,6 +4,7 @@ import React from "react";
 import { X } from "lucide-react";
 import { FolderWithLastSlug } from "@/lib/definitions";
 import LoadingImage from "@/components/files/LoadingImage";
+import { getFileSrc } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { File } from "@prisma/client";
@@ -24,7 +25,7 @@ export const PoiWindowContent = ({ file, onClose }: ClusterWindowContentProps) =
 			<div className="bg-white border border-primary rounded-lg overflow-hidden shadow-lg mb-[23px] max-w-64">
 				<div className="relative h-48 w-full">
 					<LoadingImage
-						src={`/api/folders/${file.folderId}/${file.id}?share=${share}&h=${h}&t=${t}`}
+						src={getFileSrc(file, "preview", { share, h, t })}
 						alt={file.name}
 						sizes="33vw"
 						fill

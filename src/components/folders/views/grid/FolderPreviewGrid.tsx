@@ -19,6 +19,7 @@ import {
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import Image from "next/image";
+import { getFolderCoverSrc } from "@/lib/utils";
 import { Images } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -53,22 +54,24 @@ export default function FolderPreviewGrid({
 	const [openShare, setOpenShare] = React.useState<boolean>(false);
 	const [openProperties, setOpenProperties] = React.useState<boolean>(false);
 	const [openDelete, setOpenDelete] = React.useState<boolean>(false);
+	const coverSrc = getFolderCoverSrc(folder);
 
 	return (
 		<>
 			<ContextMenu modal={false}>
 				<ContextMenuTrigger asChild>
 					<Link href={`/app/folders/${folder.slug}`} className={"inline-block w-full"}>
-						{folder.cover ? (
+						{coverSrc ? (
 							<div
 								className={`relative h-36 mb-4 flex justify-center items-center border border-primary rounded-xl`}
 							>
 								<Image
-									src={`/api/folders/${folder.id}/${folder.coverId}`}
-									alt={folder.cover.name}
+									src={coverSrc}
+									alt={folder.cover?.name ?? folder.name}
 									className={"relative rounded-xl object-cover"}
 									sizes="33vw"
 									fill
+									unoptimized
 								/>
 							</div>
 						) : (

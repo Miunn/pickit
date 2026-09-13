@@ -2,7 +2,7 @@ import { Braces, Check, Copy, Download, Ellipsis, Expand, ExternalLink, Tags } f
 import { toast as sonnerToast } from "sonner";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { copyImageToClipboard, filterObjectOut } from "@/lib/utils";
+import { copyImageToClipboard, filterObjectOut, getFileSrc } from "@/lib/utils";
 import { FileWithTags, FolderWithTags } from "@/lib/definitions";
 import { toast } from "@/hooks/use-toast";
 import { FileType, FolderTag } from "@prisma/client";
@@ -125,7 +125,11 @@ export default function FileOptions({
 				</FullScreenImageCarousel>
 				<Button variant={"outline"} size={"icon"} type="button" asChild>
 					<Link
-						href={`/api/folders/${file.folderId}/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
+						href={getFileSrc(file, "original", {
+							share: shareToken,
+							h: shareHashPin,
+							t: tokenType === "personAccessToken" ? "p" : "a",
+						})}
 						target="_blank"
 					>
 						<ExternalLink className="w-4 h-4" />
@@ -248,7 +252,11 @@ export default function FileOptions({
 					</DropdownMenuItem>
 					<DropdownMenuItem asChild>
 						<Link
-							href={`/api/folders/${file.folderId}/${file.id}?share=${shareToken}&h=${shareHashPin}&t=${tokenType === "personAccessToken" ? "p" : "a"}`}
+							href={getFileSrc(file, "original", {
+								share: shareToken,
+								h: shareHashPin,
+								t: tokenType === "personAccessToken" ? "p" : "a",
+							})}
 							target="_blank"
 						>
 							<ExternalLink
