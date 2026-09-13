@@ -2,7 +2,7 @@ GCP_PROJECT_ID: "echomori-app"
 GCP_REGION: "europe-west1"
 GCP_ARTIFACT_REPO: "echomori"
 GCP_RUN_SA: "echomori-run@echomori-app.iam.gserviceaccount.com"
-GCP_BUCKET_NAME: "echomori-drive-bucket-staging"
+GCP_BUCKET_NAME: "echomori-drive-bucket-prod"
 
 NEXT_PUBLIC_APP_NAME: "Echomori"
 NEXT_PUBLIC_APP_URL: "https://dev.echomori.fr"

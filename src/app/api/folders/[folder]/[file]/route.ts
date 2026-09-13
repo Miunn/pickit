@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleBucket } from "@/lib/bucket";
 import { FileService } from "@/data/file-service";
-import { webStreamFromFile } from "@/lib/utils";
 import { SecureService } from "@/data/secure/secure-service";
 import { FilePermission } from "@/data/secure/file";
+import { contentTypeFromExtension, gcsFileResponse } from "@/lib/gcs-response";
 
 export async function GET(
 	req: NextRequest,
@@ -39,19 +39,11 @@ export async function GET(
 		);
 	}
 
-	const bucketFile = GoogleBucket.file(`${file.createdById}/${file.folderId}/${file.id}`);
-
-	const webStream = webStreamFromFile(bucketFile);
-
-	const res = new NextResponse(webStream, {
-		headers: {
-			"Content-Type": "image/" + file.extension,
-			"Cache-Control": "private, max-age=2592000, immutable",
-			"Content-Disposition": shouldDownload
-				? `attachment; filename=${encodeURIComponent(file.name)}.${encodeURIComponent(file.extension)}`
-				: "inline",
-		},
+	return gcsFileResponse(GoogleBucket.file(`${file.createdById}/${file.folderId}/${file.id}`), {
+		"Content-Type": contentTypeFromExtension(file.extension),
+		"Cache-Control": "private, max-age=2592000, immutable",
+		"Content-Disposition": shouldDownload
+			? `attachment; filename=${encodeURIComponent(file.name)}.${encodeURIComponent(file.extension)}`
+			: "inline",
 	});
-
-	return res;
 }

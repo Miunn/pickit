@@ -13,6 +13,7 @@ $Region = if ($env:REGION) { $env:REGION } else { "europe-west1" }
 $ArtifactRepo = if ($env:ARTIFACT_REPO) { $env:ARTIFACT_REPO } else { "echomori" }
 $DeploySaName = if ($env:DEPLOY_SA_NAME) { $env:DEPLOY_SA_NAME } else { "github-deploy" }
 $RunSaName = if ($env:RUN_SA_NAME) { $env:RUN_SA_NAME } else { "echomori-run" }
+$BucketDefault = if ($env:BUCKET_DEFAULT) { $env:BUCKET_DEFAULT } else { "echomori-drive-bucket" }
 $BucketStaging = if ($env:BUCKET_STAGING) { $env:BUCKET_STAGING } else { "echomori-drive-bucket-staging" }
 $BucketProd = if ($env:BUCKET_PROD) { $env:BUCKET_PROD } else { "echomori-drive-bucket-prod" }
 $KeyOut = if ($env:KEY_OUT) { $env:KEY_OUT } else { Join-Path (Get-Location) "github-deploy-key.json" }
@@ -105,7 +106,7 @@ Invoke-Gcloud -Args @(
     "--quiet"
 ) | Out-Null
 
-foreach ($Bucket in @($BucketStaging, $BucketProd)) {
+foreach ($Bucket in @($BucketDefault, $BucketStaging, $BucketProd)) {
     $bucketExists = (Invoke-Gcloud -AllowFail -Args @("storage", "buckets", "describe", "gs://$Bucket")) -eq 0
     if ($bucketExists) {
         Write-Host "Granting objectAdmin on gs://$Bucket..."
