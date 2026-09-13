@@ -124,7 +124,7 @@ export function ImagePreviewGrid({ file, selected, onClick, onSelect, className,
 						onClick={onClick}
 						className={cn(
 							"w-full cursor-pointer pointer-events-auto",
-							"focus:ring focus:ring-primary focus:ring-offset-2 focus:ring-offset-background focus:outline-none rounded-xl",
+							"focus:ring-3 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background focus:outline-hidden rounded-xl",
 							className
 						)}
 						style={style}

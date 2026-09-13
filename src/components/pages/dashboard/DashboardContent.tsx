@@ -33,7 +33,7 @@ export default function DashboardContent({
 	return (
 		<>
 			<ContextMenu modal={false}>
-				<ContextMenuTrigger className="flex flex-col flex-grow">
+				<ContextMenuTrigger className="flex flex-col grow">
 					<h2 className={"font-semibold mb-5"}>{t("folders.lastUpdatedFolders")}</h2>
 
 					<LastUpdatedFolders folders={lastFolders} />

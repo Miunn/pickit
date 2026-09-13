@@ -52,7 +52,7 @@ export default function PersonDataTable({ accessTokens }: { readonly accessToken
 								disabled={selectedTokens.length === 0}
 								className={
 									selectedTokens.length === 0
-										? "!opacity-0"
+										? "opacity-0!"
 										: "opacity-100"
 								}
 							>

@@ -1,0 +1,200 @@
+# Reusable Cloud Run deploy.
+# Public config lives in infra/cloudrun.{staging,production}.yaml
+#
+# GitHub Environment secrets still required:
+# GCP_SA_KEY, DATABASE_URL, BETTER_AUTH_SECRET, AUTH_SECRET, CSRF_SECRET,
+# MAIL_PASSWORD, MAIL_DKIM_PRIVATE_KEY, OAUTH_GOOGLE_CLIENT_SECRET,
+# STRIPE_SECRET_KEY, STRIPE_SUBSCRIBE_WEBHOOK_SECRET
+
+name: Deploy to Cloud Run
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        required: true
+        type: string
+      environment_name:
+        required: true
+        type: string
+      config_file:
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment_name }}
+    permissions:
+      contents: read
+
+    env:
+      SERVICE: ${{ inputs.service }}
+      CONFIG_FILE: ${{ inputs.config_file }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load public Cloud Run config
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+
+          path = Path(os.environ["CONFIG_FILE"])
+          github_env = Path(os.environ["GITHUB_ENV"])
+          for raw in path.read_text(encoding="utf-8").splitlines():
+              line = raw.strip()
+              if not line or line.startswith("#"):
+                  continue
+              key, _, value = line.partition(":")
+              key = key.strip()
+              value = value.strip().strip('"').strip("'")
+              if key and value:
+                  github_env.write_text(
+                      github_env.read_text(encoding="utf-8") + f"{key}={value}\n",
+                      encoding="utf-8",
+                  )
+          PY
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply Prisma migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npx prisma migrate deploy && npx prisma generate
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Ensure Artifact Registry repository
+        run: |
+          gcloud artifacts repositories describe "$GCP_ARTIFACT_REPO" --location="$GCP_REGION" \
+            || gcloud artifacts repositories create "$GCP_ARTIFACT_REPO" \
+              --repository-format=docker \
+              --location="$GCP_REGION" \
+              --quiet
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker "${GCP_REGION}-docker.pkg.dev" --quiet
+
+      - name: Build and push image
+        run: |
+          IMAGE="${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/${GCP_ARTIFACT_REPO}/${SERVICE}:${GITHUB_SHA}"
+          echo "IMAGE=${IMAGE}" >> "$GITHUB_ENV"
+          docker build \
+            --build-arg NEXT_PUBLIC_APP_NAME="$NEXT_PUBLIC_APP_NAME" \
+            --build-arg NEXT_PUBLIC_APP_URL="$NEXT_PUBLIC_APP_URL" \
+            --build-arg NEXT_PUBLIC_SUPPORT_MAIL="$NEXT_PUBLIC_SUPPORT_MAIL" \
+            --build-arg NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="$NEXT_PUBLIC_GOOGLE_MAPS_API_KEY" \
+            --build-arg NEXT_PUBLIC_USER_MAP_ID="$NEXT_PUBLIC_USER_MAP_ID" \
+            --build-arg NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" \
+            --build-arg NEXT_PUBLIC_PRICING_FREE_MONTHLY="$NEXT_PUBLIC_PRICING_FREE_MONTHLY" \
+            --build-arg NEXT_PUBLIC_PRICING_FREE_YEARLY="$NEXT_PUBLIC_PRICING_FREE_YEARLY" \
+            --build-arg NEXT_PUBLIC_PRICING_EFFICIENT_MONTHLY="$NEXT_PUBLIC_PRICING_EFFICIENT_MONTHLY" \
+            --build-arg NEXT_PUBLIC_PRICING_EFFICIENT_YEARLY="$NEXT_PUBLIC_PRICING_EFFICIENT_YEARLY" \
+            --build-arg NEXT_PUBLIC_PRICING_PRO_MONTHLY="$NEXT_PUBLIC_PRICING_PRO_MONTHLY" \
+            --build-arg NEXT_PUBLIC_PRICING_PRO_YEARLY="$NEXT_PUBLIC_PRICING_PRO_YEARLY" \
+            --build-arg NEXT_PUBLIC_PRICING_BASIC_MONTHLY="$NEXT_PUBLIC_PRICING_BASIC_MONTHLY" \
+            --build-arg NEXT_PUBLIC_PRICING_BASIC_YEARLY="$NEXT_PUBLIC_PRICING_BASIC_YEARLY" \
+            -t "$IMAGE" \
+            -t "${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/${GCP_ARTIFACT_REPO}/${SERVICE}:latest" \
+            .
+          docker push "$IMAGE"
+          docker push "${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/${GCP_ARTIFACT_REPO}/${SERVICE}:latest"
+
+      - name: Write Cloud Run env file
+        env:
+          NODE_ENV: production
+          FFMPEG_PATH: /usr/bin/ffmpeg
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          CSRF_SECRET: ${{ secrets.CSRF_SECRET }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_DKIM_PRIVATE_KEY: ${{ secrets.MAIL_DKIM_PRIVATE_KEY }}
+          OAUTH_GOOGLE_CLIENT_SECRET: ${{ secrets.OAUTH_GOOGLE_CLIENT_SECRET }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_SUBSCRIBE_WEBHOOK_SECRET: ${{ secrets.STRIPE_SUBSCRIBE_WEBHOOK_SECRET }}
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+
+          config = {}
+          for raw in Path(os.environ["CONFIG_FILE"]).read_text(encoding="utf-8").splitlines():
+              line = raw.strip()
+              if not line or line.startswith("#"):
+                  continue
+              key, _, value = line.partition(":")
+              key = key.strip()
+              value = value.strip().strip('"').strip("'")
+              if key and value:
+                  config[key] = value
+
+          config.update({
+              "NODE_ENV": os.environ.get("NODE_ENV", "production"),
+              "BETTER_AUTH_URL": config.get("NEXT_PUBLIC_APP_URL", ""),
+              "FFMPEG_PATH": os.environ.get("FFMPEG_PATH", "/usr/bin/ffmpeg"),
+              "DATABASE_URL": os.environ.get("DATABASE_URL", ""),
+              "BETTER_AUTH_SECRET": os.environ.get("BETTER_AUTH_SECRET", ""),
+              "AUTH_SECRET": os.environ.get("AUTH_SECRET", ""),
+              "CSRF_SECRET": os.environ.get("CSRF_SECRET", ""),
+              "MAIL_PASSWORD": os.environ.get("MAIL_PASSWORD", ""),
+              "MAIL_DKIM_PRIVATE_KEY": os.environ.get("MAIL_DKIM_PRIVATE_KEY", ""),
+              "OAUTH_GOOGLE_CLIENT_SECRET": os.environ.get("OAUTH_GOOGLE_CLIENT_SECRET", ""),
+              "STRIPE_SECRET_KEY": os.environ.get("STRIPE_SECRET_KEY", ""),
+              "STRIPE_SUBSCRIBE_WEBHOOK_SECRET": os.environ.get("STRIPE_SUBSCRIBE_WEBHOOK_SECRET", ""),
+          })
+
+          skip = {"GCP_REGION", "GCP_ARTIFACT_REPO", "GCP_RUN_SA"}
+
+          def yaml_value(value: str) -> str:
+              if "\n" in value:
+                  lines = "\n".join(f"  {line}" for line in value.splitlines())
+                  return f"|\n{lines}"
+              escaped = value.replace("\\", "\\\\").replace('"', '\\"')
+              return f'"{escaped}"'
+
+          lines = [
+              f"{key}: {yaml_value(value)}"
+              for key, value in config.items()
+              if key not in skip and value
+          ]
+          Path("cloudrun-env.yaml").write_text("\n".join(lines) + "\n", encoding="utf-8")
+          PY
+
+      - name: Deploy to Cloud Run
+        run: |
+          EXTRA=()
+          if [ -n "$GCP_RUN_SA" ]; then
+            EXTRA+=(--service-account="$GCP_RUN_SA")
+          fi
+          gcloud run deploy "$SERVICE" \
+            --image="$IMAGE" \
+            --region="$GCP_REGION" \
+            --platform=managed \
+            --port=8080 \
+            --cpu=2 \
+            --memory=2Gi \
+            --timeout=300 \
+            --cpu-boost \
+            --max-instances=10 \
+            --allow-unauthenticated \
+            --env-vars-file=cloudrun-env.yaml \
+            "${EXTRA[@]}" \
+            --quiet
+
+      - name: Cleanup env file
+        if: always()
+        run: rm -f cloudrun-env.yaml

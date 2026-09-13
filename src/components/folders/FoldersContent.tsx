@@ -50,7 +50,7 @@ export default function FoldersContent({
 	return (
 		<>
 			<ContextMenu modal={false}>
-				<ContextMenuTrigger className="flex flex-col flex-grow">
+				<ContextMenuTrigger className="flex flex-col grow">
 					<h3 className={"font-semibold mb-5 flex justify-between items-center"}>
 						{t("headline")}
 						<ViewSelector viewState={viewState} setViewState={setViewState} />

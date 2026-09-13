@@ -1,117 +1,274 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+	--color-background: hsl(var(--background));
+	--color-foreground: hsl(var(--foreground));
+
+	--color-card: hsl(var(--card));
+	--color-card-foreground: hsl(var(--card-foreground));
+
+	--color-popover: hsl(var(--popover));
+	--color-popover-foreground: hsl(var(--popover-foreground));
+
+	--color-primary: hsl(var(--primary));
+	--color-primary-foreground: hsl(var(--primary-foreground));
+
+	--color-secondary: hsl(var(--secondary));
+	--color-secondary-foreground: hsl(var(--secondary-foreground));
+
+	--color-muted: hsl(var(--muted));
+	--color-muted-foreground: hsl(var(--muted-foreground));
+
+	--color-accent: hsl(var(--accent));
+	--color-accent-foreground: hsl(var(--accent-foreground));
+
+	--color-destructive: hsl(var(--destructive));
+	--color-destructive-foreground: hsl(var(--destructive-foreground));
+
+	--color-border: hsl(var(--border));
+	--color-input: hsl(var(--input));
+	--color-ring: hsl(var(--ring));
+
+	--color-chart-1: hsl(var(--chart-1));
+	--color-chart-2: hsl(var(--chart-2));
+	--color-chart-3: hsl(var(--chart-3));
+	--color-chart-4: hsl(var(--chart-4));
+	--color-chart-5: hsl(var(--chart-5));
+
+	--color-sidebar: hsl(var(--sidebar-background));
+	--color-sidebar-foreground: hsl(var(--sidebar-foreground));
+	--color-sidebar-primary: hsl(var(--sidebar-primary));
+	--color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+	--color-sidebar-accent: hsl(var(--sidebar-accent));
+	--color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+	--color-sidebar-border: hsl(var(--sidebar-border));
+	--color-sidebar-ring: hsl(var(--sidebar-ring));
+
+	--radius-lg: var(--radius);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-sm: calc(var(--radius) - 4px);
+
+	--animate-animate-shiny-text: shiny-text 8s infinite;
+	--animate-caret-blink: caret-blink 1.25s ease-out infinite;
+	--animate-ripple: ripple 600ms linear forwards;
+	--animate-progress: progress 20s linear forwards;
+	--animate-collapsibleEnter: collapsibleSlideDown 300ms ease-in-out;
+	--animate-collapsibleLeave: collapsibleSlideUp 300ms ease-in-out;
+	--animate-accordion-down: accordion-down 0.2s ease-out;
+	--animate-accordion-up: accordion-up 0.2s ease-out;
+	--animate-fade-in: fade-in 1s var(--animation-delay, 0ms) ease forwards;
+	--animate-shiny-text: shiny-text 8s infinite;
+
+	@keyframes shiny-text {
+		0%,
+		90%,
+		100% {
+			background-position: calc(-100% - var(--shiny-width)) 0;
+		}
+		30%,
+		60% {
+			background-position: calc(100% + var(--shiny-width)) 0;
+		}
+	}
+	@keyframes caret-blink {
+		0%,
+		70%,
+		100% {
+			opacity: 1;
+		}
+		20%,
+		50% {
+			opacity: 0;
+		}
+	}
+	@keyframes ripple {
+		0% {
+			transform: translate(-50%, -50%) scale(0);
+			opacity: 0.7;
+		}
+		100% {
+			transform: translate(-50%, -50%) scale(3);
+			opacity: 0;
+		}
+	}
+	@keyframes progress {
+		0% {
+			width: 0%;
+		}
+		100% {
+			width: 100%;
+		}
+	}
+	@keyframes collapsibleSlideDown {
+		from {
+			height: 0;
+		}
+		to {
+			height: var(--radix-collapsible-content-height);
+		}
+	}
+	@keyframes collapsibleSlideUp {
+		from {
+			height: var(--radix-collapsible-content-height);
+		}
+		to {
+			height: 0;
+		}
+	}
+	@keyframes accordion-down {
+		from {
+			height: 0;
+		}
+		to {
+			height: var(--radix-accordion-content-height);
+		}
+	}
+	@keyframes accordion-up {
+		from {
+			height: var(--radix-accordion-content-height);
+		}
+		to {
+			height: 0;
+		}
+	}
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+			transform: translateY(-10px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
 }
 
-::-webkit-scrollbar {
-  @apply w-2.5 h-2.5;
- 
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+	*,
+	::after,
+	::before,
+	::backdrop,
+	::file-selector-button {
+		border-color: var(--color-gray-200, currentcolor);
+	}
 }
 
-::-webkit-scrollbar-track {
-  @apply bg-transparent
-}
-
-::-webkit-scrollbar-thumb {
-  @apply rounded-full bg-border border-[1px] border-transparent border-solid bg-clip-padding;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+@utility text-balance {
+	text-wrap: avoid;
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: avoid;
-  }
+	:root {
+		--foreground-rgb: 0, 0, 0;
+		--background-start-rgb: 214, 219, 220;
+		--background-end-rgb: 255, 255, 255;
+	}
+
+	* {
+		scrollbar-width: thin;
+		scrollbar-color: hsl(var(--border)) hsl(var(--muted-foreground));
+	}
+
+	@media (prefers-color-scheme: dark) {
+		:root {
+			--foreground-rgb: 255, 255, 255;
+			--background-start-rgb: 0, 0, 0;
+			--background-end-rgb: 0, 0, 0;
+		}
+	}
 }
 
 @layer base {
-  :root {
-    --background: 155 36% 100%;
-    --foreground: 155 71% 1%;
-    --muted: 155 5% 95%;
-    --muted-foreground: 155 8% 33%;
-    --popover: 155 36% 100%;
-    --popover-foreground: 155 71% 1%;
-    --card: 155 36% 100%;
-    --card-foreground: 155 71% 1%;
-    --border: 155 13% 90%;
-    --input: 155 13% 90%;
-    --primary: 155 58% 29%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 155 14% 80%;
-    --secondary-foreground: 155 14% 20%;
-    --accent: 155 23% 71%;
-    --accent-foreground: 155 23% 11%;
-    --destructive: 8 87% 43%;
-    --destructive-foreground: 0 0% 100%;
-    --ring: 155 58% 29%;
-    --chart-1: 155 58% 29%;
-    --chart-2: 155 14% 80%;
-    --chart-3: 155 23% 71%;
-    --chart-4: 155 14% 83%;
-    --chart-5: 155 61% 29%;
-    --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-  .dark {
-    --background: 155 30% 0%;
-    --foreground: 155 29% 98%;
-    --muted: 155 5% 5%;
-    --muted-foreground: 155 8% 67%;
-    --popover: 155 30% 0%;
-    --popover-foreground: 155 29% 98%;
-    --card: 155 30% 0%;
-    --card-foreground: 155 29% 98%;
-    --border: 155 13% 15%;
-    --input: 155 13% 15%;
-    --primary: 155 58% 29%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 155 10% 18%;
-    --secondary-foreground: 155 10% 78%;
-    --accent: 155 19% 25%;
-    --accent-foreground: 155 19% 85%;
-    --destructive: 8 87% 49%;
-    --destructive-foreground: 0 0% 100%;
-    --ring: 155 58% 29%;
-    --chart-1: 155 58% 29%;
-    --chart-2: 155 10% 18%;
-    --chart-3: 155 19% 25%;
-    --chart-4: 155 10% 21%;
-    --chart-5: 155 61% 29%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
+	:root {
+		--background: 155 36% 100%;
+		--foreground: 155 71% 1%;
+		--muted: 155 5% 95%;
+		--muted-foreground: 155 8% 33%;
+		--popover: 155 36% 100%;
+		--popover-foreground: 155 71% 1%;
+		--card: 155 36% 100%;
+		--card-foreground: 155 71% 1%;
+		--border: 155 13% 90%;
+		--input: 155 13% 90%;
+		--primary: 155 58% 29%;
+		--primary-foreground: 0 0% 100%;
+		--secondary: 155 14% 80%;
+		--secondary-foreground: 155 14% 20%;
+		--accent: 155 23% 71%;
+		/*--accent-foreground: 155 23% 11%;*/
+		--accent-foreground: 155 58% 29%;
+		--destructive: 8 87% 43%;
+		--destructive-foreground: 0 0% 100%;
+		--ring: 155 58% 29%;
+		--chart-1: 155 58% 29%;
+		--chart-2: 155 14% 80%;
+		--chart-3: 155 23% 71%;
+		--chart-4: 155 14% 83%;
+		--chart-5: 155 61% 29%;
+		--radius: 0.5rem;
+		--sidebar-background: 0 0% 98%;
+		--sidebar-foreground: 240 5.3% 26.1%;
+		--sidebar-primary: 240 5.9% 10%;
+		--sidebar-primary-foreground: 0 0% 98%;
+		--sidebar-accent: 240 4.8% 95.9%;
+		--sidebar-accent-foreground: 240 5.9% 10%;
+		--sidebar-border: 220 13% 91%;
+		--sidebar-ring: 217.2 91.2% 59.8%;
+	}
+	.dark {
+		--background: 155 30% 0%;
+		--foreground: 155 29% 98%;
+		--muted: 155 5% 5%;
+		--muted-foreground: 155 8% 67%;
+		--popover: 155 30% 0%;
+		--popover-foreground: 155 29% 98%;
+		--card: 155 30% 0%;
+		--card-foreground: 155 29% 98%;
+		--border: 155 13% 15%;
+		--input: 155 13% 15%;
+		--primary: 155 58% 29%;
+		--primary-foreground: 0 0% 100%;
+		--secondary: 155 10% 18%;
+		--secondary-foreground: 155 10% 78%;
+		--accent: 155 19% 25%;
+		--accent-foreground: 155 19% 85%;
+		--destructive: 8 87% 49%;
+		--destructive-foreground: 0 0% 100%;
+		--ring: 155 58% 29%;
+		--chart-1: 155 58% 29%;
+		--chart-2: 155 10% 18%;
+		--chart-3: 155 19% 25%;
+		--chart-4: 155 10% 21%;
+		--chart-5: 155 61% 29%;
+		--sidebar-background: 240 5.9% 10%;
+		--sidebar-foreground: 240 4.8% 95.9%;
+		--sidebar-primary: 224.3 76.3% 48%;
+		--sidebar-primary-foreground: 0 0% 100%;
+		--sidebar-accent: 240 3.7% 15.9%;
+		--sidebar-accent-foreground: 240 4.8% 95.9%;
+		--sidebar-border: 240 3.7% 15.9%;
+		--sidebar-ring: 217.2 91.2% 59.8%;
+	}
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+	* {
+		@apply border-border;
+	}
+	html {
+		overflow-x: hidden;
+	}
+	body {
+		@apply bg-background text-foreground;
+	}
 }

@@ -11,7 +11,7 @@ export default function RootPage() {
 	const seeMoreRef = useRef<HTMLDivElement>(null);
 
 	return (
-		<div className="mt-11 mb-32">
+		<div className="mb-32 bg-blend-overlay">
 			<Hero seeMoreRef={seeMoreRef} />
 
 			<div ref={seeMoreRef} className="pt-32 max-w-2xl xl:max-w-7xl mx-auto px-4">
