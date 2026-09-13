@@ -20,6 +20,8 @@ import LinkIcon from "@/components/links/LinkIcon";
 import { AuthService } from "@/data/secure/auth";
 import { auth } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
 	title: "Echomori",
 	description: "Upload and share images with ease.",
