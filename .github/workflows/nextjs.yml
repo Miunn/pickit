@@ -12,7 +12,8 @@ env:
   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
   STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-  GCP_BUCKET_NAME: ${{ secrets.GOOGLE_BUCKET_NAME }}
+  GCP_PROJECT_ID: "echomori-app"
+  GCP_BUCKET_NAME: "echomori-drive-bucket"
 
 jobs:
   build:
