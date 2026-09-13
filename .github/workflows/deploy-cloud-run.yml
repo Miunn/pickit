@@ -179,6 +179,17 @@ jobs:
               "STRIPE_SUBSCRIBE_WEBHOOK_SECRET": os.environ.get("STRIPE_SUBSCRIBE_WEBHOOK_SECRET", ""),
           })
 
+          database_url = config.get("DATABASE_URL", "")
+          if database_url:
+              from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+              parts = urlsplit(database_url)
+              query = dict(parse_qsl(parts.query, keep_blank_values=True))
+              query["pgbouncer"] = "true"
+              query.setdefault("connection_limit", "5")
+              if "supabase" in database_url and "sslmode" not in query:
+                  query["sslmode"] = "require"
+              config["DATABASE_URL"] = urlunsplit(parts._replace(query=urlencode(query)))
+
           skip = {"GCP_REGION", "GCP_ARTIFACT_REPO", "GCP_RUN_SA", "DIRECT_URL"}
 
           def yaml_value(value: str) -> str:
