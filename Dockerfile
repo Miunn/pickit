@@ -50,6 +50,10 @@ ENV BETTER_AUTH_SECRET=ci-build-placeholder-secret-not-used-at-runtime
 ENV BETTER_AUTH_URL=http://localhost:3000
 ENV AUTH_SECRET=ci-build-placeholder-secret-not-used-at-runtime
 ENV CSRF_SECRET=ci-build-placeholder-secret-not-used-at-runtime
+ENV STRIPE_SECRET_KEY=sk_test_build_placeholder_not_used_at_runtime
+ENV STRIPE_SUBSCRIBE_WEBHOOK_SECRET=whsec_build_placeholder_not_used_at_runtime
+ENV OAUTH_GOOGLE_CLIENT_ID=build-placeholder-oauth-client-id
+ENV OAUTH_GOOGLE_CLIENT_SECRET=build-placeholder-oauth-secret
 
 RUN npm run build
 
