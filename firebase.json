@@ -1,16 +1,32 @@
 {
-	"hosting": {
-		"target": "staging",
-		"public": "infra/firebase-public",
-		"ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-		"rewrites": [
-			{
-				"source": "**",
-				"run": {
-					"serviceId": "echomori-staging",
-					"region": "europe-west1"
+	"hosting": [
+		{
+			"target": "prod",
+			"public": "infra/firebase-public",
+			"ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+			"rewrites": [
+				{
+					"source": "**",
+					"run": {
+						"serviceId": "echomori",
+						"region": "europe-west1"
+					}
 				}
-			}
-		]
-	}
+			]
+		},
+		{
+			"target": "staging",
+			"public": "infra/firebase-public",
+			"ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+			"rewrites": [
+				{
+					"source": "**",
+					"run": {
+						"serviceId": "echomori-staging",
+						"region": "europe-west1"
+					}
+				}
+			]
+		}
+	]
 }
