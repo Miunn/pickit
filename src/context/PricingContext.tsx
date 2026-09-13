@@ -57,7 +57,7 @@ export const PricingProvider = ({ children }: { readonly children: React.ReactNo
 				name: t("cards.free.title"),
 				price: { monthly: 0, yearly: 0 },
 				description: t("cards.free.description"),
-				ctaVariant: "outline-solid",
+				ctaVariant: "outline",
 				features: [
 					t("cards.free.features.0"),
 					t("cards.free.features.1"),
@@ -91,7 +91,7 @@ export const PricingProvider = ({ children }: { readonly children: React.ReactNo
 				name: t("cards.pro.title"),
 				price: { monthly: 10, yearly: 100 },
 				description: t("cards.pro.description"),
-				ctaVariant: "outline-solid",
+				ctaVariant: "outline",
 				features: [
 					t("cards.pro.features.0"),
 					t("cards.pro.features.1"),

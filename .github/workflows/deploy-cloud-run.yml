@@ -1,13 +1,8 @@
-# Reusable Cloud Run deploy. Callers must use GitHub Environments
-# `production` or `staging` with the vars/secrets listed below.
+# Reusable Cloud Run deploy.
+# Public config lives in infra/cloudrun.{staging,production}.yaml
 #
-# Variables: GCP_PROJECT_ID, GCP_REGION, GCP_ARTIFACT_REPO, GCP_RUN_SA (optional),
-# NEXT_PUBLIC_APP_NAME, NEXT_PUBLIC_APP_URL, NEXT_PUBLIC_SUPPORT_MAIL,
-# NEXT_PUBLIC_GOOGLE_MAPS_API_KEY, NEXT_PUBLIC_USER_MAP_ID,
-# NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY, NEXT_PUBLIC_PRICING_*, GCP_BUCKET_NAME,
-# MAIL_HOST, MAIL_PORT, MAIL_SECURE, MAIL_SENDER, OAUTH_GOOGLE_CLIENT_ID
-#
-# Secrets: GCP_SA_KEY, DATABASE_URL, BETTER_AUTH_SECRET, AUTH_SECRET, CSRF_SECRET,
+# GitHub Environment secrets still required:
+# GCP_SA_KEY, DATABASE_URL, BETTER_AUTH_SECRET, AUTH_SECRET, CSRF_SECRET,
 # MAIL_PASSWORD, MAIL_DKIM_PRIVATE_KEY, OAUTH_GOOGLE_CLIENT_SECRET,
 # STRIPE_SECRET_KEY, STRIPE_SUBSCRIBE_WEBHOOK_SECRET
 
@@ -22,6 +17,9 @@ on:
       environment_name:
         required: true
         type: string
+      config_file:
+        required: true
+        type: string
 
 jobs:
   deploy:
@@ -32,13 +30,33 @@ jobs:
       contents: read
 
     env:
-      PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
-      REGION: ${{ vars.GCP_REGION }}
-      ARTIFACT_REPO: ${{ vars.GCP_ARTIFACT_REPO }}
       SERVICE: ${{ inputs.service }}
+      CONFIG_FILE: ${{ inputs.config_file }}
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Load public Cloud Run config
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+
+          path = Path(os.environ["CONFIG_FILE"])
+          github_env = Path(os.environ["GITHUB_ENV"])
+          for raw in path.read_text(encoding="utf-8").splitlines():
+              line = raw.strip()
+              if not line or line.startswith("#"):
+                  continue
+              key, _, value = line.partition(":")
+              key = key.strip()
+              value = value.strip().strip('"').strip("'")
+              if key and value:
+                  github_env.write_text(
+                      github_env.read_text(encoding="utf-8") + f"{key}={value}\n",
+                      encoding="utf-8",
+                  )
+          PY
 
       - uses: actions/setup-node@v4
         with:
@@ -61,33 +79,18 @@ jobs:
 
       - name: Ensure Artifact Registry repository
         run: |
-          gcloud artifacts repositories describe "$ARTIFACT_REPO" --location="$REGION" \
-            || gcloud artifacts repositories create "$ARTIFACT_REPO" \
+          gcloud artifacts repositories describe "$GCP_ARTIFACT_REPO" --location="$GCP_REGION" \
+            || gcloud artifacts repositories create "$GCP_ARTIFACT_REPO" \
               --repository-format=docker \
-              --location="$REGION" \
+              --location="$GCP_REGION" \
               --quiet
 
       - name: Configure Docker for Artifact Registry
-        run: gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
+        run: gcloud auth configure-docker "${GCP_REGION}-docker.pkg.dev" --quiet
 
       - name: Build and push image
-        env:
-          NEXT_PUBLIC_APP_NAME: ${{ vars.NEXT_PUBLIC_APP_NAME }}
-          NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
-          NEXT_PUBLIC_SUPPORT_MAIL: ${{ vars.NEXT_PUBLIC_SUPPORT_MAIL }}
-          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ vars.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
-          NEXT_PUBLIC_USER_MAP_ID: ${{ vars.NEXT_PUBLIC_USER_MAP_ID }}
-          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ vars.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
-          NEXT_PUBLIC_PRICING_FREE_MONTHLY: ${{ vars.NEXT_PUBLIC_PRICING_FREE_MONTHLY }}
-          NEXT_PUBLIC_PRICING_FREE_YEARLY: ${{ vars.NEXT_PUBLIC_PRICING_FREE_YEARLY }}
-          NEXT_PUBLIC_PRICING_EFFICIENT_MONTHLY: ${{ vars.NEXT_PUBLIC_PRICING_EFFICIENT_MONTHLY }}
-          NEXT_PUBLIC_PRICING_EFFICIENT_YEARLY: ${{ vars.NEXT_PUBLIC_PRICING_EFFICIENT_YEARLY }}
-          NEXT_PUBLIC_PRICING_PRO_MONTHLY: ${{ vars.NEXT_PUBLIC_PRICING_PRO_MONTHLY }}
-          NEXT_PUBLIC_PRICING_PRO_YEARLY: ${{ vars.NEXT_PUBLIC_PRICING_PRO_YEARLY }}
-          NEXT_PUBLIC_PRICING_BASIC_MONTHLY: ${{ vars.NEXT_PUBLIC_PRICING_BASIC_MONTHLY }}
-          NEXT_PUBLIC_PRICING_BASIC_YEARLY: ${{ vars.NEXT_PUBLIC_PRICING_BASIC_YEARLY }}
         run: |
-          IMAGE="${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REPO}/${SERVICE}:${GITHUB_SHA}"
+          IMAGE="${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/${GCP_ARTIFACT_REPO}/${SERVICE}:${GITHUB_SHA}"
           echo "IMAGE=${IMAGE}" >> "$GITHUB_ENV"
           docker build \
             --build-arg NEXT_PUBLIC_APP_NAME="$NEXT_PUBLIC_APP_NAME" \
@@ -105,37 +108,15 @@ jobs:
             --build-arg NEXT_PUBLIC_PRICING_BASIC_MONTHLY="$NEXT_PUBLIC_PRICING_BASIC_MONTHLY" \
             --build-arg NEXT_PUBLIC_PRICING_BASIC_YEARLY="$NEXT_PUBLIC_PRICING_BASIC_YEARLY" \
             -t "$IMAGE" \
-            -t "${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REPO}/${SERVICE}:latest" \
+            -t "${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/${GCP_ARTIFACT_REPO}/${SERVICE}:latest" \
             .
           docker push "$IMAGE"
-          docker push "${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REPO}/${SERVICE}:latest"
+          docker push "${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/${GCP_ARTIFACT_REPO}/${SERVICE}:latest"
 
       - name: Write Cloud Run env file
         env:
           NODE_ENV: production
-          NEXT_PUBLIC_APP_NAME: ${{ vars.NEXT_PUBLIC_APP_NAME }}
-          NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
-          NEXT_PUBLIC_SUPPORT_MAIL: ${{ vars.NEXT_PUBLIC_SUPPORT_MAIL }}
-          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ vars.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
-          NEXT_PUBLIC_USER_MAP_ID: ${{ vars.NEXT_PUBLIC_USER_MAP_ID }}
-          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ vars.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
-          NEXT_PUBLIC_PRICING_FREE_MONTHLY: ${{ vars.NEXT_PUBLIC_PRICING_FREE_MONTHLY }}
-          NEXT_PUBLIC_PRICING_FREE_YEARLY: ${{ vars.NEXT_PUBLIC_PRICING_FREE_YEARLY }}
-          NEXT_PUBLIC_PRICING_EFFICIENT_MONTHLY: ${{ vars.NEXT_PUBLIC_PRICING_EFFICIENT_MONTHLY }}
-          NEXT_PUBLIC_PRICING_EFFICIENT_YEARLY: ${{ vars.NEXT_PUBLIC_PRICING_EFFICIENT_YEARLY }}
-          NEXT_PUBLIC_PRICING_PRO_MONTHLY: ${{ vars.NEXT_PUBLIC_PRICING_PRO_MONTHLY }}
-          NEXT_PUBLIC_PRICING_PRO_YEARLY: ${{ vars.NEXT_PUBLIC_PRICING_PRO_YEARLY }}
-          NEXT_PUBLIC_PRICING_BASIC_MONTHLY: ${{ vars.NEXT_PUBLIC_PRICING_BASIC_MONTHLY }}
-          NEXT_PUBLIC_PRICING_BASIC_YEARLY: ${{ vars.NEXT_PUBLIC_PRICING_BASIC_YEARLY }}
-          BETTER_AUTH_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
-          GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
-          GCP_BUCKET_NAME: ${{ vars.GCP_BUCKET_NAME }}
           FFMPEG_PATH: /usr/bin/ffmpeg
-          MAIL_HOST: ${{ vars.MAIL_HOST }}
-          MAIL_PORT: ${{ vars.MAIL_PORT }}
-          MAIL_SECURE: ${{ vars.MAIL_SECURE }}
-          MAIL_SENDER: ${{ vars.MAIL_SENDER }}
-          OAUTH_GOOGLE_CLIENT_ID: ${{ vars.OAUTH_GOOGLE_CLIENT_ID }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
@@ -150,41 +131,33 @@ jobs:
           import os
           from pathlib import Path
 
-          keys = [
-              "NODE_ENV",
-              "NEXT_PUBLIC_APP_NAME",
-              "NEXT_PUBLIC_APP_URL",
-              "NEXT_PUBLIC_SUPPORT_MAIL",
-              "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY",
-              "NEXT_PUBLIC_USER_MAP_ID",
-              "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
-              "NEXT_PUBLIC_PRICING_FREE_MONTHLY",
-              "NEXT_PUBLIC_PRICING_FREE_YEARLY",
-              "NEXT_PUBLIC_PRICING_EFFICIENT_MONTHLY",
-              "NEXT_PUBLIC_PRICING_EFFICIENT_YEARLY",
-              "NEXT_PUBLIC_PRICING_PRO_MONTHLY",
-              "NEXT_PUBLIC_PRICING_PRO_YEARLY",
-              "NEXT_PUBLIC_PRICING_BASIC_MONTHLY",
-              "NEXT_PUBLIC_PRICING_BASIC_YEARLY",
-              "BETTER_AUTH_URL",
-              "GCP_PROJECT_ID",
-              "GCP_BUCKET_NAME",
-              "FFMPEG_PATH",
-              "MAIL_HOST",
-              "MAIL_PORT",
-              "MAIL_SECURE",
-              "MAIL_SENDER",
-              "OAUTH_GOOGLE_CLIENT_ID",
-              "DATABASE_URL",
-              "BETTER_AUTH_SECRET",
-              "AUTH_SECRET",
-              "CSRF_SECRET",
-              "MAIL_PASSWORD",
-              "MAIL_DKIM_PRIVATE_KEY",
-              "OAUTH_GOOGLE_CLIENT_SECRET",
-              "STRIPE_SECRET_KEY",
-              "STRIPE_SUBSCRIBE_WEBHOOK_SECRET",
-          ]
+          config = {}
+          for raw in Path(os.environ["CONFIG_FILE"]).read_text(encoding="utf-8").splitlines():
+              line = raw.strip()
+              if not line or line.startswith("#"):
+                  continue
+              key, _, value = line.partition(":")
+              key = key.strip()
+              value = value.strip().strip('"').strip("'")
+              if key and value:
+                  config[key] = value
+
+          config.update({
+              "NODE_ENV": os.environ.get("NODE_ENV", "production"),
+              "BETTER_AUTH_URL": config.get("NEXT_PUBLIC_APP_URL", ""),
+              "FFMPEG_PATH": os.environ.get("FFMPEG_PATH", "/usr/bin/ffmpeg"),
+              "DATABASE_URL": os.environ.get("DATABASE_URL", ""),
+              "BETTER_AUTH_SECRET": os.environ.get("BETTER_AUTH_SECRET", ""),
+              "AUTH_SECRET": os.environ.get("AUTH_SECRET", ""),
+              "CSRF_SECRET": os.environ.get("CSRF_SECRET", ""),
+              "MAIL_PASSWORD": os.environ.get("MAIL_PASSWORD", ""),
+              "MAIL_DKIM_PRIVATE_KEY": os.environ.get("MAIL_DKIM_PRIVATE_KEY", ""),
+              "OAUTH_GOOGLE_CLIENT_SECRET": os.environ.get("OAUTH_GOOGLE_CLIENT_SECRET", ""),
+              "STRIPE_SECRET_KEY": os.environ.get("STRIPE_SECRET_KEY", ""),
+              "STRIPE_SUBSCRIBE_WEBHOOK_SECRET": os.environ.get("STRIPE_SUBSCRIBE_WEBHOOK_SECRET", ""),
+          })
+
+          skip = {"GCP_REGION", "GCP_ARTIFACT_REPO", "GCP_RUN_SA"}
 
           def yaml_value(value: str) -> str:
               if "\n" in value:
@@ -193,24 +166,23 @@ jobs:
               escaped = value.replace("\\", "\\\\").replace('"', '\\"')
               return f'"{escaped}"'
 
-          lines = []
-          for key in keys:
-              value = os.environ.get(key)
-              if value:
-                  lines.append(f"{key}: {yaml_value(value)}")
-
+          lines = [
+              f"{key}: {yaml_value(value)}"
+              for key, value in config.items()
+              if key not in skip and value
+          ]
           Path("cloudrun-env.yaml").write_text("\n".join(lines) + "\n", encoding="utf-8")
           PY
 
       - name: Deploy to Cloud Run
         run: |
           EXTRA=()
-          if [ -n "${{ vars.GCP_RUN_SA }}" ]; then
-            EXTRA+=(--service-account="${{ vars.GCP_RUN_SA }}")
+          if [ -n "$GCP_RUN_SA" ]; then
+            EXTRA+=(--service-account="$GCP_RUN_SA")
           fi
           gcloud run deploy "$SERVICE" \
             --image="$IMAGE" \
-            --region="$REGION" \
+            --region="$GCP_REGION" \
             --platform=managed \
             --port=8080 \
             --cpu=2 \

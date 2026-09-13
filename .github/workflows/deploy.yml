@@ -10,4 +10,5 @@ jobs:
     with:
       service: echomori
       environment_name: production
+      config_file: infra/cloudrun.production.yaml
     secrets: inherit

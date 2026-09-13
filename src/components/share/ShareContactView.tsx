@@ -233,7 +233,7 @@ export default function ShareContactView({
 													<FormControl>
 														<Button
 															variant={
-																"outline-solid"
+																"outline"
 															}
 															className={cn(
 																"text-left font-normal w-full",

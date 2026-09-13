@@ -3,7 +3,6 @@
 import FaqAccordion from "@/components/pages/landing/FaqAccordion";
 import FeatureCarouselPreview from "@/components/pages/landing/FeatureCarouselPreview";
 import Hero from "@/components/pages/landing/Hero";
-import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { useRef } from "react";
 

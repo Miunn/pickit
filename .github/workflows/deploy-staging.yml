@@ -10,4 +10,5 @@ jobs:
     with:
       service: echomori-staging
       environment_name: staging
+      config_file: infra/cloudrun.staging.yaml
     secrets: inherit
