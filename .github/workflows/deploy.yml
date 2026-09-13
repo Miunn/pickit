@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   deploy:
     uses: ./.github/workflows/deploy-cloud-run.yml
