@@ -65,7 +65,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Apply Prisma migrations
         env:
@@ -87,7 +87,8 @@ jobs:
           fi
           # Migrate must use session mode, never DATABASE_URL (6543).
           export DATABASE_URL="$DIRECT_URL"
-          npx prisma migrate deploy && npx prisma generate
+          ./node_modules/.bin/prisma migrate deploy
+          ./node_modules/.bin/prisma generate
 
       - uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2.1.13
         with:

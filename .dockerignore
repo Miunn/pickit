@@ -12,7 +12,13 @@ yarn-error.log*
 drive
 dkim
 echomori-app-gcp-keyfile.json
+github-deploy-key.json
+*.key.json
 infra
 README.md
 docker-compose.yaml
 Dockerfile.dev
+.firebase
+.vscode
+.zed
+tmp-db-migrate

@@ -6,7 +6,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 FROM base AS deps
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm ci --ignore-scripts && npm rebuild
 
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
@@ -60,7 +60,7 @@ RUN npm run build
 
 FROM base AS runner
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends openssl ca-certificates ffmpeg \
+    && apt-get install -y --no-install-recommends ca-certificates ffmpeg openssl \
     && rm -rf /var/lib/apt/lists/* \
     && addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 nextjs

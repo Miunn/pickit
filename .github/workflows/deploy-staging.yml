@@ -9,6 +9,8 @@ permissions:
 
 jobs:
   deploy:
+    permissions:
+      contents: read
     uses: ./.github/workflows/deploy-cloud-run.yml
     with:
       service: echomori-staging

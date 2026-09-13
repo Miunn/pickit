@@ -7,6 +7,24 @@ interface LoadingImageProps extends ImageProps {
     readonly spinnerClassName?: string;
 }
 
+function shouldSkipOptimization(src: ImageProps["src"]): boolean {
+	if (typeof src !== "string") {
+		return false;
+	}
+	if (src.startsWith("/api/")) {
+		return true;
+	}
+	try {
+		const url = new URL(src);
+		return (
+			(url.protocol === "https:" || url.protocol === "http:") &&
+			(url.hostname === "storage.googleapis.com" || url.hostname.endsWith(".storage.googleapis.com"))
+		);
+	} catch {
+		return false;
+	}
+}
+
 export default function LoadingImage({ spinnerClassName, alt, src, ...imageProps }: LoadingImageProps) {
     const [isLoading, setIsLoading] = useState(true);
     return (
@@ -17,10 +35,7 @@ export default function LoadingImage({ spinnerClassName, alt, src, ...imageProps
             <Image
 				alt={alt}
 				src={src}
-				unoptimized={
-					typeof src === "string" &&
-					(src.startsWith("/api/") || src.includes("storage.googleapis.com"))
-				}
+				unoptimized={shouldSkipOptimization(src)}
 				{...imageProps}
 				onLoad={() => setIsLoading(false)}
 			/>
