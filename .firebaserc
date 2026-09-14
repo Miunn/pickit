@@ -5,6 +5,9 @@
   "targets": {
     "echomori-app": {
       "hosting": {
+        "prod": [
+          "echomori"
+        ],
         "staging": [
           "echomori-staging"
         ]
