@@ -1,4 +1,4 @@
-import { attachSignedUrlsToValue, GoogleBucket } from "@/lib/bucket";
+import { GoogleBucket } from "@/lib/bucket";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import exifr from "exifr";
@@ -61,7 +61,7 @@ async function create(
 		include,
 	});
 
-	return attachSignedUrlsToValue(file);
+	return file;
 }
 
 // Define types for better overload handling
@@ -118,7 +118,7 @@ async function get<
 		return null;
 	}
 
-	return (await attachSignedUrlsToValue(file)) as unknown as GetResult<S, I>;
+	return file as unknown as GetResult<S, I>;
 }
 
 // Define types for getMultiple
@@ -154,7 +154,7 @@ async function getMultiple<
 		take: options.take,
 	});
 
-	return (await attachSignedUrlsToValue(files)) as unknown as GetMultipleResult<S, I>;
+	return files as unknown as GetMultipleResult<S, I>;
 }
 
 // Function overloads for update
@@ -175,7 +175,7 @@ async function update(
 		include,
 	});
 
-	return attachSignedUrlsToValue(file);
+	return file;
 }
 
 async function del(fileId: string) {

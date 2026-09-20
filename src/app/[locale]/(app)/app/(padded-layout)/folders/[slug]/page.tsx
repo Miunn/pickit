@@ -41,6 +41,30 @@ function getSortOrderBy(sort: FilesSortDefinition) {
 	}
 }
 
+async function getFolderNameAndDescription(slug: string) {
+	const bySlug = await FolderService.get({
+		where: { slug },
+		select: { name: true, description: true },
+	});
+	if (bySlug) {
+		return bySlug;
+	}
+
+	const byId = await FolderService.get({
+		where: { id: slug },
+		select: { name: true, description: true },
+	});
+	if (byId) {
+		return byId;
+	}
+
+	const historicalSlug = await FolderSlugsService.get({
+		where: { slug },
+		select: { folder: { select: { name: true, description: true } } },
+	});
+	return historicalSlug?.folder ?? null;
+}
+
 export async function generateMetadata(props: {
 	params: Promise<{ slug: string; locale: string }>;
 	searchParams: Promise<{
@@ -53,72 +77,41 @@ export async function generateMetadata(props: {
 	const searchParams = await props.searchParams;
 	const params = await props.params;
 	const t = await getTranslations("metadata.folder");
-	let folderNameAndDescription: {
-		name: string;
-		description?: string | null;
-	} | null = null;
-	if (!searchParams.share) {
-		return {
-			title: t("title", { folderName: "Folder" }),
-			description: t("description", { folderName: "Folder" }),
-			openGraph: {
-				title: t("title", { folderName: "Folder" }),
-				description: t("description", { folderName: "Folder" }),
-			},
-		};
-	}
-
-	folderNameAndDescription = await AccessTokenService.get({
-		where: { token: searchParams.share },
-		select: { folder: { select: { name: true, description: true } } },
-	}).then(result => (result ? { name: result.folder.name, description: result.folder.description } : null));
-
-	if (!folderNameAndDescription) {
-		return {
-			title: t("title", { folderName: "Folder" }),
-			description: t("description", { folderName: "Folder" }),
-			openGraph: {
-				title: t("openGraph.title", { folderName: "Folder" }),
-				description: t("openGraph.description", { folderName: "Folder" }),
-			},
-		};
-	}
+	const folder = await getFolderNameAndDescription(params.slug);
+	const folderName = folder?.name ?? "Folder";
+	const description = folder?.description || t("description", { folderName });
 
 	return {
-		title: t("title", { folderName: folderNameAndDescription.name }),
-		description: folderNameAndDescription.description
-			? folderNameAndDescription.description
-			: t("description", { folderName: folderNameAndDescription.name }),
+		title: t("title", { folderName }),
+		description,
 		openGraph: {
-			title: t("openGraph.title", {
-				folderName: folderNameAndDescription.name,
-			}),
-			description: folderNameAndDescription.description
-				? folderNameAndDescription.description
-				: t("openGraph.description", {
-						folderName: folderNameAndDescription.name,
-					}),
-			images: [
-				{
-					alt: "Echomori",
-					url: `${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.slug}/og?share=${searchParams.share}&h=${searchParams.h}`,
-					type: "image/png",
-					width: 1200,
-					height: 630,
-				},
-			],
+			title: t("openGraph.title", { folderName }),
+			description: folder?.description || t("openGraph.description", { folderName }),
+			...(searchParams.share
+				? {
+						images: [
+							{
+								alt: "Echomori",
+								url: `${process.env.NEXT_PUBLIC_APP_URL}/api/folders/${params.slug}/og?share=${searchParams.share}&h=${searchParams.h}`,
+								type: "image/png",
+								width: 1200,
+								height: 630,
+							},
+						],
+					}
+				: {}),
 		},
 	};
 }
 
 /**
- * Render the folder page for the given route and query parameters, handling access checks, shared-token flows, and signed file URLs.
+ * Render the folder page for the given route and query parameters, handling access checks and shared-token flows.
  *
  * This server component:
  * - Verifies access to the folder and redirects for denied or invalid shared links.
  * - Loads folder data (including files, relations, tags, cover, and counts).
  * - Resolves an access token when a share token is provided and enforces PIN/unlock flows.
- * - Increments token usage for shared views and generates V4 signed download URLs for each file.
+ * - Increments token usage for shared views.
  * - Provides folder, token, and files context providers and renders the folder content UI.
  *
  * @param props.params - Route parameters containing `folderId` and `locale`.

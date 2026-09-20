@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { SlugService } from "@/data/slug-service";
-import { attachSignedUrlsToValue } from "@/lib/bucket";
 
 async function create(data: Omit<Prisma.FolderCreateInput, "slug">) {
 	const { name, ...rest } = data;
@@ -19,7 +18,7 @@ async function create(data: Omit<Prisma.FolderCreateInput, "slug">) {
 				},
 			},
 		});
-		return attachSignedUrlsToValue(folder);
+		return folder;
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			if (error.code === "P2002") {
@@ -63,7 +62,7 @@ async function get<
 		return null;
 	}
 
-	return (await attachSignedUrlsToValue(folder)) as unknown as GetResult<S, I>;
+	return folder as unknown as GetResult<S, I>;
 }
 
 // Define types for getMultiple
@@ -99,7 +98,7 @@ async function getMultiple<
 		take: options.take,
 	});
 
-	return (await attachSignedUrlsToValue(folders)) as unknown as GetMultipleResult<S, I>;
+	return folders as unknown as GetMultipleResult<S, I>;
 }
 
 async function update(folderId: string, data: Prisma.FolderUpdateInput) {
@@ -121,7 +120,7 @@ async function update(folderId: string, data: Prisma.FolderUpdateInput) {
 		},
 	});
 
-	return attachSignedUrlsToValue(folder);
+	return folder;
 }
 
 async function del(folderId: string) {
