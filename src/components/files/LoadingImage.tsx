@@ -11,7 +11,7 @@ function shouldSkipOptimization(src: ImageProps["src"]): boolean {
 	if (typeof src !== "string") {
 		return false;
 	}
-	if (src.startsWith("/api/")) {
+	if (src.startsWith("/api/") || src.startsWith("/media/")) {
 		return true;
 	}
 	try {

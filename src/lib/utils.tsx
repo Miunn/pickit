@@ -109,20 +109,12 @@ type FileSrcFields = {
 	folderId?: string;
 	folder?: { id: string } | null;
 	type?: FileType | string | null;
-	signedUrl?: string | null;
-	signedThumbnailUrl?: string | null;
-	signedMediumUrl?: string | null;
 };
 
 type FolderCoverSrcFields = {
 	id: string;
 	coverId?: string | null;
-	signedCoverUrl?: string | null;
-	cover?: {
-		signedUrl?: string | null;
-		signedThumbnailUrl?: string | null;
-		signedMediumUrl?: string | null;
-	} | null;
+	cover?: { id?: string } | null;
 };
 
 function shareQueryString(share?: ShareQuery): string {
@@ -145,49 +137,34 @@ function shareQueryString(share?: ShareQuery): string {
 	return query ? `?${query}` : "";
 }
 
+function mediaFilename(variant: "preview" | "medium" | "original", type?: FileType | string | null) {
+	if (variant === "preview") {
+		return "preview.webp";
+	}
+
+	if (variant === "medium") {
+		return "medium.webp";
+	}
+
+	return type === FileType.VIDEO ? "original.mp4" : "original.jpg";
+}
+
 export function getFileSrc(
 	file: FileSrcFields,
 	variant: "preview" | "medium" | "original" = "original",
 	share?: ShareQuery
 ): string {
-	if (variant === "preview" && file.signedThumbnailUrl) {
-		return file.signedThumbnailUrl;
-	}
-
-	if (variant === "medium" && file.signedMediumUrl) {
-		return file.signedMediumUrl;
-	}
-
-	if (file.signedUrl) {
-		return file.signedUrl;
-	}
-
 	const folderId = file.folderId || file.folder?.id;
-	if (variant === "preview" && file.type === FileType.VIDEO) {
-		return `/api/folders/${folderId}/videos/${file.id}/thumbnail${shareQueryString(share)}`;
-	}
-
-	return `/api/folders/${folderId}/${file.id}${shareQueryString(share)}`;
+	return `/media/${folderId}/${file.id}/${mediaFilename(variant, file.type)}${shareQueryString(share)}`;
 }
 
 export function getFolderCoverSrc(folder: FolderCoverSrcFields, share?: ShareQuery): string | undefined {
-	if (folder.cover?.signedThumbnailUrl) {
-		return folder.cover.signedThumbnailUrl;
+	const coverId = folder.coverId || folder.cover?.id;
+	if (!coverId) {
+		return undefined;
 	}
 
-	if (folder.cover?.signedUrl) {
-		return folder.cover.signedUrl;
-	}
-
-	if (folder.signedCoverUrl) {
-		return folder.signedCoverUrl;
-	}
-
-	if (folder.coverId) {
-		return `/api/folders/${folder.id}/${folder.coverId}${shareQueryString(share)}`;
-	}
-
-	return undefined;
+	return `/media/${folder.id}/${coverId}/preview.webp${shareQueryString(share)}`;
 }
 
 export function groupFiles<T extends FileWithTags>(files: T[]): { [key: string]: T[] } {
@@ -317,8 +294,8 @@ export function isNewFile(date: Date) {
 	return diffDays <= 3;
 }
 
-export function webStreamFromFile(file: File): ReadableStream {
-	const stream = file.createReadStream();
+export function webStreamFromFile(file: File, range?: { start?: number; end?: number }): ReadableStream {
+	const stream = file.createReadStream(range);
 
 	// Convert Node.js Readable (from Google Cloud Storage) to a Web ReadableStream
 	// suitable for the Fetch API / NextResponse
