@@ -71,8 +71,10 @@ export async function serveFolderFile(
 ) {
 	const shareToken = req.nextUrl.searchParams.get("share");
 	const accessKey = req.nextUrl.searchParams.get("h");
-	const variant = options.variant ?? parseMediaVariant(req.nextUrl.searchParams.get("v"));
 	const download = options.download ?? req.nextUrl.searchParams.get("download") === "true";
+	const variant = download
+		? "original"
+		: (options.variant ?? parseMediaVariant(req.nextUrl.searchParams.get("v")));
 
 	const file = await FileService.get({
 		where: { id: fileId, folderId },

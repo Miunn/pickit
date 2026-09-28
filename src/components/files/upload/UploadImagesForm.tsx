@@ -18,6 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { notifyAboutUpload } from "@/actions/accessTokens";
 import { useSearchParams } from "next/navigation";
 import SparkMD5 from "spark-md5";
+import exifr from "exifr";
 
 interface UploadImagesFormProps {
 	readonly folderId: string;
@@ -60,6 +61,8 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
 			const results = await Promise.all(
 				data.images.map(async (file: File) => {
 					try {
+						const clientGps = await exifr.gps(file).catch(() => undefined);
+
 						// Step 1: Compute CRC32C checksum
 						const fileArrayBuffer = await file.arrayBuffer();
 						const rawMD5 = SparkMD5.ArrayBuffer.hash(fileArrayBuffer, true);
@@ -111,7 +114,13 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
 							verificationResult.verificationToken,
 							folderId,
 							searchParams.get("share") ?? undefined,
-							searchParams.get("h") ?? undefined
+							searchParams.get("h") ?? undefined,
+							clientGps?.latitude != null && clientGps?.longitude != null
+								? {
+										latitude: clientGps.latitude,
+										longitude: clientGps.longitude,
+									}
+								: undefined
 						);
 
 						if (finalizeResult.error) {
