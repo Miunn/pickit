@@ -251,15 +251,15 @@ async function extractAndSaveImageMetadata(
 		width: metadata.width,
 		height: metadata.height,
 		orientation: metadata.orientation,
-		hasExif: exif != null,
+		hasExif: exif !== undefined && exif !== null,
 		make: exif?.Make,
 		model: exif?.Model,
 		takenAt,
 		latitude,
 		longitude,
 		altitude,
-		hasGps: latitude != null && longitude != null,
-		clientGpsProvided: clientGps != null,
+		hasGps: typeof latitude === "number" && typeof longitude === "number",
+		clientGpsProvided: clientGps !== undefined && clientGps !== null,
 	});
 
 	const updatedFile = await FileService.update(
@@ -300,8 +300,8 @@ async function extractAndSaveImageMetadata(
 	);
 
 	if (
-		latitude != null &&
-		longitude != null &&
+		typeof latitude === "number" &&
+		typeof longitude === "number" &&
 		isJpegImage(metadata.format, fileRecord?.extension)
 	) {
 		try {

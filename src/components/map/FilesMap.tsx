@@ -17,8 +17,8 @@ import { File } from "@prisma/client";
 const filterFilesWithLocation = (files: (File & { folder: FolderWithLastSlug })[], selectedFolders: string[]) => {
 	return files.filter(
 		file =>
-			file.latitude != null &&
-			file.longitude != null &&
+			typeof file.latitude === "number" &&
+			typeof file.longitude === "number" &&
 			selectedFolders.includes(file.folder.id)
 	);
 };
@@ -129,8 +129,8 @@ export default function FilesMap() {
 	useEffect(() => {
 		const filteredFiles = locatedFiles.filter(
 			file =>
-				file.latitude != null &&
-				file.longitude != null &&
+				typeof file.latitude === "number" &&
+				typeof file.longitude === "number" &&
 				(selectedFolders.length === 0 || selectedFolders.includes(file.folder.id))
 		);
 
