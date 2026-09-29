@@ -8,7 +8,7 @@ import { randomUUID } from "node:crypto";
 import fs, { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import sharp from "sharp";
+import sharp, { type Metadata } from "sharp";
 import ffmpeg from "fluent-ffmpeg";
 
 const IMAGE_THUMBNAIL_MAX = 400;
@@ -224,12 +224,13 @@ async function extractAndSaveImageMetadata(
 		console.error("[image metadata] error creating derivatives", { fileId, err });
 	}
 
-	const [metadata, exif, gps] = await Promise.all([
+	let metadata: Partial<Metadata> = {};
+	const [metadataResult, exif, gps] = await Promise.all([
 		sharp(uploadedBuffer, { failOn: "none" })
 			.metadata()
 			.catch(error => {
 				console.error("[image metadata] sharp metadata failed", { fileId, error });
-				return {};
+				return undefined;
 			}),
 		exifr.parse(uploadedBuffer, { gps: true }).catch(error => {
 			console.error("[image metadata] exifr parse failed", { fileId, error });
@@ -237,6 +238,9 @@ async function extractAndSaveImageMetadata(
 		}),
 		exifr.gps(uploadedBuffer).catch(() => undefined),
 	]);
+	if (metadataResult) {
+		metadata = metadataResult;
+	}
 	const takenAt = exif?.DateTimeOriginal ?? exif?.TakenAt;
 	const modifiedAt = exif?.ModifyDate ?? exif?.ModifiedAt;
 	const latitude = gps?.latitude ?? exif?.latitude ?? clientGps?.latitude;
