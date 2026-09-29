@@ -224,18 +224,19 @@ async function extractAndSaveImageMetadata(
 		console.error("[image metadata] error creating derivatives", { fileId, err });
 	}
 
-	const exif = await exifr.parse(uploadedBuffer, { gps: true }).catch(error => {
-		console.error("[image metadata] exifr parse failed", { fileId, error });
-		return undefined;
-	});
-	const gps = await exifr.gps(uploadedBuffer).catch(() => undefined);
-
-	let metadata: Awaited<ReturnType<ReturnType<typeof sharp>["metadata"]>> = {};
-	try {
-		metadata = await sharp(uploadedBuffer, { failOn: "none" }).metadata();
-	} catch (error) {
-		console.error("[image metadata] sharp metadata failed", { fileId, error });
-	}
+	const [metadata, exif, gps] = await Promise.all([
+		sharp(uploadedBuffer, { failOn: "none" })
+			.metadata()
+			.catch(error => {
+				console.error("[image metadata] sharp metadata failed", { fileId, error });
+				return {};
+			}),
+		exifr.parse(uploadedBuffer, { gps: true }).catch(error => {
+			console.error("[image metadata] exifr parse failed", { fileId, error });
+			return undefined;
+		}),
+		exifr.gps(uploadedBuffer).catch(() => undefined),
+	]);
 	const takenAt = exif?.DateTimeOriginal ?? exif?.TakenAt;
 	const modifiedAt = exif?.ModifyDate ?? exif?.ModifiedAt;
 	const latitude = gps?.latitude ?? exif?.latitude ?? clientGps?.latitude;

@@ -115,7 +115,8 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
 							folderId,
 							searchParams.get("share") ?? undefined,
 							searchParams.get("h") ?? undefined,
-							clientGps?.latitude != null && clientGps?.longitude != null
+							typeof clientGps?.latitude === "number" &&
+								typeof clientGps?.longitude === "number"
 								? {
 										latitude: clientGps.latitude,
 										longitude: clientGps.longitude,

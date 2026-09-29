@@ -39,7 +39,7 @@ export default function MapFileCarousel({ files, startIndex, onClose, onFileChan
 		api.on("select", () => {
 			const index = api.selectedScrollSnap();
 			const file = files[index];
-			if (file.latitude != null && file.longitude != null) {
+			if (typeof file.latitude === "number" && typeof file.longitude === "number") {
 				// Pan the map to the new file location
 				map?.panTo({ lat: file.latitude, lng: file.longitude });
 				// Update POI window data

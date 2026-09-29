@@ -35,7 +35,7 @@ export function embedGpsInJpegBuffer(buffer: Buffer, gps: ImageGps): Buffer {
 	exifObj.GPS[piexif.GPSIFD.GPSLongitudeRef] = longitude >= 0 ? "E" : "W";
 	exifObj.GPS[piexif.GPSIFD.GPSLongitude] = piexif.GPSHelper.degToDmsRational(Math.abs(longitude));
 
-	if (altitude != null) {
+	if (typeof altitude === "number") {
 		exifObj.GPS[piexif.GPSIFD.GPSAltitudeRef] = altitude >= 0 ? 0 : 1;
 		exifObj.GPS[piexif.GPSIFD.GPSAltitude] = piexif.GPSHelper.degToDmsRational(Math.abs(altitude));
 	}
