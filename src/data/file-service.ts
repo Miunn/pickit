@@ -1,4 +1,5 @@
 import { GoogleBucket } from "@/lib/bucket";
+import { embedGpsInJpegBuffer, isJpegImage, type ImageGps } from "@/lib/embed-image-gps";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import exifr from "exifr";
@@ -184,18 +185,30 @@ async function del(fileId: string) {
 	});
 }
 
-async function extractAndSaveImageMetadata(folderId: string, fileId: string, objectPath?: string) {
+async function extractAndSaveImageMetadata(
+	folderId: string,
+	fileId: string,
+	objectPath?: string,
+	clientGps?: ImageGps
+) {
+	const fileRecord = await FileService.get({
+		where: { id: fileId },
+		select: {
+			extension: true,
+			folder: { select: { id: true, createdById: true } },
+		},
+	});
+
 	let filePath = objectPath;
 	if (!filePath) {
-		const pathData = await FileService.get({
-			where: { id: fileId },
-			select: { folder: { select: { id: true, createdById: true } } },
-		});
-		filePath = `${pathData?.folder.createdById}/${pathData?.folder.id}/${fileId}`;
+		filePath = `${fileRecord?.folder.createdById}/${fileRecord?.folder.id}/${fileId}`;
 	}
+
+	console.log("[image metadata] starting extraction", { folderId, fileId, filePath });
 
 	const [rawFile] = await GoogleBucket.file(filePath).download();
 	const uploadedBuffer = Buffer.from(rawFile);
+	console.log("[image metadata] downloaded image", { fileId, size: uploadedBuffer.length });
 
 	const thumbnailName = `${fileId}-thumbnail`;
 	const mediumName = `${fileId}-medium`;
@@ -210,13 +223,46 @@ async function extractAndSaveImageMetadata(folderId: string, fileId: string, obj
 		]);
 		savedThumbnail = thumbnailName;
 		savedMedium = mediumName;
+		console.log("[image metadata] derivatives created", {
+			fileId,
+			thumbnail: savedThumbnail,
+			medium: savedMedium,
+		});
 	} catch (err) {
-		console.error("Error creating image derivatives:", err);
+		console.error("[image metadata] error creating derivatives", { fileId, err });
 	}
 
-	const metadata = await sharp(uploadedBuffer).metadata();
-	const exif = await exifr.parse(uploadedBuffer, true);
-	return FileService.update(
+	const [metadata, exif, gps] = await Promise.all([
+		sharp(uploadedBuffer).metadata(),
+		exifr.parse(uploadedBuffer, { gps: true }),
+		exifr.gps(uploadedBuffer).catch(() => undefined),
+	]);
+	const takenAt = exif?.DateTimeOriginal ?? exif?.TakenAt;
+	const modifiedAt = exif?.ModifyDate ?? exif?.ModifiedAt;
+	const latitude = gps?.latitude ?? exif?.latitude ?? clientGps?.latitude;
+	const longitude = gps?.longitude ?? exif?.longitude ?? clientGps?.longitude;
+	let altitude = exif?.GPSAltitude ?? clientGps?.altitude;
+	if (typeof altitude === "number" && exif?.GPSAltitudeRef === 1) {
+		altitude = -altitude;
+	}
+	console.log("[image metadata] extracted metadata", {
+		fileId,
+		format: metadata.format,
+		width: metadata.width,
+		height: metadata.height,
+		orientation: metadata.orientation,
+		hasExif: exif !== undefined && exif !== null,
+		make: exif?.Make,
+		model: exif?.Model,
+		takenAt,
+		latitude,
+		longitude,
+		altitude,
+		hasGps: typeof latitude === "number" && typeof longitude === "number",
+		clientGpsProvided: clientGps !== undefined && clientGps !== null,
+	});
+
+	const updatedFile = await FileService.update(
 		fileId,
 		{
 			position: (await getLastPosition(folderId)) + 1000,
@@ -224,24 +270,24 @@ async function extractAndSaveImageMetadata(folderId: string, fileId: string, obj
 			...(savedMedium ? { medium: savedMedium } : {}),
 			width: metadata.width || 0,
 			height: metadata.height || 0,
-			make: exif.Make,
-			model: exif.Model,
-			software: exif.Software,
-			orientation: exif.Orientation?.toString(),
-			exposureTime: exif.ExposureTime,
-			fNumber: exif.FNumber,
-			iso: exif.ISO,
-			focalLength: exif.FocalLength,
-			flash: exif.Flash,
-			takenAt: exif.TakenAt,
-			modifiedAt: exif.ModifiedAt,
-			contrast: exif.Contrast,
-			saturation: exif.Saturation,
-			sharpness: exif.Sharpness,
-			whiteBalance: exif.WhiteBalance,
-			altitude: exif.GPSAltitude,
-			latitude: exif.latitude,
-			longitude: exif.longitude,
+			make: exif?.Make,
+			model: exif?.Model,
+			software: exif?.Software,
+			orientation: exif?.Orientation?.toString(),
+			exposureTime: exif?.ExposureTime,
+			fNumber: exif?.FNumber,
+			iso: exif?.ISO,
+			focalLength: exif?.FocalLength,
+			flash: exif?.Flash,
+			takenAt,
+			modifiedAt,
+			contrast: exif?.Contrast,
+			saturation: exif?.Saturation,
+			sharpness: exif?.Sharpness,
+			whiteBalance: exif?.WhiteBalance,
+			altitude,
+			latitude,
+			longitude,
 		},
 		{
 			tags: true,
@@ -252,6 +298,33 @@ async function extractAndSaveImageMetadata(folderId: string, fileId: string, obj
 			},
 		}
 	);
+
+	if (
+		typeof latitude === "number" &&
+		typeof longitude === "number" &&
+		isJpegImage(metadata.format, fileRecord?.extension)
+	) {
+		try {
+			const withGps = embedGpsInJpegBuffer(uploadedBuffer, {
+				latitude,
+				longitude,
+				altitude,
+			});
+			await GoogleBucket.file(filePath).save(withGps, {
+				contentType: "image/jpeg",
+			});
+			console.log("[image metadata] embedded GPS in stored original", {
+				fileId,
+				latitude,
+				longitude,
+				altitude,
+			});
+		} catch (err) {
+			console.error("[image metadata] failed to embed GPS in stored original", { fileId, err });
+		}
+	}
+
+	return updatedFile;
 }
 
 async function extractAndSaveVideoMetadata(folderId: string, fileId: string, objectPath?: string) {

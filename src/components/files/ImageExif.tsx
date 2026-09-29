@@ -278,7 +278,7 @@ export default function ImageExif({
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        {image.latitude && image.longitude ? (
+                                        {typeof image.latitude === "number" && typeof image.longitude === "number" ? (
                                             <Link
                                                 href={`https://www.google.com/maps/search/?api=1&query=${image.latitude},${image.longitude}`}
                                                 target="_blank"
@@ -293,7 +293,7 @@ export default function ImageExif({
                                     </TooltipTrigger>
                                     <TooltipContent>
                                         <p>
-                                            {image.latitude && image.longitude
+                                            {typeof image.latitude === "number" && typeof image.longitude === "number"
                                                 ? getCoordinatesString(image.latitude, image.longitude)
                                                 : t("noData")}
                                         </p>

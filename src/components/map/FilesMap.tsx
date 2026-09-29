@@ -15,7 +15,12 @@ import { useTheme } from "next-themes";
 import { File } from "@prisma/client";
 
 const filterFilesWithLocation = (files: (File & { folder: FolderWithLastSlug })[], selectedFolders: string[]) => {
-	return files.filter(file => file.latitude && file.longitude && selectedFolders.includes(file.folder.id));
+	return files.filter(
+		file =>
+			typeof file.latitude === "number" &&
+			typeof file.longitude === "number" &&
+			selectedFolders.includes(file.folder.id)
+	);
 };
 
 const getDefaultMarkers = (files: (File & { folder: FolderWithLastSlug })[], selectedFolders: string[]) => {
@@ -124,8 +129,8 @@ export default function FilesMap() {
 	useEffect(() => {
 		const filteredFiles = locatedFiles.filter(
 			file =>
-				file.latitude &&
-				file.longitude &&
+				typeof file.latitude === "number" &&
+				typeof file.longitude === "number" &&
 				(selectedFolders.length === 0 || selectedFolders.includes(file.folder.id))
 		);
 

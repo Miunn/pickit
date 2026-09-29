@@ -22,6 +22,7 @@ import { SecureService } from "@/data/secure/secure-service";
 import { FolderPermission } from "@/data/secure/folder";
 import { FileVerificationService } from "@/data/file-verification-service";
 import { FilePermission } from "@/data/secure/file";
+import type { ImageGps } from "@/lib/embed-image-gps";
 
 export async function initiateFileUpload(
 	data: z.infer<typeof RequestFileUploadFormSchema>,
@@ -106,7 +107,8 @@ export async function finalizeFileUpload(
 	verificationId: string,
 	parentFolderId: string,
 	token?: string,
-	key?: string
+	key?: string,
+	clientGps?: ImageGps
 ): Promise<{
 	error: string | null;
 	file:
@@ -162,7 +164,8 @@ export async function finalizeFileUpload(
 			updatedFile = await FileService.extractAndSaveImageMetadata(
 				folder.id,
 				fileVerification.fileId,
-				fileVerification.objectPath
+				fileVerification.objectPath,
+				clientGps
 			);
 		} else if (fileVerification.expectedMime.startsWith("video/")) {
 			updatedFile = await FileService.extractAndSaveVideoMetadata(
