@@ -5,7 +5,7 @@ type SeedUser = {
 	email: string;
 	password: string;
 	name: string;
-	role?: string;
+	role?: "user" | "admin";
 };
 
 async function ensureUser({ email, password, name, role }: SeedUser) {
