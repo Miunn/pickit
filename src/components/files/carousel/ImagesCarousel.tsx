@@ -106,7 +106,7 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 				) : null}
 			</div>
 			<Carousel
-				className="w-full h-fit mx-auto max-w-2xl mb-2"
+				className="w-full h-fit mx-auto max-w-full mb-2"
 				opts={{
 					align: "center",
 					loop: true,
@@ -126,7 +126,7 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 								{file.type === FileType.VIDEO ? (
 									<video
 										className={
-											"max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out"
+											"max-h-[min(32rem,65vh)] object-contain rounded-md transition-all duration-300 ease-in-out"
 										}
 										controls
 										src={getFileSrc(file, "original", {
@@ -146,10 +146,10 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 										})}
 										alt={file.name}
 										className={
-											"max-h-96 object-contain rounded-md transition-all duration-300 ease-in-out"
+											"max-h-[min(32rem,65vh)] object-contain rounded-md transition-all duration-300 ease-in-out"
 										}
-										width={900}
-										height={384}
+										width={1200}
+										height={512}
 										spinnerClassName="w-10 h-10 text-primary"
 									/>
 								)}
