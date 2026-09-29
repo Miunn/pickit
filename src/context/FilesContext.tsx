@@ -14,7 +14,7 @@ import { File as PrismaFile } from "@prisma/client";
 import { getSortedContent } from "@/lib/utils";
 import { ViewState } from "@/components/folders/ViewSelector";
 import { useQueryState } from "nuqs";
-import { FilesSort, FilesSortDefinition } from "@/types/imagesSort";
+import { FilesSort, FilesSortDefinition, toFilesSortDefinition } from "@/types/imagesSort";
 import { useSession } from "@/lib/auth-client";
 
 export type ContextFile = PrismaFile &
@@ -79,30 +79,7 @@ export const FilesProvider = ({
 	});
 	const [sortState, setSortState] = useQueryState<FilesSortDefinition>("sort", {
 		defaultValue: FilesSort.Position,
-		parse: v => {
-			switch (v) {
-				case "name-asc":
-					return FilesSort.Name.Asc;
-				case "name-desc":
-					return FilesSort.Name.Desc;
-				case "size-asc":
-					return FilesSort.Size.Asc;
-				case "size-desc":
-					return FilesSort.Size.Desc;
-				case "date-asc":
-					return FilesSort.Date.Asc;
-				case "date-desc":
-					return FilesSort.Date.Desc;
-				case "taken-asc":
-					return FilesSort.Taken.Asc;
-				case "taken-desc":
-					return FilesSort.Taken.Desc;
-				case "position":
-					return FilesSort.Position;
-				default:
-					return FilesSort.Position;
-			}
-		},
+		parse: toFilesSortDefinition,
 	});
 
 	const sortedFiles = useMemo(() => {

@@ -96,6 +96,18 @@ export function parseFilesSort(sort: FilesSortDefinition): {
  *   to the canonical casing (e.g. "Name.Asc") and returns that if valid.
  * - Otherwise falls back to `FilesSort.Position`.
  */
+const KEBAB_SORT_MAP: Record<string, FilesSortDefinition> = {
+	"name-asc": FilesSort.Name.Asc,
+	"name-desc": FilesSort.Name.Desc,
+	"size-asc": FilesSort.Size.Asc,
+	"size-desc": FilesSort.Size.Desc,
+	"date-asc": FilesSort.Date.Asc,
+	"date-desc": FilesSort.Date.Desc,
+	"taken-asc": FilesSort.Taken.Asc,
+	"taken-desc": FilesSort.Taken.Desc,
+	position: FilesSort.Position,
+};
+
 export function toFilesSortDefinition(sort?: string | null): FilesSortDefinition {
 	const allowed = new Set<string>([
 		FilesSort.Name.Asc,
@@ -113,6 +125,11 @@ export function toFilesSortDefinition(sort?: string | null): FilesSortDefinition
 
 	if (allowed.has(sort)) {
 		return sort as FilesSortDefinition;
+	}
+
+	const kebabMatch = KEBAB_SORT_MAP[sort.toLowerCase()];
+	if (kebabMatch) {
+		return kebabMatch;
 	}
 
 	// Try to normalize common lower/upper-case variants like "name.asc" -> "Name.Asc"

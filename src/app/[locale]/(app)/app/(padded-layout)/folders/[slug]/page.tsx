@@ -1,5 +1,5 @@
 import { FolderContent } from "@/components/folders/FolderContent";
-import { FilesSort, FilesSortDefinition } from "@/types/imagesSort";
+import { FilesSort, FilesSortDefinition, toFilesSortDefinition } from "@/types/imagesSort";
 import { redirect } from "@/i18n/navigation";
 import { ViewState } from "@/components/folders/ViewSelector";
 import { getTranslations } from "next-intl/server";
@@ -200,7 +200,7 @@ export default async function FolderPage(props: {
 					likes: true,
 					tags: true,
 				},
-				orderBy: getSortOrderBy(sort || FilesSort.Position),
+				orderBy: getSortOrderBy(toFilesSortDefinition(sort)),
 			},
 			createdBy: true,
 			accessTokens: true,
