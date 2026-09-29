@@ -20,8 +20,8 @@ export const CarouselDialog = ({
 
     return (
         <Dialog open={carouselOpen} onOpenChange={setCarouselOpen}>
-            <DialogContent className={"w-full max-w-5xl"}>
-                <DialogHeader>
+            <DialogContent className="w-[min(98vw,1600px)] max-w-none max-h-[98vh] overflow-y-auto">
+                <DialogHeader className="shrink-0">
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>{t("description")}</DialogDescription>
                 </DialogHeader>

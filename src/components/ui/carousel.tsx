@@ -178,7 +178,7 @@ CarouselItem.displayName = "CarouselItem";
 
 const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button>>(
 	({ className, variant = "outline", size = "icon", ...props }, ref) => {
-		const { orientation, scrollPrev, canScrollPrev } = useCarousel();
+		const { orientation, scrollPrev, canScrollPrev, opts } = useCarousel();
 
 		return (
 			<Button
@@ -192,7 +192,7 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
 						: "-top-12 left-1/2 -translate-x-1/2 rotate-90",
 					className
 				)}
-				disabled={!canScrollPrev}
+				disabled={opts?.loop ? false : !canScrollPrev}
 				onClick={scrollPrev}
 				{...props}
 			>
@@ -206,7 +206,7 @@ CarouselPrevious.displayName = "CarouselPrevious";
 
 const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button>>(
 	({ className, variant = "outline", size = "icon", ...props }, ref) => {
-		const { orientation, scrollNext, canScrollNext } = useCarousel();
+		const { orientation, scrollNext, canScrollNext, opts } = useCarousel();
 
 		return (
 			<Button
@@ -220,7 +220,7 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<ty
 						: "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
 					className
 				)}
-				disabled={!canScrollNext}
+				disabled={opts?.loop ? false : !canScrollNext}
 				onClick={scrollNext}
 				{...props}
 			>

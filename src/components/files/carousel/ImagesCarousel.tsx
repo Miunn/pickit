@@ -36,6 +36,11 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 	const [carouselApi, setCarouselApi] = useState<CarouselApi>();
 	const [currentIndex, setCurrentIndex] = useState<number>(startIndex);
 
+	const mediaClassName =
+		"max-h-full max-w-full w-auto h-auto object-contain rounded-md transition-all duration-300 ease-in-out";
+	const navButtonClassName =
+		"top-1/2 z-20 size-10 border bg-background shadow-md backdrop-blur-sm disabled:opacity-100";
+
 	const currentFile = useMemo<ContextFile | undefined>(() => {
 		return sortedFiles[currentIndex];
 	}, [currentIndex, sortedFiles]);
@@ -55,7 +60,7 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 	}, [carouselApi, setCurrentIndex]);
 
 	return (
-		<div className={"w-full overflow-hidden p-2 mx-auto"}>
+		<div className={"w-full p-2 mx-auto"}>
 			<div className="max-w-full flex justify-between items-center mb-2 gap-2 px-2">
 				<div className="font-semibold truncate flex items-center gap-3">
 					<p className="truncate">{currentFile?.name}</p>
@@ -106,7 +111,7 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 				) : null}
 			</div>
 			<Carousel
-				className="w-full h-fit mx-auto max-w-full mb-2"
+				className="relative w-full h-[80vh] mx-auto mb-2"
 				opts={{
 					align: "center",
 					loop: true,
@@ -115,19 +120,13 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 				}}
 				setApi={setCarouselApi}
 			>
-				<CarouselContent className="h-fit">
+				<CarouselContent className="h-full">
 					{sortedFiles.map(file => (
-						<CarouselItem key={file.id} className="h-fit">
-							<div
-								className={
-									"relative flex justify-center items-center p-2 transition-all duration-300 ease-in-out"
-								}
-							>
+						<CarouselItem key={file.id} className="h-full">
+							<div className="relative flex h-full w-full items-center justify-center px-14">
 								{file.type === FileType.VIDEO ? (
 									<video
-										className={
-											"max-h-[min(32rem,65vh)] object-contain rounded-md transition-all duration-300 ease-in-out"
-										}
+										className={mediaClassName}
 										controls
 										src={getFileSrc(file, "original", {
 											share: shareToken,
@@ -139,17 +138,15 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 									</video>
 								) : (
 									<LoadingImage
-										src={getFileSrc(file, "medium", {
+										src={getFileSrc(file, "original", {
 											share: shareToken,
 											h: shareHashPin,
 											t: tokenType === "personAccessToken" ? "p" : "a",
 										})}
 										alt={file.name}
-										className={
-											"max-h-[min(32rem,65vh)] object-contain rounded-md transition-all duration-300 ease-in-out"
-										}
-										width={1200}
-										height={512}
+										className={mediaClassName}
+										width={1920}
+										height={1080}
 										spinnerClassName="w-10 h-10 text-primary"
 									/>
 								)}
@@ -157,8 +154,8 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 						</CarouselItem>
 					))}
 				</CarouselContent>
-				<CarouselPrevious />
-				<CarouselNext />
+				<CarouselPrevious className={cn(navButtonClassName, "left-3")} />
+				<CarouselNext className={cn(navButtonClassName, "right-3")} />
 			</Carousel>
 			<div className="w-full grid grid-cols-2 items-center px-2">
 				<p className="truncate">{currentFile?.folder.name}</p>
