@@ -15,28 +15,20 @@ const IMAGE_THUMBNAIL_MAX = 400;
 const IMAGE_MEDIUM_MAX = 1600;
 const DERIVATIVE_CACHE_CONTROL = "public, max-age=31536000, immutable";
 
+function createImageDerivative(buffer: Buffer, maxSize: number, quality: number) {
+	return sharp(buffer, { failOn: "none" })
+		.rotate()
+		.resize(maxSize, maxSize, {
+			fit: "inside",
+			withoutEnlargement: true,
+		})
+		.webp({ quality })
+		.toBuffer();
+}
+
 async function createImageDerivatives(buffer: Buffer) {
-	const pipeline = sharp(buffer, { failOn: "none" }).rotate();
-
-	const [thumbnail, medium] = await Promise.all([
-		pipeline
-			.clone()
-			.resize(IMAGE_THUMBNAIL_MAX, IMAGE_THUMBNAIL_MAX, {
-				fit: "inside",
-				withoutEnlargement: true,
-			})
-			.webp({ quality: 75 })
-			.toBuffer(),
-		pipeline
-			.clone()
-			.resize(IMAGE_MEDIUM_MAX, IMAGE_MEDIUM_MAX, {
-				fit: "inside",
-				withoutEnlargement: true,
-			})
-			.webp({ quality: 80 })
-			.toBuffer(),
-	]);
-
+	const thumbnail = await createImageDerivative(buffer, IMAGE_THUMBNAIL_MAX, 75);
+	const medium = await createImageDerivative(buffer, IMAGE_MEDIUM_MAX, 80);
 	return { thumbnail, medium };
 }
 
@@ -232,11 +224,18 @@ async function extractAndSaveImageMetadata(
 		console.error("[image metadata] error creating derivatives", { fileId, err });
 	}
 
-	const [metadata, exif, gps] = await Promise.all([
-		sharp(uploadedBuffer).metadata(),
-		exifr.parse(uploadedBuffer, { gps: true }),
-		exifr.gps(uploadedBuffer).catch(() => undefined),
-	]);
+	const exif = await exifr.parse(uploadedBuffer, { gps: true }).catch(error => {
+		console.error("[image metadata] exifr parse failed", { fileId, error });
+		return undefined;
+	});
+	const gps = await exifr.gps(uploadedBuffer).catch(() => undefined);
+
+	let metadata: Awaited<ReturnType<ReturnType<typeof sharp>["metadata"]>> = {};
+	try {
+		metadata = await sharp(uploadedBuffer, { failOn: "none" }).metadata();
+	} catch (error) {
+		console.error("[image metadata] sharp metadata failed", { fileId, error });
+	}
 	const takenAt = exif?.DateTimeOriginal ?? exif?.TakenAt;
 	const modifiedAt = exif?.ModifyDate ?? exif?.ModifiedAt;
 	const latitude = gps?.latitude ?? exif?.latitude ?? clientGps?.latitude;
@@ -251,15 +250,15 @@ async function extractAndSaveImageMetadata(
 		width: metadata.width,
 		height: metadata.height,
 		orientation: metadata.orientation,
-		hasExif: exif != null,
+		hasExif: exif !== undefined && exif !== null,
 		make: exif?.Make,
 		model: exif?.Model,
 		takenAt,
 		latitude,
 		longitude,
 		altitude,
-		hasGps: latitude != null && longitude != null,
-		clientGpsProvided: clientGps != null,
+		hasGps: typeof latitude === "number" && typeof longitude === "number",
+		clientGpsProvided: clientGps !== undefined && clientGps !== null,
 	});
 
 	const updatedFile = await FileService.update(
@@ -300,8 +299,8 @@ async function extractAndSaveImageMetadata(
 	);
 
 	if (
-		latitude != null &&
-		longitude != null &&
+		typeof latitude === "number" &&
+		typeof longitude === "number" &&
 		isJpegImage(metadata.format, fileRecord?.extension)
 	) {
 		try {
