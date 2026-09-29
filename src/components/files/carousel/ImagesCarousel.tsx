@@ -60,8 +60,8 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 	}, [carouselApi, setCurrentIndex]);
 
 	return (
-		<div className={"w-full p-2 mx-auto"}>
-			<div className="max-w-full flex justify-between items-center mb-2 gap-2 px-2">
+		<div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden">
+			<div className="flex shrink-0 justify-between items-center gap-2 px-1">
 				<div className="font-semibold truncate flex items-center gap-3">
 					<p className="truncate">{currentFile?.name}</p>
 					{currentFile && currentFile?.tags.length > 0 ? (
@@ -111,7 +111,7 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 				) : null}
 			</div>
 			<Carousel
-				className="relative w-full h-[80vh] mx-auto mb-2"
+				className="relative mx-auto mb-2 w-full min-h-0 shrink-0 h-[min(52vh,calc(90vh-13rem))]"
 				opts={{
 					align: "center",
 					loop: true,
@@ -138,15 +138,15 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 									</video>
 								) : (
 									<LoadingImage
-										src={getFileSrc(file, "original", {
+										src={getFileSrc(file, "medium", {
 											share: shareToken,
 											h: shareHashPin,
 											t: tokenType === "personAccessToken" ? "p" : "a",
 										})}
 										alt={file.name}
 										className={mediaClassName}
-										width={1920}
-										height={1080}
+										width={1200}
+										height={675}
 										spinnerClassName="w-10 h-10 text-primary"
 									/>
 								)}
@@ -157,7 +157,7 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 				<CarouselPrevious className={cn(navButtonClassName, "left-3")} />
 				<CarouselNext className={cn(navButtonClassName, "right-3")} />
 			</Carousel>
-			<div className="w-full grid grid-cols-2 items-center px-2">
+			<div className="grid w-full shrink-0 grid-cols-2 items-center px-1">
 				<p className="truncate">{currentFile?.folder.name}</p>
 				<p className="text-sm text-muted-foreground text-nowrap text-end justify-self-end">
 					<span className="hidden sm:inline-block">{`${currentFile?.width}x${currentFile?.height}`}</span>{" "}
@@ -173,10 +173,10 @@ export default function ImagesCarousel({ startIndex }: { readonly startIndex: nu
 				</p>
 			</div>
 
-			<div className="w-full px-2 py-2 flex justify-between items-start gap-4">
+			<div className="flex w-full shrink-0 items-start justify-between gap-4 px-1 py-1">
 				<p
 					className={cn(
-						"text-sm text-muted-foreground flex-1 whitespace-pre-wrap line-clamp-5",
+						"text-sm text-muted-foreground flex-1 whitespace-pre-wrap line-clamp-2",
 						currentFile?.description ? "" : "italic"
 					)}
 				>
