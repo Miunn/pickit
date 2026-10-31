@@ -103,7 +103,7 @@ export async function serveFolderFile(
 	const cacheControl = download ? PRIVATE_NO_STORE : PUBLIC_MEDIA_CACHE_CONTROL;
 
 	return gcsFileResponse(
-		GoogleBucket.file(`${file.createdById}/${file.folderId}/${objectName}`),
+		GoogleBucket.file(`${file.folder.createdById}/${file.folderId}/${objectName}`),
 		{
 			"Content-Type": contentTypeForVariant(file, variant, objectName),
 			"Cache-Control": cacheControl,

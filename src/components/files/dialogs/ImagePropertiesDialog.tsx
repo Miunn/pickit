@@ -7,11 +7,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { copyImageToClipboard, formatBytes } from "@/lib/utils";
-import { useFormatter } from "use-intl";
 import React from "react";
 import { toast } from "@/hooks/use-toast";
 import { Check, Loader2 } from "lucide-react";

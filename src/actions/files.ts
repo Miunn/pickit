@@ -87,7 +87,7 @@ export async function initiateFileUpload(
 		).getSignedUrl({
 			version: "v4",
 			action: "write",
-			expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+			expires: Date.now() + 60 * 60 * 1000,
 			contentType: type,
 		});
 
@@ -135,6 +135,7 @@ export async function finalizeFileUpload(
 		return { error: "verification-not-found", file: null };
 	}
 
+	let accepted = false;
 	try {
 		// Get verification data
 		const [fileMetadata] = await GoogleBucket.file(fileVerification.objectPath).getMetadata();
@@ -157,6 +158,7 @@ export async function finalizeFileUpload(
 			return { error: "file-integrity-check-failed", file: null };
 		}
 
+		accepted = true;
 		await FileVerificationService.delete(fileVerification.id);
 
 		let updatedFile;
@@ -184,7 +186,53 @@ export async function finalizeFileUpload(
 		return { error: null, file: updatedFile };
 	} catch (err) {
 		console.error("Error finalizing upload:", err);
+		if (!accepted) {
+			await discardUpload(fileVerification.objectPath, fileVerification.fileId);
+		}
 		return { error: "upload-finalization-failed", file: null };
+	}
+}
+
+export async function abortFileUpload(
+	verificationId: string,
+	parentFolderId: string,
+	token?: string,
+	key?: string
+): Promise<{ error: string | null }> {
+	const folder = await FolderService.get({
+		where: { id: parentFolderId },
+		include: { accessTokens: true },
+	});
+
+	if (!folder) {
+		return { error: "folder-not-found" };
+	}
+
+	const auth = await SecureService.folder.enforce(folder, token, key, FolderPermission.WRITE);
+	if (!auth.allowed) {
+		return { error: "not-authenticated" };
+	}
+
+	const fileVerification = await FileVerificationService.get({ where: { id: verificationId } });
+	if (!fileVerification) {
+		return { error: null };
+	}
+
+	await discardUpload(fileVerification.objectPath, fileVerification.fileId);
+	return { error: null };
+}
+
+async function discardUpload(objectPath: string, fileId: string) {
+	try {
+		await GoogleBucket.file(objectPath).delete({ ignoreNotFound: true });
+	} catch (err) {
+		console.error("Error deleting unfinished upload:", err);
+	}
+
+	try {
+		await FileService.delete(fileId);
+	} catch (err) {
+		console.error("Error deleting unfinished file record:", err);
 	}
 }
 
@@ -451,7 +499,7 @@ export async function deleteFile(fileId: string, shareToken?: string, hashPin?: 
 		return { error: "forbidden" };
 	}
 
-	const objectPrefix = `${file.createdById}/${file.folderId}`;
+	const objectPrefix = `${file.folder.createdById}/${file.folderId}`;
 	const derivativeNames = new Set(
 		[file.thumbnail, file.medium, `${file.id}-thumbnail`, `${file.id}-medium`].filter(
 			(name): name is string => Boolean(name)

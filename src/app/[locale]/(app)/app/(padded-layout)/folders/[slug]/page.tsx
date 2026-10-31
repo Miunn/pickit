@@ -185,6 +185,7 @@ export default async function FolderPage(props: {
 		where: { slug },
 		include: {
 			files: {
+				where: { fileVerification: { is: null } },
 				include: {
 					folder: {
 						include: {

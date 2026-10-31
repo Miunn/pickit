@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { initiateFileUpload, finalizeFileUpload } from "@/actions/files";
+import { abortFileUpload, initiateFileUpload, finalizeFileUpload } from "@/actions/files";
 import { Progress } from "@/components/ui/progress";
 import { ContextFile } from "@/context/FilesContext";
 import { Label } from "@/components/ui/label";
@@ -19,6 +19,43 @@ import { notifyAboutUpload } from "@/actions/accessTokens";
 import { useSearchParams } from "next/navigation";
 import SparkMD5 from "spark-md5";
 import exifr from "exifr";
+
+async function md5Base64(file: File) {
+	const spark = new SparkMD5.ArrayBuffer();
+	const reader = file.stream().getReader();
+
+	for (;;) {
+		const { done, value } = await reader.read();
+		if (done) {
+			break;
+		}
+		spark.append(value.buffer.slice(value.byteOffset, value.byteOffset + value.byteLength));
+	}
+
+	return btoa(spark.end(true));
+}
+
+function putFile(url: string, file: File, onProgress: (loaded: number) => void) {
+	return new Promise<void>((resolve, reject) => {
+		const xhr = new XMLHttpRequest();
+		xhr.open("PUT", url);
+		xhr.setRequestHeader("Content-Type", file.type);
+		xhr.upload.onprogress = event => {
+			if (event.lengthComputable) {
+				onProgress(event.loaded);
+			}
+		};
+		xhr.onload = () => {
+			if (xhr.status >= 200 && xhr.status < 300) {
+				resolve();
+				return;
+			}
+			reject(new Error(`Storage upload failed (${xhr.status})`));
+		};
+		xhr.onerror = () => reject(new Error("Storage upload failed"));
+		xhr.send(file);
+	});
+}
 
 interface UploadImagesFormProps {
 	readonly folderId: string;
@@ -58,17 +95,37 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
 
 		try {
 			let uploadedCount = 0;
+			const loadedBytes = new Map<File, number>();
+			const totalBytes = data.images.reduce((sum: number, file: File) => sum + file.size, 0);
+			const shareToken = searchParams.get("share") ?? undefined;
+			const shareKey = searchParams.get("h") ?? undefined;
+			const reportProgress = () => {
+				const loaded = [...loadedBytes.values()].reduce((sum, value) => sum + value, 0);
+				toast(
+					<div className="w-full">
+						{t("ongoing.title", {
+							current: uploadedCount,
+							total: data.images.length,
+						})}
+						<Progress
+							value={totalBytes === 0 ? 0 : (loaded / totalBytes) * 100}
+							className="w-full mt-2"
+						/>
+					</div>,
+					{ id: "progress-toast" }
+				);
+			};
 			const results = await Promise.all(
 				data.images.map(async (file: File) => {
+					let verificationToken: string | undefined;
+					let sentToStorage = false;
 					try {
-						const clientGps = await exifr.gps(file).catch(() => undefined);
+						const clientGps = file.type.startsWith("image/")
+							? await exifr.gps(file).catch(() => undefined)
+							: undefined;
 
-						// Step 1: Compute CRC32C checksum
-						const fileArrayBuffer = await file.arrayBuffer();
-						const rawMD5 = SparkMD5.ArrayBuffer.hash(fileArrayBuffer, true);
-						const checksum = Buffer.from(rawMD5, "binary").toString("base64");
+						const checksum = await md5Base64(file);
 
-						// Step 2: Send metadata and samples to get verification URL
 						const verificationResult = await initiateFileUpload(
 							{
 								name: file.name,
@@ -77,44 +134,29 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
 								md5: checksum,
 							},
 							folderId,
-							searchParams.get("share") ?? undefined,
-							searchParams.get("h") ?? undefined
+							shareToken,
+							shareKey
 						);
 
-						if (verificationResult.error) {
-							toast.error(t("errors.uploading-failed", { name: file.name }));
-							throw new Error(verificationResult.error);
+						if (verificationResult.error || !verificationResult.uploadUrl || !verificationResult.verificationToken) {
+							throw new Error(verificationResult.error || "No upload URL received");
 						}
 
-						if (!verificationResult.uploadUrl) {
-							toast.error(t("errors.uploading-failed", { name: file.name }));
-							throw new Error("No upload URL received");
-						}
+						verificationToken = verificationResult.verificationToken;
 
-						if (!verificationResult.verificationToken) {
-							toast.error(t("errors.uploading-failed", { name: file.name }));
-							throw new Error("No verification token received");
-						}
-
-						// Step 3: Upload the file
-						const uploadResponse = await fetch(verificationResult.uploadUrl, {
-							method: "PUT",
-							body: file,
-							headers: {
-								"Content-Type": file.type,
-							},
+						await putFile(verificationResult.uploadUrl, file, loaded => {
+							loadedBytes.set(file, loaded);
+							reportProgress();
 						});
+						sentToStorage = true;
+						loadedBytes.set(file, file.size);
+						reportProgress();
 
-						if (!uploadResponse.ok) {
-							throw new Error("Upload failed");
-						}
-
-						// Step 4: Finalize the upload
 						const finalizeResult = await finalizeFileUpload(
-							verificationResult.verificationToken,
+							verificationToken,
 							folderId,
-							searchParams.get("share") ?? undefined,
-							searchParams.get("h") ?? undefined,
+							shareToken,
+							shareKey,
 							typeof clientGps?.latitude === "number" &&
 								typeof clientGps?.longitude === "number"
 								? {
@@ -129,30 +171,19 @@ export function UploadImagesForm({ folderId, onUpload, shouldDisplayNotify = tru
 						}
 
 						uploadedCount += 1;
-						toast(
-							<div className="w-full">
-								{t("ongoing.title", {
-									current: uploadedCount,
-									total: data.images.length,
-								})}
-								<Progress
-									value={
-										(uploadedCount / data.images.length) *
-										100
-									}
-									className="w-full mt-2"
-								/>
-							</div>,
-							{
-								id: "progress-toast",
-							}
-						);
+						reportProgress();
 						return {
 							success: true,
 							file: finalizeResult.file,
 						};
 					} catch (error) {
 						console.error(`Error uploading ${file.name}:`, error);
+						toast.error(t("errors.uploading-failed", { name: file.name }));
+						if (verificationToken && !sentToStorage) {
+							await abortFileUpload(verificationToken, folderId, shareToken, shareKey).catch(
+								() => undefined
+							);
+						}
 						return {
 							success: false,
 							file: null,

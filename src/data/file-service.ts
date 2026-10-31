@@ -10,6 +10,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import sharp, { type Metadata } from "sharp";
 import ffmpeg from "fluent-ffmpeg";
+import "@/lib/ffmpeg";
 
 const IMAGE_THUMBNAIL_MAX = 400;
 const IMAGE_MEDIUM_MAX = 1600;
@@ -343,38 +344,60 @@ async function extractAndSaveVideoMetadata(folderId: string, fileId: string, obj
 		thumbnailFilePath = `${pathData?.folder.createdById}/${pathData?.folder.id}/${fileId}-thumbnail`;
 	}
 
-	const [rawFile] = await GoogleBucket.file(filePath).download();
-	const uploadedBuffer = Buffer.from(rawFile);
+	const gcsFile = GoogleBucket.file(filePath);
+	let width = 0;
+	let height = 0;
+	let duration = 0;
+	let thumbnail: string | undefined;
 
-	// Process thumbnail creation
 	try {
-		const thumbnailBuffer = await extractThumbnailFromBuffer(uploadedBuffer);
+		const [objectMetadata] = await gcsFile.getMetadata();
+		const fileSize = Number(objectMetadata.size || 0);
+		const mediainfo = await mediaInfoFactory();
+		try {
+			const metadata = await mediainfo.analyzeData(fileSize, async (size, offset) => {
+				const end = Math.min(offset + size, fileSize) - 1;
+				if (end < offset) {
+					return new Uint8Array();
+				}
+				const [chunk] = await gcsFile.download({ start: offset, end });
+				return new Uint8Array(chunk);
+			});
+			const videoTrack = metadata.media?.track.find((track: Track) => track["@type"] === "Video");
+			const generalTrack = metadata.media?.track.find(
+				(track: Track) => track["@type"] === "General"
+			);
+			width = Math.round(Number(videoTrack?.Width || videoTrack?.Active_Width) || 0);
+			height = Math.round(Number(videoTrack?.Height || videoTrack?.Active_Height) || 0);
+			duration = Math.round(Number(generalTrack?.Duration) || 0);
+		} finally {
+			mediainfo.close();
+		}
+	} catch (err) {
+		console.error("Error reading video metadata:", err);
+	}
 
+	try {
+		const [readUrl] = await gcsFile.getSignedUrl({
+			version: "v4",
+			action: "read",
+			expires: Date.now() + 10 * 60 * 1000,
+		});
+		const thumbnailBuffer = await extractThumbnailFromUrl(readUrl);
 		await saveDerivative(thumbnailFilePath, thumbnailBuffer, "image/jpeg");
+		thumbnail = `${fileId}-thumbnail`;
 	} catch (err) {
 		console.error("Error creating thumbnail:", err);
 	}
 
-	// Create video record
-	const mediainfo = await mediaInfoFactory({
-		locateFile: file => `${process.env.NEXT_PUBLIC_APP_URL}/mediainfo/${file}`,
-	});
-	const metadata = await mediainfo.analyzeData(uploadedBuffer.length, () => uploadedBuffer);
-	mediainfo.close();
 	return FileService.update(
 		fileId,
 		{
 			position: (await getLastPosition(folderId)) + 1000,
-			thumbnail: `${fileId}-thumbnail`,
-			width:
-				metadata.media?.track.find((track: Track) => track["@type"] === "Video")
-					?.Active_Width || 0,
-			height:
-				metadata.media?.track.find((track: Track) => track["@type"] === "Video")
-					?.Active_Height || 0,
-			duration:
-				metadata.media?.track.find((track: Track) => track["@type"] === "General")?.Duration ||
-				0,
+			...(thumbnail ? { thumbnail } : {}),
+			width,
+			height,
+			duration,
 		},
 		{
 			tags: true,
@@ -396,37 +419,35 @@ async function getLastPosition(folderId: string) {
 	return file?.position || 0;
 }
 
-async function extractThumbnailFromBuffer(videoBuffer: Buffer): Promise<Buffer> {
+async function extractThumbnailFromUrl(inputUrl: string): Promise<Buffer> {
 	const tempDir = mkdtempSync(path.join(tmpdir(), "thumb-"));
-	const inputPath = path.join(tempDir, `input-${randomUUID()}.video`);
 	const outputPath = path.join(tempDir, `thumbnail-${randomUUID()}.jpg`);
 
-	console.log("Temp dir", tempDir);
-	console.log("inputPath", inputPath);
-	console.log("outputPath", outputPath);
-
 	try {
-		// Write video buffer to a temp file
-		fs.writeFileSync(inputPath, videoBuffer);
-
-		// Run FFmpeg to extract a single frame at timestamp
 		await new Promise((resolve, reject) => {
-			ffmpeg(inputPath)
-				.seekInput("00:00:00")
-				.outputOptions(["-vframes 1"])
-				.output(outputPath)
-				.on("end", resolve)
-				.on("error", reject)
+			const command = ffmpeg(inputUrl)
+				.inputOptions(["-ss", "0"])
+				.outputOptions(["-frames:v", "1"])
+				.output(outputPath);
+			const timer = setTimeout(() => {
+				command.kill("SIGKILL");
+				reject(new Error("ffmpeg thumbnail timed out"));
+			}, 20_000);
+			command
+				.on("end", () => {
+					clearTimeout(timer);
+					resolve(undefined);
+				})
+				.on("error", error => {
+					clearTimeout(timer);
+					reject(error);
+				})
 				.run();
 		});
 
-		// Read and return thumbnail buffer
-		const thumbBuffer = fs.readFileSync(outputPath);
-		return thumbBuffer;
+		return fs.readFileSync(outputPath);
 	} finally {
-		// Clean up temp files and directory
 		try {
-			if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
 			if (fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
 			fs.rmdirSync(tempDir);
 		} catch (error_) {
